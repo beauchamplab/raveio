@@ -1,0 +1,38 @@
+Package: raveio
+Type: Package
+Title: Utility Toolbox for RAVE package
+Version: 0.0.1
+Language: en-US
+Authors@R: c(
+    person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre")),
+    person("Beauchamp lab", email = "beauchamplab@gmail.com", role = c("cph", "fnd"))
+    )
+Description: Includes multiple cross-platform read/write interfaces for
+  RAVE project: R analysis and visualization of human intracranial 
+  electroencephalography data. Provides hybrid tensor array classes that 
+  stores 10 GB level big array on solid state drives and load
+  on demand within seconds. 
+BugReports: https://github.com/beauchamplab/rave/issues
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Depends: R (>= 3.6.0)
+Imports:
+    utils,
+    data.table,
+    yaml,
+    hdf5r,
+    fst,
+    dipsaus,
+    R.matlab,
+    glue,
+    stringr,
+    rstudioapi (>= 0.11),
+    rlang,
+    edfReader
+Suggests:
+    pryr,
+    shinyalert,
+    spelling,
+    shiny
