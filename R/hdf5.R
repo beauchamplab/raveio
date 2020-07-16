@@ -45,6 +45,9 @@ LazyH5 <- R6::R6Class(
   ),
   public = list(
 
+    #' @field quiet whether to suppress messages
+    quiet = FALSE,
+
     #' @description garbage collection method
     #' @return none
     finalize = function(){
@@ -71,8 +74,9 @@ LazyH5 <- R6::R6Class(
     #' @param read_only whether to open the file in read-only mode. It's highly
     #' recommended to set this to be true, otherwise the file connection is
     #' exclusive.
+    #' @param quiet whether to suppress messages, default is false
     #' @return self instance
-    initialize = function(file_path, data_name, read_only = FALSE){
+    initialize = function(file_path, data_name, read_only = FALSE, quiet = FALSE){
 
       # First get absolute path, otherwise hdf5r may report file not found error
       if(read_only){
@@ -85,6 +89,7 @@ LazyH5 <- R6::R6Class(
       }else{
         private$file = file_path
       }
+      self$quiet = isTRUE(quiet)
       private$name = data_name
       private$read_only = read_only
     },
@@ -159,7 +164,10 @@ LazyH5 <- R6::R6Class(
             # then the file can be opened, otherwise, Access type: H5F_ACC_RDONLY
             # will lock the file for writting
             f = hdf5r::H5File$new(private$file, 'r')
-            catgl('Closing all other connections to [{private$file}] - {f$get_obj_count() - 1}')
+            if(!self$quiet){
+              catgl('Closing all other connections to [{private$file}] - {f$get_obj_count() - 1}')
+            }
+
             try({ f$close_all() }, silent = TRUE)
             private$file_ptr = hdf5r::H5File$new(private$file, mode)
           })
@@ -179,7 +187,9 @@ LazyH5 <- R6::R6Class(
             nm = sprintf('%s/%s', nm, i)
             if(!ptr$path_valid(path = nm)){
               ptr = ptr$create_group(i)
-              catgl('{private$file} => {nm} (Group Created)\n')
+              if(!self$quiet){
+                catgl('{private$file} => {nm} (Group Created)\n')
+              }
             }else{
               ptr = ptr[[i]]
             }
@@ -189,11 +199,15 @@ LazyH5 <- R6::R6Class(
           nm = g[length(g)]
           if(ptr$path_valid(path = nm)){
             # dataset exists, unlink first
-            catgl('{private$file} => {private$name} (Dataset Removed)\n')
+            if(!self$quiet){
+              catgl('{private$file} => {private$name} (Dataset Removed)\n')
+            }
             ptr$link_delete(nm)
           }
           # new create
-          catgl('{private$file} => {private$name} (Dataset Created)\n')
+          if(!self$quiet){
+            catgl('{private$file} => {private$name} (Dataset Created)\n')
+          }
           if(missing(robj)){
             robj = NA
           }
@@ -411,22 +425,44 @@ exp.LazyH5 <- function(x){
   base::exp(x$subset())
 }
 
-#' Lazy Load "HDF5" File via \code{\link[hdf5r]{hdf5r-package}}
+#' Lazy Load 'HDF5' File via \code{\link[hdf5r]{hdf5r-package}}
 #'
 #' @description Wrapper for class \code{\link{LazyH5}}, which load data with
 #' "lazy" mode - only read part of dataset when needed.
 #'
-#' @param file "HDF5" file
-#' @param name \code{group/data_name} path to dataset
-#' @param read_only default is TRUE, read dataset only
-#' @param ram load to RAM immediately
+#' @param file 'HDF5' file
+#' @param name \code{group/data_name} path to dataset (\code{H5D} data)
+#' @param read_only only used if \code{ram=FALSE}, whether the returned
+#' \code{\link{LazyH5}} instance should be read only
+#' @param ram load data to memory immediately, default is false
+#' @param quiet whether to suppress messages
+#'
+#' @return If \code{ram} is true, then return data as arrays, otherwise return
+#' a \code{\link{LazyH5}} instance.
 #'
 #' @seealso \code{\link{save_h5}}
+#'
+#' @examples
+#' file <- tempfile()
+#' x <- array(1:120, dim = c(4,5,6))
+#'
+#' # save x to file with name /group/dataset/1
+#' save_h5(x, file, '/group/dataset/1', quiet = TRUE)
+#'
+#' # read data
+#' y <- load_h5(file, '/group/dataset/1', ram = TRUE)
+#' class(y)   # array
+#'
+#' z <- load_h5(file, '/group/dataset/1', ram = FALSE)
+#' class(z)   # LazyH5
+#'
+#' dim(z)
+#'
 #' @export
-load_h5 <- function(file, name, read_only = TRUE, ram = FALSE){
+load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 
   re = tryCatch({
-    re = LazyH5$new(file_path = file, data_name = name, read_only = read_only)
+    re = LazyH5$new(file_path = file, data_name = name, read_only = read_only, quiet = quiet)
     re$open()
     re
   }, error = function(e){
@@ -434,7 +470,9 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE){
     if(!read_only){
       stop('Another process is locking the file. Cannot open file with write permission; use ', sQuote('save_h5'), ' instead...\n  file: ', file, '\n  name: ', name)
     }
-    catgl('Open failed. Attempt to open with a temporary copy...')
+    if(!quiet){
+      catgl('Open failed. Attempt to open with a temporary copy...')
+    }
 
     # Fails when other process holds a connection to it!
     # If read_only, then copy the file to local directory
@@ -454,27 +492,25 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE){
 
 
 
-
-
-
-
-
-#' Save objects to "HDF5" file without trivial checks
-#' @param x array, matrix, or vector
-#' @param file \code{HDF5} file
-#' @param name path to dataset in format like \code{"group/data_name"}
+#' Save objects to 'HDF5' file without trivial checks
+#' @param x an array, a matrix, or a vector
+#' @param file path to 'HDF5' file
+#' @param name path/name of the data; for example, \code{"group/data_name"}
 #' @param chunk chunk size
-#' @param level compress level
-#' @param replace if dataset exists, replace?
-#' @param new_file remove old file if exists?
-#' @param ctype dataset type: numeric? character?
+#' @param level compress level from 0 - no compression to 10 - max compression
+#' @param replace should data be replaced if exists
+#' @param new_file should removing the file if old one exists
+#' @param ctype data type such as "character", "integer", or "numeric". If
+#' set to \code{NULL} then automatically detect types. Note for complex data
+#' please store separately the real and imaginary parts.
+#' @param quiet whether to suppress messages, default is false
 #' @param ... passed to other \code{LazyH5$save}
 #'
 #' @seealso \code{\link{load_h5}}
 #' @examples
 #'
 #' file <- tempfile()
-#' x <- 1:120; dim(x) <- 2:5
+#' x <- array(1:120, dim = 2:5)
 #'
 #' # save x to file with name /group/dataset/1
 #' save_h5(x, file, '/group/dataset/1', chunk = dim(x))
@@ -483,14 +519,17 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE){
 #' y <- load_h5(file, '/group/dataset/1')
 #' y[]
 #' @export
-save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE, new_file = FALSE, ctype = NULL, ...){
+save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
+                    new_file = FALSE, ctype = NULL, quiet = FALSE, ...){
   f = tryCatch({
-    f = LazyH5$new(file, name, read_only = FALSE)
+    f = LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
     f$open()
     f$close()
     f
   }, error = function(e){
-    catgl('Saving failed. Attempt to unlink the file and retry...', level = 'INFO')
+    if( !quiet ){
+      catgl('Saving failed. Attempt to unlink the file and retry...', level = 'INFO')
+    }
     if(file.exists(file)){
       # File is locked,
       tmpf = tempfile(fileext = 'conflict.w.h5')
@@ -507,5 +546,5 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE, new
   }, add = TRUE)
   f$save(x, chunk = chunk, level = level, replace = replace, new_file = new_file, ctype = ctype, force = TRUE, ...)
 
-  return()
+  return(invisible(normalizePath(file)))
 }

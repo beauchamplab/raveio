@@ -2,7 +2,7 @@
 % Please edit documentation in R/hdf5.R
 \name{save_h5}
 \alias{save_h5}
-\title{Save objects to "HDF5" file without trivial checks}
+\title{Save objects to 'HDF5' file without trivial checks}
 \usage{
 save_h5(
   x,
@@ -13,35 +13,40 @@ save_h5(
   replace = TRUE,
   new_file = FALSE,
   ctype = NULL,
+  quiet = FALSE,
   ...
 )
 }
 \arguments{
-\item{x}{array, matrix, or vector}
+\item{x}{an array, a matrix, or a vector}
 
-\item{file}{\code{HDF5} file}
+\item{file}{path to 'HDF5' file}
 
-\item{name}{path to dataset in format like \code{"group/data_name"}}
+\item{name}{path/name of the data; for example, \code{"group/data_name"}}
 
 \item{chunk}{chunk size}
 
-\item{level}{compress level}
+\item{level}{compress level from 0 - no compression to 10 - max compression}
 
-\item{replace}{if dataset exists, replace?}
+\item{replace}{should data be replaced if exists}
 
-\item{new_file}{remove old file if exists?}
+\item{new_file}{should removing the file if old one exists}
 
-\item{ctype}{dataset type: numeric? character?}
+\item{ctype}{data type such as "character", "integer", or "numeric". If
+set to \code{NULL} then automatically detect types. Note for complex data
+please store separately the real and imaginary parts.}
+
+\item{quiet}{whether to suppress messages, default is false}
 
 \item{...}{passed to other \code{LazyH5$save}}
 }
 \description{
-Save objects to "HDF5" file without trivial checks
+Save objects to 'HDF5' file without trivial checks
 }
 \examples{
 
 file <- tempfile()
-x <- 1:120; dim(x) <- 2:5
+x <- array(1:120, dim = 2:5)
 
 # save x to file with name /group/dataset/1
 save_h5(x, file, '/group/dataset/1', chunk = dim(x))

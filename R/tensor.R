@@ -1,4 +1,19 @@
 
+temp_tensor_dir <- function(){
+  d <- file.path(get('.settings')[['tensor.temp.path']], get('.session_string'))
+  dir_create2(d)
+  normalizePath(d)
+}
+
+temp_tensor_file <- function(filename = NA){
+  d <- temp_tensor_dir()
+  if(is.na(filename)){
+    tempfile(tmpdir = d, fileext = '.fst')
+  } else {
+    file.path(d, filename)
+  }
+}
+
 #' @title R6 Class for large Tensor (Array) in Hybrid Mode
 #' @description can store on hard drive, and read slices of GB-level
 #' data in seconds
@@ -69,7 +84,7 @@ Tensor <- R6::R6Class(
             # files uncleaned if the final object registered with
             # finalizer changes its swap_files
             if(isTRUE(file.exists(path))){
-              rave_info('Removing ', path)
+              dipsaus::cat2('Removing ', path)
               unlink(path)
             }
           }
@@ -150,9 +165,10 @@ Tensor <- R6::R6Class(
     #' @param temporary whether to remove temporary files when existing
     #' @param multi_files if \code{use_index} is true, whether to use multiple
     #' @param swap_file where to store the data in hybrid mode
-    #' files to save data by index
+    #' files to save data by index; default stores in
+    #' \code{raveio_getopt('tensor.temp.path')}
     initialize = function(data, dim, dimnames, varnames, hybrid = FALSE,
-                          use_index = FALSE, swap_file = tempfile(),
+                          use_index = FALSE, swap_file = temp_tensor_file(),
                           temporary = TRUE, multi_files = FALSE){
 
       self$temporary = temporary
@@ -449,7 +465,7 @@ Tensor <- R6::R6Class(
     #' loading
     to_swap_now = function(use_index = FALSE){
       if(!all(file.exists(self$swap_file))){
-        self$swap_file = tempfile()
+        self$swap_file = temp_tensor_file()
         private$multi_files = FALSE
       }
       swap_file = self$swap_file
@@ -797,7 +813,8 @@ ECoGTensor <- R6::R6Class(
     #' @param varnames names of \code{dimnames}, recommended names are:
     #' \code{Trial}, \code{Frequency}, \code{Time}, and \code{Electrode}
     #' @param hybrid whether to enable hybrid mode to reduce RAM usage
-    #' @param swap_file if hybrid mode, where to store the data
+    #' @param swap_file if hybrid mode, where to store the data; default
+    #' stores in \code{raveio_getopt('tensor.temp.path')}
     #' @param temporary whether to clean up the space when exiting R session
     #' @param multi_files logical, whether to use multiple files instead of
     #' one giant file to store data
@@ -806,7 +823,7 @@ ECoGTensor <- R6::R6Class(
     #' @param ... further passed to \code{\link{Tensor}} constructor
     #' @return an \code{ECoGTensor} instance
     initialize = function(data, dim, dimnames, varnames, hybrid = FALSE,
-                          swap_file = tempfile(), temporary = TRUE,
+                          swap_file = temp_tensor_file(), temporary = TRUE,
                           multi_files = FALSE, use_index = TRUE, ...){
       self$temporary = temporary
       # get attributes of data

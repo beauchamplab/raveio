@@ -153,7 +153,7 @@ constructor
   varnames,
   hybrid = FALSE,
   use_index = FALSE,
-  swap_file = tempfile(),
+  swap_file = temp_tensor_file(),
   temporary = TRUE,
   multi_files = FALSE
 )}\if{html}{\out{</div>}}
@@ -175,7 +175,8 @@ constructor
 \item{\code{use_index}}{whether to use the last dimension for indexing}
 
 \item{\code{swap_file}}{where to store the data in hybrid mode
-files to save data by index}
+files to save data by index; default stores in
+\code{raveio_getopt('tensor.temp.path')}}
 
 \item{\code{temporary}}{whether to remove temporary files when existing}
 

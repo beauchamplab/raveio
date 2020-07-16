@@ -1,14 +1,14 @@
-#' Save Data to csv Files but Rename Old File Instead of Overwrite
-#' @param x,file see also \code{\link[utils]{write.csv}}
+#' Save data to csv files with backups
+#' @description Save csv files, if file exists, backup original file.
+#' @param x,file,... pass to \code{\link[utils]{write.csv}}
 #' @param quiet whether to suppress overwrite message
-#' @param ... pass to \code{\link[utils]{write.csv}}
 #' @return Normalized path of \code{file}
 #' @export
 safe_write_csv <- function(x, file, ..., quiet = FALSE){
   if(file.exists(file)){
     oldfile = stringr::str_replace(file, '\\.[cC][sS][vV]$', strftime(Sys.time(), '_[%Y%m%d_%H%M%S].csv'))
     if(!quiet){
-      catgl('Renaming file {file} >> {oldfile}')
+      catgl('Renaming file {file}\n  >> {oldfile}')
     }
     file.rename(file, oldfile)
   }
@@ -106,7 +106,7 @@ safe_read_csv <- function(file, header = TRUE, sep = ',',
 
 
 #' Read csv file and ignore headers
-#' @description Resolved some iEEG format import situation when
+#' @description Resolved some 'iEEG' format where
 #' the header could be missing.
 #' @param file csv file to read from. The file must contains all
 #' numerical values
@@ -118,7 +118,7 @@ safe_read_csv <- function(file, header = TRUE, sep = ',',
 #' header is treated missing. Note \code{file} must have at least two
 #' rows.
 #' @export
-read_csv_no_header <- function(file, nrows = Inf, drop = NULL){
+read_csv_ieeg <- function(file, nrows = Inf, drop = NULL){
   header1 = utils::read.csv(file = file, nrows = 1, header = FALSE)
   header2 = utils::read.csv(file = file, nrows = 1, header = FALSE, skip = 1)
 

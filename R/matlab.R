@@ -1,18 +1,23 @@
-#' @title Read 'Matlab' Files
+#' @title Read 'Matlab' files
 #' @description A compatible reader that can read both 'Matlab'
 #' files prior and after version 6.0
 #' @param file path to a 'Matlab' file
+#' @param ram whether to load data into memory. Only available when
+#' the file is in 'HDF5' format. Default is false and will load arrays,
+#' if set to true, then lazy-load data. This is useful when array is very large.
 #' @return A list of All the data stored in the file
-#' @details \code{\link[R.matlab]{readMat}} is used to read files
+#' @details \code{\link[R.matlab]{readMat}} can only read 'Matlab' files
 #' prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
-#' to store its data, hence \code{\link[hdf5r]{H5File}} is used to
+#' to store its data, and \code{\link[R.matlab]{readMat}} raises errors.
+#' hence \code{\link[hdf5r]{H5File}} is used to
 #' read the file.
 #'
 #' The performance of \code{read_mat} can be limited when
 #' the file is too big or has many datasets as it reads all the
 #' data contained in 'Matlab' file into memory.
+#' @seealso \code{\link[R.matlab]{readMat}}, \code{\link{load_h5}}
 #' @export
-read_mat <- function(file){
+read_mat <- function(file, ram = TRUE){
 
   # Check if the file is HDF5 format
   if( hdf5r::is_hdf5(file) ){
@@ -21,7 +26,11 @@ read_mat <- function(file){
     on.exit(f$close())
     dset_names = hdf5r::list.datasets(f)
     re = sapply(dset_names, function(nm){
-      f[[nm]][]
+      r <- load_h5(file, name = nm)
+      if(ram){
+        r <- r[]
+      }
+      r
     }, simplify = FALSE, USE.NAMES = TRUE)
 
   }else{

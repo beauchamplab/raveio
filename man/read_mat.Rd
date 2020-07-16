@@ -2,12 +2,16 @@
 % Please edit documentation in R/matlab.R
 \name{read_mat}
 \alias{read_mat}
-\title{Read 'Matlab' Files}
+\title{Read 'Matlab' files}
 \usage{
-read_mat(file)
+read_mat(file, ram = TRUE)
 }
 \arguments{
 \item{file}{path to a 'Matlab' file}
+
+\item{ram}{whether to load data into memory. Only available when
+the file is in 'HDF5' format. Default is false and will load arrays,
+if set to true, then lazy-load data. This is useful when array is very large.}
 }
 \value{
 A list of All the data stored in the file
@@ -17,12 +21,16 @@ A compatible reader that can read both 'Matlab'
 files prior and after version 6.0
 }
 \details{
-\code{\link[R.matlab]{readMat}} is used to read files
+\code{\link[R.matlab]{readMat}} can only read 'Matlab' files
 prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
-to store its data, hence \code{\link[hdf5r]{H5File}} is used to
+to store its data, and \code{\link[R.matlab]{readMat}} raises errors.
+hence \code{\link[hdf5r]{H5File}} is used to
 read the file.
 
 The performance of \code{read_mat} can be limited when
 the file is too big or has many datasets as it reads all the
 data contained in 'Matlab' file into memory.
+}
+\seealso{
+\code{\link[R.matlab]{readMat}}, \code{\link{load_h5}}
 }

@@ -36,6 +36,13 @@ system.time(dat[,10,])
 \author{
 Zhengjia Wang
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{quiet}}{whether to suppress messages}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -81,7 +88,7 @@ self instance
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LazyH5$new(file_path, data_name, read_only = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LazyH5$new(file_path, data_name, read_only = FALSE, quiet = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -94,6 +101,8 @@ constructor
 \item{\code{read_only}}{whether to open the file in read-only mode. It's highly
 recommended to set this to be true, otherwise the file connection is
 exclusive.}
+
+\item{\code{quiet}}{whether to suppress messages, default is false}
 }
 \if{html}{\out{</div>}}
 }

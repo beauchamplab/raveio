@@ -2,14 +2,12 @@
 % Please edit documentation in R/csv.R
 \name{safe_write_csv}
 \alias{safe_write_csv}
-\title{Save Data to csv Files but Rename Old File Instead of Overwrite}
+\title{Save data to csv files with backups}
 \usage{
 safe_write_csv(x, file, ..., quiet = FALSE)
 }
 \arguments{
-\item{x, file}{see also \code{\link[utils]{write.csv}}}
-
-\item{...}{pass to \code{\link[utils]{write.csv}}}
+\item{x, file, ...}{pass to \code{\link[utils]{write.csv}}}
 
 \item{quiet}{whether to suppress overwrite message}
 }
@@ -17,5 +15,5 @@ safe_write_csv(x, file, ..., quiet = FALSE)
 Normalized path of \code{file}
 }
 \description{
-Save Data to csv Files but Rename Old File Instead of Overwrite
+Save csv files, if file exists, backup original file.
 }

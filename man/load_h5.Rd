@@ -2,22 +2,46 @@
 % Please edit documentation in R/hdf5.R
 \name{load_h5}
 \alias{load_h5}
-\title{Lazy Load "HDF5" File via \code{\link[hdf5r]{hdf5r-package}}}
+\title{Lazy Load 'HDF5' File via \code{\link[hdf5r]{hdf5r-package}}}
 \usage{
-load_h5(file, name, read_only = TRUE, ram = FALSE)
+load_h5(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE)
 }
 \arguments{
-\item{file}{"HDF5" file}
+\item{file}{'HDF5' file}
 
-\item{name}{\code{group/data_name} path to dataset}
+\item{name}{\code{group/data_name} path to dataset (\code{H5D} data)}
 
-\item{read_only}{default is TRUE, read dataset only}
+\item{read_only}{only used if \code{ram=FALSE}, whether the returned
+\code{\link{LazyH5}} instance should be read only}
 
-\item{ram}{load to RAM immediately}
+\item{ram}{load data to memory immediately, default is false}
+
+\item{quiet}{whether to suppress messages}
+}
+\value{
+If \code{ram} is true, then return data as arrays, otherwise return
+a \code{\link{LazyH5}} instance.
 }
 \description{
 Wrapper for class \code{\link{LazyH5}}, which load data with
 "lazy" mode - only read part of dataset when needed.
+}
+\examples{
+file <- tempfile()
+x <- array(1:120, dim = c(4,5,6))
+
+# save x to file with name /group/dataset/1
+save_h5(x, file, '/group/dataset/1', quiet = TRUE)
+
+# read data
+y <- load_h5(file, '/group/dataset/1', ram = TRUE)
+class(y)   # array
+
+z <- load_h5(file, '/group/dataset/1', ram = FALSE)
+class(z)   # LazyH5
+
+dim(z)
+
 }
 \seealso{
 \code{\link{save_h5}}

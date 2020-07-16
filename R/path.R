@@ -2,13 +2,18 @@
 
 
 
-#' Simple Hard Disk Speed Test
-#' @param path an existing directory where to test speed
-#' @param file_size in bytes, default is 10 MB
+#' Simple hard disk speed test
+#' @param path an existing directory where to test speed, default is temporary
+#' local directory
+#' @param file_size in bytes, default is 1 MB
 #' @param quiet should verbose messages be suppressed?
+#' @param abort_if_slow abort test if hard drive is too slow. This usually
+#' happens when the hard drive is connected via slow internet: if the write
+#' speed is less than 0.1 MB per second.
 #' @return A vector of two: writing and reading speed in MB per seconds.
 #' @export
-test_hdspeed <- function(path, file_size = 1e7, quiet = FALSE){
+test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
+                         abort_if_slow = TRUE){
 
   if(!dir.exists(path)){
     stop(path, ' does not exist.')
@@ -16,23 +21,44 @@ test_hdspeed <- function(path, file_size = 1e7, quiet = FALSE){
   }
 
   # create tempdir for testing
-  test_dir = file.path(path, '.rave_hd_test_', rand_string(8))
+  root_dir <- file.path(path, '.rave_hd_test')
+  has_root <- dir.exists(root_dir)
+  test_dir = file.path(path, '.rave_hd_test', rand_string(8))
   on.exit({
-    unlink(test_dir, recursive = TRUE)
+    if(!has_root){
+      unlink(root_dir, recursive = TRUE)
+    }else{
+      unlink(test_dir, recursive = TRUE)
+    }
   })
-  dir_create(test_dir)
+  dir_create2(test_dir)
 
-  progress = dipsaus::progress2(title = 'Testing read/write speed', max = 2, quiet = quiet)
+  if(abort_if_slow && file_size > 1e5){
+    # test write speed. If the speed is too low, should ignore test
+    file = tempfile(tmpdir = test_dir)
+    dat = rand_string(1e5 - 1)
+    upload = system.time(writeLines(dat, file, useBytes = TRUE))
+    wsp <- 0.1 / (upload[3])
+    if( wsp < 0.1 ) {
+      if(!quiet){
+        dipsaus::cat2('Hard disk speed might be too slow. Abort speed test')
+      }
+      return(c(wsp, wsp))
+    }
+  }
+
+  progress = dipsaus::progress2(title = 'Testing read/write speed', max = 2,
+                                quiet = quiet, shiny_auto_close = TRUE)
 
   progress$inc('Write to disk...')
 
   # generate 10M file, tested
   file = tempfile(tmpdir = test_dir)
   dat = rand_string(file_size - 1)
-  upload = system.time(writeLines(dat, file, useBytes = T))
+  upload = system.time(writeLines(dat, file, useBytes = TRUE), gcFirst = TRUE)
 
   progress$inc('Read from disk...')
-  download = system.time({dat_c = readLines(file)})
+  download = system.time({dat_c = readLines(file, n = 1)}, gcFirst = TRUE)
 
   if(exists('dat_c') && dat_c != dat){
     warning('Uploaded data is broken...')
@@ -52,35 +78,60 @@ test_hdspeed <- function(path, file_size = 1e7, quiet = FALSE){
 
 #' Try to find path along the root directory
 #' @description Try to find \code{path} under root directory even
-#' if the original path is missing
-#' @param path path to a file. It's fine if the file is missing
-#' @param root_dir root directory of the file
+#' if the original path is missing; see examples.
+#' @param path file path
+#' @param root_dir top directory of the search path
+#' @param all return all possible paths, default is false
 #' @return The absolute path of file if exists, or \code{NULL} if
 #' missing/failed.
-#' @details When file is absent, \code{find_path} concatenates the
+#' @details When file is missing, \code{find_path} concatenates the
 #' root directory and path combined to find the file. For example,
-#' if the root directory is \code{"~/"}, and path is \code{"a/b/c/d"},
-#' the function first seek for existence of \code{"~/a/b/c/d"}. If failed,
-#' then \code{"~/b/c/d"}, and then \code{"~/c/d"} until reaching
-#' top (root directory).
+#' if path is \code{"a/b/c/d"},
+#' the function first seek for existence of \code{"a/b/c/d"}. If failed,
+#' then \code{"b/c/d"}, and then \code{"~/c/d"} until reaching
+#' root directory. If \code{all=TRUE}, then all files/directories found
+#' along the search path will be returned
 #'
 #' @examples
-#' \dontrun{
-#' # This example runs when demo (YAB) data are installed
 #'
-#' # Case 1: path exists from root directory
-#' find_path('demo/YAB/rave/meta/electrodes.csv',
-#'           root_dir = '~/rave_data/data_dir')
 #'
-#' # Case 2: path missing from root directory
-#' find_path('random/folder/not/exists/demo/YAB/rave/meta/electrodes.csv',
-#'           root_dir = '~/rave_data/data_dir')
+#' root <- tempdir()
 #'
-#' }
+#' # ------ Case 1: basic use case -------
 #'
+#' # Create a path in root
+#' dir_create2(file.path(root, 'a'))
+#'
+#' # find path even it's missing. The search path will be
+#' # root/ins/cd/a - missing
+#' # root/cd/a     - missing
+#' # root/a        - exists!
+#' find_path('ins/cd/a', root)
+#'
+#' # ------ Case 2: priority -------
+#' # Create two paths in root
+#' dir_create2(file.path(root, 'cc/a'))
+#' dir_create2(file.path(root, 'a'))
+#'
+#' # If two paths exist, return the first path found
+#' # root/ins/cd/a - missing
+#' # root/cd/a     - exists - returned
+#' # root/a        - exists, but ignored
+#' find_path('ins/cc/a', root)
+#'
+#' # ------ Case 3: find all -------
+#' # Create two paths in root
+#' dir_create2(file.path(root, 'cc/a'))
+#' dir_create2(file.path(root, 'a'))
+#'
+#' # If two paths exist, return the first path found
+#' # root/ins/cd/a - missing
+#' # root/cd/a     - exists - returned
+#' # root/a        - exists - returned
+#' find_path('ins/cc/a', root, all = TRUE)
 #'
 #' @export
-find_path <- function(path, root_dir){
+find_path <- function(path, root_dir, all = FALSE){
   if(file.exists(path)){
     return(path)
   }
@@ -88,15 +139,20 @@ find_path <- function(path, root_dir){
   path = unlist(stringr::str_split(path, '(/)|(\\\\)|(\\~)'))
   path = path[path != '']
 
+  re <- NULL
+
   for(ii in 1:length(path)){
     tmp_path = do.call(file.path, as.list(c(root_dir, path[ii:length(path)])))
     if(file.exists(tmp_path)){
-      return(normalizePath(tmp_path))
+      re <- c(re, normalizePath(tmp_path))
+      if(!all){
+        return(re)
+      }
     }
   }
 
   # No path found
-  return(NULL)
+  return(re)
 }
 
 
@@ -108,7 +164,7 @@ find_path <- function(path, root_dir){
 #' @param check whether to check the directory after creation
 #' @return Normalized path
 #' @export
-dir_create <- function(x, showWarnings = FALSE, recursive = TRUE, check = TRUE, ...) {
+dir_create2 <- function(x, showWarnings = FALSE, recursive = TRUE, check = TRUE, ...) {
   if (!dir.exists(x)) {
     dir.create(x, showWarnings = showWarnings, recursive = recursive, ...)
   }

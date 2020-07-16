@@ -4,12 +4,14 @@
 \alias{find_path}
 \title{Try to find path along the root directory}
 \usage{
-find_path(path, root_dir)
+find_path(path, root_dir, all = FALSE)
 }
 \arguments{
-\item{path}{path to a file. It's fine if the file is missing}
+\item{path}{file path}
 
-\item{root_dir}{root directory of the file}
+\item{root_dir}{top directory of the search path}
+
+\item{all}{return all possible paths, default is false}
 }
 \value{
 The absolute path of file if exists, or \code{NULL} if
@@ -17,29 +19,53 @@ missing/failed.
 }
 \description{
 Try to find \code{path} under root directory even
-if the original path is missing
+if the original path is missing; see examples.
 }
 \details{
-When file is absent, \code{find_path} concatenates the
+When file is missing, \code{find_path} concatenates the
 root directory and path combined to find the file. For example,
-if the root directory is \code{"~/"}, and path is \code{"a/b/c/d"},
-the function first seek for existence of \code{"~/a/b/c/d"}. If failed,
-then \code{"~/b/c/d"}, and then \code{"~/c/d"} until reaching
-top (root directory).
+if path is \code{"a/b/c/d"},
+the function first seek for existence of \code{"a/b/c/d"}. If failed,
+then \code{"b/c/d"}, and then \code{"~/c/d"} until reaching
+root directory. If \code{all=TRUE}, then all files/directories found
+along the search path will be returned
 }
 \examples{
-\dontrun{
-# This example runs when demo (YAB) data are installed
 
-# Case 1: path exists from root directory
-find_path('demo/YAB/rave/meta/electrodes.csv',
-          root_dir = '~/rave_data/data_dir')
 
-# Case 2: path missing from root directory
-find_path('random/folder/not/exists/demo/YAB/rave/meta/electrodes.csv',
-          root_dir = '~/rave_data/data_dir')
+root <- tempdir()
 
-}
+# ------ Case 1: basic use case -------
 
+# Create a path in root
+dir_create2(file.path(root, 'a'))
+
+# find path even it's missing. The search path will be
+# root/ins/cd/a - missing
+# root/cd/a     - missing
+# root/a        - exists!
+find_path('ins/cd/a', root)
+
+# ------ Case 2: priority -------
+# Create two paths in root
+dir_create2(file.path(root, 'cc/a'))
+dir_create2(file.path(root, 'a'))
+
+# If two paths exist, return the first path found
+# root/ins/cd/a - missing
+# root/cd/a     - exists - returned
+# root/a        - exists, but ignored
+find_path('ins/cc/a', root)
+
+# ------ Case 3: find all -------
+# Create two paths in root
+dir_create2(file.path(root, 'cc/a'))
+dir_create2(file.path(root, 'a'))
+
+# If two paths exist, return the first path found
+# root/ins/cd/a - missing
+# root/cd/a     - exists - returned
+# root/a        - exists - returned
+find_path('ins/cc/a', root, all = TRUE)
 
 }

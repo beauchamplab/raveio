@@ -72,7 +72,7 @@ constructor
   dimnames,
   varnames,
   hybrid = FALSE,
-  swap_file = tempfile(),
+  swap_file = temp_tensor_file(),
   temporary = TRUE,
   multi_files = FALSE,
   use_index = TRUE,
@@ -94,7 +94,8 @@ constructor
 
 \item{\code{hybrid}}{whether to enable hybrid mode to reduce RAM usage}
 
-\item{\code{swap_file}}{if hybrid mode, where to store the data}
+\item{\code{swap_file}}{if hybrid mode, where to store the data; default
+stores in \code{raveio_getopt('tensor.temp.path')}}
 
 \item{\code{temporary}}{whether to clean up the space when exiting R session}
 
