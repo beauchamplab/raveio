@@ -14,11 +14,15 @@ read_edf_signal(
 \item{path}{file path, passed to \code{readEdfHeader}}
 
 \item{signal_numbers}{channel/electrode numbers}
+
+\item{convert_volt}{convert voltage (electric potential) to a new unit,
+\code{NA} means no convertion, other choices are 'V', 'mV', and 'uV'.}
 }
 \value{
 A list containing header information, signal lists, and
 channel/electrode names. If \code{signal_numbers} is specified,
 the corresponding names should appear as \code{selected_signal_names}.
+\code{get_signal()} can get physical signals after unit conversion.
 }
 \description{
 Read 'EDF(+)' or 'BDF(+)' file signals

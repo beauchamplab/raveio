@@ -22,18 +22,17 @@ Imports:
     utils,
     data.table,
     backports (>= 1.1.8),
-    yaml,
+    yaml (>= 2.2.1),
     hdf5r,
-    fst,
-    dipsaus,
-    R.matlab,
+    fst (>= 0.9.2),
+    dipsaus (>= 0.0.8),
+    R.matlab (>= 3.6.2),
     glue,
-    stringr,
+    stringr (>= 1.4.0),
     rstudioapi (>= 0.11),
-    rlang,
-    edfReader
+    rlang (>= 0.4.7),
+    edfReader (>= 1.2.1),
+    lazyarray
 Suggests:
     pryr,
-    shinyalert,
-    spelling,
-    shiny
+    spelling

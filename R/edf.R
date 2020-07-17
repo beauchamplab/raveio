@@ -41,9 +41,12 @@ read_edf_header <- function(path){
 #' Read 'EDF(+)' or 'BDF(+)' file signals
 #' @param path file path, passed to \code{readEdfHeader}
 #' @param signal_numbers channel/electrode numbers
+#' @param convert_volt convert voltage (electric potential) to a new unit,
+#' \code{NA} means no convertion, other choices are 'V', 'mV', and 'uV'.
 #' @return A list containing header information, signal lists, and
 #' channel/electrode names. If \code{signal_numbers} is specified,
 #' the corresponding names should appear as \code{selected_signal_names}.
+#' \code{get_signal()} can get physical signals after unit conversion.
 #' @export
 read_edf_signal <- function(path, signal_numbers = NULL,
                             convert_volt = c(NA, 'V', 'mV', 'uV')){
