@@ -138,12 +138,12 @@ LazyFST <- R6::R6Class(
 
       if(private$transpose){
         col_names = private$meta$columnNames[i[real_i]]
-        dat = as.matrix(read_fst(private$file_path, columns = col_names))
+        dat = as.matrix(load_fst(private$file_path, columns = col_names))
         dat = dat[j[real_j], ]
         re[real_i, real_j] = t(dat)
       }else{
         col_names = private$meta$columnNames[j[real_j]]
-        dat = as.matrix(read_fst(private$file_path, columns = col_names))
+        dat = as.matrix(load_fst(private$file_path, columns = col_names))
         dat = dat[i[real_i], ]
         re[real_i, real_j] = dat
       }
@@ -257,7 +257,7 @@ NULL
 
 #' @rdname read-write-fst
 #' @export
-write_fst <- function(x, path, ...){
+save_fst <- function(x, path, ...){
   catgl('Writing to path: {path}')
   dir = dirname(path)
   if(!dir.exists(dir)){
@@ -269,18 +269,18 @@ write_fst <- function(x, path, ...){
 
 #' @rdname read-write-fst
 #' @export
-read_fst <- function(path, ..., as.data.table = TRUE){
+load_fst <- function(path, ..., as.data.table = TRUE){
   tryCatch({
     fst::read_fst(path, ..., as.data.table = as.data.table)
   }, error = function(e){
-    stop("File failure: ", path)
+    stop("FST load failure: ", path)
   })
 }
 
 #' Function try to load 'fst' file, if not found, read 'HDF5' file
 #' @param fst_path 'fst' file cache path
-#' @param h5_path alternative 'hdf5' file path
-#' @param h5_name 'hdf5' data name
+#' @param h5_path alternative 'HDF5' file path
+#' @param h5_name 'HDF5' data name
 #' @param fst_need_transpose does 'fst' data need transpose?
 #' @param fst_need_drop drop dimensions
 #' @param ram whether to load to memory directly or perform lazy loading
@@ -299,7 +299,7 @@ load_fst_or_h5 <- function(
   # check if fst_path exists
   if(file.exists(fst_path)){
     if(ram){
-      re = as.matrix(read_fst(fst_path))
+      re = as.matrix(load_fst(fst_path))
       dimnames(re) = NULL
       if(fst_need_transpose){
         re = t(re)

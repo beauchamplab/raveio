@@ -16,3 +16,54 @@ catgl(..., .envir = parent.frame(), level = "DEBUG", .pal)
 \description{
 Print colored messages
 }
+\details{
+The level has order that sorted from low to high: \code{"DEBUG"},
+\code{"DEFAULT"}, \code{"INFO"}, \code{"WARNING"}, \code{"ERROR"},
+\code{"FATAL"}. Each different level will display different colors and
+icons before the message. You can suppress messages with certain levels
+by setting 'raveio' options via
+\code{raveio_setopt('verbose_level', <level>)}. Messages with levels lower
+than the threshold will be muffled. See examples.
+}
+\examples{
+
+# ------------------ Basic Styles ---------------------
+
+# Temporarily change verbose level for example
+raveio_setopt('verbose_level', 'DEBUG', FALSE)
+
+# debug
+catgl('Debug message', level = 'DEBUG')
+
+# default
+catgl('Default message', level = 'DEFAULT')
+
+# info
+catgl('Info message', level = 'INFO')
+
+# warning
+catgl('Warning message', level = 'WARNING')
+
+# error
+catgl('Error message', level = 'ERROR')
+
+try({
+  # fatal, will call stop and raise error
+  catgl('Error message', level = 'FATAL')
+}, silent = TRUE)
+
+# ------------------ Muffle messages ---------------------
+
+# Temporarily change verbose level to 'WARNING'
+raveio_setopt('verbose_level', 'WARNING', FALSE)
+
+# default, muffled
+catgl('Default message')
+
+# message printed for level >= Warning
+catgl('Default message', level = 'WARNING')
+catgl('Default message', level = 'ERROR')
+
+
+
+}

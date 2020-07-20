@@ -95,7 +95,7 @@ constructor
 \item{\code{hybrid}}{whether to enable hybrid mode to reduce RAM usage}
 
 \item{\code{swap_file}}{if hybrid mode, where to store the data; default
-stores in \code{raveio_getopt('tensor.temp.path')}}
+stores in \code{raveio_getopt('tensor_temp_path')}}
 
 \item{\code{temporary}}{whether to clean up the space when exiting R session}
 

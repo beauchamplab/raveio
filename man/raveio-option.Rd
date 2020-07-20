@@ -7,7 +7,7 @@
 \alias{raveio_getopt}
 \title{Set/Get 'raveio' option}
 \usage{
-raveio_setopt(key, value)
+raveio_setopt(key, value, .save = TRUE)
 
 raveio_resetopt(all = FALSE)
 
@@ -17,6 +17,9 @@ raveio_getopt(key, default = NA)
 \item{key}{character, option name}
 
 \item{value}{character or logical of length 1, option value}
+
+\item{.save}{whether to save to local drive, internally used to temporary
+change option. Not recommended to use it directly.}
 
 \item{all}{whether to reset all non-default keys}
 

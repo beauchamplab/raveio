@@ -22,8 +22,8 @@ The added names are: \code{isAnnot2}, \code{sampleRate2}, and
 to each names. \code{isAnnot2} indicates whether each channel is annotation
 channel or recorded signals. \code{sampleRate2} is a vector of sample rates
 for each channels. \code{unit2} is physical unit of recorded signals.
-For 'iEEG' data, this is electric potential unit, and choices are \code{V}
-for volts, \code{mV} for mili-volts, and \code{uV} for micro-volts.
+For 'iEEG' data, this is electric potential unit, and choices are \code{'V'}
+for volt, \code{'mV'} for millivolt, and \code{'uV'} for micro-volt.
 For more details, see \url{https://www.edfplus.info/specs/edftexts.html}
 }
 \seealso{

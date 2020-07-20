@@ -2,13 +2,13 @@
 % Please edit documentation in R/csv.R
 \name{read_csv_ieeg}
 \alias{read_csv_ieeg}
-\title{Read csv file and ignore headers}
+\title{Read comma separated value file and ignore headers}
 \usage{
 read_csv_ieeg(file, nrows = Inf, drop = NULL)
 }
 \arguments{
-\item{file}{csv file to read from. The file must contains all
-numerical values}
+\item{file}{comma separated value file to read from. The file must contains
+all numerical values}
 
 \item{nrows}{number of rows to read}
 
@@ -19,7 +19,7 @@ Resolved some 'iEEG' format where
 the header could be missing.
 }
 \details{
-The function checks the first two rows of csv file.
+The function checks the first two rows of comma separated value file
 If the first row has different \code{\link{storage.mode}} than
 the second row, then the first row is considered header, otherwise
 header is treated missing. Note \code{file} must have at least two

@@ -16,7 +16,8 @@ read_edf_signal(
 \item{signal_numbers}{channel/electrode numbers}
 
 \item{convert_volt}{convert voltage (electric potential) to a new unit,
-\code{NA} means no convertion, other choices are 'V', 'mV', and 'uV'.}
+\code{NA} means no conversion, other choices are \code{'V'}, \code{'mV'}, and
+\code{'uV'}.}
 }
 \value{
 A list containing header information, signal lists, and

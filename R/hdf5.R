@@ -16,13 +16,6 @@
 #' dat <- LazyH5$new(file_path = f, data_name = 'x', read_only = TRUE)
 #'
 #' dat
-#' #> Class: H5D
-#' #> Dataset: /x
-#' #> Filename: ...
-#' #> Access type: H5F_ACC_RDONLY
-#' #> Datatype: H5T_IEEE_F64LE
-#' #> Space: Type=Simple     Dims=10 x 10 x 10     Maxdims=Inf x Inf x Inf
-#' #> Chunk: 11 x 11 x 11
 #'
 #' # Check whether the data is identical
 #' range(dat - x)

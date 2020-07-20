@@ -1,14 +1,48 @@
 
 default_settings <- function(s = dipsaus::fastmap2()){
-  s[['tensor.temp.path']] <- tempdir()
+  s[['tensor_temp_path']] <- tempdir()
+  s[['verbose_level']] <- 'DEBUG'
+  s[['raw_data_dir']] <- '~/rave_data/raw_dir/'
+  s[['bids_data_dir']] <- '~/rave_data/bids_dir/'
   s
 }
 
 validate_settings <- function(s = dipsaus::fastmap2()){
   d <- default_settings()
-  if(length(s[['tensor.temp.path']]) != 1 || !isTRUE(is.character(s[['tensor.temp.path']]))){
-    s[['tensor.temp.path']] <- d[['tensor.temp.path']]
+
+  tpath <- s[['tensor_temp_path']]
+  if(length(tpath) != 1 || !isTRUE(is.character(tpath))){
+    warning('Option tensor_temp_path is not length 1 character, reset to default')
+    s[['tensor_temp_path']] <- d[['tensor_temp_path']]
   }
+
+  verbose <- s[['verbose_level']]
+  verbose <- verbose[verbose %in% c('DEBUG', 'DEFAULT', 'INFO', 'WARNING', 'ERROR', 'FATAL')]
+  if(length(verbose) == 0){
+    warning('Option verbose_level is not valid. Choices are: ',
+            '"DEBUG", "DEFAULT", "INFO", "WARNING", "ERROR", and "FATAL". ',
+            'Reset to default.')
+    verbose <- d[['verbose_level']]
+  }
+  s[['verbose_level']] <- verbose[[1]]
+
+  raw_dir <- s[['raw_data_dir']]
+  if(length(raw_dir) != 1 || !isTRUE(is.character(raw_dir))){
+    warning('raw_data_dir should be a length 1 character to root of the raw data directories')
+    raw_dir <- d[['raw_data_dir']]
+  }
+  # check whether raw_dir starts with ~/, if not, normalize the path
+  s[['raw_data_dir']] <- normalizePath(raw_dir, mustWork = FALSE)
+
+
+  raw_dir <- s[['bids_data_dir']]
+  if(length(raw_dir) != 1 || !isTRUE(is.character(raw_dir))){
+    warning('bids_data_dir should be a length 1 character to root of the BIDS data directories')
+    raw_dir <- d[['bids_data_dir']]
+  }
+  # check whether raw_dir starts with ~/, if not, normalize the path
+  s[['bids_data_dir']] <- normalizePath(raw_dir, mustWork = FALSE)
+
   s
 }
 
@@ -31,6 +65,8 @@ load_setting <- function(){
 #' @param value character or logical of length 1, option value
 #' @param default is key not found, return default value
 #' @param all whether to reset all non-default keys
+#' @param .save whether to save to local drive, internally used to temporary
+#' change option. Not recommended to use it directly.
 #' @seealso \code{R_user_dir}
 #' @details \code{raveio_setopt} stores key-value pair in local path.
 #' The values are persistent and shared across multiple sessions.
@@ -47,7 +83,7 @@ NULL
 
 #' @rdname raveio-option
 #' @export
-raveio_setopt <- function(key, value){
+raveio_setopt <- function(key, value, .save = TRUE){
 
   stopifnot2(length(value) == 1 && isTRUE(
     is.character(value) || is.logical(value)
@@ -60,9 +96,15 @@ raveio_setopt <- function(key, value){
   conf_file <- file.path(conf_path, 'settings.yaml')
   s <- load_setting()
   s[[key]] <- value
-  .subset2(s, 'remove')('session_string')
-  dir_create2(conf_path)
-  save_yaml(s, conf_file)
+
+  validate_settings(s)
+
+  if( .save ){
+    .subset2(s, 'remove')('session_string')
+    dir_create2(conf_path)
+    save_yaml(s, conf_file)
+  }
+
   invisible(value)
 }
 
@@ -79,7 +121,7 @@ raveio_resetopt <- function(all = FALSE){
   validate_settings(s)
 
   # remove some temporary settings
-  .subset2(s, 'remove')('tensor.temp.path')
+  .subset2(s, 'remove')('tensor_temp_path')
   conf_path <- R_user_dir(package = 'raveio', which = 'config')
   conf_file <- file.path(conf_path, 'settings.yaml')
 
@@ -112,7 +154,7 @@ raveio_getopt <- function(key, default = NA){
 }
 
 .onLoad <- function(libname, pkgname) {
-  backports::import(pkgname, c("R_user_dir"))
+  backports::import(pkgname, c("R_user_dir", "deparse1"))
   pkg <- getNamespace(pkgname)
   sess_str <- rand_string(15)
   assign('.session_string', sess_str, envir = pkg)
@@ -128,7 +170,7 @@ raveio_getopt <- function(key, default = NA){
   # map stays with current session. When
   # settings is gced, remove these files.
   reg.finalizer(cenv, function(cenv){
-    ts_path <- file.path(cenv$get('tensor.temp.path'),
+    ts_path <- file.path(cenv$get('tensor_temp_path'),
                          cenv$get('session_string'))
     if(isTRUE(dir.exists(ts_path))){
       unlink(ts_path, recursive = TRUE)
@@ -140,7 +182,7 @@ raveio_getopt <- function(key, default = NA){
 .onUnload <- function(libpath){
   s <- load_setting()
   sess_str <- get('.session_string')
-  ts_path <- file.path(s[['tensor.temp.path']], sess_str)
+  ts_path <- file.path(s[['tensor_temp_path']], sess_str)
 
   if(dir.exists(ts_path)){
     unlink(ts_path, recursive = TRUE)

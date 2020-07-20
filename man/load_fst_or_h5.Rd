@@ -16,9 +16,9 @@ load_fst_or_h5(
 \arguments{
 \item{fst_path}{'fst' file cache path}
 
-\item{h5_path}{alternative 'hdf5' file path}
+\item{h5_path}{alternative 'HDF5' file path}
 
-\item{h5_name}{'hdf5' data name}
+\item{h5_name}{'HDF5' data name}
 
 \item{fst_need_transpose}{does 'fst' data need transpose?}
 

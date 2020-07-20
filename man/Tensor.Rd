@@ -176,7 +176,7 @@ constructor
 
 \item{\code{swap_file}}{where to store the data in hybrid mode
 files to save data by index; default stores in
-\code{raveio_getopt('tensor.temp.path')}}
+\code{raveio_getopt('tensor_temp_path')}}
 
 \item{\code{temporary}}{whether to remove temporary files when existing}
 

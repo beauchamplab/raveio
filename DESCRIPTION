@@ -10,14 +10,14 @@ Authors@R: c(
 Description: Includes multiple cross-platform read/write interfaces for
   RAVE project: R analysis and visualization of human intracranial 
   electroencephalography data. Provides hybrid tensor array classes that 
-  stores 10 GB level big array on solid state drives and load
+  stores GB-level big array on solid state drives and load
   on demand within seconds. 
 BugReports: https://github.com/beauchamplab/rave/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Depends: R (>= 4.0.0)
+Depends: R (>= 3.6.0)
 Imports:
     utils,
     data.table,
@@ -25,14 +25,16 @@ Imports:
     yaml (>= 2.2.1),
     hdf5r,
     fst (>= 0.9.2),
-    dipsaus (>= 0.0.8),
+    dipsaus (>= 0.0.9),
     R.matlab (>= 3.6.2),
     glue,
     stringr (>= 1.4.0),
     rstudioapi (>= 0.11),
     rlang (>= 0.4.7),
     edfReader (>= 1.2.1),
-    lazyarray
+    lazyarray (>= 1.1.0),
+    ini (>= 0.3.1),
+    jsonlite (>= 1.7.0)
 Suggests:
     pryr,
     spelling

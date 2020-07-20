@@ -1,5 +1,6 @@
-#' Save data to csv files with backups
-#' @description Save csv files, if file exists, backup original file.
+#' Save data to comma separated value files with backups
+#' @description Save comma separated value files, if file exists,
+#' backup original file.
 #' @param x,file,... pass to \code{\link[utils]{write.csv}}
 #' @param quiet whether to suppress overwrite message
 #' @return Normalized path of \code{file}
@@ -32,12 +33,12 @@ safe_write_csv <- function(x, file, ..., quiet = FALSE){
 
 
 
-#' Read csv Files with Given Column Classes
+#' Read comma separated value files with given column classes
 #' @param file,header,sep,colClasses,skip,quote,stringsAsFactors,...
 #' passed to \code{\link[utils]{read.csv}}
 #' @return A data frame
 #' @details
-#' Reading a csv file using builtin function
+#' Reading a comma separated value file using builtin function
 #' \code{\link[utils]{read.csv}} might result in some unexpected
 #' behavior. \code{safe_read_csv} does some preprocessing on the
 #' format so that it take cares of the following cases.
@@ -105,14 +106,14 @@ safe_read_csv <- function(file, header = TRUE, sep = ',',
 }
 
 
-#' Read csv file and ignore headers
+#' Read comma separated value file and ignore headers
 #' @description Resolved some 'iEEG' format where
 #' the header could be missing.
-#' @param file csv file to read from. The file must contains all
-#' numerical values
+#' @param file comma separated value file to read from. The file must contains
+#' all numerical values
 #' @param nrows number of rows to read
 #' @param drop passed to \code{\link[data.table]{fread}}
-#' @details The function checks the first two rows of csv file.
+#' @details The function checks the first two rows of comma separated value file
 #' If the first row has different \code{\link{storage.mode}} than
 #' the second row, then the first row is considered header, otherwise
 #' header is treated missing. Note \code{file} must have at least two

@@ -2,7 +2,7 @@
 % Please edit documentation in R/csv.R
 \name{safe_write_csv}
 \alias{safe_write_csv}
-\title{Save data to csv files with backups}
+\title{Save data to comma separated value files with backups}
 \usage{
 safe_write_csv(x, file, ..., quiet = FALSE)
 }
@@ -15,5 +15,6 @@ safe_write_csv(x, file, ..., quiet = FALSE)
 Normalized path of \code{file}
 }
 \description{
-Save csv files, if file exists, backup original file.
+Save comma separated value files, if file exists,
+backup original file.
 }

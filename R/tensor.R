@@ -1,6 +1,6 @@
 
 temp_tensor_dir <- function(){
-  d <- file.path(get('.settings')[['tensor.temp.path']], get('.session_string'))
+  d <- file.path(get('.settings')[['tensor_temp_path']], get('.session_string'))
   dir_create2(d)
   normalizePath(d)
 }
@@ -166,7 +166,7 @@ Tensor <- R6::R6Class(
     #' @param multi_files if \code{use_index} is true, whether to use multiple
     #' @param swap_file where to store the data in hybrid mode
     #' files to save data by index; default stores in
-    #' \code{raveio_getopt('tensor.temp.path')}
+    #' \code{raveio_getopt('tensor_temp_path')}
     initialize = function(data, dim, dimnames, varnames, hybrid = FALSE,
                           use_index = FALSE, swap_file = temp_tensor_file(),
                           temporary = TRUE, multi_files = FALSE){
@@ -215,7 +215,7 @@ Tensor <- R6::R6Class(
             env = environment()
             apply(data, length(dim), function(x){
               x = data.frame(V1 = as.vector(x))
-              write_fst(x, swap_file[env$part], compress = 20)
+              save_fst(x, swap_file[env$part], compress = 20)
               env$part = env$part + 1
               NA
             })
@@ -223,12 +223,12 @@ Tensor <- R6::R6Class(
             data = apply(data, length(dim), as.vector)
             data = as.data.frame(data)
             names(data) = paste0('V', seq_len(ncol(data)))
-            write_fst(data, swap_file, compress = 20)
+            save_fst(data, swap_file, compress = 20)
           }
 
         }else{
           data = data.frame(V1 = as.vector(data))
-          write_fst(data, swap_file, compress = 20)
+          save_fst(data, swap_file, compress = 20)
         }
       }else{
         private$.data = data
@@ -358,11 +358,11 @@ Tensor <- R6::R6Class(
           load_dim = self$dim; load_dim[max_dim] = length(tmp[[max_dim]])
           if(private$multi_files){
             sub = do.call(cbind, lapply(tmp[[max_dim]], function(part){
-              read_fst(self$swap_file[[part]], columns = 'V1')[[1]]
+              load_fst(self$swap_file[[part]], columns = 'V1')[[1]]
             }))
 
           }else{
-            sub = as.matrix(read_fst(self$swap_file, columns = paste0('V', tmp[[max_dim]])))
+            sub = as.matrix(load_fst(self$swap_file, columns = paste0('V', tmp[[max_dim]])))
           }
 
           dim(sub) = load_dim
@@ -488,13 +488,13 @@ Tensor <- R6::R6Class(
 
       if(private$multi_files && length(d) == length(swap_file)){
         for(ii in seq_len(length(d))){
-          write_fst(d[ii], path = swap_file, compress = 20)
+          save_fst(d[ii], path = swap_file, compress = 20)
         }
         self$use_index = TRUE
         self$swap_file = swap_file
       }else{
         swap_file = swap_file[1]
-        write_fst(d, path = swap_file, compress = 20)
+        save_fst(d, path = swap_file, compress = 20)
         self$use_index = use_index
         self$swap_file = swap_file
         private$multi_files = FALSE
@@ -516,12 +516,12 @@ Tensor <- R6::R6Class(
         # load data
         if(private$multi_files){
           dim = self$dim[-length(self$dim)]
-          sa = array(read_fst(self$swap_file[[1]], from=1, to=1)[[1]], dim)
+          sa = array(load_fst(self$swap_file[[1]], from=1, to=1)[[1]], dim)
           d = vapply(seq_len(self$dim[length(self$dim)]), function(part){
-            read_fst(self$swap_file[[part]], as.data.table = F)[[1]]
+            load_fst(self$swap_file[[part]], as.data.table = F)[[1]]
           }, FUN.VALUE = sa)
         }else{
-          d = as.matrix(read_fst(self$swap_file, as.data.table = F))
+          d = as.matrix(load_fst(self$swap_file, as.data.table = F))
           dim(d) = self$dim
         }
 
@@ -648,9 +648,9 @@ Tensor <- R6::R6Class(
 
         .fun = function(ii){
           if(private$multi_files){
-            sub = read_fst(self$swap_file[[ii]], as.data.table = F, columns = 'V1')[[1]]
+            sub = load_fst(self$swap_file[[ii]], as.data.table = F, columns = 'V1')[[1]]
           }else{
-            sub = read_fst(self$swap_file, as.data.table = F, columns = paste0('V', ii))[[1]]
+            sub = load_fst(self$swap_file, as.data.table = F, columns = paste0('V', ii))[[1]]
           }
 
           dim(sub) = self$dim[-max_dim]
@@ -815,7 +815,7 @@ ECoGTensor <- R6::R6Class(
     #' \code{Trial}, \code{Frequency}, \code{Time}, and \code{Electrode}
     #' @param hybrid whether to enable hybrid mode to reduce RAM usage
     #' @param swap_file if hybrid mode, where to store the data; default
-    #' stores in \code{raveio_getopt('tensor.temp.path')}
+    #' stores in \code{raveio_getopt('tensor_temp_path')}
     #' @param temporary whether to clean up the space when exiting R session
     #' @param multi_files logical, whether to use multiple files instead of
     #' one giant file to store data
@@ -1019,15 +1019,15 @@ as.vector.Tensor <- function(x, ...){
 
 
 #' @title Convert 'LazyArray' instance to 'Tensor' instance
-#' @description \code{\link[lazyarray]{LazyArray}} and \code{\link{Tensor}}
+#' @description \code{\link[lazyarray]{ClassLazyArray}} and \code{\link{Tensor}}
 #' shared the same storage format, hence it's possible to convert from
 #' 'LazyArray' to 'Tensor' instances without moving files.
-#' @param arr 'LazyArray' instance, see \code{\link[lazyarray]{LazyArray}}
+#' @param arr 'LazyArray' instance, see \code{\link[lazyarray]{ClassLazyArray}}
 #' @param drop_partition whether to drop partition if partition file is
 #' missing; only valid when \code{arr$is_multi_part()} is true. The result
 #' dimensions might be different if \code{drop_partition} is true
 #' @return \code{\link{Tensor}} instance
-#' @seealso \code{\link{Tensor}}, \code{\link[lazyarray]{LazyArray}}
+#' @seealso \code{\link{Tensor}}, \code{\link[lazyarray]{ClassLazyArray}}
 #'
 #' @details
 #' \code{arr} must either have multi-part mode turned off or multi-part with

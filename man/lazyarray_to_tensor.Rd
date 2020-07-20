@@ -7,7 +7,7 @@
 lazyarray_to_tensor(arr, drop_partition = FALSE)
 }
 \arguments{
-\item{arr}{'LazyArray' instance, see \code{\link[lazyarray]{LazyArray}}}
+\item{arr}{'LazyArray' instance, see \code{\link[lazyarray]{ClassLazyArray}}}
 
 \item{drop_partition}{whether to drop partition if partition file is
 missing; only valid when \code{arr$is_multi_part()} is true. The result
@@ -17,7 +17,7 @@ dimensions might be different if \code{drop_partition} is true}
 \code{\link{Tensor}} instance
 }
 \description{
-\code{\link[lazyarray]{LazyArray}} and \code{\link{Tensor}}
+\code{\link[lazyarray]{ClassLazyArray}} and \code{\link{Tensor}}
 shared the same storage format, hence it's possible to convert from
 'LazyArray' to 'Tensor' instances without moving files.
 }
@@ -74,5 +74,5 @@ ts2$subset(dim3 ~ dim3 == 4, data_only = TRUE, drop = TRUE)
 
 }
 \seealso{
-\code{\link{Tensor}}, \code{\link[lazyarray]{LazyArray}}
+\code{\link{Tensor}}, \code{\link[lazyarray]{ClassLazyArray}}
 }

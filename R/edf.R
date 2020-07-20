@@ -19,8 +19,8 @@ check_edf <- function(){
 #' to each names. \code{isAnnot2} indicates whether each channel is annotation
 #' channel or recorded signals. \code{sampleRate2} is a vector of sample rates
 #' for each channels. \code{unit2} is physical unit of recorded signals.
-#' For 'iEEG' data, this is electric potential unit, and choices are \code{V}
-#' for volts, \code{mV} for mili-volts, and \code{uV} for micro-volts.
+#' For 'iEEG' data, this is electric potential unit, and choices are \code{'V'}
+#' for volt, \code{'mV'} for millivolt, and \code{'uV'} for micro-volt.
 #' For more details, see \url{https://www.edfplus.info/specs/edftexts.html}
 #' @return A list is header information of an 'EDF/BDF' file.
 #'
@@ -42,7 +42,8 @@ read_edf_header <- function(path){
 #' @param path file path, passed to \code{readEdfHeader}
 #' @param signal_numbers channel/electrode numbers
 #' @param convert_volt convert voltage (electric potential) to a new unit,
-#' \code{NA} means no convertion, other choices are 'V', 'mV', and 'uV'.
+#' \code{NA} means no conversion, other choices are \code{'V'}, \code{'mV'}, and
+#' \code{'uV'}.
 #' @return A list containing header information, signal lists, and
 #' channel/electrode names. If \code{signal_numbers} is specified,
 #' the corresponding names should appear as \code{selected_signal_names}.

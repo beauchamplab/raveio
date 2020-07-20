@@ -2,7 +2,7 @@
 % Please edit documentation in R/csv.R
 \name{safe_read_csv}
 \alias{safe_read_csv}
-\title{Read csv Files with Given Column Classes}
+\title{Read comma separated value files with given column classes}
 \usage{
 safe_read_csv(
   file,
@@ -22,10 +22,10 @@ safe_read_csv(
 A data frame
 }
 \description{
-Read csv Files with Given Column Classes
+Read comma separated value files with given column classes
 }
 \details{
-Reading a csv file using builtin function
+Reading a comma separated value file using builtin function
 \code{\link[utils]{read.csv}} might result in some unexpected
 behavior. \code{safe_read_csv} does some preprocessing on the
 format so that it take cares of the following cases.

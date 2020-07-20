@@ -2,13 +2,13 @@
 % Please edit documentation in R/fst.R
 \name{read-write-fst}
 \alias{read-write-fst}
-\alias{write_fst}
-\alias{read_fst}
+\alias{save_fst}
+\alias{load_fst}
 \title{Read a 'fst' file}
 \usage{
-write_fst(x, path, ...)
+save_fst(x, path, ...)
 
-read_fst(path, ..., as.data.table = TRUE)
+load_fst(path, ..., as.data.table = TRUE)
 }
 \arguments{
 \item{x}{data frame to write to path}
