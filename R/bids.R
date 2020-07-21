@@ -138,6 +138,7 @@ load_bids_ieeg_header <- function(bids_root, project_name, subject_code, folder 
     fd <- ieeg_folders[[sn]]
     fs <- list.files(fd)
 
+    sheader$ieeg_folder <- fd
     sheader$all_files <- fs
 
     if(!length(fs)){ return() }

@@ -3,19 +3,23 @@ default_settings <- function(s = dipsaus::fastmap2()){
   s[['tensor_temp_path']] <- tempdir()
   s[['verbose_level']] <- 'DEBUG'
   s[['raw_data_dir']] <- '~/rave_data/raw_dir/'
+  s[['data_dir']] <- '~/rave_data/data_dir/'
   s[['bids_data_dir']] <- '~/rave_data/bids_dir/'
+  s[['file_structure']] <- 'native'
   s
 }
 
 validate_settings <- function(s = dipsaus::fastmap2()){
   d <- default_settings()
 
+  # ------------- Temporary tensor path --------------
   tpath <- s[['tensor_temp_path']]
   if(length(tpath) != 1 || !isTRUE(is.character(tpath))){
     warning('Option tensor_temp_path is not length 1 character, reset to default')
     s[['tensor_temp_path']] <- d[['tensor_temp_path']]
   }
 
+  # ------------- catgl verbose level --------------
   verbose <- s[['verbose_level']]
   verbose <- verbose[verbose %in% c('DEBUG', 'DEFAULT', 'INFO', 'WARNING', 'ERROR', 'FATAL')]
   if(length(verbose) == 0){
@@ -26,22 +30,38 @@ validate_settings <- function(s = dipsaus::fastmap2()){
   }
   s[['verbose_level']] <- verbose[[1]]
 
+  # ------------- Raw data path --------------
   raw_dir <- s[['raw_data_dir']]
-  if(length(raw_dir) != 1 || !isTRUE(is.character(raw_dir))){
+  raw_dir <- stringr::str_trim(raw_dir)
+  if(length(raw_dir) != 1 || !isTRUE(is.character(raw_dir)) || raw_dir %in% c('', '.', '/')){
     warning('raw_data_dir should be a length 1 character to root of the raw data directories')
     raw_dir <- d[['raw_data_dir']]
   }
-  # check whether raw_dir starts with ~/, if not, normalize the path
   s[['raw_data_dir']] <- normalizePath(raw_dir, mustWork = FALSE)
 
-
-  raw_dir <- s[['bids_data_dir']]
-  if(length(raw_dir) != 1 || !isTRUE(is.character(raw_dir))){
-    warning('bids_data_dir should be a length 1 character to root of the BIDS data directories')
-    raw_dir <- d[['bids_data_dir']]
+  # ------------- RAVE data path --------------
+  data_dir <- s[['data_dir']]
+  if(length(data_dir) != 1 || !isTRUE(is.character(data_dir)) || data_dir %in% c('', '.', '/')){
+    warning('data_dir should be a length 1 character to root of the rave data directories')
+    data_dir <- d[['data_dir']]
   }
-  # check whether raw_dir starts with ~/, if not, normalize the path
-  s[['bids_data_dir']] <- normalizePath(raw_dir, mustWork = FALSE)
+  s[['data_dir']] <- normalizePath(data_dir, mustWork = FALSE)
+
+  # ------------- BIDS data path --------------
+  bids_dir <- s[['bids_data_dir']]
+  if(length(bids_dir) != 1 || !isTRUE(is.character(bids_dir)) || bids_dir %in% c('', '.', '/')){
+    warning('bids_data_dir should be a length 1 character to root of the BIDS data directories')
+    bids_dir <- d[['bids_data_dir']]
+  }
+  s[['bids_data_dir']] <- normalizePath(bids_dir, mustWork = FALSE)
+
+  # ------------- File structure: BIDS/native --------------
+  file_structure <- s[['file_structure']]
+  if(length(file_structure) != 1 || !isTRUE(is.character(file_structure)) || !file_structure %in% c('native', 'BIDS')){
+    warning('file_structure can only be ', sQuote('native'), ' or ', sQuote('BIDS'), '. Reseting to `native`')
+    file_structure <- d[['file_structure']]
+  }
+  s[['file_structure']] <- file_structure
 
   s
 }

@@ -5,6 +5,7 @@ NULL
 #' @export
 glue::glue
 
+r6_reserved_fields <- c('.__enclos_env__', 'clone', 'print', 'initialize', 'private')
 
 verbose_levels <-
   factor(
@@ -18,6 +19,8 @@ verbose_levels <-
 #' @param ...,.envir passed to \code{\link[glue]{glue}}
 #' @param level passed to \code{\link[dipsaus]{cat2}}
 #' @param .pal see \code{pal} in \code{\link[dipsaus]{cat2}}
+#' @param .capture logical, whether to capture message and return it without
+#' printing
 #' @details The level has order that sorted from low to high: \code{"DEBUG"},
 #' \code{"DEFAULT"}, \code{"INFO"}, \code{"WARNING"}, \code{"ERROR"},
 #' \code{"FATAL"}. Each different level will display different colors and
@@ -68,31 +71,36 @@ verbose_levels <-
 #'
 #'
 #' @export
-catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal){
+catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture = FALSE){
   level <- stringr::str_to_upper(level)
   opt_level <- raveio_getopt('verbose_level')
+  msg <- structure(glue::glue(..., .envir = .envir), log_level = level)
   if(
     sum(verbose_levels >= opt_level, na.rm = TRUE) <
     sum(verbose_levels >= level, na.rm = TRUE)
   ) {
     # opt_level is too high, message is muffled
-    return(invisible())
+    return(invisible(msg))
   }
   call <- match.call()
   call <- deparse1(call, collapse = '\n')
 
   tryCatch({
+    msg <- glue::glue(..., .envir = .envir)
+    if(.capture){
+      return(msg)
+    }
     if(missing(.pal)){
-      dipsaus::cat2(glue::glue(..., .envir = .envir), level = level)
+      dipsaus::cat2(msg, level = level)
     }else{
-      dipsaus::cat2(glue::glue(..., .envir = .envir), level = level, pal = .pal)
+      dipsaus::cat2(msg, level = level, pal = .pal)
     }
   }, error = function(e){
     warning('Error found while printing the following message:\n',
             call)
     # stop(e, call. = FALSE)
   })
-  return(invisible())
+  return(invisible(msg))
 }
 
 

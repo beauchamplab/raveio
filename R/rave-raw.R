@@ -7,7 +7,7 @@ guess_raw_trace <- function(dat, electrodes = NULL, is_vector = TRUE){
     x <- dat[[nm]]
     if(!is.numeric(x) || mode(x) != "numeric"){ next }
 
-    if(!is_vector){
+    if(is_vector){
       # should be vector
       dm <- dim(x)
       if(is.null(dm)){
@@ -23,7 +23,7 @@ guess_raw_trace <- function(dat, electrodes = NULL, is_vector = TRUE){
       d1 <- min(dm)
 
       # d2 is the time points, d1 should be electrodes
-      if(d1 < length(electrodes)){ next }
+      if(d1 < max(electrodes, 1)){ next }
       return(nm)
     }
   }
@@ -351,19 +351,14 @@ validate_raw_file_lfp.native_matlab2 <- function(
       abspath <- file.path(info$path, files)
       tryCatch({
         dat <- read_mat(abspath)
-        vnm <- list()
         nm <- guess_raw_trace(dat = dat, electrodes = electrodes, is_vector = FALSE)
-        # if(length(nm)){
-        #   nm <- nm[[1]]
-        #   vnm[[nm]] <- dim(dat[[nm]])
-        # }
 
         if(length(nm) > 1){
           validation_failure(
             .add = TRUE,
             'Block file contains more than one dataset.' = paste('Block', b)
           )
-        } else if(length(vnm) == 0){
+        } else if(length(nm) == 0){
           validation_failure(
             .add = TRUE,
             'Block file contains no dataset.' = paste('Block', b)
@@ -385,7 +380,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
             if(is.null(snapshot)){
               snapshot <- sprintf(
                 'Variable name is %s, a matrix: %d available electrodes, %d time points.',
-                sQuote(names(vnm)[[1]]), max_elec, max(dim)
+                sQuote(nm), max_elec, max(dim)
               )
             }
           }
@@ -742,6 +737,11 @@ validate_raw_file_lfp.bids <- function(
         next
       }
       run_names$valid <- c(run_names$valid, tn)
+      # block
+      finfo[[tn]] <- list(
+        path = info$ieeg_folder,
+        files = task$header_file
+      )
     }
     NULL
   })
@@ -779,7 +779,7 @@ validate_raw_file_lfp.bids <- function(
 
   snapshot <- sprintf(paste(
     'Total %d combinations of session+task+run found, in which %d have mismatch electrode names,',
-    '%d have missing supported data files (.vhdr or .edf).',
+    '%d have missing supported data files.',
     '%d unique sample rate(s) found: %s'
   ), nmisheader + nvalid + nmismatch, nmismatch, nmisheader, length(srates), paste(srates, 'Hz', collapse = ', '))
 

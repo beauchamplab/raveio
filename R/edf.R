@@ -50,7 +50,7 @@ read_edf_header <- function(path){
 #' \code{get_signal()} can get physical signals after unit conversion.
 #' @export
 read_edf_signal <- function(path, signal_numbers = NULL,
-                            convert_volt = c(NA, 'V', 'mV', 'uV')){
+                            convert_volt = c('NA', 'V', 'mV', 'uV')){
   header <- read_edf_header(path)
   signals <-
     edfReader::readEdfSignals(header,
@@ -70,7 +70,15 @@ read_edf_signal <- function(path, signal_numbers = NULL,
     signal_names[sel][[1]]
   }, simplify = TRUE, USE.NAMES = TRUE)
 
-  convert_volt <- match.arg(convert_volt)
+  if(any(isTRUE(is.na(convert_volt)))){
+    convert_volt <- NA
+  } else {
+    convert_volt <- match.arg(convert_volt)
+    if(convert_volt == 'NA'){
+      convert_volt <- NA
+    }
+  }
+
 
   if(!is.na(convert_volt)){
     cv <- c(1, 1e-3, 1e-6)[c('V', 'mV', 'uV') == convert_volt]

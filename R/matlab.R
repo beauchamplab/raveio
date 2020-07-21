@@ -18,7 +18,7 @@
 #' @seealso \code{\link[R.matlab]{readMat}}, \code{\link{load_h5}}
 #' @export
 read_mat <- function(file, ram = TRUE){
-
+  file <- normalizePath(file, mustWork = TRUE)
   # Check if the file is HDF5 format
   if( hdf5r::is_hdf5(file) ){
 

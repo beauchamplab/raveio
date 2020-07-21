@@ -4,7 +4,7 @@
 \alias{catgl}
 \title{Print colored messages}
 \usage{
-catgl(..., .envir = parent.frame(), level = "DEBUG", .pal)
+catgl(..., .envir = parent.frame(), level = "DEBUG", .pal, .capture = FALSE)
 }
 \arguments{
 \item{..., .envir}{passed to \code{\link[glue]{glue}}}
@@ -12,6 +12,9 @@ catgl(..., .envir = parent.frame(), level = "DEBUG", .pal)
 \item{level}{passed to \code{\link[dipsaus]{cat2}}}
 
 \item{.pal}{see \code{pal} in \code{\link[dipsaus]{cat2}}}
+
+\item{.capture}{logical, whether to capture message and return it without
+printing}
 }
 \description{
 Print colored messages

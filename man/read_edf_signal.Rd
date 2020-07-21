@@ -7,7 +7,7 @@
 read_edf_signal(
   path,
   signal_numbers = NULL,
-  convert_volt = c(NA, "V", "mV", "uV")
+  convert_volt = c("NA", "V", "mV", "uV")
 )
 }
 \arguments{
