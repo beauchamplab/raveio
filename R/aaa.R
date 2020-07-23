@@ -76,30 +76,26 @@ catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture 
   opt_level <- raveio_getopt('verbose_level')
   msg <- structure(glue::glue(..., .envir = .envir), log_level = level)
   if(
-    sum(verbose_levels >= opt_level, na.rm = TRUE) <
-    sum(verbose_levels >= level, na.rm = TRUE)
+    .capture || (
+      sum(verbose_levels >= opt_level, na.rm = TRUE) <
+      sum(verbose_levels >= level, na.rm = TRUE)
+    )
   ) {
-    # opt_level is too high, message is muffled
+    # opt_level is too high, message is muffled. depending on level
+    # return or stop
+    if(level == 'FATAL'){
+      stop(msg)
+    }
     return(invisible(msg))
   }
   call <- match.call()
   call <- deparse1(call, collapse = '\n')
 
-  tryCatch({
-    msg <- glue::glue(..., .envir = .envir)
-    if(.capture){
-      return(msg)
-    }
-    if(missing(.pal)){
-      dipsaus::cat2(msg, level = level)
-    }else{
-      dipsaus::cat2(msg, level = level, pal = .pal)
-    }
-  }, error = function(e){
-    warning('Error found while printing the following message:\n',
-            call)
-    # stop(e, call. = FALSE)
-  })
+  if(missing(.pal)){
+    dipsaus::cat2(msg, level = level)
+  }else{
+    dipsaus::cat2(msg, level = level, pal = .pal)
+  }
   return(invisible(msg))
 }
 
