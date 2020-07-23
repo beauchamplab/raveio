@@ -74,7 +74,18 @@ verbose_levels <-
 catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture = FALSE){
   level <- stringr::str_to_upper(level)
   opt_level <- raveio_getopt('verbose_level')
-  msg <- structure(glue::glue(..., .envir = .envir), log_level = level)
+  args <- list(...)
+  msg <- tryCatch({
+    structure(glue::glue(..., .envir = .envir), log_level = level)
+  }, error = function(...){
+    s <- args
+    if(length(names(s))){
+      s <- s[names(s) %in% c('', 'sep', 'collapse')]
+    }
+    s[[length(s) + 1]] <- ''
+
+    do.call('paste', s)
+  })
   if(
     .capture || (
       sum(verbose_levels >= opt_level, na.rm = TRUE) <
