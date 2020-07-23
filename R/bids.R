@@ -1,5 +1,79 @@
 # 'BIDS' file structure
 
+analyze_bids_fname <- function(data_file){
+  data_fname <- stringr::str_extract(data_file, '[^/\\\\]+$')
+
+  parts <- stringr::str_split(data_fname, '_')[[1]]
+  param <- list()
+
+  fname <- parts[[length(parts)]]
+  parts <- parts[-length(parts)]
+
+  for(p in parts){
+    p <- stringr::str_trim(stringr::str_split_fixed(p, '-', 2))
+    param[[p[[1]]]] <- p[[2]]
+    param$.names <- c(param$.names, p[[1]])
+  }
+  param$.filename <- fname
+  param
+}
+
+bids_json <- function(data_file, bids_root){
+  bids_root <- normalizePath(bids_root, mustWork = TRUE)
+  data_file <- normalizePath(data_file, mustWork = TRUE)
+
+  if(!dir.exists(bids_root)){ stop('bids_root must be a directory') }
+  if(dir.exists(data_file)){ stop('data_file must be a file') }
+
+  if(!stringr::str_detect(data_file, stringr::fixed(bids_root, ignore_case = TRUE))){
+    stop('bids_json: data_file must be sub-directory of bids_root')
+  }
+
+  # parse file name
+  param <- analyze_bids_fname(data_file)
+  check_params <- function(fname, level = 0){
+    p <- analyze_bids_fname(fname)
+    for(nm in p$.names){
+      if(!isTRUE(param[[nm]] == p[[nm]])){
+        return(FALSE)
+      }
+    }
+    return(TRUE)
+  }
+
+  # analyze parent directories
+  current_dir <- dirname(data_file)
+  max_levels <- length(param$.names)
+
+  # find all related files in current directory
+  related <- list.files(current_dir, include.dirs = FALSE, all.files = FALSE)
+  related <- related[vapply(related, check_params, FALSE)]
+
+  conf <- NULL
+  while(!current_dir %in% c('/', '', bids_root) && max_levels >= 0){
+    # look for json or tsv files
+    jsons <- list.files(current_dir, pattern = '\\.json$', ignore.case = TRUE,
+                        include.dirs = FALSE, all.files = FALSE)
+    jsons <- jsons[vapply(jsons, check_params, FALSE)]
+    conf <- c(file.path(current_dir, jsons), conf)
+    current_dir <- dirname(current_dir)
+    max_levels <- max_levels-1
+  }
+
+  settings <- dipsaus::fastmap2()
+  for(f in conf){
+    dat <- jsonlite::read_json(f)
+    dipsaus::list_to_fastmap2(dat, settings)
+  }
+
+  list(
+    related_files = related,
+    settings = settings,
+    parent = dirname(data_file),
+    more = param
+  )
+}
+
 #' Read in description files from 'BIDS-iEEG' format
 #' @description Analyze file structures and import all \code{json} and
 #' \code{tsv} files. File specification can be found at
@@ -33,8 +107,9 @@
 #' @examples
 #'
 #' # Download https://github.com/bids-standard/bids-examples/
+#' # extract to directory ~/rave_data/bids_dir/
 #'
-#' bids_root <- '~/Downloads/bids-examples/'
+#' bids_root <- '~/rave_data/bids_dir/'
 #' project_name <- 'ieeg_visual'
 #'
 #' if(dir.exists(bids_root) &&
@@ -48,13 +123,13 @@
 #'   names(header$sessions)
 #'
 #'   # electrodes
-#'   head(header$sessions$`01`$others$electrodes)
+#'   head(header$sessions$`01`$spaces$unknown_space$table)
 #'
 #'   # visual task channel settings
-#'   head(header$sessions$`01`$tasks$visual$tables$channels)
+#'   head(header$sessions$`01`$tasks$`01-visual-01`$channels)
 #'
 #'   # event table
-#'   head(header$sessions$`01`$tasks$visual$tables$events)
+#'   head(header$sessions$`01`$tasks$`01-visual-01`$channels)
 #' }
 #'
 #' @export
@@ -63,10 +138,10 @@ load_bids_ieeg_header <- function(bids_root, project_name, subject_code, folder 
   # sub-<label>/
   #   [ses-<label>]/
   #     eeg/
-  #       [sub-<label>[_ses-<label>][_acq-<label>][_run-<index>]_electrodes.tsv
+  #       [sub-<label>[_ses-<label>][_(task|space|acq)-<label>][_run-<index>]_electrodes.tsv
 
 
-  # bids_root <- "/Users/beauchamplab/Dropbox/projects/bids-examples"
+  # bids_root <- "/Users/beauchamplab/Dropbox/projects/bids-examples"; folder = 'ieeg'
   # project_name <- 'ieeg_visual'
   # subject_code <- "sub-01"
   bids_root <- normalizePath(bids_root, mustWork = TRUE)
@@ -165,21 +240,23 @@ load_bids_ieeg_header <- function(bids_root, project_name, subject_code, folder 
     sheader$runs <- unique(runs)
 
     sfnames <- stringr::str_to_lower(paste0(match_result$type, '.', match_result$ext))
-    is_coordjson <- ((sfnames == 'coordsystem.json') & !is_task)
     is_electsv <- ((sfnames == 'electrodes.tsv') & !is_task)
 
-    # load coord
-    if(sum(is_coordjson)){
-      f <- match_result$filename[is_coordjson][[1]]
-      coord <- jsonlite::read_json(file.path(fd, f))
-      coord <- dipsaus::list_to_fastmap2(coord)
-      sheader$coordsystem <- coord
-    }
-
     # load electrodes
+    spaces <- dipsaus::fastmap2()
+    sheader$spaces <- spaces
     if(sum(is_electsv)){
-      f <- match_result$filename[is_electsv]
-      elec <- utils::read.table(file = file.path(fd, f), sep = '\t', header = TRUE)
+      f <- match_result$filename[is_electsv][[1]]
+      for(electrode_file in f){
+        fname <- file.path(fd, electrode_file)
+        e <- bids_json(fname, bids_root)
+        e$more$space %?<-% 'unknown_space'
+        space <- e$more$space
+        elec <- utils::read.table(fname, sep = '\t', header = TRUE)
+        e$table <- elec
+        sheader$space_names <- unique(c(sheader$space_names, space))
+        spaces[[space]] <- e
+      }
       sheader$electrodes <- elec
     }
 

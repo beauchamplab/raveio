@@ -292,7 +292,7 @@ validate_raw_file_lfp.native_matlab <- function(
           len <- length(x)
           if(len < 100){ next }
           if(is.null(snapshot)){
-            snapshot <- sprintf('A single vector of length %d (time points)', len)
+            snapshot <- sprintf('A single vector of length <strong>%d</strong> (data points)', len)
           }
           rm(x)
         }
@@ -379,7 +379,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
           } else {
             if(is.null(snapshot)){
               snapshot <- sprintf(
-                'Variable name is %s, a matrix: %d available electrodes, %d time points.',
+                'Variable name is %s, a matrix: <strong>%d</strong> available electrodes, <strong>%d</strong> time points.',
                 sQuote(nm), max_elec, max(dim)
               )
             }
@@ -491,7 +491,7 @@ validate_raw_file_lfp.native_edf <- function(
       units <- header$unit2
       units <- units[!is.na(units)]
       units <- unique(units)
-      snapshot = sprintf('EDF format recorded sample rate is %.8g, and %d physical units found: %s',
+      snapshot <- sprintf('EDF format recorded sample rate is <strong>%.8g</strong>, and %d physical units found: <strong>%s</strong>',
                          srates[[1]], length(units), paste(units, collapse = ', '))
     }
 
@@ -613,7 +613,7 @@ validate_raw_file_lfp.native_brainvis <- function(
         units <- units[!is.na(units)]
         units <- unique(units)
 
-        snapshot = sprintf('BrainVision format recorded sample rate is %.8g, and %d physical units found: %s',
+        snapshot <- sprintf('BrainVision format recorded sample rate is <strong>%.8g</strong>, and %d physical units found: <strong>%s</strong>',
                            srates[[1]], length(units), paste(units, collapse = ', '))
       }
 
@@ -715,8 +715,14 @@ validate_raw_file_lfp.bids <- function(
     b <- stringr::str_remove(b, '^ses-')
     info <- bids_header$sessions[[b]]
 
-    elec_tbl <- info$electrodes
-    elec_names <- elec_tbl$name[electrodes]
+    enames <- info$space_names
+    if(length(enames)){
+      elec_tbl <- info$spaces[[enames[[1]]]]$table
+      elec_names <- elec_tbl$name[electrodes]
+    } else {
+      elec_names <- NULL
+    }
+
 
     for(tn in info$block_names){
       task <- info$tasks[[tn]]

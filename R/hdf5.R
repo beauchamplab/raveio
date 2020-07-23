@@ -531,7 +531,7 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
       file.copy(tmpf, file)
       unlink(tmpf)
     }
-    # Otherwise it's some wierd error, or dirname not exists, expose the error
+    # Otherwise it's some weird error, or dirname not exists, expose the error
     LazyH5$new(file, name, read_only = FALSE)
   })
   on.exit({
@@ -540,4 +540,71 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
   f$save(x, chunk = chunk, level = level, replace = replace, new_file = new_file, ctype = ctype, force = TRUE, ...)
 
   return(invisible(normalizePath(file)))
+}
+
+
+#' Check whether a 'HDF5' file can be opened for read/write
+#' @param file path to file
+#' @param mode \code{'r'} for read access and \code{'w'} for write access
+#' @param close_all whether to close all connections or just close current
+#' connection; default is false. Set this to \code{TRUE} if you want to
+#' close all other connections to the file
+#' @return logical whether the file can be opened.
+#'
+#' @examples
+#'
+#' x <- array(1:27, c(3,3,3))
+#' f <- tempfile()
+#'
+#' # No data written to the file, hence invalid
+#' h5_valid(f, 'r')
+#'
+#' save_h5(x, f, 'dset')
+#' h5_valid(f, 'w')
+#'
+#' # Open the file and hold a connection
+#' ptr <- hdf5r::H5File$new(filename = f, mode = 'w')
+#'
+#' # Can read, but cannot write
+#' h5_valid(f, 'r')  # TRUE
+#' h5_valid(f, 'w')  # FALSE
+#'
+#' # However, this can be reset via `close_all=TRUE`
+#' h5_valid(f, 'r', close_all = TRUE)
+#' h5_valid(f, 'w')  # TRUE
+#'
+#' # Now the connection is no longer valid
+#' ptr
+#'
+#' @export
+h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
+  mode <- match.arg(mode)
+  tryCatch({
+    file <- normalizePath(file, mustWork = TRUE)
+    f = hdf5r::H5File$new(filename = file, mode = mode)
+    if(close_all){
+      f$close_all()
+    } else {
+      f$close()
+    }
+    TRUE
+  }, error = function(e){
+    FALSE
+  })
+
+}
+
+
+#' Returns all names contained in 'HDF5' file
+#' @param file, 'HDF5' file path
+#' @return characters, data set names
+#' @export
+h5_names <- function(file){
+  # make sure the file is valid
+  if(!h5_valid(file, 'r')){ return(FALSE) }
+  file <- normalizePath(file, mustWork = TRUE)
+  f = hdf5r::H5File$new(filename = file, mode = 'r')
+  names <- hdf5r::list.datasets(f)
+  f$close()
+  names
 }

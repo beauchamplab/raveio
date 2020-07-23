@@ -44,8 +44,9 @@ Analyze file structures and import all \code{json} and
 \examples{
 
 # Download https://github.com/bids-standard/bids-examples/
+# extract to directory ~/rave_data/bids_dir/
 
-bids_root <- '~/Downloads/bids-examples/'
+bids_root <- '~/rave_data/bids_dir/'
 project_name <- 'ieeg_visual'
 
 if(dir.exists(bids_root) &&
@@ -59,13 +60,13 @@ if(dir.exists(bids_root) &&
   names(header$sessions)
 
   # electrodes
-  head(header$sessions$`01`$others$electrodes)
+  head(header$sessions$`01`$spaces$unknown_space$table)
 
   # visual task channel settings
-  head(header$sessions$`01`$tasks$visual$tables$channels)
+  head(header$sessions$`01`$tasks$`01-visual-01`$channels)
 
   # event table
-  head(header$sessions$`01`$tasks$visual$tables$events)
+  head(header$sessions$`01`$tasks$`01-visual-01`$channels)
 }
 
 }

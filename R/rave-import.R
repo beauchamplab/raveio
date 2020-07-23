@@ -1,3 +1,11 @@
+is_physical_unit <- function(unit, choices){
+  if(is_valid_ish(unit, max_len = 1, mode = 'character') && unit %in% choices){
+    return(TRUE)
+  }
+  return(FALSE)
+}
+
+volc_units <- c('V', 'mV', 'uV')
 
 rave_directories <- function(subject_code, project_name, blocks = NULL, .force_format = c('', 'native', 'BIDS')){
   .force_format <- match.arg(.force_format)
@@ -45,7 +53,7 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   return(re)
 }
 
-rave_import_lfp <- function(project_name, subject_code, blocks, electrodes, sample_rate, ...){
+rave_import_lfp <- function(project_name, subject_code, blocks, electrodes, sample_rate, conversion = NA, ...){
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
 
   if(isTRUE(pretools$`@freeze_lfp`)){
@@ -82,7 +90,8 @@ rave_import_lfp <- function(project_name, subject_code, blocks, electrodes, samp
   UseMethod('rave_import_lfp')
 }
 
-rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks, electrodes, sample_rate, ...){
+rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
+                                          electrodes, sample_rate, conversion = NA, ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -107,6 +116,12 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks, el
   save_path <- file.path(pretools$subject$preprocess_path, 'voltage')
   save_path <- dir_create2(save_path)
 
+  if(isTRUE(conversion %in% volc_units)){
+    unit <- volc_units
+  } else {
+    unit <- 'NA'
+  }
+
   progress <-
     dipsaus::progress2(
       catgl('Importing {project_name}/{subject_code}', .capture = TRUE),
@@ -124,11 +139,13 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks, el
       src <- file.path(info$path, info$files[sel][[1]])
       dat <- read_mat(src, ram = FALSE)
       nm <- guess_raw_trace(dat, is_vector = TRUE)[[1]]
-      s <- as.vector(dat[[nm]])
+      s <- as.numeric(dat[[nm]])
       s[is.na(s)] <- 0
       # save to HDF5
       save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
               chunk = 1024, replace = TRUE, quiet = TRUE)
+      save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
+              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
     }
     invisible()
   })
@@ -142,7 +159,8 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks, el
 }
 
 
-rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks, electrodes, sample_rate, ...){
+rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
+                                           electrodes, sample_rate, conversion = NA, ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -168,6 +186,12 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks, e
   save_path <- file.path(pretools$subject$preprocess_path, 'voltage')
   save_path <- dir_create2(save_path)
 
+  if(isTRUE(conversion %in% volc_units)){
+    unit <- volc_units
+  } else {
+    unit <- 'NA'
+  }
+
   progress <-
     dipsaus::progress2(
       catgl('Importing {project_name}/{subject_code}', .capture = TRUE),
@@ -189,8 +213,10 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks, e
       cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
       s <- dat[,as.integer(e)]
       s[is.na(s)] <- 0
-      save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
+      save_h5(x = as.numeric(s), file = cfile, name = sprintf('raw/%s', b),
               chunk = 1024, replace = TRUE, quiet = TRUE)
+      save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
+              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
       invisible()
     })
   }
@@ -204,7 +230,8 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks, e
 }
 
 
-rave_import_lfp.native_edf <- function(project_name, subject_code, blocks, electrodes, sample_rate, conversion = NA, ...){
+rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
+                                       electrodes, sample_rate, conversion = NA, ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -245,10 +272,13 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks, elect
     lapply(electrodes, function(e){
       progress$inc(paste('Writing', b, '- electrode', e))
       cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
-      s <- dat$get_signal(number = e)$signal
+      signal <- dat$get_signal(number = e)
+      s <- as.numeric(signal$signal)
       s[is.na(s)] <- 0
       save_h5(x = as.vector(s), file = cfile, name = sprintf('raw/%s', b),
               chunk = 1024, replace = TRUE, quiet = TRUE)
+      save_h5(x = signal$unit, file = cfile, name = sprintf('/units/%s', b),
+              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
       invisible()
     })
   }
@@ -260,7 +290,8 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks, elect
   pretools$save()
 }
 
-rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks, electrodes, sample_rate, conversion = NA, ...){
+rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
+                                            electrodes, sample_rate, conversion = NA, ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -309,14 +340,28 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks, 
     dat <- read_eeg_data(header, eeg_df)
     # dim(dat$data)
 
+    volc_units <- c('V', 'mV', 'uV')
+    volc_factr <- c(1e6, 1e3, 1)
+
     lapply(electrodes, function(e){
       progress$inc(paste('Writing', b, '- electrode', e))
       cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
       s <- dat$data[e, ]
       s[is.na(s)] <- 0
       # TODO: convert unit
-      save_h5(x = as.vector(s), file = cfile, name = sprintf('raw/%s', b),
+      unit <- header$channels$unit[[e]]
+      if(
+        is_physical_unit(conversion, volc_units) &&
+        is_physical_unit(unit, volc_units)
+      ) {
+        # translate
+        s <- s * volc_factr[volc_units == unit] / volc_factr[volc_units == conversion]
+        unit <- conversion
+      }
+      save_h5(x = as.numeric(s), file = cfile, name = sprintf('raw/%s', b),
               chunk = 1024, replace = TRUE, quiet = TRUE)
+      save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
+              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
       invisible()
     })
   }
@@ -329,7 +374,8 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks, 
 }
 
 
-rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks, electrodes, sample_rate, task_runs, conversion = NA, ...){
+rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks,
+                                     electrodes, sample_rate, task_runs, conversion = NA, ...){
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
   # file exists?
@@ -388,10 +434,13 @@ rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks, electro
     lapply(electrodes, function(e){
       progress$inc(paste('Writing', b, '- electrode', e))
       cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
-      s <- dat$get_signal(number = e)$signal
+      signal <- dat$get_signal(number = e)
+      s <- signal$signal
       s[is.na(s)] <- 0
-      save_h5(x = as.vector(s), file = cfile, name = sprintf('raw/%s', b),
+      save_h5(x = as.numeric(s), file = cfile, name = sprintf('raw/%s', b),
               chunk = 1024, replace = TRUE, quiet = TRUE)
+      save_h5(x = signal$unit, file = cfile, name = sprintf('/units/%s', b),
+              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
       invisible()
     })
   }
@@ -405,7 +454,8 @@ rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks, electro
 
 
 
-rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks, electrodes, sample_rate, task_runs, conversion = NA, ...){
+rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
+                                          electrodes, sample_rate, task_runs, conversion = NA, ...){
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
   # file exists?
@@ -422,6 +472,7 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks, el
       stop('Cannot find subject folder int BIDS directory tree nor rave native raw path. Please make sure the subject files exist')
     }
   }
+  blocks <- sprintf('ses-%s', stringr::str_remove(blocks, 'ses-'))
 
   # Now import data
   res <- validate_raw_file_lfp.bids_brainvis(
@@ -444,6 +495,13 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks, el
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
+  eeg_header <- local({
+    raw_root <- raveio_getopt('bids_data_dir')
+    if(is.na(raw_root) || !dir.exists(raw_root)){
+      raw_root <- raveio_getopt('raw_data_dir')
+    }
+    load_bids_ieeg_header(raw_root, project_name, subject_code)
+  })
 
 
   save_path <- file.path(pretools$subject$preprocess_path, 'voltage')
@@ -468,15 +526,44 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks, el
       eeg_df <- stringr::str_replace(eeg_file, '\\.[^.]+$', ext)
     }
     dat <- read_eeg_data(header, eeg_df)
-    lapply(electrodes, function(e){
+    volc_units <- c('V', 'mV', 'uV')
+    volc_factr <- c(1e6, 1e3, 1)
+
+    sess_name <- stringr::str_extract(b, '^[^-_]+')
+    channel_table <- eeg_header$sessions[[sess_name]]$tasks[[b]]$channels
+    snames <- eeg_header$sessions[[sess_name]]$space_names
+    if(length(snames)){
+      electrode_table <- eeg_header$sessions[[sess_name]]$spaces[[snames[[1]]]]$table
+      electrode_names <- electrode_table$name[electrodes]
+      channel_idx <- sapply(electrode_names, function(ename){
+        which(channel_table$name == ename)
+      })
+    } else {
+      channel_idx <- electrodes
+    }
+
+    lapply(seq_along(electrodes), function(ii){
+      e <- electrodes[[ii]]
+      chidx <- channel_idx[[ii]]
       progress$inc(paste('Writing', b, '- electrode', e))
       cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
-      s <- dat$data[e, ]
+      s <- dat$data[chidx, ]
       s[is.na(s)] <- 0
-      # TODO: unit convertion
 
-      save_h5(x = as.vector(s), file = cfile, name = sprintf('raw/%s', b),
+      unit <- header$channels$unit[[chidx]]
+      if(
+        is_physical_unit(conversion, volc_units) &&
+        is_physical_unit(unit, volc_units)
+      ) {
+        # translate
+        s <- s * volc_factr[volc_units == unit] / volc_factr[volc_units == conversion]
+        unit <- conversion
+      }
+
+      save_h5(x = as.numeric(s), file = cfile, name = sprintf('raw/%s', b),
               chunk = 1024, replace = TRUE, quiet = TRUE)
+      save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
+              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
       invisible()
     })
   }
@@ -514,78 +601,90 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks, el
 #' options by running \code{names(LFP_FORMATS)}
 #' @param data_type electrode type; only \code{'lfp'} is supported
 #' @param sample_rate sample frequency, must be positive
-#' @param ... other parameters, depend on format applied. For 'BIDS' formats,
-#' please specify \code{task_runs} variable; see Section "Block vs. Session"
-#' and Section "File Formats"
+#' @param conversion physical unit conversion, choices are \code{NA},
+#' \code{V}, \code{mV}, \code{uV}
+#' @param task_runs for 'BIDS' formats only, see Section "Block vs. Session"
+#' @param ... other parameters
 #' @section 'RAVE' Project:
 #' A 'rave' project can be very flexible. A project can refer to a task, a
 #' research objective, or "arbitrarily" as long as you find common research
 #' interests among subjects. One subject can appear in multiple projects with
-#' different blocks, hence \code{project_name} should be task-based or
+#' different blocks, hence \code{project_name} should be
 #' objective-based. There is no concept of "project" in 'rave' raw directory.
 #' When importing data, you choose subset of blocks from subjects forming
 #' a project.
-#' This is different from 'BIDS' format. In 'BIDS',
-#' one subject can be only a sub-folder of project, and a project must be
-#' present in raw format.
 #'
-#' This two implementations have their own pros and cons. However, when
-#' importing 'BIDS' data into 'rave', \code{project_name} must be consistent
-#' with 'BIDS' project name as a compromise. Once imported, you may change
-#' the project folder name in imported rave data directory to other names.
-#' Because once raw traces are imported, 'rave' data will become self-contained
+#' When importing 'BIDS' data into 'rave', \code{project_name} must be
+#' consistent with 'BIDS' project name as a compromise. Once imported,
+#' you may change the project folder name in imported rave data
+#' directory to other names. Because once raw traces are imported,
+#' 'rave' data will become self-contained
 #' and 'BIDS' data are no longer required for analysis.
 #' This naming inconsistency will also be ignored.
 #'
 #'
 #' @section Block vs. Session:
-#' \code{blocks} has different meaning in 'rave' and 'BIDS'. In 'rave', it means
+#' 'rave' and 'BIDS' have different definitions for a "chunk" of signals.
+#' In 'rave', we use "block". it means
 #' combination of session (days), task, and run, i.e. a block of continuous
 #' signals captured. Raw data files are supposed to be stored in file
 #' hierarchy of \code{<raw-root>/<subject_code>/<block>/<datafiles>}.
-#' However, this structure is incompatible with 'BIDS'.
-#' In 'BIDS' sessions, tasks, and runs are separated, and only session names
-#' are indicated under subject folder.
-#' Therefore when importing data from 'BIDS' format, \code{block} argument
-#' needs to be session names to comply with \code{'sub/session'} structure.
-#' To record "real" blocks, \code{task_runs} must be specified.
+#' In 'BIDS', sessions, tasks, and runs are separated, and only session names
+#' are indicated under subject folder. Because some previous compatibility
+#' issues, argument \code{'block'} refers to direct folder names under
+#' subject directories.
+#' This means when importing data from 'BIDS' format, \code{block} argument
+#' needs to be session names to comply with \code{'subject/block'} structure,
+#' and there is an additional mandatory argument \code{task_runs}
+#' especially designed for 'BIDS' format.
 #'
 #' For 'rave' native raw data format, \code{block} will be as-is once imported.
 #' \cr
 #' For 'BIDS' format, \code{task_runs} will be treated as blocks once imported.
 #'
 #' @section File Formats:
-#' Depending on format supported, \code{...} has the following arguments:
+#' Following file structure. Here use project \code{"demo"} and subject
+#' \code{"YAB"} and block \code{"008")}, electrode \code{14} as an example.
 #' \describe{
-#' \item{\code{format=1}, or \code{".mat/.h5 file per electrode per block"}}{\code{...} are ignored}
-#' \item{\code{format=2}, or \code{"Single .mat/.h5 file per block"}}{\code{...} are ignored}
+#' \item{\code{format=1}, or \code{".mat/.h5 file per electrode per block"}}{
+#' folder \code{<raw>/YAB/008} contains 'Matlab' or 'HDF5' files per electrode.
+#' Data file name should look like \code{"xxx_14.mat"}}
+#' \item{\code{format=2}, or \code{"Single .mat/.h5 file per block"}}{
+#' \code{<raw>/YAB/008} contains only one 'Matlab' or 'HDF5' file. Data within
+#' the file should be a 2-dimensional matrix, where the 14th column is
+#' signal recorded from electrode 14}
 #' \item{\code{format=3}, or \code{"Single EDF(+) file per block"}}{
-#' \code{convertion} (optional), convert electric potential unit;
-#' choices are \code{'NA'} (no conversion), \code{'V'} (volt), \code{'mV'}
-#' (milli-volt), and \code{'uV'} (micro-volt)
-#' }
-#' \item{\code{format=4}, or \code{"Single BrainVision file (.vhdr+.eeg, .vhdr+.dat) per block"}}{
-#' \code{...} are ignored
+#' \code{<raw>/YAB/008} contains only one \code{'edf'} file}
+#' \item{\code{format=4}, or \code{
+#' "Single BrainVision file (.vhdr+.eeg, .vhdr+.dat) per block"}}{
+#' \code{<raw>/YAB/008} contains only one \code{'vhdr'} file, and
+#' the data file must be infered from the header file
 #' }
 #' \item{\code{format=5}, or \code{"BIDS & EDF(+)"}}{
-#' \code{task_runs} (mandatory), characters, combination of session, task name,
-#' and run number. For example, a task header file in BIDS with name
-#' \code{'sub-som682_ses-01_task-visual_run-01_ieeg.json'} has \code{task_runs}
-#' name as \code{'01-visual-01'}, where the first \code{'01'} refers to session,
-#' \code{'visual'} is task name, and the second \code{'01'} is run number.
+#' \code{<bids>/demo/sub-YAB/ses-008/} must contains \code{*_electrodes.tsv},
+#' each run must have channel file. The channel files and electrode file
+#' must be consistent in names.
 #' \cr
-#' \code{convertion} (optional), convert electric potential unit; see
-#' previous format: \code{"Single EDF(+) file per block"}
+#' Argument \code{task_runs} is mandatory, characters, combination of session,
+#' task name, and run number. For example, a task header file in BIDS with name
+#' \code{'sub-YAB_ses-008_task-visual_run-01_ieeg.edf'} has \code{task_runs}
+#' name as \code{'008-visual-01'}, where the first \code{'008'} refers
+#' to session, \code{'visual'} is task name, and the second \code{'01'} is
+#' run number.
 #' }
-#' \item{\code{format=6}, or \code{"BIDS & BrainVision (.vhdr+.eeg, .vhdr+.dat)"}}{
-#' \code{task_runs} (mandatory), characters, see previous format:
-#' \code{"BIDS & EDF(+)"}
+#' \item{\code{format=6}, or \code{
+#' "BIDS & BrainVision (.vhdr+.eeg, .vhdr+.dat)"}}{
+#' Same as previous format \code{"BIDS & EDF(+)"}, but data files have
+#' 'BrainVision' formats.
 #' }
 #' }
 #'
 #'
 #' @export
-rave_import <- function(project_name, subject_code, blocks, electrodes, format, sample_rate, data_type = 'lfp', ...){
+rave_import <- function(project_name, subject_code, blocks, electrodes, format,
+                        sample_rate, conversion = NA, data_type = 'lfp',
+                        task_runs = NULL, ...){
+
   data_type <- match.arg(data_type)
   switch (
     data_type,
@@ -603,15 +702,15 @@ rave_import <- function(project_name, subject_code, blocks, electrodes, format, 
         # BIDS format, blocks must be ses-xxx
         blocks <- stringr::str_remove(blocks, '^ses-')
         blocks <- sprintf('ses-%s', blocks)
-        task_runs = dipsaus::get_dots('task_runs', {
+        if(!length(task_runs)){
           stop('rave_import: BIDS format must specify task_runs as session+task+run')
-        }, ...)
+        }
       }
 
       rave_import_lfp(
         project_name = structure(project_name, class = generic_name),
         subject_code = subject_code, blocks = blocks, electrodes = electrodes,
-        sample_rate = sample_rate,
+        sample_rate = sample_rate, conversion = conversion, task_runs = task_runs,
         ...
       )
     }

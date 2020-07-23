@@ -14,7 +14,9 @@ validate_settings <- function(s = dipsaus::fastmap2()){
 
   # ------------- Temporary tensor path --------------
   tpath <- s[['tensor_temp_path']]
-  if(length(tpath) != 1 || !isTRUE(is.character(tpath))){
+  if(length(tpath) == 0){
+    s[['tensor_temp_path']] <- d[['tensor_temp_path']]
+  } else if(length(tpath) > 1 || !isTRUE(is.character(tpath))){
     warning('Option tensor_temp_path is not length 1 character, reset to default')
     s[['tensor_temp_path']] <- d[['tensor_temp_path']]
   }
