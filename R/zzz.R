@@ -6,6 +6,27 @@ default_settings <- function(s = dipsaus::fastmap2()){
   s[['data_dir']] <- '~/rave_data/data_dir/'
   s[['bids_data_dir']] <- '~/rave_data/bids_dir/'
   s[['file_structure']] <- 'native'
+
+  # Not validated (but not recommended to change)
+  s[['module_root_dir']] <- '~/rave_modules/'
+  s[['module_lookup_file']] <- '~/rave_modules/modules.csv'
+  s[['delay_input']] <- 20
+  s[['test_mode']] <- FALSE
+  s[['fast_cache']] <- TRUE
+  s[['image_width']] <- 1280L
+  s[['image_height']] <- 768L
+  s[['drive_speed']] <- c(0.02, 0.05)
+  s[['disable_startup_speed_check']] <- FALSE
+  s[['max_worker']] <- parallel::detectCores() - 1
+  s[['max_mem']] <- dipsaus::get_ram() / 1024^3
+
+  # Not used
+  s[['server_time_zone']] <- 'America/Chicago'
+  s[['suma_nodes_per_electrodes']] <- 42L
+  s[['matlab_path']] <- '/Applications/MATLAB_R2016b.app/bin'
+  s[['py2_path']] <- ''
+  s[['py3_path']] <- ''
+  s[['py_virtualenv']] <- ''
   s
 }
 
@@ -89,6 +110,7 @@ load_setting <- function(){
 #' @param all whether to reset all non-default keys
 #' @param .save whether to save to local drive, internally used to temporary
 #' change option. Not recommended to use it directly.
+#' @param cfile file name in configuration path
 #' @seealso \code{R_user_dir}
 #' @details \code{raveio_setopt} stores key-value pair in local path.
 #' The values are persistent and shared across multiple sessions.
@@ -107,9 +129,13 @@ NULL
 #' @export
 raveio_setopt <- function(key, value, .save = TRUE){
 
-  stopifnot2(length(value) == 1 && isTRUE(
-    is.character(value) || is.logical(value)
-  ), msg = 'settings value must be string or logical of length 1')
+  stopifnot2(isTRUE(
+    mode(value) %in% c('numeric', 'logical', 'character')
+  ), msg = 'settings value must be numeric, character or logical')
+
+  if(is.character(value) && length(value) > 1){
+    stop('settings value must be length 1 for characters')
+  }
 
   stopifnot2(!key %in% c('session_string'),
              msg = sprintf('Key %s is read-only', sQuote(key)))
@@ -173,6 +199,13 @@ raveio_getopt <- function(key, default = NA){
     return(s[[key]])
   }
   default
+}
+
+#' @rdname raveio-option
+#' @export
+raveio_confpath <- function(cfile = 'settings.yaml'){
+  d <- R_user_dir('raveio', 'config')
+  normalizePath(file.path(d, cfile), mustWork = FALSE)
 }
 
 .onLoad <- function(libname, pkgname) {

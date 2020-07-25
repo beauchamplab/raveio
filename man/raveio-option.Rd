@@ -5,6 +5,7 @@
 \alias{raveio_setopt}
 \alias{raveio_resetopt}
 \alias{raveio_getopt}
+\alias{raveio_confpath}
 \title{Set/Get 'raveio' option}
 \usage{
 raveio_setopt(key, value, .save = TRUE)
@@ -12,6 +13,8 @@ raveio_setopt(key, value, .save = TRUE)
 raveio_resetopt(all = FALSE)
 
 raveio_getopt(key, default = NA)
+
+raveio_confpath(cfile = "settings.yaml")
 }
 \arguments{
 \item{key}{character, option name}
@@ -24,6 +27,8 @@ change option. Not recommended to use it directly.}
 \item{all}{whether to reset all non-default keys}
 
 \item{default}{is key not found, return default value}
+
+\item{cfile}{file name in configuration path}
 }
 \description{
 Persist settings on local configuration file
