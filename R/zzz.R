@@ -1,6 +1,6 @@
 
 default_settings <- function(s = dipsaus::fastmap2()){
-  s[['tensor_temp_path']] <- tempdir()
+  s[['tensor_temp_path']] <- '~/rave_data/cache_dir/'
   s[['verbose_level']] <- 'DEBUG'
   s[['raw_data_dir']] <- '~/rave_data/raw_dir/'
   s[['data_dir']] <- '~/rave_data/data_dir/'
