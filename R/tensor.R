@@ -1,6 +1,10 @@
 
 temp_tensor_dir <- function(){
-  d <- file.path(get('.settings')[['tensor_temp_path']], get('.session_string'))
+  d <- raveio_getopt('tensor_temp_path')
+  if(!dir.exists(d)){
+    d <- tempdir(check = TRUE)
+  }
+  d <- file.path(d, get('.session_string'))
   dir_create2(d)
   normalizePath(d)
 }
