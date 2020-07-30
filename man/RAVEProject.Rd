@@ -59,7 +59,7 @@ constructor
 \describe{
 \item{\code{project_name}}{character}
 
-\item{\code{strict}}{whether to checl project path}
+\item{\code{strict}}{whether to check project path}
 }
 \if{html}{\out{</div>}}
 }

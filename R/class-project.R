@@ -43,7 +43,7 @@ RAVEProject <- R6::R6Class(
 
     #' @description constructor
     #' @param project_name character
-    #' @param strict whether to checl project path
+    #' @param strict whether to check project path
     initialize = function(project_name, strict = TRUE){
       project_name = stringr::str_trim(project_name)
       stopifnot2(length(project_name) == 1 && project_name != '',

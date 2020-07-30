@@ -149,7 +149,7 @@ constructor
 \if{html}{\out{<a id="method-load_unreferenced_voltage"></a>}}
 \if{latex}{\out{\hypertarget{method-load_unreferenced_voltage}{}}}
 \subsection{Method \code{load_unreferenced_voltage()}}{
-load voltage data, un-referenced
+load voltage data that is before referenced
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_unreferenced_voltage(block, persist = FALSE)}\if{html}{\out{</div>}}
 }
@@ -172,7 +172,7 @@ voltage data before reference
 \if{html}{\out{<a id="method-load_unreferenced_power"></a>}}
 \if{latex}{\out{\hypertarget{method-load_unreferenced_power}{}}}
 \subsection{Method \code{load_unreferenced_power()}}{
-load power data, un-referenced
+load power data that is before referenced
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_unreferenced_power(block, persist = FALSE)}\if{html}{\out{</div>}}
 }
@@ -195,7 +195,7 @@ power data before reference
 \if{html}{\out{<a id="method-load_unreferenced_phase"></a>}}
 \if{latex}{\out{\hypertarget{method-load_unreferenced_phase}{}}}
 \subsection{Method \code{load_unreferenced_phase()}}{
-load phase data, un-referenced
+load phase data that is before referenced
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_unreferenced_phase(block, persist = FALSE)}\if{html}{\out{</div>}}
 }

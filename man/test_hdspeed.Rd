@@ -8,20 +8,24 @@ test_hdspeed(
   path = tempdir(),
   file_size = 1e+06,
   quiet = FALSE,
-  abort_if_slow = TRUE
+  abort_if_slow = TRUE,
+  use_cache = FALSE
 )
 }
 \arguments{
 \item{path}{an existing directory where to test speed, default is temporary
-local directory}
+local directory.}
 
-\item{file_size}{in bytes, default is 1 MB}
+\item{file_size}{in bytes, default is 1 MB.}
 
 \item{quiet}{should verbose messages be suppressed?}
 
 \item{abort_if_slow}{abort test if hard drive is too slow. This usually
 happens when the hard drive is connected via slow internet: if the write
 speed is less than 0.1 MB per second.}
+
+\item{use_cache}{if hard drive speed was tested before, abort testing
+and return cached results or not; default is false.}
 }
 \value{
 A vector of two: writing and reading speed in MB per seconds.

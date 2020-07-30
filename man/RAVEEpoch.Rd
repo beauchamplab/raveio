@@ -89,7 +89,7 @@ constructor
 \describe{
 \item{\code{subject}}{\code{RAVESubject} instance or character}
 
-\item{\code{name}}{character, makesure \code{"epoch_<name>.csv"} is in meta
+\item{\code{name}}{character, make sure \code{"epoch_<name>.csv"} is in meta
 folder}
 }
 \if{html}{\out{</div>}}

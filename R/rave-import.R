@@ -582,7 +582,7 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 
 
 #' Import data into 'rave'
-#' @description Import files with pre-defined structures. Supported file
+#' @description Import files with predefined structures. Supported file
 #' formats include 'Matlab', 'HDF5', 'EDF(+)', 'BrainVision'
 #' (\code{'.eeg/.dat/.vhdr'}). Supported file structures include 'rave' native
 #' structure and 'BIDS' format.
@@ -651,14 +651,14 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 #' Data file name should look like \code{"xxx_14.mat"}}
 #' \item{\code{format=2}, or \code{"Single .mat/.h5 file per block"}}{
 #' \code{<raw>/YAB/008} contains only one 'Matlab' or 'HDF5' file. Data within
-#' the file should be a 2-dimensional matrix, where the 14th column is
+#' the file should be a 2-dimensional matrix, where the column 14 is
 #' signal recorded from electrode 14}
 #' \item{\code{format=3}, or \code{"Single EDF(+) file per block"}}{
 #' \code{<raw>/YAB/008} contains only one \code{'edf'} file}
 #' \item{\code{format=4}, or \code{
 #' "Single BrainVision file (.vhdr+.eeg, .vhdr+.dat) per block"}}{
 #' \code{<raw>/YAB/008} contains only one \code{'vhdr'} file, and
-#' the data file must be infered from the header file
+#' the data file must be inferred from the header file
 #' }
 #' \item{\code{format=5}, or \code{"BIDS & EDF(+)"}}{
 #' \code{<bids>/demo/sub-YAB/ses-008/} must contains \code{*_electrodes.tsv},

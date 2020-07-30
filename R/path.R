@@ -4,20 +4,28 @@
 
 #' Simple hard disk speed test
 #' @param path an existing directory where to test speed, default is temporary
-#' local directory
-#' @param file_size in bytes, default is 1 MB
+#' local directory.
+#' @param file_size in bytes, default is 1 MB.
 #' @param quiet should verbose messages be suppressed?
 #' @param abort_if_slow abort test if hard drive is too slow. This usually
 #' happens when the hard drive is connected via slow internet: if the write
 #' speed is less than 0.1 MB per second.
+#' @param use_cache if hard drive speed was tested before, abort testing
+#' and return cached results or not; default is false.
 #' @return A vector of two: writing and reading speed in MB per seconds.
 #' @export
 test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
-                         abort_if_slow = TRUE){
+                         abort_if_slow = TRUE, use_cache = FALSE){
+
+  last_speed <- raveio_getopt('drive_speed')
+
+  if(!all(last_speed == c(50, 20)) && use_cache){
+    return(last_speed)
+  }
 
   if(!dir.exists(path)){
-    stop(path, ' does not exist.')
-    return(c(NA, NA))
+    warning(path, ' does not exist.')
+    return(last_speed)
   }
 
   # create tempdir for testing
@@ -43,7 +51,9 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
       if(!quiet){
         dipsaus::cat2('Hard disk speed might be too slow. Abort speed test')
       }
-      return(c(wsp, wsp))
+      sp <- c(wsp, wsp)
+      raveio_setopt('drive_speed', sp)
+      return(sp)
     }
   }
 
@@ -68,6 +78,9 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
 
   speed = ratio / c(upload[3], download[3])
   names(speed) = NULL
+
+  raveio_setopt('drive_speed', speed)
+
   class(speed) <- 'rave-units'
   attr(speed, 'unit') = 'MB/s'
   attr(speed, 'labels') = c('Write - ', 'Read - ')

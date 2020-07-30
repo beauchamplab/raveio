@@ -15,7 +15,7 @@ default_settings <- function(s = dipsaus::fastmap2()){
   s[['fast_cache']] <- TRUE
   s[['image_width']] <- 1280L
   s[['image_height']] <- 768L
-  s[['drive_speed']] <- c(0.02, 0.05)
+  s[['drive_speed']] <- c(50, 20)
   s[['disable_startup_speed_check']] <- FALSE
   s[['max_worker']] <- parallel::detectCores() - 1
   s[['max_mem']] <- dipsaus::get_ram() / 1024^3

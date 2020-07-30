@@ -257,7 +257,7 @@ LFP_electrode <- R6::R6Class(
 
     # data method
 
-    #' @description load voltage data, un-referenced
+    #' @description load voltage data that is before referenced
     #' @param block experiment block
     #' @param persist whether to persist in the instance, default is false,
     #' however, if this function will be called multiple times, set it to true.
@@ -310,7 +310,7 @@ LFP_electrode <- R6::R6Class(
 
     },
 
-    #' @description load power data, un-referenced
+    #' @description load power data that is before referenced
     #' @param block experiment block
     #' @param persist whether to persist in the instance, default is false,
     #' however, if this function will be called multiple times, set it to true.
@@ -372,7 +372,7 @@ LFP_electrode <- R6::R6Class(
 
     },
 
-    #' @description load phase data, un-referenced
+    #' @description load phase data that is before referenced
     #' @param block experiment block
     #' @param persist whether to persist in the instance, default is false,
     #' however, if this function will be called multiple times, set it to true.

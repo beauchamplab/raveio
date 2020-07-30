@@ -58,7 +58,7 @@ RAVEEpoch <- R6::R6Class(
 
     #' @description constructor
     #' @param subject \code{RAVESubject} instance or character
-    #' @param name character, makesure \code{"epoch_<name>.csv"} is in meta
+    #' @param name character, make sure \code{"epoch_<name>.csv"} is in meta
     #' folder
     initialize = function(subject, name){
       stopifnot2(stringr::str_detect(name, '^[a-zA-Z0-9_]'),
