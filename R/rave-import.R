@@ -53,10 +53,11 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   return(re)
 }
 
-rave_import_lfp <- function(project_name, subject_code, blocks, electrodes, sample_rate, conversion = NA, ...){
+rave_import_lfp <- function(project_name, subject_code, blocks, electrodes,
+                            sample_rate, conversion = NA, add = FALSE, data_type = 'LFP', ...){
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
 
-  if(isTRUE(pretools$`@freeze_lfp`)){
+  if(!add && isTRUE(pretools$`@freeze_lfp_ecog`)){
     # LFP has been imported, just stop
     stop(catgl('Subject {project_name}/{subject_code} has been imported previously. Please proceed to next step.'))
   }
@@ -75,7 +76,7 @@ rave_import_lfp <- function(project_name, subject_code, blocks, electrodes, samp
 
   if(!res){
     reasons <- attr(res, 'reason')
-    if(!is.list(reasons) || !length(reasons)){ stop('rave_import_lfp error: unknown reason.') }
+    if(!is.list(reasons) || !length(reasons)){ stop('rave_import error: unknown reason.') }
     msg <- sapply(seq_along(reasons), function(ii){
       nm <- names(reasons)[[ii]]
       items <- reasons[[ii]]
@@ -91,7 +92,8 @@ rave_import_lfp <- function(project_name, subject_code, blocks, electrodes, samp
 }
 
 rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
-                                          electrodes, sample_rate, conversion = NA, ...){
+                                          electrodes, sample_rate, add = FALSE,
+                                          conversion = NA, data_type = 'LFP', ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -99,9 +101,12 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
   raveio_setopt('file_structure', 'native', .save = FALSE)
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
-  pretools$set_blocks(blocks = blocks)
-  pretools$set_electrodes(electrodes, type = 'LFP')
-  pretools$set_sample_rates(sample_rate, type = 'LFP')
+
+  if(!add){
+    pretools$set_blocks(blocks = blocks)
+  }
+  pretools$set_electrodes(electrodes, type = data_type, add = add)
+  pretools$set_sample_rates(sample_rate, type = data_type)
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
@@ -160,7 +165,8 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
 
 
 rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
-                                           electrodes, sample_rate, conversion = NA, ...){
+                                           electrodes, sample_rate, conversion = NA,
+                                           add = FALSE, data_type = 'LFP', ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -168,9 +174,11 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
   raveio_setopt('file_structure', 'native', .save = FALSE)
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
-  pretools$set_blocks(blocks = blocks)
-  pretools$set_electrodes(electrodes, type = 'LFP')
-  pretools$set_sample_rates(sample_rate, type = 'LFP')
+  if(!add){
+    pretools$set_blocks(blocks = blocks)
+  }
+  pretools$set_electrodes(electrodes, type = data_type, add = add)
+  pretools$set_sample_rates(sample_rate, type = data_type)
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
@@ -231,7 +239,8 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
 
 
 rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
-                                       electrodes, sample_rate, conversion = NA, ...){
+                                       electrodes, sample_rate, conversion = NA,
+                                       add = FALSE, data_type = 'LFP', ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -239,9 +248,11 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
   raveio_setopt('file_structure', 'native', .save = FALSE)
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
-  pretools$set_blocks(blocks = blocks)
-  pretools$set_electrodes(electrodes, type = 'LFP')
-  pretools$set_sample_rates(sample_rate, type = 'LFP')
+  if(!add){
+    pretools$set_blocks(blocks = blocks)
+  }
+  pretools$set_electrodes(electrodes, type = data_type, add = add)
+  pretools$set_sample_rates(sample_rate, type = data_type)
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
@@ -291,7 +302,8 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
 }
 
 rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
-                                            electrodes, sample_rate, conversion = NA, ...){
+                                            electrodes, sample_rate, conversion = NA,
+                                            add = FALSE, data_type = 'LFP', ...){
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -299,9 +311,11 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
   raveio_setopt('file_structure', 'native', .save = FALSE)
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
-  pretools$set_blocks(blocks = blocks)
-  pretools$set_electrodes(electrodes, type = 'LFP')
-  pretools$set_sample_rates(sample_rate, type = 'LFP')
+  if(!add){
+    pretools$set_blocks(blocks = blocks)
+  }
+  pretools$set_electrodes(electrodes, type = data_type, add = add)
+  pretools$set_sample_rates(sample_rate, type = data_type)
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
@@ -375,7 +389,8 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
 
 
 rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks,
-                                     electrodes, sample_rate, task_runs, conversion = NA, ...){
+                                     electrodes, sample_rate, task_runs, conversion = NA,
+                                     add = FALSE, data_type = 'LFP', ...){
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
   # file exists?
@@ -408,9 +423,12 @@ rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks,
   }
 
   # Do not check. block here does not mean session, should be session+task+run
-  pretools$set_blocks(blocks = task_runs, force = TRUE)
-  pretools$set_electrodes(electrodes, type = 'LFP')
-  pretools$set_sample_rates(sample_rate, type = 'LFP')
+  if(!add){
+    pretools$set_blocks(blocks = task_runs, force = TRUE)
+  }
+  pretools$set_electrodes(electrodes, type = data_type, add = add)
+
+  pretools$set_sample_rates(sample_rate, type = data_type)
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
@@ -455,7 +473,8 @@ rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks,
 
 
 rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
-                                          electrodes, sample_rate, task_runs, conversion = NA, ...){
+                                          electrodes, sample_rate, task_runs, conversion = NA,
+                                          add = FALSE, data_type = 'LFP', ...){
   # direct import data, no check (already checked)
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
   # file exists?
@@ -489,9 +508,11 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
   }
 
   # Do not check. block here does not mean session, should be session+task+run
-  pretools$set_blocks(blocks = task_runs, force = TRUE)
-  pretools$set_electrodes(electrodes, type = 'LFP')
-  pretools$set_sample_rates(sample_rate, type = 'LFP')
+  if(!add){
+    pretools$set_blocks(blocks = task_runs, force = TRUE)
+  }
+  pretools$set_electrodes(electrodes, type = data_type, add = add)
+  pretools$set_sample_rates(sample_rate, type = data_type)
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
@@ -598,13 +619,17 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 #' and 'BIDS'
 #' @param electrodes integers electrode numbers
 #' @param format integer from 1 to 6, or character. For characters, you can get
-#' options by running \code{names(LFP_FORMATS)}
-#' @param data_type electrode type; only \code{'lfp'} is supported
+#' options by running \code{names(IMPORT_FORMATS)}
+#' @param data_type electrode type; only \code{'LFP'}, \code{'ECoG'}, and
+#' \code{'EEG'} are supported
 #' @param sample_rate sample frequency, must be positive
 #' @param conversion physical unit conversion, choices are \code{NA},
 #' \code{V}, \code{mV}, \code{uV}
 #' @param task_runs for 'BIDS' formats only, see Section "Block vs. Session"
 #' @param ... other parameters
+#' @param add whether to add electrodes. If set to true, then only new
+#' electrodes are allowed to be imported, blocks will be ignored and trying to
+#' import electrodes that have been imported will still result in error.
 #' @section 'RAVE' Project:
 #' A 'rave' project can be very flexible. A project can refer to a task, a
 #' research objective, or "arbitrarily" as long as you find common research
@@ -682,23 +707,32 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 #'
 #' @export
 rave_import <- function(project_name, subject_code, blocks, electrodes, format,
-                        sample_rate, conversion = NA, data_type = 'lfp',
-                        task_runs = NULL, ...){
+                        sample_rate, conversion = NA, data_type = c('LFP', 'ECoG', 'EEG'),
+                        task_runs = NULL, add = FALSE, ...){
 
   data_type <- match.arg(data_type)
+
+  .type <- list(
+    'ECoG' = 'A',
+    'LFP' = 'A',
+    'EEG' = 'A'
+  )[[data_type]]
+
   switch (
-    data_type,
-    'lfp' = {
-      generic_name <- LFP_FORMATS[[format]]
+    .type,
+
+    # Continuous iEEG/EEG signals, will be wavelet and perform spectral analysis
+    'A' = {
+      generic_name <- IMPORT_FORMATS[[format]]
 
       if(!is_valid_ish(generic_name, max_len = 1L, mode = 'character', blank = TRUE)){
         stop('rave_import: format ', sQuote(format), ' must be integer from 1-',
-             length(LFP_FORMATS), ' or the following characters:\n',
-             paste0(seq_along(LFP_FORMATS), ': ', sQuote(names(LFP_FORMATS)),
+             length(IMPORT_FORMATS), ' or the following characters:\n',
+             paste0(seq_along(IMPORT_FORMATS), ': ', sQuote(names(IMPORT_FORMATS)),
                     collapse = ',\n'))
       }
 
-      if(generic_name %in% unlist(LFP_FORMATS[c(5,6)])){
+      if(generic_name %in% unlist(IMPORT_FORMATS[c(5,6)])){
         # BIDS format, blocks must be ses-xxx
         blocks <- stringr::str_remove(blocks, '^ses-')
         blocks <- sprintf('ses-%s', blocks)
@@ -711,6 +745,7 @@ rave_import <- function(project_name, subject_code, blocks, electrodes, format,
         project_name = structure(project_name, class = generic_name),
         subject_code = subject_code, blocks = blocks, electrodes = electrodes,
         sample_rate = sample_rate, conversion = conversion, task_runs = task_runs,
+        add = add, data_type = data_type,
         ...
       )
     }

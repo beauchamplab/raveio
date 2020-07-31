@@ -30,5 +30,4 @@ test_that("Subject class & derivatives", {
     'demo/YAB'
   )
 
-
 })

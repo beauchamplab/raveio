@@ -39,8 +39,8 @@ guess_raw_trace <- function(dat, electrodes = NULL, is_vector = TRUE){
 #' files following 'BIDS' convention, see details
 #' @param electrodes electrodes to verify
 #' @param format integer or character. For characters, run
-#' \code{names(LFP_FORMATS)}
-#' @param data_type currently only support \code{'LFP'} electrodes
+#' \code{names(IMPORT_FORMATS)}
+#' @param data_type currently only support continuous type of signals
 #' @param ... other parameters used if validating \code{'BIDS'} format; see
 #' details.
 #'
@@ -127,8 +127,12 @@ NULL
 
 #' @rdname rave-raw-validation
 #' @export
-validate_raw_file <- function(subject_code, blocks, electrodes, format, data_type = 'lfp', ...){
-  fname <- paste0('validate_raw_file_', data_type)
+validate_raw_file <- function(subject_code, blocks, electrodes, format, data_type = c('continuous'), ...){
+  data_type <- match.arg(data_type)
+  fname <- list(
+    'continuous' = 'validate_raw_file_lfp'
+  )[[data_type]]
+
   do.call(fname, list(
     subject_code = subject_code, blocks = blocks, electrodes = electrodes,
     format = format, data_type = data_type, ...
@@ -157,7 +161,7 @@ validation_failure <- local({
 
 #' @rdname rave-raw-validation
 #' @export
-LFP_FORMATS = list(
+IMPORT_FORMATS = list(
   '.mat/.h5 file per electrode per block' = 'native_matlab',
   'Single .mat/.h5 file per block' = 'native_matlab2',
   'Single EDF(+) file per block' = 'native_edf',
@@ -167,7 +171,7 @@ LFP_FORMATS = list(
 )
 
 validate_raw_file_lfp <- function(subject_code, blocks, electrodes, format, check_content = TRUE, ...){
-  m <- LFP_FORMATS[[format]]
+  m <- IMPORT_FORMATS[[format]]
   if(is.null(m)){
     return(structure(FALSE, reason = list(
       'Unknown format' = character(0)
@@ -237,21 +241,16 @@ validate_raw_file_lfp.native_matlab <- function(
       elec_bak <- as.integer(number[sel])
       files <- files[sel]
       abspaths <- file.path(info$path, files)
-      dlen <- dipsaus::lapply_async2(abspaths, function(path){
+      dipsaus::make_forked_clusters(workers = max(raveio_getopt('max_worker'), 1))
+      dlen <- lapply(abspaths, function(path){
         tryCatch({
+          dl <- NA
           dat <- read_mat(path)
-          nms <- names(dat)
-          # guess which one is data?
-          for(nm in nms){
-            x <- dat[[nm]]
-            if(!is.numeric(x)){ next }
-            dm <- dim(x)
-            if(length(dm) > 2){ next }
-            if(dm == 2 && all(dm > 1)){ next }
-            if(length(x) < 100){ next }
-            return(length(x))
+          nm <- guess_raw_trace(dat = dat, electrodes = electrodes, is_vector = TRUE)
+          if(length(nm)){
+            dl <- length(dat[[nm[[1]]]])
           }
-          NA
+          dl
         }, error = function(e){
           NA
         })
@@ -262,7 +261,7 @@ validate_raw_file_lfp.native_matlab <- function(
         if(length(mis_d)){
           validation_failure(
             'Electrode data lengths are not consistent or missing' =
-              sprintf('Electrode %s\'s file is broken in block %s', dipsaus::deparse_svec(mis_d), b),
+              sprintf('Files for electrode %s are broken in block %s', dipsaus::deparse_svec(mis_d), b),
             .add = TRUE
           )
         }
@@ -288,7 +287,7 @@ validate_raw_file_lfp.native_matlab <- function(
           if(!is.numeric(x)){ next }
           dm <- dim(x)
           if(length(dm) > 2){ next }
-          if(dm == 2 && all(dm > 1)){ next }
+          if(length(dm) == 2 && all(dm > 1)){ next }
           len <- length(x)
           if(len < 100){ next }
           if(is.null(snapshot)){

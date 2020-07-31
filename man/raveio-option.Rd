@@ -12,7 +12,7 @@ raveio_setopt(key, value, .save = TRUE)
 
 raveio_resetopt(all = FALSE)
 
-raveio_getopt(key, default = NA)
+raveio_getopt(key, default = NA, temp = TRUE)
 
 raveio_confpath(cfile = "settings.yaml")
 }
@@ -27,6 +27,10 @@ change option. Not recommended to use it directly.}
 \item{all}{whether to reset all non-default keys}
 
 \item{default}{is key not found, return default value}
+
+\item{temp}{when saving, whether the key-value pair should be considered
+temporary, a temporary settings will be ignored when saving; when getting
+options, setting \code{temp} to false will reveal the actual settings.}
 
 \item{cfile}{file name in configuration path}
 }

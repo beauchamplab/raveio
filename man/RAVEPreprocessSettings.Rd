@@ -79,9 +79,10 @@ locked}
 
 \item{\code{@freeze_blocks}}{whether to free block, internally used}
 
-\item{\code{@freeze_lfp}}{whether to free 'LFP' electrodes, internally used}
+\item{\code{@freeze_lfp_ecog}}{whether to freeze electrodes that record
+'LFP' and 'ECoG' signals, internally used}
 
-\item{\code{@lfp_sample_rate}}{'LFP' electrode sample rates, internally used}
+\item{\code{@lfp_ecog_sample_rate}}{'LFP' and 'ECoG' sample rates, internally used}
 
 \item{\code{all_blocks}}{characters, all possible blocks even not included in
 some projects}
@@ -95,6 +96,7 @@ some projects}
 \itemize{
 \item \href{#method-new}{\code{RAVEPreprocessSettings$new()}}
 \item \href{#method-valid}{\code{RAVEPreprocessSettings$valid()}}
+\item \href{#method-has_raw}{\code{RAVEPreprocessSettings$has_raw()}}
 \item \href{#method-set_blocks}{\code{RAVEPreprocessSettings$set_blocks()}}
 \item \href{#method-set_electrodes}{\code{RAVEPreprocessSettings$set_electrodes()}}
 \item \href{#method-set_sample_rates}{\code{RAVEPreprocessSettings$set_sample_rates()}}
@@ -134,6 +136,16 @@ whether configuration is valid or not
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-has_raw"></a>}}
+\if{latex}{\out{\hypertarget{method-has_raw}{}}}
+\subsection{Method \code{has_raw()}}{
+whether raw data folder exists
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$has_raw()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_blocks"></a>}}
 \if{latex}{\out{\hypertarget{method-set_blocks}{}}}
 \subsection{Method \code{set_blocks()}}{
@@ -159,7 +171,11 @@ structure is not native, for example, 'BIDS' format}
 \subsection{Method \code{set_electrodes()}}{
 set electrodes
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$set_electrodes(electrodes, type = "LFP", add = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$set_electrodes(
+  electrodes,
+  type = c("LFP", "ECoG", "Spike", "EEG"),
+  add = FALSE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -167,7 +183,8 @@ set electrodes
 \describe{
 \item{\code{electrodes}}{integer vectors}
 
-\item{\code{type}}{type of electrodes}
+\item{\code{type}}{type of electrodes, options are \code{LFP}, \code{ECoG},
+and \code{Spike}.}
 
 \item{\code{add}}{whether to add to current settings}
 }
@@ -180,7 +197,10 @@ set electrodes
 \subsection{Method \code{set_sample_rates()}}{
 set sample frequency
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$set_sample_rates(srate, type = "LFP")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$set_sample_rates(
+  srate,
+  type = c("LFP", "ECoG", "Spike", "EEG")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

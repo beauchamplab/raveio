@@ -1,5 +1,6 @@
 
 default_settings <- function(s = dipsaus::fastmap2()){
+  s[['..temp']] <- list()
   s[['tensor_temp_path']] <- '~/rave_data/cache_dir/'
   s[['verbose_level']] <- 'DEBUG'
   s[['raw_data_dir']] <- '~/rave_data/raw_dir/'
@@ -89,8 +90,9 @@ validate_settings <- function(s = dipsaus::fastmap2()){
   s
 }
 
-load_setting <- function(){
+load_setting <- function(reset_temp = TRUE){
   s <- get0('.settings', ifnotfound = default_settings())
+  tmp <- s$..temp
   sess_str <- get('.session_string')
   conf_path <- R_user_dir(package = 'raveio', which = 'config')
   conf_file <- file.path(conf_path, 'settings.yaml')
@@ -98,6 +100,12 @@ load_setting <- function(){
     load_yaml(conf_file, map = s)
   }
   s$session_string <- sess_str
+  if( reset_temp ){
+    s$..temp <- list()
+  } else {
+    s$..temp <- tmp
+  }
+
   validate_settings(s)
   s
 }
@@ -111,6 +119,9 @@ load_setting <- function(){
 #' @param .save whether to save to local drive, internally used to temporary
 #' change option. Not recommended to use it directly.
 #' @param cfile file name in configuration path
+#' @param temp when saving, whether the key-value pair should be considered
+#' temporary, a temporary settings will be ignored when saving; when getting
+#' options, setting \code{temp} to false will reveal the actual settings.
 #' @seealso \code{R_user_dir}
 #' @details \code{raveio_setopt} stores key-value pair in local path.
 #' The values are persistent and shared across multiple sessions.
@@ -142,15 +153,24 @@ raveio_setopt <- function(key, value, .save = TRUE){
 
   conf_path <- R_user_dir(package = 'raveio', which = 'config')
   conf_file <- file.path(conf_path, 'settings.yaml')
-  s <- load_setting()
-  s[[key]] <- value
+  s <- load_setting(reset_temp = FALSE)
 
+  previous <- s[[key]]
+  s[[key]] <- value
   validate_settings(s)
 
   if( .save ){
-    .subset2(s, 'remove')('session_string')
+    s$..temp[[key]] <- NULL
+    s <- as.list(s)
+    s <- s[!names(s) %in% c('session_string', '..temp')]
     dir_create2(conf_path)
     save_yaml(s, conf_file)
+  } else {
+    # temporarily set value and restore previous value because
+    s$..temp[[key]] <- s[[key]]
+    if(length(previous) && all(!is.na(previous))){
+      s[[key]] <- previous
+    }
   }
 
   invisible(value)
@@ -162,7 +182,7 @@ raveio_resetopt <- function(all = FALSE){
   s <- get('.settings')
   if(all){
     nms <- names(s)
-    nms <- nms[!nms %in% c('session_string')]
+    nms <- nms[!nms %in% c('session_string', '..temp')]
     .subset2(s, 'remove')(nms)
   }
   default_settings(s)
@@ -188,13 +208,23 @@ raveio_resetopt <- function(all = FALSE){
 
 #' @rdname raveio-option
 #' @export
-raveio_getopt <- function(key, default = NA){
+raveio_getopt <- function(key, default = NA, temp = TRUE){
   s <- get('.settings')
+  tmp <- s$..temp
 
   if(missing(key)){
-    return(as.list(s))
+    s <- as.list(s)
+    if(temp){
+      for(nm in names(tmp)){
+        s[[nm]] <- tmp[[nm]]
+      }
+    }
+    return(s)
   }
 
+  if(temp && (key %in% names(tmp))){
+    return(tmp[[key]])
+  }
   if(.subset2(s, 'has')(key)){
     return(s[[key]])
   }
@@ -213,7 +243,7 @@ raveio_confpath <- function(cfile = 'settings.yaml'){
   pkg <- getNamespace(pkgname)
   sess_str <- rand_string(15)
   assign('.session_string', sess_str, envir = pkg)
-  s <- load_setting()
+  s <- load_setting(reset_temp = TRUE)
   assign('.settings', s, envir = pkg)
 
   cenv <- environment(.subset2(s, 'reset'))
@@ -235,7 +265,7 @@ raveio_confpath <- function(cfile = 'settings.yaml'){
 }
 
 .onUnload <- function(libpath){
-  s <- load_setting()
+  s <- load_setting(reset_temp = TRUE)
   sess_str <- get('.session_string')
   ts_path <- file.path(s[['tensor_temp_path']], sess_str)
 

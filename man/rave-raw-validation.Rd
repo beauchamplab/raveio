@@ -4,7 +4,7 @@
 \name{rave-raw-validation}
 \alias{rave-raw-validation}
 \alias{validate_raw_file}
-\alias{LFP_FORMATS}
+\alias{IMPORT_FORMATS}
 \title{Validate raw files in 'rave' directory}
 \format{
 An object of class \code{list} of length 6.
@@ -15,11 +15,11 @@ validate_raw_file(
   blocks,
   electrodes,
   format,
-  data_type = "lfp",
+  data_type = c("continuous"),
   ...
 )
 
-LFP_FORMATS
+IMPORT_FORMATS
 }
 \arguments{
 \item{subject_code}{subject code, direct folder under 'rave' raw data path}
@@ -30,9 +30,9 @@ files following 'BIDS' convention, see details}
 \item{electrodes}{electrodes to verify}
 
 \item{format}{integer or character. For characters, run
-\code{names(LFP_FORMATS)}}
+\code{names(IMPORT_FORMATS)}}
 
-\item{data_type}{currently only support \code{'LFP'} electrodes}
+\item{data_type}{currently only support continuous type of signals}
 
 \item{...}{other parameters used if validating \code{'BIDS'} format; see
 details.}

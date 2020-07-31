@@ -75,7 +75,12 @@ RAVEPreprocessSettings <- R6::R6Class(
 
     #' @description whether configuration is valid or not
     valid = function(){
-      length(self$data) > 0
+      (length(self$data) > 0)
+    },
+
+    #' @description whether raw data folder exists
+    has_raw = function(){
+      dir.exists(self$raw_path)
     },
 
     #' @description set blocks
@@ -101,13 +106,15 @@ RAVEPreprocessSettings <- R6::R6Class(
 
     #' @description set electrodes
     #' @param electrodes integer vectors
-    #' @param type type of electrodes
+    #' @param type type of electrodes, options are \code{LFP}, \code{ECoG},
+    #' and \code{Spike}.
     #' @param add whether to add to current settings
-    set_electrodes = function(electrodes, type = 'LFP', add = FALSE){
+    set_electrodes = function(electrodes, type = c('LFP', 'ECoG', 'Spike', 'EEG'), add = FALSE){
       elec <- self$electrodes
       imported <- self$data_imported[elec %in% electrodes]
       if(length(imported) && any(imported)){
-        stop('Electrodes ', dipsaus::deparse_svec(imported), ' have/has been imported. Cannot set electrodes')
+        stop('Electrodes ', dipsaus::deparse_svec(imported),
+             ' have/has been imported. Cannot set electrodes')
       }
 
       type <- match.arg(type)
@@ -137,33 +144,42 @@ RAVEPreprocessSettings <- R6::R6Class(
     #' @param srate sample rate, must be positive number
     #' @param type electrode type to set sample rate. In 'rave', all electrodes
     #' with the same type must have the same sample rate.
-    set_sample_rates = function(srate, type = 'LFP'){
+    set_sample_rates = function(srate, type = c('LFP', 'ECoG', 'Spike', 'EEG')){
       stopifnot2(is_valid_ish(srate, max_len = 1, mode = 'numeric'),
                  msg = 'sample rate must be positive')
-      type <- match.arg(type)
+      type <- type[type %in% c('LFP', 'ECoG', 'Spike', 'EEG')]
 
-      imported <- self$data_imported[self$electrode_types == type]
+      # ECoG and LFP should be consistent in sample rates
+      if(any(type %in% c('LFP', 'ECoG'))){
+        type <- unique(c(type, c('LFP', 'ECoG')))
+      }
+      imported <- self$data_imported & self$electrode_types %in% type
       if(length(imported) && any(imported)){
-        stop('Some/All ', type, ' electrodes have been imported. Cannot change sample rate now.')
+        # check whether sample rates are the same
+        original_srates <- self$sample_rates[imported]
+        original_srates <- unique(original_srates)
+        original_srates <- original_srates[!is.na(original_srates)]
+        if(length(original_srates) & any(original_srates != srate)){
+          stop('Some/All electrodes with given types have been imported. Cannot change sample rate now.')
+        }
       }
 
-
-      if(type == 'LFP'){
+      # To support previous format (RAVE 1.0 uses global settings for sample rate)
+      if(any(type %in% c('LFP', 'ECoG'))){
         # support old format
         self$data$sample_rate <- srate
         self$data$srate <- srate
       }
-      elec <- self$electrodes
       sel <- self$electrode_types %in% type
       if(any(sel)){
-
         all_elec = self$electrodes
-        sapply(all_elec, function(e){
+        sapply(all_elec[sel], function(e){
           x = self$data[[as.character(e)]]
           if(!is.list(x)){ stop('Please set electrodes first. Cannot find settings for electrode ', e) }
           self$data[[as.character(e)]]$sample_rate <- srate
         })
       }
+      invisible(self$sample_rates)
     },
 
     #' @description convert old format to new formats
@@ -218,7 +234,7 @@ RAVEPreprocessSettings <- R6::R6Class(
       dir_create2(dirname(self$backup_path))
       self$data$signature = rand_string()
       # Make sure the basic information gets saved
-      self$migrate(force = TRUE)
+      self$migrate(force = FALSE)
       save_yaml(self$data, self$path)
       save_yaml(list(preprocess = as.list(self$data),
                      preprocess_signature = self$data$signature),
@@ -388,6 +404,7 @@ RAVEPreprocessSettings <- R6::R6Class(
     #' \code{\link{RAVEAbstarctElectrode}} or \code{\link{LFP_electrode}}
     electrode_types = function(){
       all_elec = self$electrodes
+      # RAVE 1.0 doesn't have electrode signal types, default to LFP
       if(self$old_version){
         return(rep('LFP', length(all_elec)))
       }
@@ -410,9 +427,10 @@ RAVEPreprocessSettings <- R6::R6Class(
       }
     },
 
-    #' @field @freeze_lfp whether to free 'LFP' electrodes, internally used
-    `@freeze_lfp` = function(){
-      is_lfp <- (self$electrode_types == 'LFP')
+    #' @field @freeze_lfp_ecog whether to freeze electrodes that record
+    #' 'LFP' and 'ECoG' signals, internally used
+    `@freeze_lfp_ecog` = function(){
+      is_lfp <- (self$electrode_types %in% c('LFP', 'ECoG'))
       if(length(is_lfp) && any(self$data_imported[is_lfp])){
         return(TRUE)
       } else{
@@ -420,9 +438,9 @@ RAVEPreprocessSettings <- R6::R6Class(
       }
     },
 
-    #' @field @lfp_sample_rate 'LFP' electrode sample rates, internally used
-    `@lfp_sample_rate` = function(){
-      is_lfp <- (self$electrode_types == 'LFP')
+    #' @field @lfp_ecog_sample_rate 'LFP' and 'ECoG' sample rates, internally used
+    `@lfp_ecog_sample_rate` = function(){
+      is_lfp <- (self$electrode_types %in% c('LFP', 'ECoG'))
       if(length(is_lfp) && any(is_lfp)){
         self$sample_rates[is_lfp][[1]]
       } else {

@@ -12,8 +12,9 @@ rave_import(
   format,
   sample_rate,
   conversion = NA,
-  data_type = "lfp",
+  data_type = c("LFP", "ECoG", "EEG"),
   task_runs = NULL,
+  add = FALSE,
   ...
 )
 }
@@ -34,16 +35,21 @@ and 'BIDS'}
 \item{electrodes}{integers electrode numbers}
 
 \item{format}{integer from 1 to 6, or character. For characters, you can get
-options by running \code{names(LFP_FORMATS)}}
+options by running \code{names(IMPORT_FORMATS)}}
 
 \item{sample_rate}{sample frequency, must be positive}
 
 \item{conversion}{physical unit conversion, choices are \code{NA},
 \code{V}, \code{mV}, \code{uV}}
 
-\item{data_type}{electrode type; only \code{'lfp'} is supported}
+\item{data_type}{electrode type; only \code{'LFP'}, \code{'ECoG'}, and
+\code{'EEG'} are supported}
 
 \item{task_runs}{for 'BIDS' formats only, see Section "Block vs. Session"}
+
+\item{add}{whether to add electrodes. If set to true, then only new
+electrodes are allowed to be imported, blocks will be ignored and trying to
+import electrodes that have been imported will still result in error.}
 
 \item{...}{other parameters}
 }
