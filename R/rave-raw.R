@@ -2,7 +2,7 @@
 
 # Guess the name of raw traces from a named list
 guess_raw_trace <- function(dat, electrodes = NULL, is_vector = TRUE){
-  nms = names(dat)
+  nms <- names(dat)
   for(nm in nms){
     x <- dat[[nm]]
     if(!is.numeric(x) || mode(x) != "numeric"){ next }
@@ -154,14 +154,14 @@ validation_failure <- local({
     }
     re <- as.list(reasons)
     re <- re[vapply(re, function(x){ length(x) > 0 }, FALSE)]
-    if(!length(re)){ re = NULL }
+    if(!length(re)){ re <- NULL }
     structure(FALSE, reason = re, class = 'validate_failure')
   }
 })
 
 #' @rdname rave-raw-validation
 #' @export
-IMPORT_FORMATS = list(
+IMPORT_FORMATS <- list(
   '.mat/.h5 file per electrode per block' = 'native_matlab',
   'Single .mat/.h5 file per block' = 'native_matlab2',
   'Single EDF(+) file per block' = 'native_edf',
@@ -226,7 +226,7 @@ validate_raw_file_lfp.native_matlab <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   # if check_content, open all files to check length
@@ -302,7 +302,7 @@ validate_raw_file_lfp.native_matlab <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   return(structure(TRUE, info = finfo, snapshot = snapshot, class = 'validate_success'))
@@ -337,7 +337,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   if( check_content && length(electrodes) ){
@@ -397,7 +397,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   return(structure(TRUE, info = finfo, snapshot = snapshot, class = 'validate_success'))
@@ -439,7 +439,7 @@ validate_raw_file_lfp.native_edf <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   if( check_content && length(electrodes) ){
@@ -497,7 +497,7 @@ validate_raw_file_lfp.native_edf <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   return(structure(TRUE, info = finfo, snapshot = snapshot, class = 'validate_success'))
@@ -540,7 +540,7 @@ validate_raw_file_lfp.native_brainvis <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   if( check_content && length(electrodes) ){
@@ -574,7 +574,7 @@ validate_raw_file_lfp.native_brainvis <- function(
     })
 
     # get validation failure messages
-    failed = validation_failure(.add = TRUE)
+    failed <- validation_failure(.add = TRUE)
     if(length(attr(failed, 'reason'))){ return(failed) }
 
     srates <- unlist(srates)
@@ -621,7 +621,7 @@ validate_raw_file_lfp.native_brainvis <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   return(structure(TRUE, info = finfo, snapshot = snapshot, class = 'validate_success'))
@@ -704,7 +704,7 @@ validate_raw_file_lfp.bids <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   # Check whether electrodes exist in all runs and get run names
@@ -777,7 +777,7 @@ validate_raw_file_lfp.bids <- function(
   }
 
   # get validation failure messages
-  failed = validation_failure(.add = TRUE)
+  failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   srates <- unique(run_names$srates)

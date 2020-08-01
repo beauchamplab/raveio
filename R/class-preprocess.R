@@ -233,7 +233,7 @@ RAVEPreprocessSettings <- R6::R6Class(
     save = function(){
       dir_create2(dirname(self$path))
       dir_create2(dirname(self$backup_path))
-      self$data$signature = rand_string()
+      self$data$signature <- rand_string()
       # Make sure the basic information gets saved
       self$migrate(force = FALSE)
       save_yaml(self$data, self$path)
@@ -246,9 +246,9 @@ RAVEPreprocessSettings <- R6::R6Class(
 
     #' @field version configure version of currently stored files
     version = function(){
-      v = self$data$preprocess_version
+      v <- self$data$preprocess_version
       if(is.null(v)){
-        v = -1
+        v <- -1
       }
       v
     },
@@ -272,12 +272,12 @@ RAVEPreprocessSettings <- R6::R6Class(
     sample_rates = function(){
       # old format
       if(self$old_version){
-        srate = private$get_from(c('sample_rate', 'srate'), default = NA)
+        srate <- private$get_from(c('sample_rate', 'srate'), default = NA)
         return(rep(srate, length(self$electrodes)))
       }
-      all_elec = self$electrodes
+      all_elec <- self$electrodes
       sapply(all_elec, function(e){
-        x = self$data[[as.character(e)]]
+        x <- self$data[[as.character(e)]]
         if(length(x$sample_rate) == 1){
           return(x$sample_rate)
         } else {
@@ -293,7 +293,7 @@ RAVEPreprocessSettings <- R6::R6Class(
       # NOTCH_FILTERED = 2
       # WAVELETED = 3
       # REFERENCED = 4
-      all_elec = self$electrodes
+      all_elec <- self$electrodes
       if(self$old_version){
         # old format
         if(isTRUE(self$data$checklevel >= 2)){
@@ -305,7 +305,7 @@ RAVEPreprocessSettings <- R6::R6Class(
 
       # New format, all electrodes are recorded individually
       vapply(all_elec, function(e){
-        x = self$data[[as.character(e)]]
+        x <- self$data[[as.character(e)]]
         isTRUE(x$notch_filtered)
       }, FUN.VALUE = FALSE)
     },
@@ -313,10 +313,10 @@ RAVEPreprocessSettings <- R6::R6Class(
     #' @field has_wavelet whether each electrode has wavelet transforms
     has_wavelet = function(){
       # old format
-      all_elec = self$electrodes
+      all_elec <- self$electrodes
       if(self$old_version){
         if(isTRUE(self$data$checklevel >= 3)){
-          log = self$data$wavelet_log
+          log <- self$data$wavelet_log
           if(!length(log)){ return(NULL) }
           return(all_elec %in% log[[length(log)]]$electrodes)
         } else{
@@ -326,14 +326,14 @@ RAVEPreprocessSettings <- R6::R6Class(
 
       # New format, all electrodes are recorded individually
       vapply(all_elec, function(e){
-        x = self$data[[as.character(e)]]
+        x <- self$data[[as.character(e)]]
         isTRUE(x$has_wavelet)
       }, FUN.VALUE = FALSE)
     },
 
     #' @field data_imported whether electrodes are imported
     data_imported = function(){
-      all_elec = self$electrodes
+      all_elec <- self$electrodes
       if(self$old_version){
         if(isTRUE(private$get_from('checklevel') >= 1)){
           return(rep(TRUE, length(all_elec)))
@@ -360,7 +360,7 @@ RAVEPreprocessSettings <- R6::R6Class(
 
     #' @field electrode_locked whether electrode is imported and locked
     electrode_locked = function(){
-      all_elec = self$electrodes
+      all_elec <- self$electrodes
       if(self$old_version){
         return(rep(self$data_locked, length(all_elec)))
       }
@@ -372,11 +372,11 @@ RAVEPreprocessSettings <- R6::R6Class(
     #' @field wavelet_params wavelet parameters
     wavelet_params = function(){
       if(self$old_version){
-        log = self$data$wavelet_log
+        log <- self$data$wavelet_log
         if(!length(log)){
           return(NULL)
         } else {
-          log = log[[length(log)]]
+          log <- log[[length(log)]]
           return(list(
             downsample_to = log$target_srate,
             frequencies = log$frequencies,
@@ -404,13 +404,13 @@ RAVEPreprocessSettings <- R6::R6Class(
     #' @field electrode_types electrode types, see \code{type} field in
     #' \code{\link{RAVEAbstarctElectrode}} or \code{\link{LFP_electrode}}
     electrode_types = function(){
-      all_elec = self$electrodes
+      all_elec <- self$electrodes
       # RAVE 1.0 doesn't have electrode signal types, default to LFP
       if(self$old_version){
         return(rep('LFP', length(all_elec)))
       }
       vapply(all_elec, function(e){
-        type = self$data[[as.character(e)]]$electrode_type
+        type <- self$data[[as.character(e)]]$electrode_type
         if(length(type) != 1){
           return('LFP')
         }

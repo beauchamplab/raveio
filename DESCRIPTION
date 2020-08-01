@@ -1,6 +1,6 @@
 Package: raveio
 Type: Package
-Title: Utility Toolbox for RAVE package
+Title: Utility Toolbox for RAVE Package
 Version: 0.0.2
 Language: en-US
 Authors@R: c(
@@ -30,8 +30,8 @@ Imports:
     dipsaus (>= 0.0.9),
     R.matlab (>= 3.6.2),
     glue,
+    later,
     stringr (>= 1.4.0),
-    rstudioapi (>= 0.11),
     rlang (>= 0.4.7),
     edfReader (>= 1.2.1),
     lazyarray (>= 1.1.0),

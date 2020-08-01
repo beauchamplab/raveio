@@ -7,7 +7,7 @@
 safe_write_csv(x, file, ..., quiet = FALSE)
 }
 \arguments{
-\item{x, file, ...}{pass to \code{\link[utils]{write.csv}}}
+\item{x, file, ...}{pass to \code{write.csv}}
 
 \item{quiet}{whether to suppress overwrite message}
 }

@@ -8,13 +8,13 @@
 #'
 #' # Save to local disk
 #' f <- tempfile()
-#' fst::write_fst(as.data.frame(x), path = f, compress = 100)
+#' fst::write_fst(as.data.frame(x), path = f)
 #'
 #' # Load via LazyFST
 #' dat <- LazyFST$new(file_path = f, dims = c(10000, 100))
 #'
+#' # dat < 1 MB
 #' pryr::object_size(dat)
-#' #> 236 kB
 #'
 #' # Check whether the data is identical
 #' range(dat[] - x)
@@ -250,8 +250,8 @@ exp.LazyFST <- function(x){
 #' @title Read a 'fst' file
 #' @param path path to 'fst' file: must not be connection.
 #' @param x data frame to write to path
-#' @param as.data.table passed to \code{\link[fst]{read_fst}}
-#' @param ... passed to \code{\link[fst]{read_fst}} or \code{\link[fst]{write_fst}}
+#' @param as.data.table passed to \code{read_fst} in \code{fst} package
+#' @param ... passed to \code{read_fst} or \code{\link[fst]{write_fst}}
 #' @name read-write-fst
 NULL
 

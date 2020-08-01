@@ -1,7 +1,7 @@
 #' Save data to comma separated value files with backups
 #' @description Save comma separated value files, if file exists,
 #' backup original file.
-#' @param x,file,... pass to \code{\link[utils]{write.csv}}
+#' @param x,file,... pass to \code{write.csv}
 #' @param quiet whether to suppress overwrite message
 #' @return Normalized path of \code{file}
 #'

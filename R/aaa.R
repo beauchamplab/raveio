@@ -1,6 +1,10 @@
 #' @importFrom dipsaus %?<-%
 #' @importFrom glue glue
 #' @importFrom R6 R6Class
+#' @importFrom later later
+#' @importFrom rlang quo
+#' @importFrom rlang eval_tidy
+#' @importFrom rlang is_formula
 NULL
 
 #' @export

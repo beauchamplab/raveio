@@ -140,7 +140,7 @@ LazyH5 <- R6::R6Class(
     #' @param new_dataset only used when the internal pointer is closed, or
     #' to write the data
     #' @param robj data array to save
-    #' @param ... passed to \code{\link[hdf5r]{createDataSet}}
+    #' @param ... passed to \code{createDataSet} in \code{hdf5r} package
     open = function(new_dataset = FALSE, robj, ...){
 
       # check data pointer

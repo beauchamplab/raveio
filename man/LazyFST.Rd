@@ -13,13 +13,13 @@ x <- matrix(rnorm(1000000), ncol = 100)
 
 # Save to local disk
 f <- tempfile()
-fst::write_fst(as.data.frame(x), path = f, compress = 100)
+fst::write_fst(as.data.frame(x), path = f)
 
 # Load via LazyFST
 dat <- LazyFST$new(file_path = f, dims = c(10000, 100))
 
+# dat < 1 MB
 pryr::object_size(dat)
-#> 236 kB
 
 # Check whether the data is identical
 range(dat[] - x)

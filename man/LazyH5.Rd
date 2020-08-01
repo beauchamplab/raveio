@@ -166,7 +166,7 @@ to write the data}
 
 \item{\code{robj}}{data array to save}
 
-\item{\code{...}}{passed to \code{\link[hdf5r]{createDataSet}}}
+\item{\code{...}}{passed to \code{createDataSet} in \code{hdf5r} package}
 }
 \if{html}{\out{</div>}}
 }

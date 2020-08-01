@@ -15,9 +15,9 @@ load_fst(path, ..., as.data.table = TRUE)
 
 \item{path}{path to 'fst' file: must not be connection.}
 
-\item{...}{passed to \code{\link[fst]{read_fst}} or \code{\link[fst]{write_fst}}}
+\item{...}{passed to \code{read_fst} or \code{\link[fst]{write_fst}}}
 
-\item{as.data.table}{passed to \code{\link[fst]{read_fst}}}
+\item{as.data.table}{passed to \code{read_fst} in \code{fst} package}
 }
 \description{
 Read a 'fst' file

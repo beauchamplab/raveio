@@ -24,7 +24,7 @@ files prior and after version 6.0
 \code{\link[R.matlab]{readMat}} can only read 'Matlab' files
 prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
 to store its data, and \code{\link[R.matlab]{readMat}} raises errors.
-hence \code{\link[hdf5r]{H5File}} is used to
+hence \code{H5File} (package \code{hdf5r}) is used to
 read the file.
 
 The performance of \code{read_mat} can be limited when
