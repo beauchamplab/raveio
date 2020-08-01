@@ -52,7 +52,7 @@ read_vmrk <- function(file) {
 #' @param file path to \code{'vhdr'} header file
 #' @param header header object returned by \code{read_eeg_header}
 #' @param path optional, path to data file if original data file is missing or
-#' renamed.
+#' renamed; must be absolute path.
 #'
 #' @return \code{read_eeg_header} returns a list containing information below:
 #' \item{raw}{raw header contents}
@@ -85,6 +85,12 @@ read_vmrk <- function(file) {
 #' when reading headers. A marker table contains six columns: marker number,
 #' type, description, start position (in data point), size (duration in
 #' data points), and target channel (0 means applied for all channels).
+#'
+#' Signal file name is usually contained within header file. Therefore it is
+#' desired that the signal file name never changed once created. However,
+#' in some cases when the signal files are renamed and cannot be indexed
+#' by header files, please specify \code{path} to force load signals from
+#' a different file.
 #'
 #' @examples
 #'
@@ -281,3 +287,5 @@ read_eeg_data <- function(header, path = NULL) {
   ))
 
 }
+
+

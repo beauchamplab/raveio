@@ -39,7 +39,8 @@ Analyze file structures and import all \code{json} and
 \code{tsv} files. File specification can be found at
 \url{https://bids-specification.readthedocs.io/en/stable/}, chapter
 "Modality specific files", section "Intracranial Electroencephalography"
-(\doi{10.1038/s41597-019-0105-7})
+(\doi{10.1038/s41597-019-0105-7}). Please note that this function has
+very limited support on BIDS format.
 }
 \examples{
 

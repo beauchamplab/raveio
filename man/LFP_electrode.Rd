@@ -8,99 +8,13 @@ Definition for electrodes that collects 'LFP' signals
 
 Definition for electrodes that collects 'LFP' signals
 }
-\examples{
-\dontrun{
-
-# Download demo subject DemoSubject ~700MB data
-
-# Electrode 14
-e <- LFP_electrode$new(subject = 'demo/DemoSubject',
-                       number = 14, is_reference = FALSE)
-
-# Reference "ref_13-16,24"
-ref <- LFP_electrode$new(subject = 'demo/DemoSubject',
-                         number = "ref_13-16,24", is_reference = TRUE)
-
-# ------ Reference ------
-# By default there is no reference
-e$reference_name     # "noref
-
-# set reference
-e$set_reference(reference = ref)
-e$reference_name     # "ref_13-16,24"
-
-# Set epoch
-e$set_epoch(epoch = 'auditory_onset')
-
-# Now epoch power
-power <- e$epoch_power(before_onset = 1, after_onset = 2)
-
-# Trial x Frequency x Time x Electrodes
-power
-
-# Subset power
-subset(power, Time ~ Time < 0, Electrode ~ Electrode == 14)
-
-# clear memory in RAM and cache on hard disk
-e$clear_cache()
-e$clear_memory()
-
-
-}
-
-}
 \section{Super classes}{
 \code{\link[raveio:RAVEAbstarctElectrode]{raveio::RAVEAbstarctElectrode}} -> \code{\link[raveio:Continuous_Electrode]{raveio::Continuous_Electrode}} -> \code{LFP_electrode}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{type}}{type of electrode}
+\item{\code{type}}{type of signals collected by the electrode}
 }
 \if{html}{\out{</div>}}
-}
-\section{Methods}{
-\subsection{Public methods}{
-\itemize{
-\item \href{#method-clone}{\code{LFP_electrode$clone()}}
-}
-}
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="RAVEAbstarctElectrode" data-id=".set_cachename">}\href{../../raveio/html/RAVEAbstarctElectrode.html#method-.set_cachename}{\code{raveio::RAVEAbstarctElectrode$.set_cachename()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="RAVEAbstarctElectrode" data-id=".set_reference">}\href{../../raveio/html/RAVEAbstarctElectrode.html#method-.set_reference}{\code{raveio::RAVEAbstarctElectrode$.set_reference()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="RAVEAbstarctElectrode" data-id="set_epoch">}\href{../../raveio/html/RAVEAbstarctElectrode.html#method-set_epoch}{\code{raveio::RAVEAbstarctElectrode$set_epoch()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="clear_cache">}\href{../../raveio/html/Continuous_Electrode.html#method-clear_cache}{\code{raveio::Continuous_Electrode$clear_cache()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="clear_memory">}\href{../../raveio/html/Continuous_Electrode.html#method-clear_memory}{\code{raveio::Continuous_Electrode$clear_memory()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="epoch_power">}\href{../../raveio/html/Continuous_Electrode.html#method-epoch_power}{\code{raveio::Continuous_Electrode$epoch_power()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="initialize">}\href{../../raveio/html/Continuous_Electrode.html#method-initialize}{\code{raveio::Continuous_Electrode$initialize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="is_power_cached">}\href{../../raveio/html/Continuous_Electrode.html#method-is_power_cached}{\code{raveio::Continuous_Electrode$is_power_cached()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="load_unreferenced_phase">}\href{../../raveio/html/Continuous_Electrode.html#method-load_unreferenced_phase}{\code{raveio::Continuous_Electrode$load_unreferenced_phase()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="load_unreferenced_power">}\href{../../raveio/html/Continuous_Electrode.html#method-load_unreferenced_power}{\code{raveio::Continuous_Electrode$load_unreferenced_power()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="load_unreferenced_voltage">}\href{../../raveio/html/Continuous_Electrode.html#method-load_unreferenced_voltage}{\code{raveio::Continuous_Electrode$load_unreferenced_voltage()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="reference_phase">}\href{../../raveio/html/Continuous_Electrode.html#method-reference_phase}{\code{raveio::Continuous_Electrode$reference_phase()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="reference_power">}\href{../../raveio/html/Continuous_Electrode.html#method-reference_power}{\code{raveio::Continuous_Electrode$reference_power()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="reference_voltage">}\href{../../raveio/html/Continuous_Electrode.html#method-reference_voltage}{\code{raveio::Continuous_Electrode$reference_voltage()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Continuous_Electrode" data-id="set_reference">}\href{../../raveio/html/Continuous_Electrode.html#method-set_reference}{\code{raveio::Continuous_Electrode$set_reference()}}\out{</span>}
-}
-\out{</details>}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$clone(deep = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

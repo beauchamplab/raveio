@@ -8,25 +8,6 @@ Definition for preprocess configurations
 
 Definition for preprocess configurations
 }
-\examples{
-
-\dontrun{
-
-conf <- RAVEPreprocessSettings$new(subject = 'demo/DemoSubject')
-conf$blocks  # "008" "010" "011" "012"
-
-conf$electrodes   # 5 electrodes
-
-# Electrode 14 information
-conf$electrode_info(electrode = 14)
-
-conf$data_imported # All 5 electrodes are imported
-
-conf$data_locked   # Whether block, sample rates should be locked
-
-}
-
-}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -103,7 +84,6 @@ some projects}
 \item \href{#method-migrate}{\code{RAVEPreprocessSettings$migrate()}}
 \item \href{#method-electrode_info}{\code{RAVEPreprocessSettings$electrode_info()}}
 \item \href{#method-save}{\code{RAVEPreprocessSettings$save()}}
-\item \href{#method-clone}{\code{RAVEPreprocessSettings$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -260,22 +240,5 @@ save settings to hard disk
 \if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$save()}\if{html}{\out{</div>}}
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$clone(deep = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
 }
 }

@@ -18,3 +18,18 @@ Normalized path of \code{file}
 Save comma separated value files, if file exists,
 backup original file.
 }
+\examples{
+
+f <- tempfile()
+x <- data.frame(a = 1:10)
+
+# File not exists, same as write file, returns normalized `f`
+safe_write_csv(x, f)
+
+# Check whether file exists
+file.exists(f)
+
+# write again, and the old file will be copied
+safe_write_csv(x, f)
+
+}

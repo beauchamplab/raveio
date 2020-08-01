@@ -1,13 +1,36 @@
 # units
 
-
+#' Convert numeric number into print-friendly format
+#' @param x numeric or numeric vector
+#' @param unit the unit of \code{x}
+#' @param label prefix when printing \code{x}
+#' @return Still numeric, but print-friendly class
+#' @examples
+#'
+#' sp <- as_rave_unit(1024, 'GB', 'Hard-disk space is ')
+#' print(sp, digits = 0)
+#'
+#' sp - 12
+#'
+#' as.character(sp)
+#'
+#' as.numeric(sp)
+#'
+#' # Vectorize
+#' sp <- as_rave_unit(c(500,200), 'MB/s', c('Writing: ', 'Reading: '))
+#' print(sp, digits = 0, collapse = '\n')
+#'
+#' @export
+as_rave_unit <- function(x, unit, label = ''){
+  structure(x, unit = unit, labels = label, class = 'rave-units')
+}
 
 #' @export
 `as.character.rave-units` <- function(x, digits = 2, collapse = ', ', ...){
-  fmt = sprintf('%%.%df %%s', digits)
+  fmt <- sprintf('%%.%df %%s', digits)
   unit <- attr(x, 'unit')[[1]]
   if(!length(unit)){
-    unit = ''
+    unit <- ''
   }
   paste(attr(x, 'labels'), sprintf(fmt, x, unit), collapse = collapse, sep = '', ...)
 }
@@ -24,6 +47,7 @@
 #' @param units passed to \code{\link[dipsaus]{time_delta}}
 #' @param label \code{rave-units} label for display purpose.
 #' @return A number inherits \code{rave-units} class.
+#' @seealso \code{\link{as_rave_unit}}
 #' @examples
 #' start <- Sys.time()
 #' Sys.sleep(0.1)
@@ -37,7 +61,7 @@
 #'
 #' @export
 time_diff2 <- function(start, end, units = 'secs', label = ''){
-  delta = dipsaus::time_delta(start, end, units = units)
+  delta <- dipsaus::time_delta(start, end, units = units)
   structure(delta, unit = units, labels = label, class = 'rave-units')
 }
 

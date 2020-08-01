@@ -16,16 +16,39 @@
 #' the file is too big or has many datasets as it reads all the
 #' data contained in 'Matlab' file into memory.
 #' @seealso \code{\link[R.matlab]{readMat}}, \code{\link{load_h5}}
+#'
+#' @examples
+#'
+#' # Matlab .mat <= v7.3
+#' x <- matrix(1:16, 4)
+#' f <- tempfile()
+#' R.matlab::writeMat(con = f, x = x)
+#'
+#' read_mat(f)
+#'
+#' # Matlab .mat >= v7.3, using hdf5
+#' save_h5(x, file = f, name = 'x')
+#'
+#' read_mat(f)
+#'
+#' # For v7.3, you don't have to load all data into RAM
+#' dat <- read_mat(f, ram = FALSE)
+#' dat
+#'
+#' dat$x[]
+#'
+#'
+#'
 #' @export
 read_mat <- function(file, ram = TRUE){
   file <- normalizePath(file, mustWork = TRUE)
   # Check if the file is HDF5 format
   if( hdf5r::is_hdf5(file) ){
 
-    f = hdf5r::H5File$new(filename = file, mode = 'r')
+    f <- hdf5r::H5File$new(filename = file, mode = 'r')
     on.exit(f$close())
-    dset_names = hdf5r::list.datasets(f)
-    re = sapply(dset_names, function(nm){
+    dset_names <- hdf5r::list.datasets(f)
+    re <- sapply(dset_names, function(nm){
       r <- load_h5(file, name = nm)
       if(ram){
         r <- r[]
@@ -34,7 +57,7 @@ read_mat <- function(file, ram = TRUE){
     }, simplify = FALSE, USE.NAMES = TRUE)
 
   }else{
-    re = R.matlab::readMat(file)
+    re <- R.matlab::readMat(file)
   }
   re
 }

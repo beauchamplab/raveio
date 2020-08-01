@@ -18,3 +18,26 @@ Normalized file path
 \description{
 Write named list to file
 }
+\examples{
+
+
+x <- list(a = 1, b = 2)
+f <- tempfile()
+
+save_yaml(x, f)
+
+load_yaml(f)
+
+map <- dipsaus::fastmap2(missing_default = NA)
+map$c <- 'lol'
+load_yaml(f, map = map)
+
+map$a
+map$d
+
+
+}
+\seealso{
+\code{\link[dipsaus]{fastmap2}}, \code{\link{load_yaml}},
+\code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}},
+}

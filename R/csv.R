@@ -4,16 +4,32 @@
 #' @param x,file,... pass to \code{\link[utils]{write.csv}}
 #' @param quiet whether to suppress overwrite message
 #' @return Normalized path of \code{file}
+#'
+#' @examples
+#'
+#' f <- tempfile()
+#' x <- data.frame(a = 1:10)
+#'
+#' # File not exists, same as write file, returns normalized `f`
+#' safe_write_csv(x, f)
+#'
+#' # Check whether file exists
+#' file.exists(f)
+#'
+#' # write again, and the old file will be copied
+#' safe_write_csv(x, f)
+#'
 #' @export
 safe_write_csv <- function(x, file, ..., quiet = FALSE){
   if(file.exists(file)){
-    oldfile = stringr::str_replace(file, '\\.[cC][sS][vV]$', strftime(Sys.time(), '_[%Y%m%d_%H%M%S].csv'))
+    regexp <- stringr::regex('(\\.csv|)$', ignore_case = TRUE)
+    oldfile <- stringr::str_replace(file, regexp, strftime(Sys.time(), '_[%Y%m%d_%H%M%S].csv'))
     if(!quiet){
       catgl('Renaming file {file}\n  >> {oldfile}')
     }
     file.rename(file, oldfile)
   }
-  args = list(...)
+  args <- list(...)
   rn <- args$row.names
 
   tryCatch({
@@ -56,12 +72,48 @@ safe_write_csv <- function(x, file, ..., quiet = FALSE){
 #'
 #' 4. \code{stringsAsFactors} is by default \code{FALSE} to be
 #' consistent with R 4.0, if the function is called in R 3.x.
+#'
+#' @examples
+#'
+#' f <- tempfile()
+#' x <- data.frame(a = letters[1:10], b = 1:10, c = 2:11)
+#'
+#' # ------------------ Auto-detect row names ------------------
+#' # Write with rownames
+#' utils::write.csv(x, f, row.names = LETTERS[2:11])
+#'
+#' # read csv with base library utils
+#' table1 <- utils::read.csv(f, colClasses = c('character', 'character'))
+#'
+#' # 4 columns including row names
+#' str(table1)
+#'
+#' # read csv via safe_read_csv
+#' table2 <- safe_read_csv(f, colClasses = c('character', 'character'))
+#'
+#' # row names are automatically detected, hence 3 columns
+#' # Only first columns are characters, the third column is auto
+#' # detected as numeric
+#' str(table2)
+#'
+#' # read table without row names
+#' utils::write.csv(x, f, row.names = FALSE)
+#' table2 <- safe_read_csv(f, colClasses = c('character', 'character'))
+#'
+#' # still 3 columns, and row names are 1:nrow
+#' str(table2)
+#'
+#' # --------------- Blank data frame when nrow too large ---------------
+#' # instead of raising errors, return blank data frame
+#' safe_read_csv(f, skip = 1000)
+#'
+#'
 #' @export
 safe_read_csv <- function(file, header = TRUE, sep = ',',
                           colClasses = NA, skip = 0, quote = "\"",
                           ..., stringsAsFactors = FALSE){
 
-  s = readLines(file, n = skip+1, ok = TRUE)
+  s <- readLines(file, n = skip+1, ok = TRUE)
 
   # Reach EOF
   if(length(s) != skip+1){
@@ -69,13 +121,13 @@ safe_read_csv <- function(file, header = TRUE, sep = ',',
   }
 
   # Parse headers
-  s = s[skip+1]
-  s = strsplit(s, sep)[[1]]
-  s = stringr::str_remove_all(s, quote)
+  s <- s[skip+1]
+  s <- strsplit(s, sep)[[1]]
+  s <- stringr::str_remove_all(s, quote)
 
   # If length(s) == 1
   if(length(s) == 1){
-    colClasses = colClasses[1]
+    colClasses <- colClasses[1]
     return(utils::read.csv(file = file, header = header, sep = sep,
                            colClasses = colClasses, skip = skip,
                            quote = quote, ..., stringsAsFactors = stringsAsFactors))
@@ -83,20 +135,20 @@ safe_read_csv <- function(file, header = TRUE, sep = ',',
 
 
   if(!header || s[1] != ''){
-    col_class =  rep(NA, length(s))
-    col_class[seq_along(colClasses)] = colClasses
+    col_class <- rep(NA, length(s))
+    col_class[seq_along(colClasses)] <- colClasses
     return(utils::read.csv(file = file, header = header, sep = sep,
                            colClasses = col_class, skip = skip,
                            quote = quote, ..., stringsAsFactors = stringsAsFactors))
   }else{
     # first blank header will be rownames
-    col_class =  rep(NA, length(s))
-    col_class[seq_along(colClasses) + 1] = colClasses
-    dat = utils::read.csv(file = file, header = header, sep = sep,
+    col_class <- rep(NA, length(s))
+    col_class[seq_along(colClasses) + 1] <- colClasses
+    dat <- utils::read.csv(file = file, header = header, sep = sep,
                           colClasses = col_class, skip = skip,
                           quote = quote, ..., stringsAsFactors = stringsAsFactors)
-    row.names(dat) = dat[,1]
-    dat = dat[,-1]
+    row.names(dat) <- dat[,1]
+    dat <- dat[,-1]
     return(dat)
   }
 
@@ -107,7 +159,7 @@ safe_read_csv <- function(file, header = TRUE, sep = ',',
 
 
 #' Read comma separated value file and ignore headers
-#' @description Resolved some 'iEEG' format where
+#' @description Resolved some irregular 'iEEG' format where
 #' the header could be missing.
 #' @param file comma separated value file to read from. The file must contains
 #' all numerical values
@@ -120,8 +172,8 @@ safe_read_csv <- function(file, header = TRUE, sep = ',',
 #' rows.
 #' @export
 read_csv_ieeg <- function(file, nrows = Inf, drop = NULL){
-  header1 = utils::read.csv(file = file, nrows = 1, header = FALSE)
-  header2 = utils::read.csv(file = file, nrows = 1, header = FALSE, skip = 1)
+  header1 <- utils::read.csv(file = file, nrows = 1, header = FALSE)
+  header2 <- utils::read.csv(file = file, nrows = 1, header = FALSE, skip = 1)
 
   ncols <- ncol(header1)
 
@@ -130,9 +182,9 @@ read_csv_ieeg <- function(file, nrows = Inf, drop = NULL){
   })
 
   if(all(same_mode)){
-    header = FALSE
+    header <- FALSE
   }else{
-    header = TRUE
+    header <- TRUE
   }
   data.table::fread(file = file, header = header, nrows = nrows, drop = drop, fill = TRUE)
 }

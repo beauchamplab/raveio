@@ -19,3 +19,14 @@ Normalized path
 \description{
 Force creating directory with checks
 }
+\examples{
+
+path <- file.path(tempfile(), 'a', 'b', 'c')
+
+# The following are equivalent
+dir.create(path, showWarnings = FALSE, recursive = TRUE)
+
+dir_create2(path)
+
+
+}

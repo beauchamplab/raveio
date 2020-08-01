@@ -45,15 +45,15 @@ RAVEProject <- R6::R6Class(
     #' @param project_name character
     #' @param strict whether to check project path
     initialize = function(project_name, strict = TRUE){
-      project_name = stringr::str_trim(project_name)
+      project_name <- stringr::str_trim(project_name)
       stopifnot2(length(project_name) == 1 && project_name != '',
                  msg = 'RAVEProject: project_name must not be blank character.')
       stopifnot2(!stringr::str_detect(project_name, '/|\\\\'),
                  msg = 'RAVEProject: project_name must contains no {sQuote("/")} nor {sQuote("\\\\")}')
-      private$.name = project_name
+      private$.name <- project_name
 
       dirs <- rave_directories('', project_name)
-      private$.path = normalizePath(dirs$project_path, mustWork = FALSE)
+      private$.path <- normalizePath(dirs$project_path, mustWork = FALSE)
       if(strict && !dir.exists(private$.path)){
         warning(catgl("RAVE project does not exist:\n  {private$.path}", .capture = TRUE))
       }

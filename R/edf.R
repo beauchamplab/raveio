@@ -96,8 +96,8 @@ read_edf_signal <- function(path, signal_numbers = NULL,
     if(length(cv) && !is.na(cv)){
       cv2 <- c(1, 1e-3, 1e-6)[c('V', 'mV', 'uV') == unit]
       if(length(cv2) == 1){
-        s = (cv2 / cv) * s
-        unit = convert_volt
+        s <- (cv2 / cv) * s
+        unit <- convert_volt
       }
     }
     list(

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rave-import.R
 \name{rave_import}
 \alias{rave_import}
-\title{Import data into 'rave'}
+\title{Import data into 'rave' projects}
 \usage{
 rave_import(
   project_name,
@@ -57,7 +57,8 @@ import electrodes that have been imported will still result in error.}
 Import files with predefined structures. Supported file
 formats include 'Matlab', 'HDF5', 'EDF(+)', 'BrainVision'
 (\code{'.eeg/.dat/.vhdr'}). Supported file structures include 'rave' native
-structure and 'BIDS' format.
+structure and 'BIDS' (very limited) format. Please see
+\url{https://openwetware.org/wiki/RAVE:ravepreprocess} for tutorials.
 }
 \section{'RAVE' Project}{
 

@@ -1,32 +1,33 @@
+# TODO: merge this to RAVEPreprocessSettings once the class is exposed
+# @examples
+#
+# \dontrun{
+#
+# conf <- RAVEPreprocessSettings$new(subject = 'demo/DemoSubject')
+# conf$blocks  # "008" "010" "011" "012"
+#
+# conf$electrodes   # 5 electrodes
+#
+# # Electrode 14 information
+# conf$electrode_info(electrode = 14)
+#
+# conf$data_imported # All 5 electrodes are imported
+#
+# conf$data_locked   # Whether block, sample rates should be locked
+#
+# }
+
 #' Definition for preprocess configurations
-#'
-#' @examples
-#'
-#' \dontrun{
-#'
-#' conf <- RAVEPreprocessSettings$new(subject = 'demo/DemoSubject')
-#' conf$blocks  # "008" "010" "011" "012"
-#'
-#' conf$electrodes   # 5 electrodes
-#'
-#' # Electrode 14 information
-#' conf$electrode_info(electrode = 14)
-#'
-#' conf$data_imported # All 5 electrodes are imported
-#'
-#' conf$data_locked   # Whether block, sample rates should be locked
-#'
-#' }
-#'
 RAVEPreprocessSettings <- R6::R6Class(
   classname = 'RAVEPreprocessSettings',
   portable = FALSE,
+  cloneable = FALSE,
   private = list(
     has_key = function(keys){
       .subset2(self$data, 'has')(keys)
     },
     get_from = function(keys, default = NULL){
-      has_k = private$has_key(keys)
+      has_k <- private$has_key(keys)
       if(any(has_k)){
         self$data[[keys[has_k][[1]]]]
       } else {
@@ -59,11 +60,11 @@ RAVEPreprocessSettings <- R6::R6Class(
     #' @param subject character or \code{\link{RAVESubject}} instance
     #' @param read_only whether subject should be read-only (not yet implemented)
     initialize = function(subject, read_only = TRUE){
-      self$subject = as_rave_subject(subject, strict = FALSE)
-      self$path = file.path(self$subject$preprocess_path, 'rave.yaml')
-      self$backup_path = file.path(self$subject$rave_path, 'log.yaml')
-      self$read_only = isTRUE(read_only)
-      self$data = dipsaus::fastmap2()
+      self$subject <- as_rave_subject(subject, strict = FALSE)
+      self$path <- file.path(self$subject$preprocess_path, 'rave.yaml')
+      self$backup_path <- file.path(self$subject$rave_path, 'log.yaml')
+      self$read_only <- isTRUE(read_only)
+      self$data <- dipsaus::fastmap2()
       if(file.exists(self$path)){
         load_yaml(self$path, map = self$data)
       } else if( file.exists(self$backup_path) ){
@@ -172,9 +173,9 @@ RAVEPreprocessSettings <- R6::R6Class(
       }
       sel <- self$electrode_types %in% type
       if(any(sel)){
-        all_elec = self$electrodes
+        all_elec <- self$electrodes
         sapply(all_elec[sel], function(e){
-          x = self$data[[as.character(e)]]
+          x <- self$data[[as.character(e)]]
           if(!is.list(x)){ stop('Please set electrodes first. Cannot find settings for electrode ', e) }
           self$data[[as.character(e)]]$sample_rate <- srate
         })
@@ -192,19 +193,19 @@ RAVEPreprocessSettings <- R6::R6Class(
         }
       }
       # transfer from RAVE-Fir
-      electrodes = self$electrodes
-      self$data$electrodes = electrodes
-      self$data$data_locked = self$data_locked
-      self$data$notch_params = self$notch_params
-      self$data$wavelet_params = self$wavelet_params
+      electrodes <- self$electrodes
+      self$data$electrodes <- electrodes
+      self$data$data_locked <- self$data_locked
+      self$data$notch_params <- self$notch_params
+      self$data$wavelet_params <- self$wavelet_params
       # get electrode info
-      sample_rates = self$sample_rates
-      notch_filtered = self$notch_filtered
-      has_wavelet = self$has_wavelet
-      data_imported = self$data_imported
-      electrode_locked = self$electrode_locked
+      sample_rates <- self$sample_rates
+      notch_filtered <- self$notch_filtered
+      has_wavelet <- self$has_wavelet
+      data_imported <- self$data_imported
+      electrode_locked <- self$electrode_locked
       for(ii in seq_along(electrodes)){
-        x = list(
+        x <- list(
           sample_rate = sample_rates[[ii]],
           notch_filtered = notch_filtered[[ii]],
           has_wavelet = has_wavelet[[ii]],
@@ -212,9 +213,9 @@ RAVEPreprocessSettings <- R6::R6Class(
           electrode_locked = electrode_locked[[ii]],
           electrode_type = 'LFP'
         )
-        self$data[[as.character(electrodes[[ii]])]] = x
+        self$data[[as.character(electrodes[[ii]])]] <- x
       }
-      self$data$preprocess_version = self$current_version
+      self$data$preprocess_version <- self$current_version
 
     },
 

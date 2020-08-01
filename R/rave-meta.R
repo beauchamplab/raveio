@@ -1,3 +1,5 @@
+# This section is under development. They work for RAVE v1.0, but need some modification for RAVE 2.0
+
 #' Function to save meta data to subject
 #' @param data data table
 #' @param meta_type see load meta

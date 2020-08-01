@@ -4,9 +4,10 @@
 \alias{Continuous_Electrode}
 \title{Definition for electrodes that collects continuous signals}
 \description{
-Definition for electrodes that collects continuous signals
-
-Definition for electrodes that collects continuous signals
+Defines class of electrodes that record continuous signals.
+These signals have meaningful power density and will be transformed for
+time-frequency analysis. Unlike spike signals (discrete),
+continuous signals usually represent signals fired from a group of neurons.
 }
 \section{Super class}{
 \code{\link[raveio:RAVEAbstarctElectrode]{raveio::RAVEAbstarctElectrode}} -> \code{Continuous_Electrode}
@@ -14,7 +15,7 @@ Definition for electrodes that collects continuous signals
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{type}}{type of electrode}
+\item{\code{type}}{type of signals collected by electrode}
 }
 \if{html}{\out{</div>}}
 }
@@ -57,7 +58,6 @@ with current electrode type}
 \item \href{#method-epoch_power}{\code{Continuous_Electrode$epoch_power()}}
 \item \href{#method-clear_cache}{\code{Continuous_Electrode$clear_cache()}}
 \item \href{#method-clear_memory}{\code{Continuous_Electrode$clear_memory()}}
-\item \href{#method-clone}{\code{Continuous_Electrode$clone()}}
 }
 }
 \if{html}{
@@ -307,23 +307,6 @@ method to clear memory
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{ignored}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Continuous_Electrode$clone(deep = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
 }
 \if{html}{\out{</div>}}
 }

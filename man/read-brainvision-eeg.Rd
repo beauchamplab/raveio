@@ -16,7 +16,7 @@ read_eeg_data(header, path = NULL)
 \item{header}{header object returned by \code{read_eeg_header}}
 
 \item{path}{optional, path to data file if original data file is missing or
-renamed.}
+renamed; must be absolute path.}
 }
 \value{
 \code{read_eeg_header} returns a list containing information below:
@@ -55,6 +55,12 @@ indicated by header file and exists, then a marker table will be included
 when reading headers. A marker table contains six columns: marker number,
 type, description, start position (in data point), size (duration in
 data points), and target channel (0 means applied for all channels).
+
+Signal file name is usually contained within header file. Therefore it is
+desired that the signal file name never changed once created. However,
+in some cases when the signal files are renamed and cannot be indexed
+by header files, please specify \code{path} to force load signals from
+a different file.
 }
 \examples{
 

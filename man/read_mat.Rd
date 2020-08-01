@@ -31,6 +31,29 @@ The performance of \code{read_mat} can be limited when
 the file is too big or has many datasets as it reads all the
 data contained in 'Matlab' file into memory.
 }
+\examples{
+
+# Matlab .mat <= v7.3
+x <- matrix(1:16, 4)
+f <- tempfile()
+R.matlab::writeMat(con = f, x = x)
+
+read_mat(f)
+
+# Matlab .mat >= v7.3, using hdf5
+save_h5(x, file = f, name = 'x')
+
+read_mat(f)
+
+# For v7.3, you don't have to load all data into RAM
+dat <- read_mat(f, ram = FALSE)
+dat
+
+dat$x[]
+
+
+
+}
 \seealso{
 \code{\link[R.matlab]{readMat}}, \code{\link{load_h5}}
 }

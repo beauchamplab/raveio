@@ -145,7 +145,7 @@ Tensor <- R6::R6Class(
           s
         }) ->
           a
-        for(x in 1:length(a)){
+        for(x in seq_along(a)){
           cat('- ', names(a)[x], ': ', a[[x]], '\n', sep = '')
         }
       }
@@ -203,7 +203,7 @@ Tensor <- R6::R6Class(
 
 
       dimnames %?<-% base::dimnames(data)
-      dimnames %?<-% lapply(1:length(varnames), function(v){ seq_len(dim[v]) })
+      dimnames %?<-% lapply(seq_along(varnames), function(v){ seq_len(dim[v]) })
 
       names(dimnames) = varnames
 
@@ -215,8 +215,8 @@ Tensor <- R6::R6Class(
         if(use_index){
           if(multi_files){
             n_partition = max(dim[length(dim)], 1)
-            part = 1
-            env = environment()
+            part <- 1
+            env <- environment()
             apply(data, length(dim), function(x){
               x = data.frame(V1 = as.vector(x))
               save_fst(x, swap_file[env$part], compress = 20)
@@ -322,7 +322,7 @@ Tensor <- R6::R6Class(
       tmp = self$dimnames; tmp = lapply(tmp, function(x){rep(TRUE, length(x))})
       sub_dimnames = self$dimnames
 
-      for(i in 1:length(re)){
+      for(i in seq_along(re)){
         if(!names(re)[i] %in% varnames){
           n = varnames[length(re[[i]]) == dims]
           if(length(n) == 0){
@@ -383,7 +383,7 @@ Tensor <- R6::R6Class(
         return(sub)
       }
       # get class
-      cls = class(self);
+      cls = class(self)
 
       sapply(cls, function(cln){
         tryCatch({
@@ -428,7 +428,7 @@ Tensor <- R6::R6Class(
       re = data.frame(V = as.vector(self$get_data()))
       names(re) = value_name
       if(include_index){
-        for(i in 1:length(self$varnames)){
+        for(i in seq_along(self$varnames)){
           vn = self$varnames[i]
           if(i > 1){
             each = prod(self$dim[1: (i - 1)])
@@ -522,10 +522,10 @@ Tensor <- R6::R6Class(
           dim = self$dim[-length(self$dim)]
           sa = array(load_fst(self$swap_file[[1]], from=1, to=1)[[1]], dim)
           d = vapply(seq_len(self$dim[length(self$dim)]), function(part){
-            load_fst(self$swap_file[[part]], as.data.table = F)[[1]]
+            load_fst(self$swap_file[[part]], as.data.table = FALSE)[[1]]
           }, FUN.VALUE = sa)
         }else{
-          d = as.matrix(load_fst(self$swap_file, as.data.table = F))
+          d = as.matrix(load_fst(self$swap_file, as.data.table = FALSE))
           dim(d) = self$dim
         }
 
@@ -537,7 +537,7 @@ Tensor <- R6::R6Class(
         stop('Cannot find data from swap file(s).')
       }
       if(drop && !is.null(d)){
-        d = d[drop=T]
+        d = d[drop=TRUE]
       }
 
       if(self$hybrid){
@@ -652,9 +652,9 @@ Tensor <- R6::R6Class(
 
         .fun = function(ii){
           if(private$multi_files){
-            sub = load_fst(self$swap_file[[ii]], as.data.table = F, columns = 'V1')[[1]]
+            sub = load_fst(self$swap_file[[ii]], as.data.table = FALSE, columns = 'V1')[[1]]
           }else{
-            sub = load_fst(self$swap_file, as.data.table = F, columns = paste0('V', ii))[[1]]
+            sub = load_fst(self$swap_file, as.data.table = FALSE, columns = paste0('V', ii))[[1]]
           }
 
           dim(sub) = self$dim[-max_dim]
@@ -792,7 +792,7 @@ ECoGTensor <- R6::R6Class(
       re = data.frame(V = as.vector(self$get_data()))
       names(re) = value_name
       if(include_index){
-        for(i in 1:length(self$varnames)){
+        for(i in seq_along(self$varnames)){
           vn = self$varnames[i]
           if(i > 1){
             each = prod(self$dim[1: (i - 1)])
@@ -835,7 +835,7 @@ ECoGTensor <- R6::R6Class(
       dim %?<-% base::dim(data)
       dim %?<-% length(data)
       dimnames %?<-% base::dimnames(data)
-      dimnames %?<-% lapply(1:length(varnames), function(v){ seq_len(dim[v]) })
+      dimnames %?<-% lapply(seq_along(varnames), function(v){ seq_len(dim[v]) })
 
       names(dimnames) = varnames
 
@@ -984,7 +984,7 @@ dimnames.Tensor <- function(x){
     Frequency = j,
     Time = k,
     Electrode = l,
-    drop = F
+    drop = FALSE
   )
 
   #

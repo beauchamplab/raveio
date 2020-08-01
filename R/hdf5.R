@@ -73,18 +73,19 @@ LazyH5 <- R6::R6Class(
 
       # First get absolute path, otherwise hdf5r may report file not found error
       if(read_only){
-        private$file = base::normalizePath(file_path)
+        private$file <- normalizePath(file_path)
 
         stopifnot2(
           hdf5r::is_hdf5(private$file),
           msg = 'File doesn\'t have H5 format'
         )
       }else{
-        private$file = file_path
+        file_path <- normalizePath(file_path, mustWork = FALSE)
+        private$file <- file_path
       }
-      self$quiet = isTRUE(quiet)
-      private$name = data_name
-      private$read_only = read_only
+      self$quiet <- isTRUE(quiet)
+      private$name <- data_name
+      private$read_only <- read_only
     },
 
     #' @description save data to a 'HDF5' file
@@ -114,11 +115,11 @@ LazyH5 <- R6::R6Class(
         }else{
           # Close current pointer
           self$close(all = TRUE)
-          private$read_only = FALSE
+          private$read_only <- FALSE
 
           on.exit({
             self$close(all = TRUE)
-            private$read_only = TRUE
+            private$read_only <- TRUE
           }, add = TRUE, after = FALSE)
         }
       }
@@ -149,47 +150,47 @@ LazyH5 <- R6::R6Class(
         # Check if file is valid,
         if(is.null(private$file_ptr) || !private$file_ptr$is_valid){
           # if no, create new link
-          mode = ifelse(private$read_only, 'r', 'a')
+          mode <- ifelse(private$read_only, 'r', 'a')
           tryCatch({
-            private$file_ptr = hdf5r::H5File$new(private$file, mode)
+            private$file_ptr <- hdf5r::H5File$new(private$file, mode)
           }, error = function(e){
             # Open for writting, we should close all connections first
             # then the file can be opened, otherwise, Access type: H5F_ACC_RDONLY
             # will lock the file for writting
-            f = hdf5r::H5File$new(private$file, 'r')
+            f <- hdf5r::H5File$new(private$file, 'r')
             if(!self$quiet){
               catgl('Closing all other connections to [{private$file}] - {f$get_obj_count() - 1}')
             }
 
             try({ f$close_all() }, silent = TRUE)
-            private$file_ptr = hdf5r::H5File$new(private$file, mode)
+            private$file_ptr <- hdf5r::H5File$new(private$file, mode)
           })
         }
 
-        has_data = private$file_ptr$path_valid(private$name)
+        has_data <- private$file_ptr$path_valid(private$name)
 
         if(!private$read_only && (new_dataset || ! has_data)){
           # need to create new dataset
-          g = stringr::str_split(private$name, '/', simplify = T)
-          g = g[stringr::str_trim(g) != '']
+          g <- stringr::str_split(private$name, '/', simplify = TRUE)
+          g <- g[stringr::str_trim(g) != '']
 
-          ptr = private$file_ptr
-          nm = ''
+          ptr <- private$file_ptr
+          nm <- ''
 
           for(i in g[-length(g)]){
-            nm = sprintf('%s/%s', nm, i)
+            nm <- sprintf('%s/%s', nm, i)
             if(!ptr$path_valid(path = nm)){
-              ptr = ptr$create_group(i)
+              ptr <- ptr$create_group(i)
               if(!self$quiet){
                 catgl('{private$file} => {nm} (Group Created)\n')
               }
             }else{
-              ptr = ptr[[i]]
+              ptr <- ptr[[i]]
             }
           }
 
           # create dataset
-          nm = g[length(g)]
+          nm <- g[length(g)]
           if(ptr$path_valid(path = nm)){
             # dataset exists, unlink first
             if(!self$quiet){
@@ -202,7 +203,7 @@ LazyH5 <- R6::R6Class(
             catgl('{private$file} => {private$name} (Dataset Created)\n')
           }
           if(missing(robj)){
-            robj = NA
+            robj <- NA
           }
           ptr$create_dataset(nm, robj = robj, ...)
           if(ptr$is_valid && inherits(ptr, 'H5Group')){
@@ -215,11 +216,11 @@ LazyH5 <- R6::R6Class(
           ))
         }
 
-        private$data_ptr = private$file_ptr[[private$name]]
+        private$data_ptr <- private$file_ptr[[private$name]]
 
       }
 
-      private$last_dim = private$data_ptr$dims
+      private$last_dim <- private$data_ptr$dims
 
     },
 
@@ -255,14 +256,14 @@ LazyH5 <- R6::R6Class(
       envir = parent.frame()
     ) {
       self$open()
-      dims = self$get_dims()
+      dims <- self$get_dims()
 
       # step 1: eval indices
-      args = eval(substitute(alist(...)))
+      args <- eval(substitute(alist(...)))
       if(length(args) == 0 || (length(args) == 1 && args[[1]] == '')){
         return(private$data_ptr$read())
       }
-      args = lapply(args, function(x){
+      args <- lapply(args, function(x){
         if(x == ''){
           return(x)
         }else{
@@ -301,7 +302,7 @@ LazyH5 <- R6::R6Class(
       lapply(seq_along(dims), function(ii){
         if(is.logical(args[[ii]])){
           return(
-            rep(T, sum(args[[ii]]))
+            rep(TRUE, sum(args[[ii]]))
           )
         }else if(is.numeric(args[[ii]])){
           return(args[[ii]] <= dims[ii] & args[[ii]] > 0)
@@ -312,19 +313,19 @@ LazyH5 <- R6::R6Class(
         mapping
 
       # alloc space
-      re = array(NA, dim = alloc_dim)
+      re <- array(NA, dim = alloc_dim)
 
       if(stream){
-        re = do.call(`[<-`, c(list(re), mapping, list(
+        re <- do.call(`[<-`, c(list(re), mapping, list(
           value = private$data_ptr$read(
             args = legit_args,
-            drop = F,
+            drop = FALSE,
             envir = environment()
           )
         )))
       }else{
-        re = do.call(`[<-`, c(list(re), mapping, list(
-          value = do.call('[', c(list(private$data_ptr$read()), legit_args, list(drop = F)))
+        re <- do.call(`[<-`, c(list(re), mapping, list(
+          value = do.call('[', c(list(private$data_ptr$read()), legit_args, list(drop = FALSE)))
         )))
       }
 
@@ -344,7 +345,7 @@ LazyH5 <- R6::R6Class(
     #' @return dimension of the array
     get_dims = function(stay_open = TRUE){
       self$open()
-      re = private$data_ptr$dims
+      re <- private$data_ptr$dims
       if(!stay_open){
         self$close(all = !private$read_only)
       }
@@ -355,7 +356,7 @@ LazyH5 <- R6::R6Class(
 
 #' @export
 `[.LazyH5` <- function(obj, ...){
-  on.exit({obj$close()}, add = T)
+  on.exit({obj$close()}, add = TRUE)
   obj$subset(..., envir = parent.frame())
 }
 
@@ -377,23 +378,23 @@ LazyH5 <- R6::R6Class(
 #' @export
 `/.LazyH5` <- function(a, b){
   if(inherits(b, 'LazyH5')){
-    b = b$subset()
+    b <- b$subset()
   }
   a$subset() / b
 }
 
 #' @export
 dim.LazyH5 <- function(x){
-  dim_info = x$get_dims(stay_open = F)
+  dim_info <- x$get_dims(stay_open = FALSE)
   if(length(dim_info) == 1){
-    dim_info = NULL
+    dim_info <- NULL
   }
   dim_info
 }
 
 #' @export
 length.LazyH5 <- function(x){
-  dim_info = x$get_dims()
+  dim_info <- x$get_dims()
   prod(dim_info)
 }
 
@@ -454,8 +455,8 @@ exp.LazyH5 <- function(x){
 #' @export
 load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 
-  re = tryCatch({
-    re = LazyH5$new(file_path = file, data_name = name, read_only = read_only, quiet = quiet)
+  re <- tryCatch({
+    re <- LazyH5$new(file_path = file, data_name = name, read_only = read_only, quiet = quiet)
     re$open()
     re
   }, error = function(e){
@@ -469,14 +470,14 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 
     # Fails when other process holds a connection to it!
     # If read_only, then copy the file to local directory
-    tmpf = tempfile(fileext = 'conflict.h5')
+    tmpf <- tempfile(fileext = 'conflict.h5')
     file.copy(file, tmpf)
     LazyH5$new(file_path = tmpf, data_name = name, read_only = read_only)
   })
 
   if(ram){
-    f = re
-    re = re[]
+    f <- re
+    re <- re[]
     f$close()
   }
   re
@@ -514,8 +515,8 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' @export
 save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
                     new_file = FALSE, ctype = NULL, quiet = FALSE, ...){
-  f = tryCatch({
-    f = LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
+  f <- tryCatch({
+    f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
     f$open()
     f$close()
     f
@@ -525,7 +526,7 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
     }
     if(file.exists(file)){
       # File is locked,
-      tmpf = tempfile(fileext = 'conflict.w.h5')
+      tmpf <- tempfile(fileext = 'conflict.w.h5')
       file.copy(file, tmpf)
       unlink(file, recursive = FALSE, force = TRUE)
       file.copy(tmpf, file)
@@ -581,7 +582,7 @@ h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
   mode <- match.arg(mode)
   tryCatch({
     file <- normalizePath(file, mustWork = TRUE)
-    f = hdf5r::H5File$new(filename = file, mode = mode)
+    f <- hdf5r::H5File$new(filename = file, mode = mode)
     if(close_all){
       f$close_all()
     } else {
@@ -603,7 +604,7 @@ h5_names <- function(file){
   # make sure the file is valid
   if(!h5_valid(file, 'r')){ return(FALSE) }
   file <- normalizePath(file, mustWork = TRUE)
-  f = hdf5r::H5File$new(filename = file, mode = 'r')
+  f <- hdf5r::H5File$new(filename = file, mode = 'r')
   names <- hdf5r::list.datasets(f)
   f$close()
   names

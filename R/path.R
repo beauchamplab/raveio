@@ -31,7 +31,7 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
   # create tempdir for testing
   root_dir <- file.path(path, '.rave_hd_test')
   has_root <- dir.exists(root_dir)
-  test_dir = file.path(path, '.rave_hd_test', rand_string(8))
+  test_dir <- file.path(path, '.rave_hd_test', rand_string(8))
   on.exit({
     if(!has_root){
       unlink(root_dir, recursive = TRUE)
@@ -43,9 +43,9 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
 
   if(abort_if_slow && file_size > 1e5){
     # test write speed. If the speed is too low, should ignore test
-    file = tempfile(tmpdir = test_dir)
-    dat = rand_string(1e5 - 1)
-    upload = system.time(writeLines(dat, file, useBytes = TRUE))
+    file <- tempfile(tmpdir = test_dir)
+    dat <- rand_string(1e5 - 1)
+    upload <- system.time(writeLines(dat, file, useBytes = TRUE))
     wsp <- 0.1 / (upload[3])
     if( wsp < 0.1 ) {
       if(!quiet){
@@ -57,33 +57,33 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
     }
   }
 
-  progress = dipsaus::progress2(title = 'Testing read/write speed', max = 2,
+  progress <- dipsaus::progress2(title = 'Testing read/write speed', max = 2,
                                 quiet = quiet, shiny_auto_close = TRUE)
 
   progress$inc('Write to disk...')
 
   # generate 10M file, tested
-  file = tempfile(tmpdir = test_dir)
-  dat = rand_string(file_size - 1)
-  upload = system.time(writeLines(dat, file, useBytes = TRUE), gcFirst = TRUE)
+  file <- tempfile(tmpdir = test_dir)
+  dat <- rand_string(file_size - 1)
+  upload <- system.time(writeLines(dat, file, useBytes = TRUE), gcFirst = TRUE)
 
   progress$inc('Read from disk...')
-  download = system.time({dat_c = readLines(file, n = 1)}, gcFirst = TRUE)
+  download <- system.time({dat_c <- readLines(file, n = 1)}, gcFirst = TRUE)
 
   if(exists('dat_c') && dat_c != dat){
     warning('Uploaded data is broken...')
   }
 
-  ratio = file.info(file)$size / 1000000
+  ratio <- file.info(file)$size / 1000000
 
-  speed = ratio / c(upload[3], download[3])
-  names(speed) = NULL
+  speed <- ratio / c(upload[3], download[3])
+  names(speed) <- NULL
 
   raveio_setopt('drive_speed', speed)
 
   class(speed) <- 'rave-units'
-  attr(speed, 'unit') = 'MB/s'
-  attr(speed, 'labels') = c('Write - ', 'Read - ')
+  attr(speed, 'unit') <- 'MB/s'
+  attr(speed, 'labels') <- c('Write - ', 'Read - ')
   return(speed)
 }
 
@@ -149,13 +149,13 @@ find_path <- function(path, root_dir, all = FALSE){
     return(path)
   }
   # root_dir %?<-% rave_options('data_dir')
-  path = unlist(stringr::str_split(path, '(/)|(\\\\)|(\\~)'))
-  path = path[path != '']
+  path <- unlist(stringr::str_split(path, '(/)|(\\\\)|(\\~)'))
+  path <- path[path != '']
 
   re <- NULL
 
-  for(ii in 1:length(path)){
-    tmp_path = do.call(file.path, as.list(c(root_dir, path[ii:length(path)])))
+  for(ii in seq_along(path)){
+    tmp_path <- do.call(file.path, as.list(c(root_dir, path[seq.int(ii, length(path))])))
     if(file.exists(tmp_path)){
       re <- c(re, normalizePath(tmp_path))
       if(!all){
@@ -176,6 +176,17 @@ find_path <- function(path, root_dir, all = FALSE){
 #' @param showWarnings,recursive,... passed to \code{\link{dir.create}}
 #' @param check whether to check the directory after creation
 #' @return Normalized path
+#'
+#' @examples
+#'
+#' path <- file.path(tempfile(), 'a', 'b', 'c')
+#'
+#' # The following are equivalent
+#' dir.create(path, showWarnings = FALSE, recursive = TRUE)
+#'
+#' dir_create2(path)
+#'
+#'
 #' @export
 dir_create2 <- function(x, showWarnings = FALSE, recursive = TRUE, check = TRUE, ...) {
   if (!dir.exists(x)) {

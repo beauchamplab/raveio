@@ -23,7 +23,7 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   re$root_raw <- normalizePath(raveio_getopt('raw_data_dir'), mustWork = FALSE)
   re$raw_path <- file.path(re$root_raw, subject_code)
   if(!dir.exists(re$raw_path)){
-    raw_path = file.path(bids_raw, project_name, sprintf('sub-%s', subject_code))
+    raw_path <- file.path(bids_raw, project_name, sprintf('sub-%s', subject_code))
     if(dir.exists(raw_path)){
       re$root_raw <- bids_raw
       re$raw_path <- raw_path
@@ -602,11 +602,12 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 
 
 
-#' Import data into 'rave'
+#' Import data into 'rave' projects
 #' @description Import files with predefined structures. Supported file
 #' formats include 'Matlab', 'HDF5', 'EDF(+)', 'BrainVision'
 #' (\code{'.eeg/.dat/.vhdr'}). Supported file structures include 'rave' native
-#' structure and 'BIDS' format.
+#' structure and 'BIDS' (very limited) format. Please see
+#' \url{https://openwetware.org/wiki/RAVE:ravepreprocess} for tutorials.
 #' @param project_name project name, for 'rave' native structure, this can be
 #' any character; for 'BIDS' format, this must be consistent with 'BIDS'
 #' project name. For subjects with multiple tasks, see Section "'RAVE' Project"

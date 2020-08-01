@@ -8,8 +8,8 @@ RAVEAbstarctElectrode <- R6::R6Class(
   ),
   public = list(
 
-    #' @field type type of electrode
-    type = 'Electrode',
+    #' @field type type of signals captured by electrode
+    type = 'Unknown',
 
     #' @field subject subject instance (\code{\link{RAVESubject}})
     subject = NULL,
@@ -33,7 +33,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @description set cache name, internally used
     #' @param name character, internally used
     .set_cachename = function(name){
-      private$reference_cachename = name
+      private$reference_cachename <- name
     },
 
     #' @description constructor
@@ -41,17 +41,17 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @param number current electrode number or reference ID
     #' @param is_reference whether instance is a reference
     initialize = function(subject, number, is_reference = FALSE){
-      self$subject = ravecore::as_rave_subject(subject)
-      self$number = number
-      self$reference = NULL
-      self$epoch = NULL
-      private$reference_cachename = rand_string(6)
+      self$subject <- ravecore::as_rave_subject(subject)
+      self$number <- number
+      self$reference <- NULL
+      self$epoch <- NULL
+      private$reference_cachename <- rand_string(6)
 
       # load cached references
-      cache_table = file.path(self$subject$cache_path, 'cached_reference.csv')
+      cache_table <- file.path(self$subject$cache_path, 'cached_reference.csv')
       if(file.exists(cache_table)){
-        cache_table = safe_read_csv(cache_table)
-        self$cached_reference = cache_table$Reference[cache_table$Electrode == number]
+        cache_table <- safe_read_csv(cache_table)
+        self$cached_reference <- cache_table$Reference[cache_table$Electrode == number]
       } else {
         rave_error('Cannot find cached_reference.csv')
       }
@@ -64,7 +64,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' instance
     .set_reference = function(reference, type){
       if(missing(type)){
-        type = self$type
+        type <- self$type
       }
       stopifnot2(
         is.null(reference) || (
@@ -74,7 +74,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
         msg = sprintf('set_reference must receive a %s electrode', sQuote(type))
       )
 
-      self$reference = reference
+      self$reference <- reference
     },
 
     #' @description set epoch instance for the electrode
@@ -82,9 +82,9 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' characters, make sure \code{"epoch_<name>.csv"} is in meta folder.
     set_epoch = function(epoch){
       if(!inherits(epoch, 'RAVEEpoch')){
-        epoch = RAVEEpoch$new(subject = self$subject, name = epoch)
+        epoch <- RAVEEpoch$new(subject = self$subject, name = epoch)
       }
-      self$epoch = epoch
+      self$epoch <- epoch
     },
 
     #' @description method to clear cache on hard drive
@@ -137,7 +137,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
       if(is.null(self$reference)){
         'noref'
       } else {
-        ref = stringr::str_remove_all(self$reference$number, '(\\.h5$)|(^ref_)')
+        ref <- stringr::str_remove_all(self$reference$number, '(\\.h5$)|(^ref_)')
         sprintf('ref_%s', ref)
       }
     },
@@ -147,7 +147,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
       if(!length(self$epoch)){
         return(NA)
       }
-      cache_path = rave_options('cache_path')
+      cache_path <- rave_options('cache_path')
       # save to cache_path/project/subject/epoch/cachename
       # cachename = reference + elec type
       file.path(cache_path, self$subject$project_name,

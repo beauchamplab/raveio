@@ -13,6 +13,7 @@ Description: Includes multiple cross-platform read/write interfaces for
   stores GB-level big array on solid state drives and load
   on demand within seconds. 
 BugReports: https://github.com/beauchamplab/rave/issues
+URL: https://github.com/beauchamplab/raveio
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

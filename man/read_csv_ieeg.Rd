@@ -15,7 +15,7 @@ all numerical values}
 \item{drop}{passed to \code{\link[data.table]{fread}}}
 }
 \description{
-Resolved some 'iEEG' format where
+Resolved some irregular 'iEEG' format where
 the header could be missing.
 }
 \details{

@@ -69,21 +69,21 @@ LazyFST <- R6::R6Class(
     #' @param dims data dimension, only support 1 or 2 dimensions
     #' @param ... ignored
     initialize = function(file_path, transpose = FALSE, dims = NULL, ...){
-      private$file_path = file_path
-      private$transpose = transpose
+      private$file_path <- file_path
+      private$transpose <- transpose
       # check if dimension matches
-      private$meta = fst::metadata_fst(file_path)
+      private$meta <- fst::metadata_fst(file_path)
       if(length(dims) == 2){
         if(private$meta$nrOfRows * length(private$meta$columnNames) == prod(dims)){
-          private$dims = dims
+          private$dims <- dims
         }else{
           stop('cached data has different dimensions than the given value')
         }
       }else{
         if(is.null(dims)){
-          private$dims = c(private$meta$nrOfRows, length(private$meta$columnNames))
+          private$dims <- c(private$meta$nrOfRows, length(private$meta$columnNames))
           if(transpose){
-            private$dims = private$dims[c(2,1)]
+            private$dims <- private$dims[c(2,1)]
           }
         }else{
           stop('fast cache only supports 2 dimension data')
@@ -104,25 +104,25 @@ LazyFST <- R6::R6Class(
     #' @return subset of data
     subset = function(i = NULL, j = NULL, ..., drop = TRUE){
       if(!length(j)){
-        j = seq_len(private$dims[2])
+        j <- seq_len(private$dims[2])
       }
       if(!length(i)){
-        i = seq_len(private$dims[1])
+        i <- seq_len(private$dims[1])
       }
       if(is.logical(i)){
-        i = which(i)
+        i <- which(i)
       }
       if(is.logical(j)){
-        j = which(j)
+        j <- which(j)
       }
 
 
-      real_i = i <= private$dims[1]
-      real_j = j <= private$dims[2]
+      real_i <- i <= private$dims[1]
+      real_j <- j <= private$dims[2]
 
-      re = matrix(NA, nrow = length(i), ncol = length(j))
+      re <- matrix(NA, nrow = length(i), ncol = length(j))
 
-      private$last_visited = Sys.time()
+      private$last_visited <- Sys.time()
 
       # if(is.null(private$data)){
       #   # load all data
@@ -137,22 +137,22 @@ LazyFST <- R6::R6Class(
       # }
 
       if(private$transpose){
-        col_names = private$meta$columnNames[i[real_i]]
-        dat = as.matrix(load_fst(private$file_path, columns = col_names))
-        dat = dat[j[real_j], ]
-        re[real_i, real_j] = t(dat)
+        col_names <- private$meta$columnNames[i[real_i]]
+        dat <- as.matrix(load_fst(private$file_path, columns = col_names))
+        dat <- dat[j[real_j], ]
+        re[real_i, real_j] <- t(dat)
       }else{
-        col_names = private$meta$columnNames[j[real_j]]
-        dat = as.matrix(load_fst(private$file_path, columns = col_names))
-        dat = dat[i[real_i], ]
-        re[real_i, real_j] = dat
+        col_names <- private$meta$columnNames[j[real_j]]
+        dat <- as.matrix(load_fst(private$file_path, columns = col_names))
+        dat <- dat[i[real_i], ]
+        re[real_i, real_j] <- dat
       }
       rm(dat)
 
       # Profiling shows gc() here will take lots of time
       # gc()
 
-      dimnames(re) = NULL
+      dimnames(re) <- NULL
 
       # wait 10 secs to see if data idle, if true, remove private$data
       # later::later(function(){
@@ -177,12 +177,12 @@ LazyFST <- R6::R6Class(
 
 
 #' @export
-`[.LazyFST` <- function(obj, i, j, ..., drop = F){
+`[.LazyFST` <- function(obj, i, j, ..., drop = FALSE){
   if(missing(i)){
-    i = NULL
+    i <- NULL
   }
   if(missing(j)){
-    j = NULL
+    j <- NULL
   }
   obj$subset(i, j, ..., drop = drop)
 }
@@ -205,23 +205,23 @@ LazyFST <- R6::R6Class(
 #' @export
 `/.LazyFST` <- function(a, b){
   if(inherits(b, 'LazyFST')){
-    b = b$subset()
+    b <- b$subset()
   }
   a$subset() / b
 }
 
 #' @export
 dim.LazyFST <- function(x){
-  dim_info = x$get_dims()
+  dim_info <- x$get_dims()
   if(length(dim_info) == 1){
-    dim_info = NULL
+    dim_info <- NULL
   }
   dim_info
 }
 
 #' @export
 length.LazyFST <- function(x){
-  dim_info = x$get_dims()
+  dim_info <- x$get_dims()
   prod(dim_info)
 }
 
@@ -259,7 +259,7 @@ NULL
 #' @export
 save_fst <- function(x, path, ...){
   catgl('Writing to path: {path}')
-  dir = dirname(path)
+  dir <- dirname(path)
   if(!dir.exists(dir)){
     dir.create(dir, recursive = TRUE, showWarnings = FALSE)
   }
@@ -299,21 +299,21 @@ load_fst_or_h5 <- function(
   # check if fst_path exists
   if(file.exists(fst_path)){
     if(ram){
-      re = as.matrix(load_fst(fst_path))
-      dimnames(re) = NULL
+      re <- as.matrix(load_fst(fst_path))
+      dimnames(re) <- NULL
       if(fst_need_transpose){
-        re = t(re)
+        re <- t(re)
       }
       if(fst_need_drop){
-        re = drop(re)
+        re <- drop(re)
       }
       return(re)
     }else{
-      re = LazyFST$new(file_path = fst_path, transpose = fst_need_transpose)
+      re <- LazyFST$new(file_path = fst_path, transpose = fst_need_transpose)
       return(re)
     }
   }else{
-    re = load_h5(file = h5_path, name = h5_name, read_only = TRUE, ram = ram)
+    re <- load_h5(file = h5_path, name = h5_name, read_only = TRUE, ram = ram)
     return(re)
   }
 }

@@ -31,3 +31,6 @@ is.numeric(dif)
 dif + 1
 
 }
+\seealso{
+\code{\link{as_rave_unit}}
+}

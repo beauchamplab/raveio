@@ -43,11 +43,11 @@ RAVESubject <- R6::R6Class(
       stopifnot2(is.character(project_name), msg = "RAVESubject: project name and subject code must be characters")
       if(length(subject_code) != 1){
         if(stringr::str_detect(project_name, '/|\\\\')){
-          project_name = stringr::str_trim(
+          project_name <- stringr::str_trim(
             unlist(stringr::str_split(project_name, '/|\\\\'))
           )
-          subject_code = project_name[2]
-          project_name = project_name[1]
+          subject_code <- project_name[2]
+          project_name <- project_name[1]
         } else {
           stop(catgl("Subject {project_name} invalid. The format must be project/subject.", .capture = TRUE))
         }
@@ -59,9 +59,9 @@ RAVESubject <- R6::R6Class(
       if(!dir.exists(private$.dirs$subject_path) && strict){
         stop(catgl("Subject {project_name}/{subject_code} doesn't exist.", .capture = TRUE))
       }
-      private$.path = private$.dirs$rave_path
-      private$.preprocess = RAVEPreprocessSettings$new(subject = self, read_only = TRUE)
-      private$.cached_config = dipsaus::fastmap2()
+      private$.path <- private$.dirs$rave_path
+      private$.preprocess <- RAVEPreprocessSettings$new(subject = self, read_only = TRUE)
+      private$.cached_config <- dipsaus::fastmap2()
     },
 
     #' @description get subject meta data located in \code{"meta/"} folder
@@ -76,7 +76,7 @@ RAVESubject <- R6::R6Class(
       meta_type = c('electrodes', 'frequencies', 'time_points',
                     'epoch', 'references'),
       meta_name = 'default'){
-      meta_type = match.arg(meta_type)
+      meta_type <- match.arg(meta_type)
       load_meta(meta_type = meta_type, meta_name = meta_name,
                 project_name = self$project_name, subject_code = self$subject_code)
     },
@@ -90,13 +90,13 @@ RAVESubject <- R6::R6Class(
     #' @return integer vector of valid electrodes
     valid_electrodes = function(reference_name, refresh = FALSE){
       if(refresh){
-        private$.reference_tables[[reference_name]] = self$meta_data(
+        private$.reference_tables[[reference_name]] <- self$meta_data(
           meta_type = 'references', meta_name = reference_name)
       } else {
         private$.reference_tables[[reference_name]] %?<-% self$meta_data(
           meta_type = 'references', meta_name = reference_name)
       }
-      ref_table = private$.reference_tables[[reference_name]]
+      ref_table <- private$.reference_tables[[reference_name]]
       as.integer(ref_table$Electrode[ref_table$Reference != ''])
     },
 
@@ -169,13 +169,13 @@ RAVESubject <- R6::R6Class(
       # 2. rave_data/project/subject/fs
       # 3. rave_data/project/subject/subject
 
-      re = file.path(getOption('rave.freesurfer_dir'), self$subject_code)
+      re <- file.path(getOption('rave.freesurfer_dir'), self$subject_code)
       if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
-      re = file.path(self$rave_path, 'fs')
+      re <- file.path(self$rave_path, 'fs')
       if(dir.exists(re) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
-      re = file.path(self$path, 'fs')
+      re <- file.path(self$path, 'fs')
       if(dir.exists(re) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
-      re = file.path(self$path, self$subject_code)
+      re <- file.path(self$path, self$subject_code)
       if(dir.exists(re) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
       return(NA)
     },

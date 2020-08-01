@@ -11,7 +11,7 @@ Abstract definition of electrode class in RAVE
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{type}}{type of electrode}
+\item{\code{type}}{type of signals captured by electrode}
 
 \item{\code{subject}}{subject instance (\code{\link{RAVESubject}})}
 

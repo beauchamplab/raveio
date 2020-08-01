@@ -79,7 +79,8 @@ bids_json <- function(data_file, bids_root){
 #' \code{tsv} files. File specification can be found at
 #' \url{https://bids-specification.readthedocs.io/en/stable/}, chapter
 #' "Modality specific files", section "Intracranial Electroencephalography"
-#' (\doi{10.1038/s41597-019-0105-7})
+#' (\doi{10.1038/s41597-019-0105-7}). Please note that this function has
+#' very limited support on BIDS format.
 #'
 #' @param bids_root 'BIDS' root directory
 #' @param project_name project folder name
@@ -153,7 +154,7 @@ load_bids_ieeg_header <- function(bids_root, project_name, subject_code, folder 
   if(stringr::str_starts(subject_code, '^sub-')){
     subject_code <- stringr::str_remove(subject_code, '^sub-')
   }
-  prefix = 'sub-'
+  prefix <- 'sub-'
 
 
   project_path <- file.path(bids_root, project_name)
@@ -173,7 +174,7 @@ load_bids_ieeg_header <- function(bids_root, project_name, subject_code, folder 
     sess_folders <- file.path(subject_path, sess_name)
     sess_name <- stringr::str_remove(sess_name, '^ses-')
   } else {
-    sess_name = 'default'
+    sess_name <- 'default'
     has_session <- FALSE
     sess_folders <- subject_path
   }

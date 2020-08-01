@@ -86,19 +86,48 @@ is_valid_ish <- function(x, min_len = 1, max_len = Inf, mode = NA,
 
 
 
-#' @title Get Value or Default if Value is Invalid
+#' @title Get value or return default if invalid
 #' @param x a list, or environment, or just any R object
 #' @param key the name to obtain from \code{x}. If \code{NA}, then
 #' return x. Default is \code{NA}
 #' @param default default value if
 #' @param na,min_len,... passed to \code{\link{is_valid_ish}}
+#' @return values of the keys or default is invalid
+#' @examples
+#'
+#' x <- list(a=1, b = NA, c = character(0))
+#'
+#' # ------------------------ Basic usage ------------------------
+#'
+#' # no key, returns x if x is valid
+#' get_val2(x)
+#'
+#' get_val2(x, 'a', default = 'invalid')
+#'
+#'
+#'
+#' # get 'b', NA is not filtered out
+#' get_val2(x, 'b', default = 'invalid')
+#'
+#' # get 'b', NA is considered invalid
+#' get_val2(x, 'b', default = 'invalid', na = TRUE)
+#'
+#'
+#'
+#' # get 'c', length 0 is allowed
+#' get_val2(x, 'c', default = 'invalid', min_len = 0)
+#'
+#' # length 0 is forbidden
+#' get_val2(x, 'c', default = 'invalid', min_len = 1)
+#'
+#'
 #' @export
 get_val2 <- function(x, key = NA, default = NULL, na=FALSE, min_len=1L, ...){
 
   if(is.null(key) || is.na(key)){
-    val = x
+    val <- x
   }else{
-    val = x[[key]]
+    val <- x[[key]]
   }
   if(!is_valid_ish(val, na = na, min_len = min_len, ...)){
     return(default)

@@ -1,5 +1,6 @@
 #' @importFrom dipsaus %?<-%
 #' @importFrom glue glue
+#' @importFrom R6 R6Class
 NULL
 
 #' @export
