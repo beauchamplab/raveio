@@ -16,7 +16,7 @@ safe_read_csv(
 )
 }
 \arguments{
-\item{file, header, sep, colClasses, skip, quote, stringsAsFactors, ...}{passed to \code{\link[utils]{read.csv}}}
+\item{file, header, sep, colClasses, skip, quote, stringsAsFactors, ...}{passed to \code{read.csv}}
 }
 \value{
 A data frame
@@ -26,7 +26,7 @@ Read comma separated value files with given column classes
 }
 \details{
 Reading a comma separated value file using builtin function
-\code{\link[utils]{read.csv}} might result in some unexpected
+\code{read.csv} might result in some unexpected
 behavior. \code{safe_read_csv} does some preprocessing on the
 format so that it take cares of the following cases.
 
@@ -38,7 +38,7 @@ automatically skip that column and starts from the second column
 
 3. If length of \code{colClasses} does not equal to the number of
 columns, instead of cycling the class types, we set those columns
-to be \code{NA} type and let \code{\link[utils]{read.csv}} decide
+to be \code{NA} type and let \code{read.csv} decide
 the default types.
 
 4. \code{stringsAsFactors} is by default \code{FALSE} to be

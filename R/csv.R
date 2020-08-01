@@ -51,11 +51,11 @@ safe_write_csv <- function(x, file, ..., quiet = FALSE){
 
 #' Read comma separated value files with given column classes
 #' @param file,header,sep,colClasses,skip,quote,stringsAsFactors,...
-#' passed to \code{\link[utils]{read.csv}}
+#' passed to \code{read.csv}
 #' @return A data frame
 #' @details
 #' Reading a comma separated value file using builtin function
-#' \code{\link[utils]{read.csv}} might result in some unexpected
+#' \code{read.csv} might result in some unexpected
 #' behavior. \code{safe_read_csv} does some preprocessing on the
 #' format so that it take cares of the following cases.
 #'
@@ -67,7 +67,7 @@ safe_write_csv <- function(x, file, ..., quiet = FALSE){
 #'
 #' 3. If length of \code{colClasses} does not equal to the number of
 #' columns, instead of cycling the class types, we set those columns
-#' to be \code{NA} type and let \code{\link[utils]{read.csv}} decide
+#' to be \code{NA} type and let \code{read.csv} decide
 #' the default types.
 #'
 #' 4. \code{stringsAsFactors} is by default \code{FALSE} to be

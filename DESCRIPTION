@@ -1,7 +1,7 @@
 Package: raveio
 Type: Package
 Title: Utility Toolbox for RAVE Package
-Version: 0.0.2
+Version: 0.0.3
 Language: en-US
 Authors@R: c(
     person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre")),
