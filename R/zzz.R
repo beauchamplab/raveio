@@ -239,7 +239,7 @@ raveio_confpath <- function(cfile = 'settings.yaml'){
 }
 
 .onLoad <- function(libname, pkgname) {
-  backports::import(pkgname, c("R_user_dir", "deparse1"))
+  # backports::import(pkgname, c("R_user_dir", "deparse1"))
   pkg <- getNamespace(pkgname)
   sess_str <- rand_string(15)
   assign('.session_string', sess_str, envir = pkg)
