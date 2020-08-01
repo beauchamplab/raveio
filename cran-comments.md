@@ -17,10 +17,3 @@ Possibly mis-spelled words in DESCRIPTION:
 ```
 
 > `intracranial` is a legit word. It means "within the skull"
-
-2. https://win-builder.r-project.org/ZtEu9k0gvSw7/00check.log
-```
-Package required and available but unsuitable version: 'backports'
-```
-
-> `backports` is a CRAN package and the version required by `raveio` is `>= 1.1.7` while on CRAN, the compiled version is `1.1.8`
