@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^adhoc$
 ^\.travis\.yml$
+^docs$
+^cran-comments\.md$
