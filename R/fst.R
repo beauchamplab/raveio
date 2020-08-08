@@ -277,13 +277,15 @@ load_fst <- function(path, ..., as.data.table = TRUE){
   })
 }
 
-#' Function try to load 'fst' file, if not found, read 'HDF5' file
+#' Function try to load 'fst' arrays, if not found, read 'HDF5' arrays
 #' @param fst_path 'fst' file cache path
 #' @param h5_path alternative 'HDF5' file path
 #' @param h5_name 'HDF5' data name
 #' @param fst_need_transpose does 'fst' data need transpose?
 #' @param fst_need_drop drop dimensions
 #' @param ram whether to load to memory directly or perform lazy loading
+#' @return If 'fst' cache file exists, returns \code{\link{LazyFST}} object,
+#' otherwise returns \code{\link{LazyH5}} instance
 #' @details RAVE stores data with redundancy. One electrode data
 #' is usually saved with two copies in different formats: 'HDF5' and
 #' 'fst', where 'HDF5' is cross-platform and supported by multiple

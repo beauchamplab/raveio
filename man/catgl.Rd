@@ -16,6 +16,9 @@ catgl(..., .envir = parent.frame(), level = "DEBUG", .pal, .capture = FALSE)
 \item{.capture}{logical, whether to capture message and return it without
 printing}
 }
+\value{
+The message as characters
+}
 \description{
 Print colored messages
 }

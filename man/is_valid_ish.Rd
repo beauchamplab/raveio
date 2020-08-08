@@ -29,6 +29,9 @@ should \code{x} be considered valid. Default is \code{NA}: disabled.}
 \item{all}{if \code{na} or \code{blank} is true, whether all element
 of \code{x} being invalid will result in failure?}
 }
+\value{
+logicals whether input \code{x} is valid
+}
 \description{
 Check if data is close to ``valid"
 }

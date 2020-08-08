@@ -1,7 +1,9 @@
 #' Convert character to \code{\link{RAVEProject}} instance
 #' @param project character project name
 #' @param ... passed to other methods
+#' @return A \code{\link{RAVEProject}} instance
 #' @seealso \code{\link{RAVEProject}}
+#' @export
 as_rave_project <- function(project, ...){
   if(inherits(project, 'RAVEProject')){
     return(project)
@@ -20,6 +22,7 @@ get_projects <- function(){
 }
 
 #' Definition for 'RAVE' project class
+#' @export
 RAVEProject <- R6::R6Class(
   classname = 'RAVEProject',
   class = TRUE,

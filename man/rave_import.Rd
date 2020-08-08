@@ -53,6 +53,9 @@ import electrodes that have been imported will still result in error.}
 
 \item{...}{other parameters}
 }
+\value{
+None
+}
 \description{
 Import files with predefined structures. Supported file
 formats include 'Matlab', 'HDF5', 'EDF(+)', 'BrainVision'

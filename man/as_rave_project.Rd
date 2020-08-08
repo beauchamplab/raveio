@@ -11,6 +11,9 @@ as_rave_project(project, ...)
 
 \item{...}{passed to other methods}
 }
+\value{
+A \code{\link{RAVEProject}} instance
+}
 \description{
 Convert character to \code{\link{RAVEProject}} instance
 }

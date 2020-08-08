@@ -8,6 +8,27 @@ Definition for preprocess configurations
 
 Definition for preprocess configurations
 }
+\examples{
+
+# The following example require downloading demo subject (~700 MB) from
+# https://github.com/beauchamplab/rave/releases/tag/v0.1.9-beta
+
+\dontrun{
+
+conf <- RAVEPreprocessSettings$new(subject = 'demo/DemoSubject')
+conf$blocks  # "008" "010" "011" "012"
+
+conf$electrodes   # 5 electrodes
+
+# Electrode 14 information
+conf$electrode_info(electrode = 14)
+
+conf$data_imported # All 5 electrodes are imported
+
+conf$data_locked   # Whether block, sample rates should be locked
+
+}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -55,8 +76,7 @@ locked}
 
 \item{\code{notch_params}}{Notch filter parameters}
 
-\item{\code{electrode_types}}{electrode types, see \code{type} field in
-\code{\link{RAVEAbstarctElectrode}} or \code{\link{LFP_electrode}}}
+\item{\code{electrode_types}}{electrode signal types}
 
 \item{\code{@freeze_blocks}}{whether to free block, internally used}
 

@@ -40,6 +40,9 @@ please store separately the real and imaginary parts.}
 
 \item{...}{passed to other \code{LazyH5$save}}
 }
+\value{
+Absolute path of the file saved
+}
 \description{
 Save objects to 'HDF5' file without trivial checks
 }

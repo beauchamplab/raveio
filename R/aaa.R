@@ -26,6 +26,7 @@ verbose_levels <-
 #' @param .pal see \code{pal} in \code{\link[dipsaus]{cat2}}
 #' @param .capture logical, whether to capture message and return it without
 #' printing
+#' @return The message as characters
 #' @details The level has order that sorted from low to high: \code{"DEBUG"},
 #' \code{"DEFAULT"}, \code{"INFO"}, \code{"WARNING"}, \code{"ERROR"},
 #' \code{"FATAL"}. Each different level will display different colors and

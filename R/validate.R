@@ -29,6 +29,7 @@ rand_string <- function(length = 50){
 #' @param blank whether blank string considered invalid?
 #' @param all if \code{na} or \code{blank} is true, whether all element
 #' of \code{x} being invalid will result in failure?
+#' @return logicals whether input \code{x} is valid
 #'
 #' @examples
 #'

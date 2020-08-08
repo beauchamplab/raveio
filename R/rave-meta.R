@@ -1,12 +1,13 @@
 # This section is under development. They work for RAVE v1.0, but need some modification for RAVE 2.0
 
-#' Function to save meta data to subject
+#' Function to save meta data to 'RAVE' subject
 #' @param data data table
 #' @param meta_type see load meta
 #' @param project_name project name
 #' @param subject_code subject code
-#' @noRd
-save_meta <- function(data, meta_type, project_name, subject_code){
+#' @return Either none if no meta matched or the absolute path of file saved.
+#' @export
+save_meta2 <- function(data, meta_type, project_name, subject_code){
   subject_code <- stringr::str_remove(subject_code, '^sub-')
   dirs <- rave_directories(subject_code = subject_code, project_name = project_name)
   meta_dir <- dirs$meta_path
@@ -46,14 +47,16 @@ save_meta <- function(data, meta_type, project_name, subject_code){
 
 }
 
-#' Load subject meta data
+#' Load 'RAVE' subject meta data
 #' @param meta_type electrodes, epochs, time_points, frequencies, references ...
 #' @param project_name project name
 #' @param subject_code subject code
 #' @param subject_id "project_name/subject_code"
 #' @param meta_name only used if meta_type is epochs or references
-#' @noRd
-load_meta <- function(meta_type, project_name, subject_code, subject_id, meta_name){
+#' @return A data frame of the specified meta type or \code{NULL} is no meta
+#' data is found.
+#' @export
+load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_name){
   if(!missing(subject_id)){
     tmp <- stringr::str_split_fixed(subject_id, '/|\\\\', 2)
     project_name <- tmp[[1]]

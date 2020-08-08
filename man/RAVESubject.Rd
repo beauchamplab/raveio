@@ -9,7 +9,7 @@ Definition for 'RAVE' subject class
 Definition for 'RAVE' subject class
 }
 \seealso{
-\code{load_meta}
+\code{\link{load_meta2}}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -59,8 +59,7 @@ no path exists, values will be \code{NA}}
 
 \item{\code{notch_filtered}}{whether electrodes are Notch-filtered}
 
-\item{\code{electrode_types}}{electrode types; see \code{type} field
-in \code{\link{RAVEAbstarctElectrode}} or \code{\link{LFP_electrode}}}
+\item{\code{electrode_types}}{electrode signal types}
 }
 \if{html}{\out{</div>}}
 }
@@ -154,8 +153,8 @@ get valid electrode numbers
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{reference_name}}{character, reference name, see \code{meta_name}
-in \code{self$meta_data} or \code{load_meta} when \code{meta_type}
-if 'reference'}
+in \code{self$meta_data} or \code{\link{load_meta2}} when
+\code{meta_type} is 'reference'}
 
 \item{\code{refresh}}{whether to reload reference table before obtaining data,
 default is false}

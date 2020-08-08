@@ -3,6 +3,7 @@
 #' @param strict whether to check if subject directories exist or not
 #' @return \code{\link{RAVESubject}} instance
 #' @seealso \code{\link{RAVESubject}}
+#' @export
 as_rave_subject <- function(subject_id, strict = TRUE){
   if(inherits(subject_id, 'RAVESubject')){
     return(subject_id)
@@ -12,6 +13,7 @@ as_rave_subject <- function(subject_id, strict = TRUE){
 }
 
 #' Definition for 'RAVE' subject class
+#' @export
 RAVESubject <- R6::R6Class(
   classname = 'RAVESubject',
   class = TRUE,
@@ -70,21 +72,21 @@ RAVESubject <- R6::R6Class(
     #' @param meta_name if \code{meta_type='epoch'}, read in
     #' \code{'epoch_<meta_name>.csv'}; if \code{meta_type='references'},
     #' read in \code{'reference_<meta_name>.csv'}.
-    #' @seealso \code{load_meta}
+    #' @seealso \code{\link{load_meta2}}
     #' @return data frame
     meta_data = function(
       meta_type = c('electrodes', 'frequencies', 'time_points',
                     'epoch', 'references'),
       meta_name = 'default'){
       meta_type <- match.arg(meta_type)
-      load_meta(meta_type = meta_type, meta_name = meta_name,
+      load_meta2(meta_type = meta_type, meta_name = meta_name,
                 project_name = self$project_name, subject_code = self$subject_code)
     },
 
     #' @description get valid electrode numbers
     #' @param reference_name character, reference name, see \code{meta_name}
-    #' in \code{self$meta_data} or \code{load_meta} when \code{meta_type}
-    #' if 'reference'
+    #' in \code{self$meta_data} or \code{\link{load_meta2}} when
+    #' \code{meta_type} is 'reference'
     #' @param refresh whether to reload reference table before obtaining data,
     #' default is false
     #' @return integer vector of valid electrodes
@@ -248,8 +250,7 @@ RAVESubject <- R6::R6Class(
       private$.preprocess$notch_filtered
     },
 
-    #' @field electrode_types electrode types; see \code{type} field
-    #' in \code{\link{RAVEAbstarctElectrode}} or \code{\link{LFP_electrode}}
+    #' @field electrode_types electrode signal types
     electrode_types = function(){
       private$.preprocess$electrode_types
     }

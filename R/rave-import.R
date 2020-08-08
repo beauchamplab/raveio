@@ -631,6 +631,7 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 #' @param add whether to add electrodes. If set to true, then only new
 #' electrodes are allowed to be imported, blocks will be ignored and trying to
 #' import electrodes that have been imported will still result in error.
+#' @return None
 #' @section 'RAVE' Project:
 #' A 'rave' project can be very flexible. A project can refer to a task, a
 #' research objective, or "arbitrarily" as long as you find common research

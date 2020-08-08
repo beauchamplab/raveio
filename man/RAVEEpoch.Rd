@@ -10,6 +10,38 @@ experiment block/session string; \code{Time} trial onset within that block;
 columns are \code{Event_xxx} (starts with "Event"). See
 \url{https://openwetware.org/wiki/RAVE:Epoching} or more details.
 }
+\examples{
+
+# Please download DemoSubject ~700MB from
+# https://github.com/beauchamplab/rave/releases/tag/v0.1.9-beta
+
+\dontrun{
+
+# Load meta/epoch_auditory_onset.csv from subject demo/DemoSubject
+epoch <-RAVEEpoch$new(subject = 'demo/DemoSubject',
+                      name = 'auditory_onset')
+
+# first several trials
+head(epoch$table)
+
+# query specific trial
+old_trial1 <- epoch$trial_at(1)
+
+# Create new trial or change existing trial
+epoch$set_trial(Block = '008', Time = 10,
+                Trial = 1, Condition = 'AknownVmeant')
+new_trial1 <- epoch$trial_at(1)
+
+# Compare new and old trial 1
+rbind(old_trial1, new_trial1)
+
+# To get updated trial table, must update first
+epoch$update_table()
+head(epoch$table)
+
+}
+
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{

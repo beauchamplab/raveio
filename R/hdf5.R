@@ -499,6 +499,7 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' please store separately the real and imaginary parts.
 #' @param quiet whether to suppress messages, default is false
 #' @param ... passed to other \code{LazyH5$save}
+#' @return Absolute path of the file saved
 #'
 #' @seealso \code{\link{load_h5}}
 #' @examples

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fst.R
 \name{load_fst_or_h5}
 \alias{load_fst_or_h5}
-\title{Function try to load 'fst' file, if not found, read 'HDF5' file}
+\title{Function try to load 'fst' arrays, if not found, read 'HDF5' arrays}
 \usage{
 load_fst_or_h5(
   fst_path,
@@ -26,8 +26,12 @@ load_fst_or_h5(
 
 \item{ram}{whether to load to memory directly or perform lazy loading}
 }
+\value{
+If 'fst' cache file exists, returns \code{\link{LazyFST}} object,
+otherwise returns \code{\link{LazyH5}} instance
+}
 \description{
-Function try to load 'fst' file, if not found, read 'HDF5' file
+Function try to load 'fst' arrays, if not found, read 'HDF5' arrays
 }
 \details{
 RAVE stores data with redundancy. One electrode data

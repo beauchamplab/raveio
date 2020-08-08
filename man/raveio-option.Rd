@@ -34,6 +34,13 @@ options, setting \code{temp} to false will reveal the actual settings.}
 
 \item{cfile}{file name in configuration path}
 }
+\value{
+\code{raveio_setopt} returns modified \code{value};
+\code{raveio_resetopt} returns current settings as a list;
+\code{raveio_confpath} returns absolute path for the settings file;
+\code{raveio_getopt} returns the settings value to the given key, or
+\code{default} if not found.
+}
 \description{
 Persist settings on local configuration file
 }
