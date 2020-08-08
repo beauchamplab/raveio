@@ -92,7 +92,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/beauchamplab/rave/">
+  <a href="https://github.com/beauchamplab/raveio/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -136,21 +136,9 @@
       <tr>
         
         <td>
-          <p><code><a href="Continuous_Electrode.html">Continuous_Electrode</a></code> </p>
-        </td>
-        <td><p>Definition for electrodes that collects continuous signals</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ECoGTensor.html">ECoGTensor</a></code> </p>
         </td>
         <td><p>'iEEG/ECoG' Tensor class inherit from <code>Tensor</code></p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="LFP_electrode.html">LFP_electrode</a></code> </p>
-        </td>
-        <td><p>Definition for electrodes that collects 'LFP' signals</p></td>
       </tr><tr>
         
         <td>
@@ -163,12 +151,6 @@
           <p><code><a href="LazyH5.html">LazyH5</a></code> </p>
         </td>
         <td><p>Lazy 'HDF5' file loader</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="RAVEAbstarctElectrode.html">RAVEAbstarctElectrode</a></code> </p>
-        </td>
-        <td><p>Abstract definition of electrode class in RAVE</p></td>
       </tr><tr>
         
         <td>
@@ -300,13 +282,19 @@
         <td>
           <p><code><a href="load_fst_or_h5.html">load_fst_or_h5()</a></code> </p>
         </td>
-        <td><p>Function try to load 'fst' file, if not found, read 'HDF5' file</p></td>
+        <td><p>Function try to load 'fst' arrays, if not found, read 'HDF5' arrays</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="load_h5.html">load_h5()</a></code> </p>
         </td>
         <td><p>Lazy Load 'HDF5' File via <code><a href='http://hhoeflin.github.io/hdf5r/reference/hdf5r-package.html'>hdf5r-package</a></code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_meta2.html">load_meta2()</a></code> </p>
+        </td>
+        <td><p>Load 'RAVE' subject meta data</p></td>
       </tr><tr>
         
         <td>
@@ -385,6 +373,12 @@
           <p><code><a href="save_h5.html">save_h5()</a></code> </p>
         </td>
         <td><p>Save objects to 'HDF5' file without trivial checks</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="save_meta2.html">save_meta2()</a></code> </p>
+        </td>
+        <td><p>Function to save meta data to 'RAVE' subject</p></td>
       </tr><tr>
         
         <td>

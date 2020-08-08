@@ -15,9 +15,8 @@ Description: Includes multiple cross-platform read/write interfaces for
   as part of this project provides tools to read/write neurophysiology data
   from/to 'RAVE' file structure, as well as several popular formats including 
   'EDF(+)', 'Matlab', 'BIDS-iEEG', and 'HDF5', etc. Documentation and examples
-  about 'RAVE' project are provided via 'OpenWetWare' site at 
-  <https://openwetware.org/wiki/RAVE>, and the paper by 
-  John F. Magnotti, Zhengjia Wang, Michael S. Beauchamp (2020) 
+  about 'RAVE' project are provided at <https://openwetware.org/wiki/RAVE>, 
+  and the paper by John F. Magnotti, Zhengjia Wang, Michael S. Beauchamp (2020) 
   <doi:10.1101/2020.06.02.129676>, the paper by Brian A. Metzger, John F. 
   Magnotti, Zhengjia Wang, Elizabeth Nesbitt, Patrick J. Karas, Daniel Yoshor, 
   Michael S. Beauchamp (2020) <doi:10.1523/JNEUROSCI.0279-20.2020>, and 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set/Get 'raveio' option — raveio-option • raveio</title>
+<title>Load 'RAVE' subject meta data — load_meta2 • raveio</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Set/Get 'raveio' option — raveio-option" />
-<meta property="og:description" content="Persist settings on local configuration file" />
+<meta property="og:title" content="Load 'RAVE' subject meta data — load_meta2" />
+<meta property="og:description" content="Load 'RAVE' subject meta data" />
 
 
 
@@ -111,79 +111,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set/Get 'raveio' option</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/zzz.R'><code>R/zzz.R</code></a></small>
-    <div class="hidden name"><code>raveio-option.Rd</code></div>
+    <h1>Load 'RAVE' subject meta data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/rave-meta.R'><code>R/rave-meta.R</code></a></small>
+    <div class="hidden name"><code>load_meta2.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Persist settings on local configuration file</p>
+    <p>Load 'RAVE' subject meta data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>raveio_setopt</span>(<span class='no'>key</span>, <span class='no'>value</span>, <span class='kw'>.save</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='fu'>raveio_resetopt</span>(<span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>raveio_getopt</span>(<span class='no'>key</span>, <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>temp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='fu'>raveio_confpath</span>(<span class='kw'>cfile</span> <span class='kw'>=</span> <span class='st'>"settings.yaml"</span>)</pre>
+    <pre class="usage"><span class='fu'>load_meta2</span>(<span class='no'>meta_type</span>, <span class='no'>project_name</span>, <span class='no'>subject_code</span>, <span class='no'>subject_id</span>, <span class='no'>meta_name</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>key</th>
-      <td><p>character, option name</p></td>
+      <th>meta_type</th>
+      <td><p>electrodes, epochs, time_points, frequencies, references ...</p></td>
     </tr>
     <tr>
-      <th>value</th>
-      <td><p>character or logical of length 1, option value</p></td>
+      <th>project_name</th>
+      <td><p>project name</p></td>
     </tr>
     <tr>
-      <th>.save</th>
-      <td><p>whether to save to local drive, internally used to temporary
-change option. Not recommended to use it directly.</p></td>
+      <th>subject_code</th>
+      <td><p>subject code</p></td>
     </tr>
     <tr>
-      <th>all</th>
-      <td><p>whether to reset all non-default keys</p></td>
+      <th>subject_id</th>
+      <td><p>"project_name/subject_code"</p></td>
     </tr>
     <tr>
-      <th>default</th>
-      <td><p>is key not found, return default value</p></td>
-    </tr>
-    <tr>
-      <th>temp</th>
-      <td><p>when saving, whether the key-value pair should be considered
-temporary, a temporary settings will be ignored when saving; when getting
-options, setting <code>temp</code> to false will reveal the actual settings.</p></td>
-    </tr>
-    <tr>
-      <th>cfile</th>
-      <td><p>file name in configuration path</p></td>
+      <th>meta_name</th>
+      <td><p>only used if meta_type is epochs or references</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>raveio_setopt</code> returns modified <code>value</code>;
-<code>raveio_resetopt</code> returns current settings as a list;
-<code>raveio_confpath</code> returns absolute path for the settings file;
-<code>raveio_getopt</code> returns the settings value to the given key, or
-<code>default</code> if not found.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p><code>raveio_setopt</code> stores key-value pair in local path.
-The values are persistent and shared across multiple sessions.
-There are some read-only keys such as <code>"session_string"</code>. Trying to
-set those keys will result in error.</p>
-<p><code>raveio_getopt</code> returns value corresponding to the keys. If key is
-missing, the whole option will be returned.</p>
-<p>If set <code>all=TRUE</code>, <code>raveio_resetopt</code> resets all keys including
-non-standard ones. However <code>"session_string"</code> will never reset.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code>R_user_dir</code></p></div>
+    <p>A data frame of the specified meta type or <code>NULL</code> is no meta
+data is found.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

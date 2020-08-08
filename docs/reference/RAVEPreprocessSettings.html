@@ -94,7 +94,7 @@ Definition for preprocess configurations" />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/beauchamplab/rave/">
+  <a href="https://github.com/beauchamplab/raveio/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -113,7 +113,7 @@ Definition for preprocess configurations" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Definition for preprocess configurations</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/rave/blob/master/R/class-preprocess.R'><code>R/class-preprocess.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/class-preprocess.R'><code>R/class-preprocess.R</code></a></small>
     <div class="hidden name"><code>RAVEPreprocessSettings.Rd</code></div>
     </div>
 
@@ -170,8 +170,7 @@ locked</p></dd>
 
 <dt><code>notch_params</code></dt><dd><p>Notch filter parameters</p></dd>
 
-<dt><code>electrode_types</code></dt><dd><p>electrode types, see <code>type</code> field in
-<code><a href='RAVEAbstarctElectrode.html'>RAVEAbstarctElectrode</a></code> or <code><a href='LFP_electrode.html'>LFP_electrode</a></code></p></dd>
+<dt><code>electrode_types</code></dt><dd><p>electrode signal types</p></dd>
 
 <dt><code>@freeze_blocks</code></dt><dd><p>whether to free block, internally used</p></dd>
 
@@ -302,6 +301,26 @@ with the same type must have the same sample rate.</p></dd>
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'># The following example require downloading demo subject (~700 MB) from</span>
+<span class='co'># https://github.com/beauchamplab/rave/releases/tag/v0.1.9-beta</span>
+
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='no'>conf</span> <span class='kw'>&lt;-</span> <span class='no'>RAVEPreprocessSettings</span>$<span class='fu'>new</span>(<span class='kw'>subject</span> <span class='kw'>=</span> <span class='st'>'demo/DemoSubject'</span>)
+<span class='no'>conf</span>$<span class='no'>blocks</span>  <span class='co'># "008" "010" "011" "012"</span>
+
+<span class='no'>conf</span>$<span class='no'>electrodes</span>   <span class='co'># 5 electrodes</span>
+
+<span class='co'># Electrode 14 information</span>
+<span class='no'>conf</span>$<span class='fu'>electrode_info</span>(<span class='kw'>electrode</span> <span class='kw'>=</span> <span class='fl'>14</span>)
+
+<span class='no'>conf</span>$<span class='no'>data_imported</span> <span class='co'># All 5 electrodes are imported</span>
+
+<span class='no'>conf</span>$<span class='no'>data_locked</span>   <span class='co'># Whether block, sample rates should be locked</span>
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

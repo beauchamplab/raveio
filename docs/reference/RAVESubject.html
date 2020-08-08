@@ -94,7 +94,7 @@ Definition for 'RAVE' subject class" />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/beauchamplab/rave/">
+  <a href="https://github.com/beauchamplab/raveio/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -113,7 +113,7 @@ Definition for 'RAVE' subject class" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Definition for 'RAVE' subject class</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/rave/blob/master/R/class-subject.R'><code>R/class-subject.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/class-subject.R'><code>R/class-subject.R</code></a></small>
     <div class="hidden name"><code>RAVESubject.Rd</code></div>
     </div>
 
@@ -126,7 +126,7 @@ Definition for 'RAVE' subject class" />
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>load_meta</code></p></div>
+    <div class='dont-index'><p><code><a href='load_meta2.html'>load_meta2</a></code></p></div>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl'>
@@ -175,8 +175,7 @@ no path exists, values will be <code>NA</code></p></dd>
 
 <dt><code>notch_filtered</code></dt><dd><p>whether electrodes are Notch-filtered</p></dd>
 
-<dt><code>electrode_types</code></dt><dd><p>electrode types; see <code>type</code> field
-in <code><a href='RAVEAbstarctElectrode.html'>RAVEAbstarctElectrode</a></code> or <code><a href='LFP_electrode.html'>LFP_electrode</a></code></p></dd>
+<dt><code>electrode_types</code></dt><dd><p>electrode signal types</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -244,8 +243,8 @@ read in <code>'reference_&lt;meta_name&gt;.csv'</code>.</p></dd>
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
 <dt><code>reference_name</code></dt><dd><p>character, reference name, see <code>meta_name</code>
-in <code>self$meta_data</code> or <code>load_meta</code> when <code>meta_type</code>
-if 'reference'</p></dd>
+in <code>self$meta_data</code> or <code><a href='load_meta2.html'>load_meta2</a></code> when
+<code>meta_type</code> is 'reference'</p></dd>
 
 <dt><code>refresh</code></dt><dd><p>whether to reload reference table before obtaining data,
 default is false</p></dd>

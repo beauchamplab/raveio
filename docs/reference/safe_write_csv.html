@@ -94,7 +94,7 @@ backup original file." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/beauchamplab/rave/">
+  <a href="https://github.com/beauchamplab/raveio/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -113,7 +113,7 @@ backup original file." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Save data to comma separated value files with backups</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/rave/blob/master/R/csv.R'><code>R/csv.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/csv.R'><code>R/csv.R</code></a></small>
     <div class="hidden name"><code>safe_write_csv.Rd</code></div>
     </div>
 
@@ -147,11 +147,11 @@ backup original file.</p>
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>)
 
 <span class='co'># File not exists, same as write file, returns normalized `f`</span>
-<span class='fu'>safe_write_csv</span>(<span class='no'>x</span>, <span class='no'>f</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpvGfQeL/filec2d64dca94a"</div><div class='input'>
+<span class='fu'>safe_write_csv</span>(<span class='no'>x</span>, <span class='no'>f</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpHxvKJ7/file649a6c0a0191"</div><div class='input'>
 <span class='co'># Check whether file exists</span>
 <span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='no'>f</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'># write again, and the old file will be copied</span>
-<span class='fu'>safe_write_csv</span>(<span class='no'>x</span>, <span class='no'>f</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpvGfQeL/filec2d64dca94a"</div><div class='input'>
+<span class='fu'>safe_write_csv</span>(<span class='no'>x</span>, <span class='no'>f</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpHxvKJ7/file649a6c0a0191"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

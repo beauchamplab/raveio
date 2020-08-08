@@ -97,7 +97,7 @@ https://openwetware.org/wiki/RAVE:Epoching or more details." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/beauchamplab/rave/">
+  <a href="https://github.com/beauchamplab/raveio/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -116,7 +116,7 @@ https://openwetware.org/wiki/RAVE:Epoching or more details." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Definition for epoch class</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/rave/blob/master/R/class-epoch.R'><code>R/class-epoch.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/class-epoch.R'><code>R/class-epoch.R</code></a></small>
     <div class="hidden name"><code>RAVEEpoch.Rd</code></div>
     </div>
 
@@ -229,6 +229,36 @@ folder</p></dd>
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'># Please download DemoSubject ~700MB from</span>
+<span class='co'># https://github.com/beauchamplab/rave/releases/tag/v0.1.9-beta</span>
+
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='co'># Load meta/epoch_auditory_onset.csv from subject demo/DemoSubject</span>
+<span class='no'>epoch</span> <span class='kw'>&lt;-</span><span class='no'>RAVEEpoch</span>$<span class='fu'>new</span>(<span class='kw'>subject</span> <span class='kw'>=</span> <span class='st'>'demo/DemoSubject'</span>,
+                      <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>'auditory_onset'</span>)
+
+<span class='co'># first several trials</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>epoch</span>$<span class='no'>table</span>)
+
+<span class='co'># query specific trial</span>
+<span class='no'>old_trial1</span> <span class='kw'>&lt;-</span> <span class='no'>epoch</span>$<span class='fu'>trial_at</span>(<span class='fl'>1</span>)
+
+<span class='co'># Create new trial or change existing trial</span>
+<span class='no'>epoch</span>$<span class='fu'>set_trial</span>(<span class='kw'>Block</span> <span class='kw'>=</span> <span class='st'>'008'</span>, <span class='kw'>Time</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+                <span class='kw'>Trial</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>Condition</span> <span class='kw'>=</span> <span class='st'>'AknownVmeant'</span>)
+<span class='no'>new_trial1</span> <span class='kw'>&lt;-</span> <span class='no'>epoch</span>$<span class='fu'>trial_at</span>(<span class='fl'>1</span>)
+
+<span class='co'># Compare new and old trial 1</span>
+<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='no'>old_trial1</span>, <span class='no'>new_trial1</span>)
+
+<span class='co'># To get updated trial table, must update first</span>
+<span class='no'>epoch</span>$<span class='fu'>update_table</span>()
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>epoch</span>$<span class='no'>table</span>)
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

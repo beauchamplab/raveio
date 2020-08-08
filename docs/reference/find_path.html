@@ -94,7 +94,7 @@ if the original path is missing; see examples." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/beauchamplab/rave/">
+  <a href="https://github.com/beauchamplab/raveio/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -113,7 +113,7 @@ if the original path is missing; see examples." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Try to find path along the root directory</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/rave/blob/master/R/path.R'><code>R/path.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/path.R'><code>R/path.R</code></a></small>
     <div class="hidden name"><code>find_path.Rd</code></div>
     </div>
 
@@ -169,7 +169,7 @@ along the search path will be returned</p>
 <span class='co'># root/ins/cd/a - missing</span>
 <span class='co'># root/cd/a     - missing</span>
 <span class='co'># root/a        - exists!</span>
-<span class='fu'>find_path</span>(<span class='st'>'ins/cd/a'</span>, <span class='no'>root</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpvGfQeL/a"</div><div class='input'>
+<span class='fu'>find_path</span>(<span class='st'>'ins/cd/a'</span>, <span class='no'>root</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpHxvKJ7/a"</div><div class='input'>
 <span class='co'># ------ Case 2: priority -------</span>
 <span class='co'># Create two paths in root</span>
 <span class='fu'><a href='dir_create2.html'>dir_create2</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>root</span>, <span class='st'>'cc/a'</span>))
@@ -179,7 +179,7 @@ along the search path will be returned</p>
 <span class='co'># root/ins/cd/a - missing</span>
 <span class='co'># root/cd/a     - exists - returned</span>
 <span class='co'># root/a        - exists, but ignored</span>
-<span class='fu'>find_path</span>(<span class='st'>'ins/cc/a'</span>, <span class='no'>root</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpvGfQeL/cc/a"</div><div class='input'>
+<span class='fu'>find_path</span>(<span class='st'>'ins/cc/a'</span>, <span class='no'>root</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpHxvKJ7/cc/a"</div><div class='input'>
 <span class='co'># ------ Case 3: find all -------</span>
 <span class='co'># Create two paths in root</span>
 <span class='fu'><a href='dir_create2.html'>dir_create2</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>root</span>, <span class='st'>'cc/a'</span>))
@@ -189,8 +189,8 @@ along the search path will be returned</p>
 <span class='co'># root/ins/cd/a - missing</span>
 <span class='co'># root/cd/a     - exists - returned</span>
 <span class='co'># root/a        - exists - returned</span>
-<span class='fu'>find_path</span>(<span class='st'>'ins/cc/a'</span>, <span class='no'>root</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpvGfQeL/cc/a"
-#&gt; [2] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpvGfQeL/a"   </div><div class='input'>
+<span class='fu'>find_path</span>(<span class='st'>'ins/cc/a'</span>, <span class='no'>root</span>, <span class='kw'>all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpHxvKJ7/cc/a"
+#&gt; [2] "/private/var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T/RtmpHxvKJ7/a"   </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
