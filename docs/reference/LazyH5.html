@@ -283,9 +283,9 @@ expression be evaluated</p></dd>
 
 <span class='co'># Save to local disk</span>
 <span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
-<span class='fu'><a href='save_h5.html'>save_h5</a></span>(<span class='no'>x</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='no'>f</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>'x'</span>, <span class='kw'>chunk</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span>), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0</span>)</div><div class='output co'>#&gt; /var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T//RtmpHxvKJ7/file649a9028fc5 =&gt; x (Dataset Created) 
-#&gt; /var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T//RtmpHxvKJ7/file649a9028fc5 =&gt; x (Dataset Removed) 
-#&gt; /var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T//RtmpHxvKJ7/file649a9028fc5 =&gt; x (Dataset Created) </div><div class='input'>
+<span class='fu'><a href='save_h5.html'>save_h5</a></span>(<span class='no'>x</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='no'>f</span>, <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>'x'</span>, <span class='kw'>chunk</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span>), <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0</span>)</div><div class='output co'>#&gt; /var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T//RtmpPDsWyq/file6677221f3a30 =&gt; x (Dataset Created) 
+#&gt; /var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T//RtmpPDsWyq/file6677221f3a30 =&gt; x (Dataset Removed) 
+#&gt; /var/folders/qk/ffmy94156yldmkdnv266wjg40000gn/T//RtmpPDsWyq/file6677221f3a30 =&gt; x (Dataset Created) </div><div class='input'>
 <span class='co'># Load via LazyFST</span>
 <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='no'>LazyH5</span>$<span class='fu'>new</span>(<span class='kw'>file_path</span> <span class='kw'>=</span> <span class='no'>f</span>, <span class='kw'>data_name</span> <span class='kw'>=</span> <span class='st'>'x'</span>, <span class='kw'>read_only</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
@@ -295,7 +295,7 @@ expression be evaluated</p></dd>
 <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span>(<span class='no'>dat</span> - <span class='no'>x</span>)</div><div class='output co'>#&gt; [1] 0 0</div><div class='input'>
 <span class='co'># Read a slice of the data</span>
 <span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span>(<span class='no'>dat</span>[,<span class='fl'>10</span>,])</div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.148   0.002   0.153 </div><div class='input'>
+#&gt;   0.143   0.001   0.145 </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

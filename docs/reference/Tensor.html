@@ -379,7 +379,7 @@ the original instance</p></dd>
 <span class='kw pkg'>pryr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/pryr/man/object_size.html'>object_size</a></span>(<span class='no'>ts</span>)</div><div class='output co'>#&gt; 72.2 MB</div><div class='input'><span class='co'>#&gt; 8.02 MB</span>
 
 <span class='co'># Enable hybrid mode</span>
-<span class='no'>ts</span>$<span class='fu'>to_swap_now</span>()</div><div class='output co'>#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a72cd322.fst </div><div class='input'>
+<span class='no'>ts</span>$<span class='fu'>to_swap_now</span>()</div><div class='output co'>#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file6677302536d0.fst </div><div class='input'>
 <span class='co'># Hybrid mode, usually less than 1 MB</span>
 <span class='kw pkg'>pryr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/pryr/man/object_size.html'>object_size</a></span>(<span class='no'>ts</span>)</div><div class='output co'>#&gt; 207 kB</div><div class='input'><span class='co'>#&gt; 814 kB</span>
 
@@ -392,7 +392,7 @@ the original instance</p></dd>
 <span class='co'>#&gt; - A: 1, 2, 3, 4, 5, 6,...</span>
 <span class='co'>#&gt; - B: 1, 2, 3, 4, 5, 6,...</span>
 <span class='co'>#&gt; - C: 6, 7, 8, 9</span>
-<span class='no'>end1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span>(); <span class='no'>end1</span> - <span class='no'>start1</span></div><div class='output co'>#&gt; Time difference of 0.26793 secs</div><div class='input'><span class='co'>#&gt; Time difference of 0.188035 secs</span>
+<span class='no'>end1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span>(); <span class='no'>end1</span> - <span class='no'>start1</span></div><div class='output co'>#&gt; Time difference of 0.234726 secs</div><div class='input'><span class='co'>#&gt; Time difference of 0.188035 secs</span>
 
 <span class='co'># Join tensors</span>
 <span class='no'>ts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='fl'>1</span>:<span class='fl'>20</span>, <span class='kw'>function</span>(<span class='no'>ii</span>){
@@ -401,26 +401,26 @@ the original instance</p></dd>
     <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>30</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>300</span>, <span class='kw'>C</span> <span class='kw'>=</span> <span class='no'>ii</span>),
     <span class='kw'>varnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'A'</span>, <span class='st'>'B'</span>, <span class='st'>'C'</span>), <span class='kw'>use_index</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 })
-<span class='no'>ts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='join_tensors.html'>join_tensors</a></span>(<span class='no'>ts</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a86613a5.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a6593b9f1.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a4594b150.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a25051ee0.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a732e171c.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a56ef6a57.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a2ea258.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a75a43f7f.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a7244e72f.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a9a5f945.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a6f9025f5.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a60ac310b.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a48c7fac2.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a411ffbe2.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a1ad1d3d5.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a45aa52b4.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a311bcb27.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a17b686a1.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a5040c030.fst 
-#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/fUHQ0NEZwmpttdZ/file649a4b09b879.fst </div><div class='input'>
+<span class='no'>ts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='join_tensors.html'>join_tensors</a></span>(<span class='no'>ts</span>, <span class='kw'>temporary</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667719a8f50d.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file6677237035a4.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file66771bd1b429.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file6677648afe03.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file6677612aaa86.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667738217540.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file66771c98d98a.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667776f201b0.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file6677a4d06d2.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667746faca46.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file66777af5de11.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667723c66d28.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667738286f71.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667766ac8084.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667747298ec5.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file6677795c4c02.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file66771a82558d.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667762bea993.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file6677536f248a.fst 
+#&gt; Writing to path: /Users/beauchamplab/rave_data/cache_dir/w31GajSKye09g93/file667725c80ad1.fst </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
