@@ -18,7 +18,9 @@ jobs:
 
       - name: Build HDF5
         run: |
+          chmod a+x ./inst/hdf5_installer.sh
           ./inst/hdf5_installer.sh
+          ls ${{ env.HDF5_DIR }}
 
       - uses: r-lib/actions/setup-r@v1
 
@@ -26,6 +28,7 @@ jobs:
 
       - name: Query dependencies
         run: |
+          install.packages('hdf5r')
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
