@@ -1,3 +1,17 @@
+# `raveio` (0.0.4)
+
+1. Trying to fix the CRAN check errors/warnings by detecting whether command-line 
+tools exist before invoking system calls.
+2. Require platform to be little-endian
+
+Self checks indicated no error/warning. 
+
+* The platforms include `windows`, `ubuntu`, `fedora`, and `macOS`
+
+
+================================ past comments =================================
+# `raveio` (0.0.3)
+
 New submission:
 
 Self check on local machine (OSX Catalina): 0 error, 0 warning, 0 note
