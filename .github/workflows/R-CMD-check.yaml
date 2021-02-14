@@ -37,12 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Cache HDF5
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.HDF5_DIR }}
-          key: ${{ runner.os }}-hdf5-${{ env.HDF5_VERSION }}
-
       - name: Build HDF5
         run: |
           ./inst/hdf5_installer.sh
