@@ -1,3 +1,124 @@
+get_os <- function(){
+  if("windows" %in% stringr::str_to_lower(.Platform$OS.type)){
+    return("windows")
+  }
+  os <- stringr::str_to_lower(R.version$os)
+  if(stringr::str_detect(os, '^darwin')){
+    return('darwin')
+  }
+  if(stringr::str_detect(os, '^linux')){
+    return('linux')
+  }
+  if(stringr::str_detect(os, '^solaris')){
+    return('solaris')
+  }
+  if(stringr::str_detect(os, '^win')){
+    return('windows')
+  }
+  return('unknown')
+}
+
+safe_system <- function(cmd, ..., intern = TRUE, ignore.stderr = TRUE,
+                        minimized = TRUE, invisible = TRUE, show.output.on.console = TRUE){
+  suppressWarnings({
+    if(get_os() == 'windows'){
+      ret <- system(cmd, intern = intern, ignore.stderr = ignore.stderr,
+                    minimized = minimized, invisible = invisible,
+                    show.output.on.console = show.output.on.console, ...)
+    } else {
+      ret <- system(cmd, intern = intern, ignore.stderr = ignore.stderr, ...)
+    }
+  })
+  ret
+}
+
+safe_system2 <- function(cmd, args, ..., stdout = TRUE, stderr = FALSE, onFound = NULL, onNotFound = NA){
+
+  if(Sys.which(cmd) == ""){
+    return(onNotFound)
+  }
+
+  suppressWarnings({
+    ret <- system2(cmd, args, ..., stdout = stdout, stderr = stderr)
+  })
+  if(is.function(onFound)){
+    ret <- onFound(ret)
+  }
+  ret
+}
+get_ram <- function(){
+  os <- get_os()
+  ram <- 128*1024^3
+  safe_ram <- function(e){
+    NA
+  }
+
+  ram <- tryCatch({
+    switch (
+      os,
+      'darwin' = {
+        ram <- safe_system2(
+          "sysctl",
+          "hw.memsize",
+          stdout = TRUE,
+          onFound = function(ram) {
+            substring(ram, 13)
+          }
+        )
+        if(is.na(ram)){
+          ram <- safe_system2("top", c("-l", "1", "-s", "0"), stdout = TRUE, onFound = function(s){
+            s <- s[stringr::str_detect(s, "PhysMem")][[1]]
+            m <- stringr::str_match(s, "PhysMem[: ]+([0-9]+)([gGtTmM])")
+            s <- as.numeric(m[[2]])
+            u <- stringr::str_to_lower(m[[3]])
+            if(u == 'm'){ s <- s * 1024^2 }
+            if(u == 'g'){ s <- s * 1024^3 }
+            if(u == 't'){ s <- s * 1024^4 }
+            s
+          })
+        }
+        ram
+      },
+      'linux' = {
+        if(Sys.which("awk") == ""){
+          ram <- NA
+        } else {
+          ram <- safe_system("awk '/MemTotal/ {print $2}' /proc/meminfo", intern = TRUE)
+          ram <- as.numeric(ram) * 1024
+        }
+      },
+      'solaris' = {
+        if(Sys.which("prtconf") == ""){
+          ram <- NA
+        } else {
+          ram <- safe_system("prtconf | grep Memory", intern = TRUE)
+          ram <- stringr::str_trim(ram)
+          ram <- stringr::str_split(ram, '[ ]+')[[1]][3:4]
+
+          power <- match(ram[2], c("kB", "MB", "GB", "TB", "Kilobytes", "Megabytes", "Gigabytes", "Terabytes"))
+          ram <- as.numeric(ram[1]) * 1024^(1 + (power-1) %% 4)
+        }
+      },
+      'windows' = {
+        if(Sys.which("wmic") == ""){
+          ram <- NA
+        } else {
+          ram <- safe_system("wmic MemoryChip get Capacity", intern = TRUE)[-1]
+          ram <- stringr::str_trim(ram)
+          ram <- ram[nchar(ram) > 0]
+          ram <- sum(as.numeric(ram))
+        }
+      }, {
+        ram <- NA
+      }
+    )
+    ram
+  }, error = safe_ram, warning = safe_ram)
+  ram <- as.numeric(ram)
+  ram
+}
+
+
 
 default_settings <- function(s = dipsaus::fastmap2()){
   s[['..temp']] <- list()
@@ -19,7 +140,7 @@ default_settings <- function(s = dipsaus::fastmap2()){
   s[['drive_speed']] <- c(50, 20)
   s[['disable_startup_speed_check']] <- FALSE
   s[['max_worker']] <- parallel::detectCores() - 1
-  s[['max_mem']] <- dipsaus::get_ram() / 1024^3
+  s[['max_mem']] <- get_ram() / 1024^3
 
   # Not used
   s[['server_time_zone']] <- 'America/Chicago'

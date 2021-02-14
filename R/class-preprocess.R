@@ -68,11 +68,12 @@ RAVEPreprocessSettings <- R6::R6Class(
       self$backup_path <- file.path(self$subject$rave_path, 'log.yaml')
       self$read_only <- isTRUE(read_only)
       self$data <- dipsaus::fastmap2()
-      if(file.exists(self$path)){
-        load_yaml(self$path, map = self$data)
-      } else if( file.exists(self$backup_path) ){
+      if( file.exists(self$backup_path) ){
         load_yaml(self$backup_path, map = self$data)
         dipsaus::list_to_fastmap2(self$data$preprocess, self$data)
+      }
+      if(file.exists(self$path)){
+        load_yaml(self$path, map = self$data)
       }
       self$migrate()
     },
