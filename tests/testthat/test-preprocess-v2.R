@@ -14,6 +14,8 @@ test_that("RAVE preprocess pipeline 2.0", {
   raveio::raveio_setopt('file_structure', 'native', .save = FALSE)
   raveio::raveio_setopt('max_worker', 1L, .save = FALSE)
 
+  skip_if_not("demo" %in% get_projects())
+
   # Skip if cannot find subject
   self <- raveio:::RAVEPreprocessSettings$new(subject = 'demo/YAB', read_only = FALSE)
   skip_if_not(self$has_raw(), message = 'Raw subject missing for test, skipping')

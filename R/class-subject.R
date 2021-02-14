@@ -34,7 +34,6 @@ RAVESubject <- R6::R6Class(
     #' @param ... ignored
     print = function(...){
       cat('RAVE subject <', self$subject_id, '>\n', sep = '')
-      cat('')
     },
 
     #' @description constructor

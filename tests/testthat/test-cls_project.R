@@ -12,6 +12,8 @@ test_that("Project class & derivatives", {
   raveio_setopt('file_structure', 'native', .save = FALSE)
   raveio_setopt('data_dir', '~/rave_data/data_dir', .save = FALSE)
 
+  skip_if_not("demo" %in% get_projects())
+
   project <- as_rave_project('demo')
 
   expect_true(project$has_subject('YAB'))

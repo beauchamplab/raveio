@@ -41,7 +41,7 @@ RAVEProject <- R6::R6Class(
       cat('  Subjects :', paste(self$subjects(), collapse = ', '), '\n')
       nms <- names(self)
       nms <- nms[!nms %in% r6_reserved_fields]
-      cat('Field/Method:', paste(nms, collapse = ', '))
+      cat('Field/Method:', paste(nms, collapse = ', '), "\n")
     },
 
     #' @description constructor

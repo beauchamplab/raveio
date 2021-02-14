@@ -55,7 +55,8 @@ LazyH5 <- R6::R6Class(
           base::print(private$data_ptr)
         }else{
           base::cat('Pointer closed. Information since last open:\nDim: ',
-                    paste(private$last_dim, collapse = 'x'), ' \tRank: ', length(private$last_dim))
+                    paste(private$last_dim, collapse = 'x'), ' \tRank: ',
+                    length(private$last_dim), "\n")
         }
       }
       invisible(self)

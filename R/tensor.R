@@ -149,6 +149,7 @@ Tensor <- R6::R6Class(
           cat('- ', names(a)[x], ': ', a[[x]], '\n', sep = '')
         }
       }
+      cat("\n")
       invisible(self)
     },
 
