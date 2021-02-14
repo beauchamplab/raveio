@@ -16,17 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build HDF5
-        run: |
-          chmod a+x ./inst/hdf5_installer.sh
-          ./inst/hdf5_installer.sh
-          ls ${{ env.HDF5_DIR }}
-
       - name: Cache HDF5
         uses: actions/cache@v2
         with:
           path: ${{ env.HDF5_DIR }}
           key: ${{ runner.os }}-hdf5-${{ env.HDF5_VERSION }}
+
+      - name: Build HDF5
+        if: steps.cache-hdf5.outputs.cache-hit != 'true'
+        run: |
+          chmod a+x ./inst/hdf5_installer.sh
+          ./inst/hdf5_installer.sh
+          ls ${{ env.HDF5_DIR }}
 
       - uses: r-lib/actions/setup-r@v1
 
