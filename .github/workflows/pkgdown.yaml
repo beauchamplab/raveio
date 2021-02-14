@@ -11,8 +11,20 @@ jobs:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      HDF5_VERSION: 1.12.0
+      HDF5_DIR: ${{ github.workspace }}/cache/hdf5
     steps:
       - uses: actions/checkout@v2
+
+      - name: Cache HDF5
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.HDF5_DIR }}
+          key: ${{ runner.os }}-hdf5-${{ env.HDF5_VERSION }}
+
+      - name: Build HDF5
+        run: |
+          ./inst/hdf5_installer.sh
 
       - uses: r-lib/actions/setup-r@v1
 
