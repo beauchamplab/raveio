@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/raveio)](https://CRAN.R-project.org/package=raveio)
-[![R build status](https://github.com/beauchamplab/raveio/workflows/R-CMD-check/badge.svg)](https://github.com/beauchamplab/raveio/actions)
+[![R-CMD-check](https://github.com/beauchamplab/raveio/workflows/R-CMD-check/badge.svg)](https://github.com/beauchamplab/raveio/actions)
 <!-- badges: end -->
 
 'RAVE' is a R project that aims at providing interactive analysis and visualization of intracranial Electroencephalography. Developed by `Beauchamp's Lab`, supported by NIH `1R24MH117529`
