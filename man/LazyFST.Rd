@@ -8,6 +8,8 @@ provides hybrid data structure for 'fst' file
 }
 \examples{
 
+if(interactive()){
+
 # Data to save, total 8 MB
 x <- matrix(rnorm(1000000), ncol = 100)
 
@@ -29,6 +31,8 @@ system.time(dat[,100])
 
 # Reading rows might be slow
 system.time(dat[1,])
+
+}
 
 }
 \author{

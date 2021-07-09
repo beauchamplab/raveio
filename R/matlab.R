@@ -27,6 +27,7 @@
 #' read_mat(f)
 #'
 #' # Matlab .mat >= v7.3, using hdf5
+#' f <- tempfile()
 #' save_h5(x, file = f, name = 'x')
 #'
 #' read_mat(f)
@@ -43,19 +44,13 @@
 read_mat <- function(file, ram = TRUE){
   file <- normalizePath(file, mustWork = TRUE)
   # Check if the file is HDF5 format
-  if( hdf5r::is_hdf5(file) ){
+  if( h5FileValid(file) ){
 
-    f <- hdf5r::H5File$new(filename = file, mode = 'r')
-    on.exit(f$close())
-    dset_names <- hdf5r::list.datasets(f)
+    dset_names <- h5_names(file)
     re <- sapply(dset_names, function(nm){
-      r <- load_h5(file, name = nm)
-      if(ram){
-        r <- r[]
-      }
-      r
+      load_h5(file, name = nm, ram = ram)
+      # if(ram){ r <- r[] }
     }, simplify = FALSE, USE.NAMES = TRUE)
-
   }else{
     re <- R.matlab::readMat(file)
   }

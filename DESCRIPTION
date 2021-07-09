@@ -36,7 +36,6 @@ Imports:
     data.table,
     parallel,
     yaml (>= 2.2.1),
-    hdf5r,
     fst (>= 0.9.2),
     dipsaus (>= 0.0.9),
     R.matlab (>= 3.6.2),
@@ -47,8 +46,11 @@ Imports:
     edfReader (>= 1.2.1),
     ini (>= 0.3.1),
     jsonlite (>= 1.7.0),
-    R6
+    R6,
+    rhdf5 (>= 2.36.0)
 Suggests:
     pryr,
     spelling,
     testthat
+Remotes: 
+    grimbough/rhdf5
