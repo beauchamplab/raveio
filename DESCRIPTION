@@ -31,6 +31,8 @@ LazyData: true
 RoxygenNote: 7.1.1
 SystemRequirements: little-endian platform
 Depends: R (>= 3.6.0)
+DependsNote:
+    BioC (>= 3.2)
 Imports:
     utils,
     data.table,
@@ -47,7 +49,8 @@ Imports:
     ini (>= 0.3.1),
     jsonlite (>= 1.7.0),
     R6,
-    rhdf5 (>= 2.36.0)
+    rhdf5 (>= 2.36.0),
+    BiocManager
 Suggests:
     pryr,
     spelling,
