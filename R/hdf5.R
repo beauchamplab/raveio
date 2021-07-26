@@ -1,5 +1,20 @@
 # File IO: HDF5 file wrapper
 
+ensure_rhdf5 <- function(prompt = TRUE){
+
+  if( dipsaus::package_installed('rhdf5') ){ return(TRUE) }
+
+  ans <- TRUE
+  if( prompt && interactive() && !dipsaus::shiny_is_running() ){
+    ans <- utils::askYesNo("BioConductor package `rhdf5` has not been installed. Do you want to install now?")
+  }
+  if(!isTRUE(ans)){
+    stop("Abort. Please manually call `BiocManager::install('rhdf5')` to install.")
+  }
+
+  BiocManager::install('rhdf5', update = FALSE, ask = FALSE, type = 'source')
+}
+
 h5FileIsOpen <- function (filename) {
   filename = normalizePath(filename, mustWork = FALSE)
   L = rhdf5::h5validObjects()
@@ -280,6 +295,7 @@ LazyH5 <- R6::R6Class(
     #' @param quiet whether to suppress messages, default is false
     #' @return self instance
     initialize = function(file_path, data_name, read_only = FALSE, quiet = FALSE){
+      ensure_rhdf5()
 
       # First get absolute path, otherwise hdf5r may report file not found error
       if(read_only){
@@ -845,6 +861,7 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
                     new_file = FALSE, ctype = NULL, quiet = FALSE, ...){
 
   # Make sure all connections are closed
+  ensure_rhdf5()
   H5FcloseAll(file)
   call <- match.call()
 
@@ -906,6 +923,7 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
 #'
 #' @export
 h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
+  ensure_rhdf5()
   mode <- match.arg(mode)
   tryCatch({
     # message(2)
@@ -932,6 +950,7 @@ h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
 #' @return characters, data set names
 #' @export
 h5_names <- function(file){
+  ensure_rhdf5
   if(!h5FileValid(file)){ return(character(0)) }
   fobj <- h5FileObject(file)
   if(is.null(fobj)){
