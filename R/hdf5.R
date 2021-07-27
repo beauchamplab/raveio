@@ -19,11 +19,15 @@ h5FileIsOpen <- function (filename) {
   filename <- normalizePath(filename, mustWork = FALSE)
   L <- rhdf5::h5validObjects()
   isobject <- sapply(L, function(x) {
-    rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
+    tryCatch({
+      rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
+    }, error = function(e){ FALSE })
   })
   if (length(isobject) > 0) {
     isopen <- any(sapply(L[which(isobject)], function(x) {
-      rhdf5::H5Fget_name(x) == filename
+      tryCatch({
+        rhdf5::H5Fget_name(x) == filename
+      }, error = function(e){ return(FALSE) })
     }))
   }
   else {
@@ -38,27 +42,34 @@ H5FcloseAll <- function(filename) {
   if(!h5FileValid(filename)){ return(0L) }
   L <- rhdf5::h5validObjects()
   isobject <- sapply(L, function(x) {
-    rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
+    tryCatch({
+      rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
+    }, error = function(e){ FALSE })
   })
   if (length(isobject) > 0 && any( isobject, na.rm = TRUE )) {
     nclosed <- sapply(L[which(isobject)], function(x) {
-      if(rhdf5::H5Fget_name(x) == filename){
-        # close
-        itype <- rhdf5::H5Iget_type(x)
-        switch (itype,
-          'H5I_FILE' = {
-            rhdf5::H5Fclose(x)
-          },
-          'H5I_GROUP' = {
-            rhdf5::H5Gclose(x)
-          }, {
-            rhdf5::H5Dclose(x)
-          }
-        )
-        return( 1L )
-      } else {
+      tryCatch({
+        if(rhdf5::H5Fget_name(x) == filename){
+          # close
+          itype <- rhdf5::H5Iget_type(x)
+          switch (itype,
+                  'H5I_FILE' = {
+                    rhdf5::H5Fclose(x)
+                  },
+                  'H5I_GROUP' = {
+                    rhdf5::H5Gclose(x)
+                  }, {
+                    rhdf5::H5Dclose(x)
+                  }
+          )
+          return( 1L )
+        } else {
+          return( 0L )
+        }
+      }, error = function(e){
         return( 0L )
-      }
+      })
+
     })
     return( sum(nclosed) )
   } else {
@@ -122,7 +133,9 @@ h5FileValid <- function(filename){
   if(!file.exists(filename)){ return(FALSE) }
   if(isTRUE(file.info(filename)[['isdir']])){ return(FALSE) }
   filename <- normalizePath(filename)
-  return(rhdf5::H5Fis_hdf5(filename))
+  return(tryCatch({
+    rhdf5::H5Fis_hdf5(filename)
+  }, error = function(e){ FALSE }))
 }
 
 h5FileObject <- function(filename){
@@ -130,11 +143,13 @@ h5FileObject <- function(filename){
   if(!h5FileValid(filename)){ return(NULL) }
   L <- rhdf5::h5validObjects()
   for(x in L){
-    if(rhdf5::H5Iget_type(x) %in% c("H5I_FILE")){
-      if(rhdf5::H5Fget_name(x) == filename){
-        return(x)
+    try({
+      if(rhdf5::H5Iget_type(x) %in% c("H5I_FILE")){
+        if(rhdf5::H5Fget_name(x) == filename){
+          return(x)
+        }
       }
-    }
+    }, silent = TRUE)
   }
   return(NULL)
 }
@@ -244,14 +259,22 @@ LazyH5 <- R6::R6Class(
     #' internally used
     file_ptr_valid = function(){
       if(!"H5IdComponent" %in% class(private$file_ptr)){ return(FALSE) }
-      isTRUE(rhdf5::H5Iis_valid(private$file_ptr))
+      isTRUE(
+        tryCatch({
+          rhdf5::H5Iis_valid(private$file_ptr)
+        }, error = function(e){ FALSE })
+      )
     },
 
     #' @field data_ptr_valid whether data pointer is valid or broken;
     #' internally used
     data_ptr_valid = function(){
       if(!"H5IdComponent" %in% class(private$data_ptr)){ return(FALSE) }
-      isTRUE(rhdf5::H5Iis_valid(private$data_ptr))
+      isTRUE(
+        tryCatch({
+          rhdf5::H5Iis_valid(private$data_ptr)
+        }, error = function(e){ FALSE })
+      )
     },
 
     #' @field file_valid whether file is a valid 'HDF5' file
@@ -458,7 +481,7 @@ LazyH5 <- R6::R6Class(
         # fillValue = NA,
         native = FALSE
       )
-      private$data_ptr <- private$file_ptr&private$name
+      private$data_ptr <- (private$file_ptr)&(private$name)
       private$data_ptr[] <- x
 
       # reinitialize parameters
@@ -834,9 +857,7 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
   if(ram){
     return(re[])
   } else {
-    if(!read_only){
-      re$open()
-    }
+    re$open()
     return(re)
   }
 }
