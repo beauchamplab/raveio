@@ -568,7 +568,6 @@ LazyH5 <- R6::R6Class(
 
       }
 
-      base::print(111)
 
       if( self$data_ptr_valid ){
         space <- rhdf5::H5Dget_space(private$data_ptr)
@@ -578,7 +577,6 @@ LazyH5 <- R6::R6Class(
         private$last_dim <- diminfo$size
       }
 
-      base::print(222)
 
     },
 
@@ -983,14 +981,10 @@ h5_names <- function(file){
   df <- NULL
   try({
     if(!is.null(fobj)){
-      base::print(444)
-      base::print(fobj)
       df <- rhdf5::h5ls(fobj, recursive = TRUE)
     }
   }, silent = TRUE)
-  base::print(555)
   if(is.null(df)){
-    base::print(666)
     df <- rhdf5::h5ls(file, recursive = TRUE)
   }
   dnames <- sprintf('%s/%s', df$group, df$name)
