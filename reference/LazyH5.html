@@ -131,6 +131,18 @@
 <dt><code>quiet</code></dt><dd><p>whether to suppress messages</p></dd>
 
 </dl><p></div></p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
+
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>file_ptr_valid</code></dt><dd><p>whether file pointer is valid or broken;
+internally used</p></dd>
+
+<dt><code>data_ptr_valid</code></dt><dd><p>whether data pointer is valid or broken;
+nternally used</p></dd>
+
+<dt><code>file_valid</code></dt><dd><p>whether file is a valid 'HDF5' file</p></dd>
+
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
@@ -212,7 +224,7 @@ objects to the file will raise error. Use <code>force=TRUE</code> to force
 write data</p></dd>
 
 <dt><code>ctype</code></dt><dd><p>data type, see <code><a href='https://rdrr.io/r/base/mode.html'>mode</a></code>, usually the data type
-of <code>x</code>. Try <code><a href='https://rdrr.io/r/base/mode.html'>mode(x)</a></code> or <code><a href='https://rdrr.io/r/base/mode.html'>storage.mode(x)</a></code> as hints.</p></dd>
+of <code>x</code>. Try <code><a href='https://rdrr.io/r/base/mode.html'>mode(x)</a></code> or <code><a href='https://rdrr.io/r/base/mode.html'>storage.mode(x)</a></code> for hints.</p></dd>
 
 <dt><code>size</code></dt><dd><p>deprecated, for compatibility issues</p></dd>
 
@@ -268,11 +280,13 @@ expression be evaluated</p></dd>
 <p><hr>
 <a id="method-get_dims"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>get_dims()</code></h3>
 <p>get data dimension</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>LazyH5</span><span class='op'>$</span><span class='fu'>get_dims</span><span class='op'>(</span>stay_open <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>LazyH5</span><span class='op'>$</span><span class='fu'>get_dims</span><span class='op'>(</span>stay_open <span class='op'>=</span> <span class='cn'>FALSE</span>, refresh <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
 <dt><code>stay_open</code></dt><dd><p>whether to leave the connection opened</p></dd>
+
+<dt><code>refresh</code></dt><dd><p>whether to discard cache and read from file</p></dd>
 
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
@@ -287,9 +301,7 @@ expression be evaluated</p></dd>
 <span class='co'># Save to local disk</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='fu'><a href='save_h5.html'>save_h5</a></span><span class='op'>(</span><span class='va'>x</span>, file <span class='op'>=</span> <span class='va'>f</span>, name <span class='op'>=</span> <span class='st'>'x'</span>, chunk <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span><span class='op'>)</span>, level <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp8f7IHP/fileaf5f3815173f =&gt; x (Dataset Created) 
-#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp8f7IHP/fileaf5f3815173f =&gt; x (Dataset Removed) 
-#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp8f7IHP/fileaf5f3815173f =&gt; x (Dataset Created) </div><div class='input'>
+
 <span class='co'># Load via LazyFST</span>
 <span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='va'>LazyH5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>file_path <span class='op'>=</span> <span class='va'>f</span>, data_name <span class='op'>=</span> <span class='st'>'x'</span>, read_only <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
@@ -301,7 +313,7 @@ expression be evaluated</p></dd>
 <span class='co'># Read a slice of the data</span>
 <span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>,<span class='fl'>10</span>,<span class='op'>]</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.223   0.000   0.223 </div><div class='input'>
+#&gt;   0.066   0.002   0.068 </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

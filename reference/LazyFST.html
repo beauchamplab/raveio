@@ -223,6 +223,8 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+
 <span class='co'># Data to save, total 8 MB</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>1000000</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
 
@@ -233,22 +235,19 @@
 <span class='co'># Load via LazyFST</span>
 <span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='va'>LazyFST</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>file_path <span class='op'>=</span> <span class='va'>f</span>, dims <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10000</span>, <span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># dat &lt; 1 MB</span>
-<span class='fu'>pryr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/pryr/man/object_size.html'>object_size</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Registered S3 method overwritten by 'pryr':</span>
-#&gt; <span class='message'>  method      from</span>
-#&gt; <span class='message'>  print.bytes Rcpp</span></div><div class='output co'>#&gt; 38.4 kB</div><div class='input'>
+<span class='co'># dat &lt; 1 MB (`pryr::object_size(dat)`)</span>
+
 <span class='co'># Check whether the data is identical</span>
 <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span><span class='op'>]</span> <span class='op'>-</span> <span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0 0</div><div class='input'>
+
 <span class='co'># The reading of column is very fast</span>
 <span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>,<span class='fl'>100</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.025   0.001   0.025 </div><div class='input'>
+
 <span class='co'># Reading rows might be slow</span>
 <span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.008   0.006   0.014 </div><div class='input'>
+
+<span class='op'>}</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
