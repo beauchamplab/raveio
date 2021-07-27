@@ -171,7 +171,7 @@ data contained in 'Matlab' file into memory.</p>
 #&gt; 
 #&gt; attr(,"header")
 #&gt; attr(,"header")$description
-#&gt; [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.1.0, Created on: Tue Jul 27 12:03:30 2021                               "
+#&gt; [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.1.0, Created on: Tue Jul 27 12:20:22 2021                               "
 #&gt; 
 #&gt; attr(,"header")$version
 #&gt; [1] "5"
@@ -195,6 +195,11 @@ data contained in 'Matlab' file into memory.</p>
 <span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'>read_mat</span><span class='op'>(</span><span class='va'>f</span>, ram <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='va'>dat</span>
 </div><div class='output co'>#&gt; $x
+#&gt; Class: HDF5 DATASET (closed)
+#&gt; Dataset: /x
+#&gt; Filename: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpH8NTbI/filebaf790d2c37
+#&gt; Write access: no
+#&gt; Dimension: 4x4
 #&gt; </div><div class='input'>
 <span class='va'>dat</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span><span class='op'>]</span>
 </div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4]
