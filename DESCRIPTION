@@ -53,5 +53,3 @@ Suggests:
     spelling,
     testthat,
     rhdf5 (>= 2.36.0)
-Remotes: 
-    grimbough/rhdf5

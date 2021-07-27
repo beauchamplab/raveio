@@ -7,6 +7,9 @@
 provides hybrid data structure for 'HDF5' file
 }
 \examples{
+
+if(interactive()){
+
 # Data to save
 x <- array(rnorm(1000), c(10,10,10))
 
@@ -24,6 +27,8 @@ range(dat - x)
 
 # Read a slice of the data
 system.time(dat[,10,])
+
+}
 
 }
 \author{

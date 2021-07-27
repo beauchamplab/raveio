@@ -204,6 +204,9 @@ h5dataType <- function (storage.mode, size = 255L) {
 #' @description provides hybrid data structure for 'HDF5' file
 #'
 #' @examples
+#'
+#' if(interactive()){
+#'
 #' # Data to save
 #' x <- array(rnorm(1000), c(10,10,10))
 #'
@@ -221,6 +224,8 @@ h5dataType <- function (storage.mode, size = 255L) {
 #'
 #' # Read a slice of the data
 #' system.time(dat[,10,])
+#'
+#' }
 #'
 #' @export
 LazyH5 <- R6::R6Class(
@@ -387,16 +392,20 @@ LazyH5 <- R6::R6Class(
       }
 
       if(isTRUE(ctype %in% 'character')){
-        size_x <- nchar(x)
+        size_x <- max(nchar(x), na.rm = TRUE)
         if(length(size) != 1 || size < size_x){
           size <- size_x
+        }
+        if( size < 10 ){
+          size <- 10
         }
       }
       # dtype <- h5dataType(ctype)
       dim_x <- dim(x)
       if(!length(dim_x)){ dim_x <- length(x) }
 
-      if(length(chunk) != length(dim_x)){
+      if(length(chunk) != length(dim_x) ||
+         (length(chunk) == 1 && isTRUE(chunk == 'auto'))){
         chunk <- h5guessChunk(dim_x)
       }
 
@@ -434,16 +443,21 @@ LazyH5 <- R6::R6Class(
       g <- stringr::str_split(private$name, '/', simplify = TRUE)
       g <- g[[length(g)]]
       # Create dataset
+      # rhdf5::h5writeDataset.array(
+      #   ptr, name = g, dims = dim_x,
+      #                chunk = chunk, storage.mode = ctype,
+      #                level = level, size = size,
+      #                obj = x, native = FALSE)
       ptr <- rhdf5::h5createDataset(
         file = ptr,
         dataset = g,
         dims = dim_x,
-        # H5type = dtype,
+        # H5type = if(ctype == "character") "H5T_C_S1" else NULL,
         storage.mode = ctype,
         chunk = chunk,
         level = level,
         size = size,
-        fillValue = NA,
+        # fillValue = NA,
         native = FALSE
       )
       private$data_ptr <- private$file_ptr&private$name
@@ -794,6 +808,8 @@ exp.LazyH5 <- function(x){
 #' @seealso \code{\link{save_h5}}
 #'
 #' @examples
+#' if(interactive()){
+#'
 #' file <- tempfile()
 #' x <- array(1:120, dim = c(4,5,6))
 #'
@@ -808,6 +824,8 @@ exp.LazyH5 <- function(x){
 #' class(z)   # LazyH5
 #'
 #' dim(z)
+#'
+#' }
 #'
 #' @export
 load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
@@ -846,6 +864,8 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' @seealso \code{\link{load_h5}}
 #' @examples
 #'
+#' if(interactive()){
+#'
 #' file <- tempfile()
 #' x <- array(1:120, dim = 2:5)
 #'
@@ -855,6 +875,8 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' # read data
 #' y <- load_h5(file, '/group/dataset/1')
 #' y[]
+#'
+#' }
 #' @export
 save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
                     new_file = FALSE, ctype = NULL, quiet = FALSE, ...){
@@ -862,40 +884,19 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
   # Make sure all connections are closed
   ensure_rhdf5()
   H5FcloseAll(file)
-  call <- match.call()
+  # call <- match.call()
 
-  call[['file']] <- NULL
-  call[['name']] <- NULL
+  # call[['file']] <- NULL
+  # call[['name']] <- NULL
 
   f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
   on.exit({ f$close(all = TRUE) }, add = TRUE)
-  call[[1]] <- quote(f$save)
-  eval(call)
-  # tryCatch({
-  #   f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
-  #   on.exit({ f$close(all = TRUE) }, add = TRUE)
-  #   call[[1]] <- quote(f$save)
-  #   eval(call, envir = env)
-  # }, error = function(e){
-  #   if( !quiet ){
-  #     catgl('Saving failed. Attempt to unlink the file and retry...', level = 'INFO')
-  #   }
-  #   if(file.exists(file)){
-  #     # File is locked,
-  #     tmpf <- sprintf('%s.conflict.%s', file, rand_string(6L))
-  #     file.copy(file, tmpf)
-  #     unlink(file, recursive = FALSE, force = TRUE)
-  #     file.copy(tmpf, file)
-  #
-  #     f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
-  #     on.exit({ f$close(all = TRUE) }, add = TRUE)
-  #     call[[1]] <- quote(f$save)
-  #     eval(call, envir = env)
-  #   } else {
-  #     # Otherwise it's some weird error, or dirname not exists, expose the error
-  #     stop("Cannot access to HDF5 file at: ", file)
-  #   }
-  # })
+
+  # print(call)
+  f$save(x = x, chunk = chunk, level = level, replace = replace,
+         new_file = new_file, ctype = ctype, ...)
+  # call[[1]] <- quote(f$save)
+  # eval(call)
 
   return(invisible(normalizePath(file)))
 }
@@ -910,6 +911,7 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
 #' @return logical whether the file can be opened.
 #'
 #' @examples
+#' if(interactive()){
 #'
 #' x <- array(1:27, c(3,3,3))
 #' f <- tempfile()
@@ -919,6 +921,8 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
 #'
 #' save_h5(x, f, 'dset')
 #' h5_valid(f, 'w')
+#'
+#' }
 #'
 #' @export
 h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
