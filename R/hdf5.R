@@ -563,13 +563,17 @@ LazyH5 <- R6::R6Class(
 
       }
 
-      if(!is.null(private$data_ptr)){
+      base::print(111)
+
+      if( self$data_ptr_valid ){
         space <- rhdf5::H5Dget_space(private$data_ptr)
         diminfo <- rhdf5::H5Sget_simple_extent_dims(space)
         rhdf5::H5Sclose(space)
 
         private$last_dim <- diminfo$size
       }
+
+      base::print(222)
 
     },
 
@@ -750,7 +754,7 @@ LazyH5 <- R6::R6Class(
 
 #' @export
 `[.LazyH5` <- function(obj, ...){
-  on.exit({obj$close()}, add = TRUE)
+  on.exit({obj$close(all = FALSE)}, add = TRUE)
   obj$subset(..., envir = parent.frame())
 }
 

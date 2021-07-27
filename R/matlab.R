@@ -49,7 +49,9 @@ read_mat <- function(file, ram = TRUE){
       re <- rhdf5::h5read(file, "/")
     } else {
       re <- sapply(dset_names, function(nm){
+        base::print(000)
         load_h5(file, name = nm, ram = ram)
+        base::print(333)
       }, simplify = FALSE, USE.NAMES = TRUE)
     }
   }else{
