@@ -86,7 +86,9 @@ Tensor <- R6::R6Class(
             # files uncleaned if the final object registered with
             # finalizer changes its swap_files
             if(isTRUE(file.exists(path))){
-              dipsaus::cat2('Removing ', path)
+              if(getOption("raveio.debug", FALSE)){
+                dipsaus::cat2('Removing ', path)
+              }
               unlink(path)
             }
           }

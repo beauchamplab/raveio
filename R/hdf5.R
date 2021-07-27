@@ -16,28 +16,28 @@ ensure_rhdf5 <- function(prompt = TRUE){
 }
 
 h5FileIsOpen <- function (filename) {
-  filename = normalizePath(filename, mustWork = FALSE)
-  L = rhdf5::h5validObjects()
-  isobject = sapply(L, function(x) {
+  filename <- normalizePath(filename, mustWork = FALSE)
+  L <- rhdf5::h5validObjects()
+  isobject <- sapply(L, function(x) {
     rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
   })
   if (length(isobject) > 0) {
-    isopen = any(sapply(L[which(isobject)], function(x) {
+    isopen <- any(sapply(L[which(isobject)], function(x) {
       rhdf5::H5Fget_name(x) == filename
     }))
   }
   else {
-    isopen = FALSE
+    isopen <- FALSE
   }
   isopen
 }
 
 # used to close connections for writing
 H5FcloseAll <- function(filename) {
-  filename = normalizePath(filename, mustWork = FALSE)
+  filename <- normalizePath(filename, mustWork = FALSE)
   if(!h5FileValid(filename)){ return(0L) }
-  L = rhdf5::h5validObjects()
-  isobject = sapply(L, function(x) {
+  L <- rhdf5::h5validObjects()
+  isobject <- sapply(L, function(x) {
     rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
   })
   if (length(isobject) > 0 && any( isobject, na.rm = TRUE )) {
@@ -72,10 +72,10 @@ H5FcloseOthers <- function(h5obj, filename, exclude = NULL) {
     if(missing(filename)){
       filename <- rhdf5::H5Fget_name(h5obj)
     }
-    filename = normalizePath(filename, mustWork = FALSE)
+    filename <- normalizePath(filename, mustWork = FALSE)
     if(!h5FileValid(filename)){ return(0L) }
-    L = rhdf5::h5validObjects()
-    isobject = sapply(L, function(x) {
+    L <- rhdf5::h5validObjects()
+    isobject <- sapply(L, function(x) {
       rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
     })
     if (length(isobject) > 0 && any( isobject, na.rm = TRUE )) {
@@ -126,9 +126,9 @@ h5FileValid <- function(filename){
 }
 
 h5FileObject <- function(filename){
-  filename = normalizePath(filename, mustWork = FALSE)
+  filename <- normalizePath(filename, mustWork = FALSE)
   if(!h5FileValid(filename)){ return(NULL) }
-  L = rhdf5::h5validObjects()
+  L <- rhdf5::h5validObjects()
   for(x in L){
     if(rhdf5::H5Iget_type(x) %in% c("H5I_FILE")){
       if(rhdf5::H5Fget_name(x) == filename){
@@ -245,7 +245,7 @@ LazyH5 <- R6::R6Class(
     },
 
     #' @field data_ptr_valid whether data pointer is valid or broken;
-    #' nternally used
+    #' internally used
     data_ptr_valid = function(){
       if(!"H5IdComponent" %in% class(private$data_ptr)){ return(FALSE) }
       isTRUE(rhdf5::H5Iis_valid(private$data_ptr))
@@ -297,7 +297,6 @@ LazyH5 <- R6::R6Class(
     initialize = function(file_path, data_name, read_only = FALSE, quiet = FALSE){
       ensure_rhdf5()
 
-      # First get absolute path, otherwise hdf5r may report file not found error
       if(read_only){
         private$file <- normalizePath(file_path)
 
@@ -460,7 +459,7 @@ LazyH5 <- R6::R6Class(
     #' @param new_dataset only used when the internal pointer is closed, or
     #' to write the data
     #' @param robj data array to save
-    #' @param ... passed to \code{createDataSet} in \code{hdf5r} package
+    #' @param ... ignored
     open = function(new_dataset = FALSE, robj, ...){
       # base::print(sys.call(-1))
       # check data pointer
@@ -777,7 +776,7 @@ exp.LazyH5 <- function(x){
   base::exp(x$subset())
 }
 
-#' Lazy Load 'HDF5' File via \code{\link[hdf5r]{hdf5r-package}}
+#' Lazy Load 'HDF5' File via \pkg{rhdf5}
 #'
 #' @description Wrapper for class \code{\link{LazyH5}}, which load data with
 #' "lazy" mode - only read part of dataset when needed.

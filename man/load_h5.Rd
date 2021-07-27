@@ -2,7 +2,7 @@
 % Please edit documentation in R/hdf5.R
 \name{load_h5}
 \alias{load_h5}
-\title{Lazy Load 'HDF5' File via \code{\link[hdf5r]{hdf5r-package}}}
+\title{Lazy Load 'HDF5' File via \pkg{rhdf5}}
 \usage{
 load_h5(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE)
 }

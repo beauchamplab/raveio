@@ -43,7 +43,7 @@ Zhengjia Wang
 internally used}
 
 \item{\code{data_ptr_valid}}{whether data pointer is valid or broken;
-nternally used}
+internally used}
 
 \item{\code{file_valid}}{whether file is a valid 'HDF5' file}
 }
@@ -179,7 +179,7 @@ to write the data}
 
 \item{\code{robj}}{data array to save}
 
-\item{\code{...}}{passed to \code{createDataSet} in \code{hdf5r} package}
+\item{\code{...}}{ignored}
 }
 \if{html}{\out{</div>}}
 }
