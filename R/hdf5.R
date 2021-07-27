@@ -157,11 +157,16 @@ h5FileObject <- function(filename){
 h5fileHasData <- function(filename, dataname){
   if(!h5FileValid(filename)){ return(FALSE) }
   fobj <- h5FileObject(filename)
-  if(is.null(fobj)){
+  df <- NULL
+  try({
+    if(!is.null(fobj)){
+      df <- rhdf5::h5ls(fobj, recursive = TRUE)
+    }
+  }, silent = TRUE)
+  if(is.null(df)){
     df <- rhdf5::h5ls(filename, recursive = TRUE)
-  } else {
-    df <- rhdf5::h5ls(fobj, recursive = TRUE)
   }
+
   dnames <- sprintf('%s/%s', df$group, df$name)
   dnames <- dnames[df$otype == 'H5I_DATASET']
   dnames <- stringr::str_remove_all(dnames, '^[/]+')
@@ -972,13 +977,17 @@ h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
 #' @return characters, data set names
 #' @export
 h5_names <- function(file){
-  ensure_rhdf5
+  ensure_rhdf5()
   if(!h5FileValid(file)){ return(character(0)) }
   fobj <- h5FileObject(file)
-  if(is.null(fobj)){
+  df <- NULL
+  try({
+    if(!is.null(fobj)){
+      df <- rhdf5::h5ls(fobj, recursive = TRUE)
+    }
+  }, silent = TRUE)
+  if(is.null(df)){
     df <- rhdf5::h5ls(file, recursive = TRUE)
-  } else {
-    df <- rhdf5::h5ls(fobj, recursive = TRUE)
   }
   dnames <- sprintf('%s/%s', df$group, df$name)
   dnames <- dnames[df$otype == 'H5I_DATASET']
