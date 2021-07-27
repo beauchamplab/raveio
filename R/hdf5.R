@@ -205,7 +205,6 @@ h5dataType <- function (storage.mode, size = 255L) {
 #'
 #' @examples
 #'
-#' if(interactive()){
 #'
 #' # Data to save
 #' x <- array(rnorm(1000), c(10,10,10))
@@ -225,7 +224,6 @@ h5dataType <- function (storage.mode, size = 255L) {
 #' # Read a slice of the data
 #' system.time(dat[,10,])
 #'
-#' }
 #'
 #' @export
 LazyH5 <- R6::R6Class(
@@ -557,8 +555,10 @@ LazyH5 <- R6::R6Class(
     #' @param all whether to close all connections associated to the data file.
     #' If true, then all connections, including access from other programs,
     #' will be closed
-    close = function(all = TRUE){
-      # base::print('closing')
+    close = function(all = NA){
+      if(is.na(all)){
+        all <- !private$read_only
+      }
       try({
         if( all ){
           H5FcloseAll(private$file)
@@ -808,7 +808,6 @@ exp.LazyH5 <- function(x){
 #' @seealso \code{\link{save_h5}}
 #'
 #' @examples
-#' if(interactive()){
 #'
 #' file <- tempfile()
 #' x <- array(1:120, dim = c(4,5,6))
@@ -825,14 +824,13 @@ exp.LazyH5 <- function(x){
 #'
 #' dim(z)
 #'
-#' }
 #'
 #' @export
 load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 
   read_only <- read_only || ram
   re <- LazyH5$new(file_path = file, data_name = name, read_only = TRUE, quiet = quiet)
-  on.exit({ re$close() }, add = TRUE)
+  on.exit({ re$close(all = FALSE) }, add = TRUE)
   if(ram){
     return(re[])
   } else {
@@ -864,7 +862,6 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' @seealso \code{\link{load_h5}}
 #' @examples
 #'
-#' if(interactive()){
 #'
 #' file <- tempfile()
 #' x <- array(1:120, dim = 2:5)
@@ -876,7 +873,6 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' y <- load_h5(file, '/group/dataset/1')
 #' y[]
 #'
-#' }
 #' @export
 save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
                     new_file = FALSE, ctype = NULL, quiet = FALSE, ...){
@@ -911,7 +907,6 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
 #' @return logical whether the file can be opened.
 #'
 #' @examples
-#' if(interactive()){
 #'
 #' x <- array(1:27, c(3,3,3))
 #' f <- tempfile()
@@ -922,7 +917,6 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
 #' save_h5(x, f, 'dset')
 #' h5_valid(f, 'w')
 #'
-#' }
 #'
 #' @export
 h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){

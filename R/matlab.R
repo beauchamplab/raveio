@@ -45,10 +45,13 @@ read_mat <- function(file, ram = TRUE){
   if( h5FileValid(file) ){
 
     dset_names <- h5_names(file)
-    re <- sapply(dset_names, function(nm){
-      load_h5(file, name = nm, ram = ram)
-      # if(ram){ r <- r[] }
-    }, simplify = FALSE, USE.NAMES = TRUE)
+    if(ram){
+      re <- rhdf5::h5read(file, "/")
+    } else {
+      re <- sapply(dset_names, function(nm){
+        load_h5(file, name = nm, ram = ram)
+      }, simplify = FALSE, USE.NAMES = TRUE)
+    }
   }else{
     re <- R.matlab::readMat(file)
   }
