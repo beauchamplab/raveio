@@ -1,8 +1,6 @@
 # `raveio` (0.0.4)
 
-1. Trying to fix the CRAN check errors/warnings by detecting whether command-line 
-tools exist before invoking system calls.
-2. Require platform to be little-endian
+1. Require platform to be little-endian
 
 Self checks indicated no error/warning. 
 

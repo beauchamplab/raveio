@@ -3,11 +3,12 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/raveio)](https://CRAN.R-project.org/package=raveio)
 [![R-CMD-check](https://github.com/beauchamplab/raveio/workflows/R-CMD-check/badge.svg)](https://github.com/beauchamplab/raveio/actions)
+[![DOI](https://raw.githubusercontent.com/dipterix/threeBrain/master/inst/doi.svg)](https://doi.org/10.1016/j.neuroimage.2020.117341)
 <!-- badges: end -->
 
 'RAVE' is a R project that aims at providing interactive analysis and visualization of intracranial Electroencephalography. Developed by `Beauchamp's Lab`, supported by NIH `1R24MH117529`
 
-This package provides readers for multiple file formats, including:
+This package is part of `rave` family that provides readers from multiple file formats, including:
 * `EDF(+)`, `BrainVision`, `BIDS-iEEG`, `Matlab` files commonly used by neuroscientists
 * `HDF5`, common file format used by 'Matlab', 'Python', 'C++', and 'R'
 * `FST`, a file format that supports GB-level read/write speed

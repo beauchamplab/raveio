@@ -46,77 +46,7 @@ safe_system2 <- function(cmd, args, ..., stdout = TRUE, stderr = FALSE, onFound 
   }
   ret
 }
-get_ram <- function(){
-  os <- get_os()
-  ram <- 128*1024^3
-  safe_ram <- function(e){
-    NA
-  }
 
-  ram <- tryCatch({
-    switch (
-      os,
-      'darwin' = {
-        ram <- safe_system2(
-          "sysctl",
-          "hw.memsize",
-          stdout = TRUE,
-          onFound = function(ram) {
-            substring(ram, 13)
-          }
-        )
-        if(is.na(ram)){
-          ram <- safe_system2("top", c("-l", "1", "-s", "0"), stdout = TRUE, onFound = function(s){
-            s <- s[stringr::str_detect(s, "PhysMem")][[1]]
-            m <- stringr::str_match(s, "PhysMem[: ]+([0-9]+)([gGtTmM])")
-            s <- as.numeric(m[[2]])
-            u <- stringr::str_to_lower(m[[3]])
-            if(u == 'm'){ s <- s * 1024^2 }
-            if(u == 'g'){ s <- s * 1024^3 }
-            if(u == 't'){ s <- s * 1024^4 }
-            s
-          })
-        }
-        ram
-      },
-      'linux' = {
-        if(Sys.which("awk") == ""){
-          ram <- NA
-        } else {
-          ram <- safe_system("awk '/MemTotal/ {print $2}' /proc/meminfo", intern = TRUE)
-          ram <- as.numeric(ram) * 1024
-        }
-      },
-      'solaris' = {
-        if(Sys.which("prtconf") == ""){
-          ram <- NA
-        } else {
-          ram <- safe_system("prtconf | grep Memory", intern = TRUE)
-          ram <- stringr::str_trim(ram)
-          ram <- stringr::str_split(ram, '[ ]+')[[1]][3:4]
-
-          power <- match(ram[2], c("kB", "MB", "GB", "TB", "Kilobytes", "Megabytes", "Gigabytes", "Terabytes"))
-          ram <- as.numeric(ram[1]) * 1024^(1 + (power-1) %% 4)
-        }
-      },
-      'windows' = {
-        if(Sys.which("wmic") == ""){
-          ram <- NA
-        } else {
-          ram <- safe_system("wmic MemoryChip get Capacity", intern = TRUE)[-1]
-          ram <- stringr::str_trim(ram)
-          ram <- ram[nchar(ram) > 0]
-          ram <- sum(as.numeric(ram))
-        }
-      }, {
-        ram <- NA
-      }
-    )
-    ram
-  }, error = safe_ram, warning = safe_ram)
-  ram <- as.numeric(ram)
-  ram
-}
 
 
 
@@ -140,7 +70,15 @@ default_settings <- function(s = dipsaus::fastmap2()){
   s[['drive_speed']] <- c(50, 20)
   s[['disable_startup_speed_check']] <- FALSE
   s[['max_worker']] <- parallel::detectCores() - 1
-  s[['max_mem']] <- get_ram() / 1024^3
+  ram <- tryCatch({
+    dipsaus::get_ram() / 1024^3
+  }, error = function(e){
+    8
+  })
+  if(is.na(ram) || ram < 0.5){
+    ram <- 8
+  }
+  s[['max_mem']] <- ram
 
   # Not used
   s[['server_time_zone']] <- 'America/Chicago'
@@ -362,6 +300,19 @@ raveio_getopt <- function(key, default = NA, temp = TRUE){
 raveio_confpath <- function(cfile = 'settings.yaml'){
   d <- R_user_dir('raveio', 'config')
   normalizePath(file.path(d, cfile), mustWork = FALSE)
+}
+
+finalize_installation <- function(
+  upgrade = c('ask', 'always', 'never'),
+  async = TRUE){
+
+  # ignore async
+  upgrade <- match.arg(upgrade)
+  if( upgrade == 'ask' ) {
+    ensure_rhdf5(prompt = TRUE)
+  } else {
+    ensure_rhdf5(prompt = FALSE)
+  }
 }
 
 .onLoad <- function(libname, pkgname) {

@@ -36,6 +36,19 @@ Zhengjia Wang
 }
 \if{html}{\out{</div>}}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{file_ptr_valid}}{whether file pointer is valid or broken;
+internally used}
+
+\item{\code{data_ptr_valid}}{whether data pointer is valid or broken;
+nternally used}
+
+\item{\code{file_valid}}{whether file is a valid 'HDF5' file}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -140,7 +153,7 @@ objects to the file will raise error. Use \code{force=TRUE} to force
 write data}
 
 \item{\code{ctype}}{data type, see \code{\link{mode}}, usually the data type
-of \code{x}. Try \code{mode(x)} or \code{storage.mode(x)} as hints.}
+of \code{x}. Try \code{mode(x)} or \code{storage.mode(x)} for hints.}
 
 \item{\code{size}}{deprecated, for compatibility issues}
 
@@ -223,13 +236,15 @@ subset of data
 \subsection{Method \code{get_dims()}}{
 get data dimension
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LazyH5$get_dims(stay_open = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LazyH5$get_dims(stay_open = FALSE, refresh = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{stay_open}}{whether to leave the connection opened}
+
+\item{\code{refresh}}{whether to discard cache and read from file}
 }
 \if{html}{\out{</div>}}
 }

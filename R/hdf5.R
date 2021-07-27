@@ -1,5 +1,204 @@
 # File IO: HDF5 file wrapper
 
+ensure_rhdf5 <- function(prompt = TRUE){
+
+  if( dipsaus::package_installed('rhdf5') ){ return(TRUE) }
+
+  ans <- TRUE
+  if( prompt && interactive() && !dipsaus::shiny_is_running() ){
+    ans <- utils::askYesNo("BioConductor package `rhdf5` has not been installed. Do you want to install now?")
+  }
+  if(!isTRUE(ans)){
+    stop("Abort. Please manually call `BiocManager::install('rhdf5')` to install.")
+  }
+
+  BiocManager::install('rhdf5', update = FALSE, ask = FALSE, type = 'source')
+}
+
+h5FileIsOpen <- function (filename) {
+  filename = normalizePath(filename, mustWork = FALSE)
+  L = rhdf5::h5validObjects()
+  isobject = sapply(L, function(x) {
+    rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
+  })
+  if (length(isobject) > 0) {
+    isopen = any(sapply(L[which(isobject)], function(x) {
+      rhdf5::H5Fget_name(x) == filename
+    }))
+  }
+  else {
+    isopen = FALSE
+  }
+  isopen
+}
+
+# used to close connections for writing
+H5FcloseAll <- function(filename) {
+  filename = normalizePath(filename, mustWork = FALSE)
+  if(!h5FileValid(filename)){ return(0L) }
+  L = rhdf5::h5validObjects()
+  isobject = sapply(L, function(x) {
+    rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
+  })
+  if (length(isobject) > 0 && any( isobject, na.rm = TRUE )) {
+    nclosed <- sapply(L[which(isobject)], function(x) {
+      if(rhdf5::H5Fget_name(x) == filename){
+        # close
+        itype <- rhdf5::H5Iget_type(x)
+        switch (itype,
+          'H5I_FILE' = {
+            rhdf5::H5Fclose(x)
+          },
+          'H5I_GROUP' = {
+            rhdf5::H5Gclose(x)
+          }, {
+            rhdf5::H5Dclose(x)
+          }
+        )
+        return( 1L )
+      } else {
+        return( 0L )
+      }
+    })
+    return( sum(nclosed) )
+  } else {
+    return( 0L )
+  }
+}
+
+H5FcloseOthers <- function(h5obj, filename, exclude = NULL) {
+  tryCatch({
+    # message(3)
+    if(missing(filename)){
+      filename <- rhdf5::H5Fget_name(h5obj)
+    }
+    filename = normalizePath(filename, mustWork = FALSE)
+    if(!h5FileValid(filename)){ return(0L) }
+    L = rhdf5::h5validObjects()
+    isobject = sapply(L, function(x) {
+      rhdf5::H5Iget_type(x) %in% c("H5I_FILE", "H5I_GROUP", "H5I_DATASET")
+    })
+    if (length(isobject) > 0 && any( isobject, na.rm = TRUE )) {
+      exclude <- c(exclude, h5obj)
+      exclude_id <- unlist(lapply(exclude, function(x){
+        if(!isS4(x)){ return(NULL) }
+        return( x@ID )
+      }))
+      nclosed <- sapply(L[which(isobject)], function(x) {
+        if(rhdf5::H5Fget_name(x) == filename){
+          # identical to h5obj
+          if(isTRUE(h5obj@ID %in% exclude_id)){ return( 0L ) }
+          # close
+          itype <- rhdf5::H5Iget_type(x)
+          switch (itype,
+                  'H5I_FILE' = {
+                    rhdf5::H5Fclose(x)
+                  },
+                  'H5I_GROUP' = {
+                    rhdf5::H5Gclose(x)
+                  },
+                  H5I_DATASET = {
+                    rhdf5::H5Dclose(x)
+                  }
+          )
+          return( 1L )
+        } else {
+          return( 0L )
+        }
+      })
+      return( sum(nclosed) )
+    } else {
+      return( 0L )
+    }
+
+  }, error = function(e){
+    0L
+  })
+}
+
+h5FileValid <- function(filename){
+  if(!length(filename)){ return(FALSE) }
+  filename <- filename[[1]]
+  if(!file.exists(filename)){ return(FALSE) }
+  if(isTRUE(file.info(filename)[['isdir']])){ return(FALSE) }
+  filename <- normalizePath(filename)
+  return(rhdf5::H5Fis_hdf5(filename))
+}
+
+h5FileObject <- function(filename){
+  filename = normalizePath(filename, mustWork = FALSE)
+  if(!h5FileValid(filename)){ return(NULL) }
+  L = rhdf5::h5validObjects()
+  for(x in L){
+    if(rhdf5::H5Iget_type(x) %in% c("H5I_FILE")){
+      if(rhdf5::H5Fget_name(x) == filename){
+        return(x)
+      }
+    }
+  }
+  return(NULL)
+}
+
+h5fileHasData <- function(filename, dataname){
+  if(!h5FileValid(filename)){ return(FALSE) }
+  fobj <- h5FileObject(filename)
+  if(is.null(fobj)){
+    df <- rhdf5::h5ls(filename, recursive = TRUE)
+  } else {
+    df <- rhdf5::h5ls(fobj, recursive = TRUE)
+  }
+  dnames <- sprintf('%s/%s', df$group, df$name)
+  dnames <- dnames[df$otype == 'H5I_DATASET']
+  dnames <- stringr::str_remove_all(dnames, '^[/]+')
+  dataname <- stringr::str_remove_all(dataname, '^[/]+')
+  dataname %in% dnames
+}
+
+h5guessChunk <- function (
+  space_maxdims,
+  chunk_size = getOption("raveio.h5.chunk_size", 4096)
+) {
+  chunk_num_elem <- floor(chunk_size)
+  space_rank <- length(space_maxdims)
+  chunk_dim <- rep(ceiling(chunk_num_elem^(1/space_rank)),
+                   space_rank)
+  chunk_dim <- pmin(space_maxdims, chunk_dim)
+  bounded <- chunk_dim == space_maxdims
+  while (prod(chunk_dim) < chunk_num_elem & !all(bounded)) {
+    mult_factor <- (chunk_num_elem/prod(chunk_dim))^(1/sum(!bounded))
+    chunk_dim[!bounded] <- ceiling(chunk_dim[!bounded] *
+                                     mult_factor)
+    chunk_dim <- pmin(space_maxdims, chunk_dim)
+    bounded <- chunk_dim == space_maxdims
+  }
+  return(chunk_dim)
+}
+
+h5dataType <- function (storage.mode, size = 255L) {
+  tid <- switch(
+    storage.mode[1],
+    double = 'H5T_IEEE_F64LE',
+    integer = 'H5T_STD_I32LE',
+    integer64 = 'H5T_STD_I64LE',
+    logical = 'H5T_STD_I8LE',
+    raw = 'H5T_STD_U8LE',
+    character = 'H5T_STRING',
+    # {
+    #   tid <- H5Tcopy("H5T_C_S1")
+    #   H5Tset_strpad(tid, strpad = "NULLPAD")
+    #   if (!is.numeric(size)) {
+    #     stop("parameter 'size' has to be defined for storage.mode character.")
+    #   }
+    #   H5Tset_size(tid, size)
+    #   tid
+    # },
+    {
+      stop("datatype ", storage.mode, " not yet implemented.\n",
+           "Try 'logical', 'double', 'integer', 'integer64' or 'character'.")
+    }
+  )
+}
+
 #' @title Lazy 'HDF5' file loader
 #' @author Zhengjia Wang
 #' @description provides hybrid data structure for 'HDF5' file
@@ -26,7 +225,7 @@
 #' @export
 LazyH5 <- R6::R6Class(
   classname = 'LazyH5',
-  portable = TRUE,
+  portable = FALSE,
   cloneable = FALSE,
   private = list(
     file = NULL,
@@ -36,6 +235,27 @@ LazyH5 <- R6::R6Class(
     file_ptr = NULL,
     last_dim = NULL
   ),
+  active = list(
+
+    #' @field file_ptr_valid whether file pointer is valid or broken;
+    #' internally used
+    file_ptr_valid = function(){
+      if(!"H5IdComponent" %in% class(private$file_ptr)){ return(FALSE) }
+      isTRUE(rhdf5::H5Iis_valid(private$file_ptr))
+    },
+
+    #' @field data_ptr_valid whether data pointer is valid or broken;
+    #' nternally used
+    data_ptr_valid = function(){
+      if(!"H5IdComponent" %in% class(private$data_ptr)){ return(FALSE) }
+      isTRUE(rhdf5::H5Iis_valid(private$data_ptr))
+    },
+
+    #' @field file_valid whether file is a valid 'HDF5' file
+    file_valid = function(){
+      h5FileValid(private$file)
+    }
+  ),
   public = list(
 
     #' @field quiet whether to suppress messages
@@ -44,20 +264,24 @@ LazyH5 <- R6::R6Class(
     #' @description garbage collection method
     #' @return none
     finalize = function(){
-      self$close(all = TRUE)
+      self$close()
     },
 
     #' @description overrides print method
     #' @return self instance
     print = function(){
       if(!is.null(private$data_ptr)){
-        if(private$data_ptr$is_valid){
-          base::print(private$data_ptr)
-        }else{
-          base::cat('Pointer closed. Information since last open:\nDim: ',
-                    paste(private$last_dim, collapse = 'x'), ' \tRank: ',
-                    length(private$last_dim), "\n")
-        }
+        base::cat(
+          sprintf(
+            "Class: HDF5 DATASET (%s)",
+            ifelse(self$data_ptr_valid, "active", "closed")
+          ),
+          "\nDataset: ", private$name, "\n",
+          "Filename: ", private$file, "\n",
+          "Write access: ", ifelse(private$read_only, "no", "yes"), "\n",
+          "Dimension: ", paste(private$last_dim, collapse = 'x'), "\n",
+          sep = ''
+        )
       }
       invisible(self)
     },
@@ -71,22 +295,30 @@ LazyH5 <- R6::R6Class(
     #' @param quiet whether to suppress messages, default is false
     #' @return self instance
     initialize = function(file_path, data_name, read_only = FALSE, quiet = FALSE){
+      ensure_rhdf5()
 
       # First get absolute path, otherwise hdf5r may report file not found error
       if(read_only){
         private$file <- normalizePath(file_path)
 
+        stopifnot(length(private$file) == 1)
         stopifnot2(
-          hdf5r::is_hdf5(private$file),
-          msg = 'File doesn\'t have H5 format'
+          file.exists(private$file),
+          rhdf5::H5Fis_hdf5(private$file),
+          msg = sprintf('HDF5 file %s not exists or invalid.', private$file)
         )
       }else{
         file_path <- normalizePath(file_path, mustWork = FALSE)
         private$file <- file_path
       }
       self$quiet <- isTRUE(quiet)
-      private$name <- data_name
+      private$name <- stringr::str_replace(data_name, "^[/]{0,}", '/')
       private$read_only <- read_only
+
+      if(file.exists(private$file) && !self$file_valid){
+        # check if the file is valid HDF5
+        stop("Trying to open a non-HDF5 file that already exists.")
+      }
     },
 
     #' @description save data to a 'HDF5' file
@@ -99,18 +331,18 @@ LazyH5 <- R6::R6Class(
     #' objects to the file will raise error. Use \code{force=TRUE} to force
     #' write data
     #' @param ctype data type, see \code{\link{mode}}, usually the data type
-    #' of \code{x}. Try \code{mode(x)} or \code{storage.mode(x)} as hints.
+    #' of \code{x}. Try \code{mode(x)} or \code{storage.mode(x)} for hints.
     #' @param size deprecated, for compatibility issues
     #' @param ... passed to self \code{open()} method
     save = function(x, chunk = 'auto', level = 7, replace = TRUE,
-                    new_file = FALSE, force = TRUE, ctype = NULL, size = NULL,
+                    new_file = FALSE, force = TRUE, ctype = NULL,
+                    size = NULL,
                     ...){
-      # ctype and size is deprecated but kept in case of compatibility issues
-      # ptr$create_dataset =
       # function (name, robj = NULL, dtype = NULL, space = NULL, dims = NULL,
       #           chunk_dims = "auto", gzip_level = 4, link_create_pl = h5const$H5P_DEFAULT,
       #           dataset_create_pl = h5const$H5P_DEFAULT, dataset_access_pl = h5const$H5P_DEFAULT)
-      if(private$read_only){
+      read_only <- private$read_only
+      if(read_only){
         if(!force){
           stop('File is read-only. Use "force=TRUE"')
         }else{
@@ -119,10 +351,14 @@ LazyH5 <- R6::R6Class(
           private$read_only <- FALSE
 
           on.exit({
-            self$close(all = TRUE)
             private$read_only <- TRUE
-          }, add = TRUE, after = FALSE)
+            self$close(all = TRUE)
+          }, add = TRUE, after = TRUE)
         }
+      } else {
+        on.exit({
+          self$close(all = TRUE)
+        }, add = TRUE, after = TRUE)
       }
 
       if(new_file && file.exists(private$file)){
@@ -130,9 +366,92 @@ LazyH5 <- R6::R6Class(
         file.remove(private$file)
       }
 
-      self$open(new_dataset = replace, robj = x, chunk = chunk, gzip_level = level, ...)
+      # self$open(new_dataset = replace, robj = x, chunk = chunk, gzip_level = level, ...)
+      self$open(new_dataset = TRUE)
+      has_data <- self$data_ptr_valid
 
-      self$close(all = TRUE)
+      if(has_data && !replace && !force){
+        stop("File [{private$file}] already contains [{private$name}]. Set `replace=TRUE` or `force=TRUE` to force replace the dataset")
+      }
+
+      if(has_data){
+        # remove it
+        H5FcloseOthers(private$file_ptr)
+        rhdf5::H5Ldelete(h5loc = private$file_ptr, name = private$name)
+      }
+
+      # need to create a new one
+      if(is.null(ctype)) {
+        ctype <- storage.mode(x)
+      } else {
+        ctype <- ctype[[1]]
+      }
+
+      if(isTRUE(ctype %in% 'character')){
+        size_x <- nchar(x)
+        if(length(size) != 1 || size < size_x){
+          size <- size_x
+        }
+      }
+      # dtype <- h5dataType(ctype)
+      dim_x <- dim(x)
+      if(!length(dim_x)){ dim_x <- length(x) }
+
+      if(length(chunk) != length(dim_x)){
+        chunk <- h5guessChunk(dim_x)
+      }
+
+      # need to create new dataset
+      g <- stringr::str_split(private$name, '/', simplify = TRUE)
+      g <- g[stringr::str_trim(g) != '']
+      g <- g[-length(g)]
+
+      ptr <- private$file_ptr
+      if(length(g)){
+        p <- Reduce(function(a,b){
+          # c(a, sprintf('%s/%s', a, b))
+          sprintf('%s/%s', a, b)
+        }, g, init = '', accumulate = TRUE)[-1]
+        gp <- cbind(
+          c('/', p[-length(p)]),
+          g
+        )
+
+        df <- rhdf5::h5ls(private$file_ptr)
+        df <- df[df$otype == 'H5I_GROUP',]
+
+        for(ii in seq_len(nrow(gp))){
+          parent_name <- gp[ii, 1]
+          group_name <- gp[ii, 2]
+          if(!any(df$group == parent_name & df$name == group_name)){
+            ptr <- rhdf5::H5Gcreate(ptr, group_name)
+          } else {
+            ptr <- ptr&group_name
+          }
+        }
+      }
+
+      # ptr is now parent of dataset
+      g <- stringr::str_split(private$name, '/', simplify = TRUE)
+      g <- g[[length(g)]]
+      # Create dataset
+      ptr <- rhdf5::h5createDataset(
+        file = ptr,
+        dataset = g,
+        dims = dim_x,
+        # H5type = dtype,
+        storage.mode = ctype,
+        chunk = chunk,
+        level = level,
+        size = size,
+        fillValue = NA,
+        native = FALSE
+      )
+      private$data_ptr <- private$file_ptr&private$name
+      private$data_ptr[] <- x
+
+      # reinitialize parameters
+      self$open()
 
     },
 
@@ -143,85 +462,80 @@ LazyH5 <- R6::R6Class(
     #' @param robj data array to save
     #' @param ... passed to \code{createDataSet} in \code{hdf5r} package
     open = function(new_dataset = FALSE, robj, ...){
-
+      # base::print(sys.call(-1))
       # check data pointer
       # if valid, no need to do anything, otherwise, enter if clause
-      if(new_dataset || is.null(private$data_ptr) || !private$data_ptr$is_valid){
+      if(new_dataset || !self$data_ptr_valid){
 
-        # Check if file is valid,
-        if(is.null(private$file_ptr) || !private$file_ptr$is_valid){
-          # if no, create new link
-          mode <- ifelse(private$read_only, 'r', 'a')
+        # Check if the connection is on and private$file_ptr is valid
+        if( !self$file_ptr_valid ){
+          # no, close all other connections
+
+          if(!private$read_only){
+
+            # Make sure the file exists and is valid, and connections are closed
+            if(file.exists(private$file)){
+
+              # need to write, but file pointer is invalid
+              H5FcloseAll(private$file)
+
+              # check if the file is valid HDF5
+              if(!self$file_valid){
+                stop("Trying to open a non-HDF5 file that already exists.")
+              }
+
+            } else {
+              # Need to create a new file (H5F_ACC_EXCL in case)
+              private$file_ptr <- rhdf5::H5Fcreate(name = private$file,
+                                                   native = FALSE,
+                                                   flags = 'H5F_ACC_EXCL')
+              private$file <- normalizePath(private$file)
+              rhdf5::H5Fclose(private$file_ptr)
+            }
+          }
+
+          open_flag <- ifelse(isTRUE(private$read_only), 'H5F_ACC_RDONLY', 'H5F_ACC_RDWR')
+
           tryCatch({
-            private$file_ptr <- hdf5r::H5File$new(private$file, mode)
+            # message(4)
+            # private$file_ptr <- hdf5r::H5File$new(private$file, mode)
+            private$file_ptr <- rhdf5::H5Fopen(name = private$file,
+                                               native = FALSE,
+                                               flags = open_flag)
           }, error = function(e){
-            # Open for writting, we should close all connections first
+            # Open for writing, we should close all connections first
             # then the file can be opened, otherwise, Access type: H5F_ACC_RDONLY
-            # will lock the file for writting
-            f <- hdf5r::H5File$new(private$file, 'r')
+            # will lock the file for writing
+
+            # f <- hdf5r::H5File$new(private$file, 'r')
+            nclosed <- H5FcloseAll(private$file)
             if(!self$quiet){
-              catgl('Closing all other connections to [{private$file}] - {f$get_obj_count() - 1}')
+              catgl('Closing all other connections to [{private$file}] - {nclosed}')
             }
 
-            try({ f$close_all() }, silent = TRUE)
-            private$file_ptr <- hdf5r::H5File$new(private$file, mode)
+            private$file_ptr <- rhdf5::H5Fopen(name = private$file,
+                                               native = FALSE,
+                                               flags = open_flag)
           })
         }
 
-        has_data <- private$file_ptr$path_valid(private$name)
-
-        if(!private$read_only && (new_dataset || ! has_data)){
-          # need to create new dataset
-          g <- stringr::str_split(private$name, '/', simplify = TRUE)
-          g <- g[stringr::str_trim(g) != '']
-
-          ptr <- private$file_ptr
-          nm <- ''
-
-          for(i in g[-length(g)]){
-            nm <- sprintf('%s/%s', nm, i)
-            if(!ptr$path_valid(path = nm)){
-              ptr <- ptr$create_group(i)
-              if(!self$quiet){
-                catgl('{private$file} => {nm} (Group Created)\n')
-              }
-            }else{
-              ptr <- ptr[[i]]
-            }
-          }
-
-          # create dataset
-          nm <- g[length(g)]
-          if(ptr$path_valid(path = nm)){
-            # dataset exists, unlink first
-            if(!self$quiet){
-              catgl('{private$file} => {private$name} (Dataset Removed)\n')
-            }
-            ptr$link_delete(nm)
-          }
-          # new create
-          if(!self$quiet){
-            catgl('{private$file} => {private$name} (Dataset Created)\n')
-          }
-          if(missing(robj)){
-            robj <- NA
-          }
-          ptr$create_dataset(nm, robj = robj, ...)
-          if(ptr$is_valid && inherits(ptr, 'H5Group')){
-            ptr$close()
-          }
-        }else if(!has_data){
-          stop(sprintf(
-            'File [%s] has no [%s] in it.',
-            private$file, private$name
-          ))
+        has_data <- h5fileHasData(filename = private$file, private$name)
+        if(has_data){
+          private$data_ptr <- (private$file_ptr)&(private$name)
+        } else if (!new_dataset){
+          # new_dataset = TRUE means private$data_ptr will be created
+          stop(catgl('File [{private$file}] has no [{private$name}] in it.'))
         }
-
-        private$data_ptr <- private$file_ptr[[private$name]]
 
       }
 
-      private$last_dim <- private$data_ptr$dims
+      if(!is.null(private$data_ptr)){
+        space <- rhdf5::H5Dget_space(private$data_ptr)
+        diminfo <- rhdf5::H5Sget_simple_extent_dims(space)
+        rhdf5::H5Sclose(space)
+
+        private$last_dim <- diminfo$size
+      }
 
     },
 
@@ -231,15 +545,23 @@ LazyH5 <- R6::R6Class(
     #' If true, then all connections, including access from other programs,
     #' will be closed
     close = function(all = TRUE){
+      # base::print('closing')
       try({
-        # check if data link is valid
-        if(!is.null(private$data_ptr) && private$data_ptr$is_valid){
-          private$data_ptr$close()
-        }
+        if( all ){
+          H5FcloseAll(private$file)
+          # base::print('closing all')
+        } else {
 
-        # if file link is valid, get_obj_ids() should return a vector of 1
-        if(all && !is.null(private$file_ptr) && private$file_ptr$is_valid){
-          private$file_ptr$close_all()
+          # only close data and file pointer
+          if(self$data_ptr_valid){
+            rhdf5::H5Dclose(private$data_ptr)
+            # base::print('closing d')
+          }
+
+          if(self$file_ptr_valid){
+            rhdf5::H5Fclose(private$file_ptr)
+            # base::print('closing f')
+          }
         }
       }, silent = TRUE)
     },
@@ -256,13 +578,15 @@ LazyH5 <- R6::R6Class(
       drop = FALSE, stream = FALSE,
       envir = parent.frame()
     ) {
+
+      dims <- self$get_dims(stay_open = TRUE)
       self$open()
-      dims <- self$get_dims()
 
       # step 1: eval indices
+      # args <- (function(...){eval(substitute(alist(...)))})(,1:10,c(-1,0,NA,1),1:100)
       args <- eval(substitute(alist(...)))
       if(length(args) == 0 || (length(args) == 1 && args[[1]] == '')){
-        return(private$data_ptr$read())
+        return(private$data_ptr[])
       }
       args <- lapply(args, function(x){
         if(x == ''){
@@ -275,62 +599,84 @@ LazyH5 <- R6::R6Class(
       # step 2: get allocation size
       sapply(seq_along(dims), function(ii){
         if(is.logical(args[[ii]])){
-          return(sum(args[[ii]]))
+          return(sum(is.na(args[[ii]]) | args[[ii]]))
         }else if(is.numeric(args[[ii]])){
           return(length(args[[ii]]))
-        }else{
+        }else if(length(args[[ii]])){
           # must be blank '', otherwise raise error
           return(dims[ii])
+        } else {
+          return( 0L )
         }
       }) ->
         alloc_dim
 
-      # step 3: get legit indices
-      lapply(seq_along(dims), function(ii){
-        if(is.logical(args[[ii]])){
-          return(args[[ii]])
-        }else if(is.numeric(args[[ii]])){
-          return(
-            args[[ii]][args[[ii]] <= dims[ii] & args[[ii]] > 0]
-          )
-        }else{
-          return(args[[ii]])
-        }
-      }) ->
-        legit_args
-
       # step 4: get mapping
       lapply(seq_along(dims), function(ii){
         if(is.logical(args[[ii]])){
-          return(
-            rep(TRUE, sum(args[[ii]]))
-          )
+          tmp <- args[[ii]]
+          tmp <- tmp[is.na(tmp) | tmp]
+          tmp[is.na(tmp)] <- FALSE
+          return(tmp)
         }else if(is.numeric(args[[ii]])){
-          return(args[[ii]] <= dims[ii] & args[[ii]] > 0)
+          re <- args[[ii]] <= dims[ii] & args[[ii]] > 0
+          re[is.na(re)] <- FALSE
+          return(re)
         }else{
           return(args[[ii]])
         }
       }) ->
         mapping
 
-      # alloc space
+      # Read
+
       re <- array(NA, dim = alloc_dim)
 
+
       if(stream){
-        re <- do.call(`[<-`, c(list(re), mapping, list(
-          value = private$data_ptr$read(
-            args = legit_args,
-            drop = FALSE,
-            envir = environment()
-          )
-        )))
+        # step 3: get legit indices
+        legit_args <- lapply(seq_along(dims), function(ii){
+          if(is.logical(args[[ii]])){
+            return(which(!is.na(args[[ii]]) & args[[ii]]))
+          }else if(is.numeric(args[[ii]])){
+            return(
+              args[[ii]][!is.na(args[[ii]]) & args[[ii]] <= dims[ii] & args[[ii]] > 0]
+            )
+          }else if(length(args[[ii]])){
+            return(NULL)
+          } else {
+            return(integer(0))
+          }
+        })
+        sub <- rhdf5::h5read(
+          private$file_ptr,
+          name = private$name,
+          index = legit_args,
+          compoundAsDataFrame = FALSE,
+          drop = FALSE
+        )
+        re <- do.call(`[<-`, c(list(quote(re)), mapping, list(quote(sub))))
       }else{
+        legit_args <- lapply(seq_along(dims), function(ii){
+          if(is.logical(args[[ii]])){
+            return(which(!is.na(args[[ii]]) & args[[ii]]))
+          }else if(is.numeric(args[[ii]])){
+            return(
+              args[[ii]][!is.na(args[[ii]]) & args[[ii]] <= dims[ii] & args[[ii]] > 0]
+            )
+          }else if(length(args[[ii]])){
+            args[[ii]]
+          } else {
+            return(integer(0))
+          }
+        })
         re <- do.call(`[<-`, c(list(re), mapping, list(
-          value = do.call('[', c(list(private$data_ptr$read()), legit_args, list(drop = FALSE)))
+          value = do.call('[', c(list(private$data_ptr[]), legit_args, list(drop = FALSE)))
         )))
       }
 
-      self$close(all = !private$read_only)
+      # self$close(all = !private$read_only)
+      self$close(all = FALSE)
 
 
       if(drop){
@@ -343,14 +689,25 @@ LazyH5 <- R6::R6Class(
 
     #' @description get data dimension
     #' @param stay_open whether to leave the connection opened
+    #' @param refresh whether to discard cache and read from file
     #' @return dimension of the array
-    get_dims = function(stay_open = TRUE){
-      self$open()
-      re <- private$data_ptr$dims
+    get_dims = function(stay_open = FALSE, refresh = FALSE){
+      if(!self$file_valid) { return(NULL) }
+      if(!refresh && length(private$last_dim)){ return(private$last_dim) }
+      quiet <- self$quiet
+      # on.exit({ self$close(all = FALSE) }, add = TRUE)
+      tryCatch({
+        # message(1)
+        if(!quiet){
+          self$quiet <- TRUE
+        }
+        self$open()
+      }, error = function(e){})
+      self$quiet <- quiet
       if(!stay_open){
-        self$close(all = !private$read_only)
+        self$close(all = FALSE)
       }
-      re
+      private$last_dim
     }
   )
 )
@@ -456,32 +813,17 @@ exp.LazyH5 <- function(x){
 #' @export
 load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 
-  re <- tryCatch({
-    re <- LazyH5$new(file_path = file, data_name = name, read_only = read_only, quiet = quiet)
-    re$open()
-    re
-  }, error = function(e){
-
-    if(!read_only){
-      stop('Another process is locking the file. Cannot open file with write permission; use ', sQuote('save_h5'), ' instead...\n  file: ', file, '\n  name: ', name)
-    }
-    if(!quiet){
-      catgl('Open failed. Attempt to open with a temporary copy...')
-    }
-
-    # Fails when other process holds a connection to it!
-    # If read_only, then copy the file to local directory
-    tmpf <- tempfile(fileext = 'conflict.h5')
-    file.copy(file, tmpf)
-    LazyH5$new(file_path = tmpf, data_name = name, read_only = read_only)
-  })
-
+  read_only <- read_only || ram
+  re <- LazyH5$new(file_path = file, data_name = name, read_only = TRUE, quiet = quiet)
+  on.exit({ re$close() }, add = TRUE)
   if(ram){
-    f <- re
-    re <- re[]
-    f$close()
+    return(re[])
+  } else {
+    if(!read_only){
+      re$open()
+    }
+    return(re)
   }
-  re
 }
 
 
@@ -515,32 +857,46 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' y <- load_h5(file, '/group/dataset/1')
 #' y[]
 #' @export
-save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
+save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
                     new_file = FALSE, ctype = NULL, quiet = FALSE, ...){
-  f <- tryCatch({
-    f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
-    f$open()
-    f$close()
-    f
-  }, error = function(e){
-    if( !quiet ){
-      catgl('Saving failed. Attempt to unlink the file and retry...', level = 'INFO')
-    }
-    if(file.exists(file)){
-      # File is locked,
-      tmpf <- tempfile(fileext = 'conflict.w.h5')
-      file.copy(file, tmpf)
-      unlink(file, recursive = FALSE, force = TRUE)
-      file.copy(tmpf, file)
-      unlink(tmpf)
-    }
-    # Otherwise it's some weird error, or dirname not exists, expose the error
-    LazyH5$new(file, name, read_only = FALSE)
-  })
-  on.exit({
-    f$close(all = TRUE)
-  }, add = TRUE)
-  f$save(x, chunk = chunk, level = level, replace = replace, new_file = new_file, ctype = ctype, force = TRUE, ...)
+
+  # Make sure all connections are closed
+  ensure_rhdf5()
+  H5FcloseAll(file)
+  call <- match.call()
+
+  call[['file']] <- NULL
+  call[['name']] <- NULL
+
+  f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
+  on.exit({ f$close(all = TRUE) }, add = TRUE)
+  call[[1]] <- quote(f$save)
+  eval(call)
+  # tryCatch({
+  #   f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
+  #   on.exit({ f$close(all = TRUE) }, add = TRUE)
+  #   call[[1]] <- quote(f$save)
+  #   eval(call, envir = env)
+  # }, error = function(e){
+  #   if( !quiet ){
+  #     catgl('Saving failed. Attempt to unlink the file and retry...', level = 'INFO')
+  #   }
+  #   if(file.exists(file)){
+  #     # File is locked,
+  #     tmpf <- sprintf('%s.conflict.%s', file, rand_string(6L))
+  #     file.copy(file, tmpf)
+  #     unlink(file, recursive = FALSE, force = TRUE)
+  #     file.copy(tmpf, file)
+  #
+  #     f <- LazyH5$new(file, name, read_only = FALSE, quiet = quiet)
+  #     on.exit({ f$close(all = TRUE) }, add = TRUE)
+  #     call[[1]] <- quote(f$save)
+  #     eval(call, envir = env)
+  #   } else {
+  #     # Otherwise it's some weird error, or dirname not exists, expose the error
+  #     stop("Cannot access to HDF5 file at: ", file)
+  #   }
+  # })
 
   return(invisible(normalizePath(file)))
 }
@@ -565,30 +921,21 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
 #' save_h5(x, f, 'dset')
 #' h5_valid(f, 'w')
 #'
-#' # Open the file and hold a connection
-#' ptr <- hdf5r::H5File$new(filename = f, mode = 'w')
-#'
-#' # Can read, but cannot write
-#' h5_valid(f, 'r')  # TRUE
-#' h5_valid(f, 'w')  # FALSE
-#'
-#' # However, this can be reset via `close_all=TRUE`
-#' h5_valid(f, 'r', close_all = TRUE)
-#' h5_valid(f, 'w')  # TRUE
-#'
-#' # Now the connection is no longer valid
-#' ptr
-#'
 #' @export
 h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
+  ensure_rhdf5()
   mode <- match.arg(mode)
   tryCatch({
+    # message(2)
     file <- normalizePath(file, mustWork = TRUE)
-    f <- hdf5r::H5File$new(filename = file, mode = mode)
+
+    open_mode <- ifelse(mode == 'r', 'H5F_ACC_RDONLY', 'H5F_ACC_RDWR')
+    f <- rhdf5::H5Fopen(name = file, flags = open_mode, native = FALSE)
+    # f <- hdf5r::H5File$new(filename = file, mode = mode)
     if(close_all){
-      f$close_all()
+      H5FcloseAll(file)
     } else {
-      f$close()
+      rhdf5::H5Fclose(f)
     }
     TRUE
   }, error = function(e){
@@ -603,11 +950,16 @@ h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
 #' @return characters, data set names
 #' @export
 h5_names <- function(file){
-  # make sure the file is valid
-  if(!h5_valid(file, 'r')){ return(FALSE) }
-  file <- normalizePath(file, mustWork = TRUE)
-  f <- hdf5r::H5File$new(filename = file, mode = 'r')
-  names <- hdf5r::list.datasets(f)
-  f$close()
-  names
+  ensure_rhdf5
+  if(!h5FileValid(file)){ return(character(0)) }
+  fobj <- h5FileObject(file)
+  if(is.null(fobj)){
+    df <- rhdf5::h5ls(file, recursive = TRUE)
+  } else {
+    df <- rhdf5::h5ls(fobj, recursive = TRUE)
+  }
+  dnames <- sprintf('%s/%s', df$group, df$name)
+  dnames <- dnames[df$otype == 'H5I_DATASET']
+  dnames <- stringr::str_remove_all(dnames, '^[/]+')
+  dnames
 }
