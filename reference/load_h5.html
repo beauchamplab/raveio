@@ -159,24 +159,29 @@ a <code><a href='LazyH5.html'>LazyH5</a></code> instance.</p>
     <div class='dont-index'><p><code><a href='save_h5.html'>save_h5</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
-
+    <pre class="examples"><div class='input'>
 <span class='va'>file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>120</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># save x to file with name /group/dataset/1</span>
 <span class='fu'><a href='save_h5.html'>save_h5</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>file</span>, <span class='st'>'/group/dataset/1'</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; [1] 111
+#&gt; [1] 222
+#&gt; [1] 111
+#&gt; [1] 222</div><div class='input'>
 <span class='co'># read data</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>load_h5</span><span class='op'>(</span><span class='va'>file</span>, <span class='st'>'/group/dataset/1'</span>, ram <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>   <span class='co'># array</span>
-
+</div><div class='output co'>#&gt; [1] 111
+#&gt; [1] 222
+#&gt; [1] 111
+#&gt; [1] 222</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>   <span class='co'># array</span>
+</div><div class='output co'>#&gt; [1] "array"</div><div class='input'>
 <span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'>load_h5</span><span class='op'>(</span><span class='va'>file</span>, <span class='st'>'/group/dataset/1'</span>, ram <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>   <span class='co'># LazyH5</span>
-
+</div><div class='output co'>#&gt; [1] 111
+#&gt; [1] 222</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>   <span class='co'># LazyH5</span>
+</div><div class='output co'>#&gt; [1] "LazyH5" "R6"    </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>
-
-<span class='op'>}</span>
+</div><div class='output co'>#&gt; [1] 4 5 6</div><div class='input'>
 
 </div></pre>
   </div>
