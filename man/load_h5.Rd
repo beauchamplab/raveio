@@ -27,7 +27,6 @@ Wrapper for class \code{\link{LazyH5}}, which load data with
 "lazy" mode - only read part of dataset when needed.
 }
 \examples{
-if(interactive()){
 
 file <- tempfile()
 x <- array(1:120, dim = c(4,5,6))
@@ -44,7 +43,6 @@ class(z)   # LazyH5
 
 dim(z)
 
-}
 
 }
 \seealso{

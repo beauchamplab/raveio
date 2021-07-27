@@ -8,7 +8,6 @@ provides hybrid data structure for 'HDF5' file
 }
 \examples{
 
-if(interactive()){
 
 # Data to save
 x <- array(rnorm(1000), c(10,10,10))
@@ -28,7 +27,6 @@ range(dat - x)
 # Read a slice of the data
 system.time(dat[,10,])
 
-}
 
 }
 \author{
@@ -195,7 +193,7 @@ to write the data}
 \subsection{Method \code{close()}}{
 close connection
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LazyH5$close(all = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LazyH5$close(all = NA)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

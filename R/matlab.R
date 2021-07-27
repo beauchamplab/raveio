@@ -50,8 +50,9 @@ read_mat <- function(file, ram = TRUE){
     } else {
       re <- sapply(dset_names, function(nm){
         base::print(000)
-        load_h5(file, name = nm, ram = ram)
+        y <- load_h5(file, name = nm, ram = ram)
         base::print(333)
+        y
       }, simplify = FALSE, USE.NAMES = TRUE)
     }
   }else{
