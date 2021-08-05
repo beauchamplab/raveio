@@ -15,7 +15,7 @@
 #' # Load via LazyFST
 #' dat <- LazyFST$new(file_path = f, dims = c(10000, 100))
 #'
-#' # dat < 1 MB (`pryr::object_size(dat)`)
+#' # dat < 1 MB
 #'
 #' # Check whether the data is identical
 #' range(dat[] - x)

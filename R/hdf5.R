@@ -1,7 +1,6 @@
 # File IO: HDF5 file wrapper
 
 ensure_rhdf5 <- function(prompt = TRUE){
-
   if( dipsaus::package_installed('rhdf5') ){ return(TRUE) }
 
   ans <- TRUE
@@ -225,6 +224,7 @@ h5dataType <- function (storage.mode, size = 255L) {
 #'
 #' @examples
 #'
+#' if( dipsaus::package_installed('rhdf5') ){
 #'
 #' # Data to save
 #' x <- array(rnorm(1000), c(10,10,10))
@@ -243,6 +243,7 @@ h5dataType <- function (storage.mode, size = 255L) {
 #'
 #' # Read a slice of the data
 #' system.time(dat[,10,])
+#' }
 #'
 #'
 #' @export
@@ -839,6 +840,8 @@ exp.LazyH5 <- function(x){
 #'
 #' @examples
 #'
+#' if( dipsaus::package_installed('rhdf5') ){
+#'
 #' file <- tempfile()
 #' x <- array(1:120, dim = c(4,5,6))
 #'
@@ -854,6 +857,7 @@ exp.LazyH5 <- function(x){
 #'
 #' dim(z)
 #'
+#' }
 #'
 #' @export
 load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
@@ -890,6 +894,7 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' @seealso \code{\link{load_h5}}
 #' @examples
 #'
+#' if( dipsaus::package_installed('rhdf5') ){
 #'
 #' file <- tempfile()
 #' x <- array(1:120, dim = 2:5)
@@ -900,6 +905,8 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' # read data
 #' y <- load_h5(file, '/group/dataset/1')
 #' y[]
+#'
+#' }
 #'
 #' @export
 save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
@@ -936,6 +943,8 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
 #'
 #' @examples
 #'
+#' if( dipsaus::package_installed('rhdf5') ){
+#'
 #' x <- array(1:27, c(3,3,3))
 #' f <- tempfile()
 #'
@@ -945,6 +954,7 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4, replace = TRUE,
 #' save_h5(x, f, 'dset')
 #' h5_valid(f, 'w')
 #'
+#' }
 #'
 #' @export
 h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){

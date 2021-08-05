@@ -28,6 +28,8 @@ Wrapper for class \code{\link{LazyH5}}, which load data with
 }
 \examples{
 
+if( dipsaus::package_installed('rhdf5') ){
+
 file <- tempfile()
 x <- array(1:120, dim = c(4,5,6))
 
@@ -43,6 +45,7 @@ class(z)   # LazyH5
 
 dim(z)
 
+}
 
 }
 \seealso{

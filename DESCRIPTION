@@ -8,21 +8,18 @@ Authors@R: c(
     person("Beauchamp lab", email = "beauchamplab@gmail.com", role = c("cph", "fnd"))
     )
 Description: Includes multiple cross-platform read/write interfaces for
-  'RAVE' project. 'RAVE' stands for "R analysis and visualization of human 
-  intracranial electroencephalography data". The whole project aims at providing
-  powerful free-source package that analyze brain recordings from patients with
-  electrodes placed on the cortical surface or inserted into the brain. 'raveio'
-  as part of this project provides tools to read/write neurophysiology data
-  from/to 'RAVE' file structure, as well as several popular formats including 
-  'EDF(+)', 'Matlab', 'BIDS-iEEG', and 'HDF5', etc. Documentation and examples
-  about 'RAVE' project are provided at <https://openwetware.org/wiki/RAVE>, 
-  and the paper by John F. Magnotti, Zhengjia Wang, Michael S. Beauchamp (2020) 
-  <doi:10.1101/2020.06.02.129676>, the paper by Brian A. Metzger, John F. 
-  Magnotti, Zhengjia Wang, Elizabeth Nesbitt, Patrick J. Karas, Daniel Yoshor, 
-  Michael S. Beauchamp (2020) <doi:10.1523/JNEUROSCI.0279-20.2020>, and 
-  the paper by Patrick J. Karas, John F. Magnotti, Brian A. Metzger, Lin L. Zhu,
-  Kristen B. Smith, Daniel Yoshor, Michael S. Beauchamp (2019) 
-  <doi:10.7554/eLife.48116>; see 'citation("raveio")' for details.
+    'RAVE' project. 'RAVE' stands for "R analysis and visualization of human 
+    intracranial electroencephalography data". The whole project aims at 
+    providing powerful free-source package that analyze brain recordings from 
+    patients with electrodes placed on the cortical surface or inserted into 
+    the brain. 'raveio' as part of this project provides tools to read/write 
+    neurophysiology data from/to 'RAVE' file structure, as well as several 
+    popular formats including  'EDF(+)', 'Matlab', 'BIDS-iEEG', and 'HDF5', 
+    etc. Documentation and examples about 'RAVE' project are provided at 
+    <https://openwetware.org/wiki/RAVE>, and the paper by John F. Magnotti, 
+    Zhengjia Wang, Michael S. Beauchamp (2020) 
+    <doi:10.1016/j.neuroimage.2020.117341>; see 'citation("raveio")' for 
+    details.
 BugReports: https://github.com/beauchamplab/raveio/issues
 URL: https://beauchamplab.github.io/raveio/
 License: GPL-3
@@ -50,6 +47,5 @@ Imports:
     R6,
     BiocManager
 Suggests:
-    spelling,
     testthat,
     rhdf5 (>= 2.36.0)

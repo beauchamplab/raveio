@@ -16,13 +16,13 @@ ts <- Tensor$new(
   varnames = c('A', 'B', 'C'))
 
 # Size of tensor when in memory is usually large
-# `pryr::object_size(ts)` -> 8.02 MB
+# `lobstr::obj_size(ts)` -> 8.02 MB
 
 # Enable hybrid mode
 ts$to_swap_now()
 
 # Hybrid mode, usually less than 1 MB
-# `pryr::object_size(ts)` -> 814 kB
+# `lobstr::obj_size(ts)` -> 814 kB
 
 # Subset data
 start1 <- Sys.time()

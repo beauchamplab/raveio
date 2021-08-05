@@ -315,8 +315,15 @@ finalize_installation <- function(
   }
 }
 
+.onAttach <- function(libname, pkgname) {
+  # check if rhdf5 has been installed
+  if(isTRUE(system.file(package = "rhdf5") == "")){
+    packageStartupMessage("Package `raveio` has been successfully loaded. \nHowever, BioConductor package `rhdf5` has not been installed. \nPlease run the following command:\n\n  BiocManager::install('rhdf5', update = FALSE, type = 'source')\n")
+  }
+}
+
 .onLoad <- function(libname, pkgname) {
-  # backports::import(pkgname, c("R_user_dir", "deparse1"))
+
   pkg <- getNamespace(pkgname)
   sess_str <- rand_string(15)
   assign('.session_string', sess_str, envir = pkg)

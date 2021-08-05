@@ -48,6 +48,7 @@ Save objects to 'HDF5' file without trivial checks
 }
 \examples{
 
+if( dipsaus::package_installed('rhdf5') ){
 
 file <- tempfile()
 x <- array(1:120, dim = 2:5)
@@ -58,6 +59,8 @@ save_h5(x, file, '/group/dataset/1', chunk = dim(x))
 # read data
 y <- load_h5(file, '/group/dataset/1')
 y[]
+
+}
 
 }
 \seealso{

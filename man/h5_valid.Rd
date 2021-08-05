@@ -23,6 +23,8 @@ Check whether a 'HDF5' file can be opened for read/write
 }
 \examples{
 
+if( dipsaus::package_installed('rhdf5') ){
+
 x <- array(1:27, c(3,3,3))
 f <- tempfile()
 
@@ -32,5 +34,6 @@ h5_valid(f, 'r')
 save_h5(x, f, 'dset')
 h5_valid(f, 'w')
 
+}
 
 }

@@ -25,6 +25,9 @@
 #' read_mat(f)
 #'
 #' # Matlab .mat >= v7.3, using hdf5
+#' # Make sure you have installed rhdf5 from bioConductor
+#' if( dipsaus::package_installed('rhdf5') ){
+#'
 #' f <- tempfile()
 #' save_h5(x, file = f, name = 'x')
 #'
@@ -35,6 +38,8 @@
 #' dat
 #'
 #' dat$x[]
+#'
+#' }
 #'
 #'
 #'
