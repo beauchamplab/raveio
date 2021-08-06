@@ -149,6 +149,14 @@ validate_settings <- function(s = dipsaus::fastmap2()){
   s
 }
 
+flush_conf <- function(s, conf_file){
+  if( !isTRUE(getOption("raveio.settings_readonly", FALSE)) ){
+    f <- tempfile()
+    save_yaml(s, f)
+    file.copy(f, conf_file, overwrite = TRUE)
+  }
+}
+
 load_setting <- function(reset_temp = TRUE){
   s <- get0('.settings', ifnotfound = default_settings())
   tmp <- s$..temp
@@ -228,7 +236,7 @@ raveio_setopt <- function(key, value, .save = TRUE){
     s <- as.list(s)
     s <- s[!names(s) %in% c('session_string', '..temp')]
     dir_create2(conf_path)
-    save_yaml(s, conf_file)
+    flush_conf(s, conf_file)
   } else {
     # temporarily set value and restore previous value because
     s$..temp[[key]] <- s[[key]]
@@ -261,7 +269,7 @@ raveio_resetopt <- function(all = FALSE){
     unlink(conf_file)
   } else {
     dir_create2(conf_path)
-    save_yaml(s, conf_file)
+    flush_conf(s, conf_file)
   }
 
   # validate again as temporary settings are removed
