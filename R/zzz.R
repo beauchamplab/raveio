@@ -196,7 +196,7 @@ flush_conf <- function(s, conf_file){
   # check if conf_file exists
   if( !file.exists(conf_file) ){
     # copy failed (might because of permission issues)
-    warning("Unable to write configuration file to ", conf_file)
+    warning("Unable to write configuration file to:\n  ", conf_file, "\nPermission denied?")
     unlink(f)
     unlink(bak)
     return()
@@ -230,7 +230,7 @@ flush_conf <- function(s, conf_file){
   # if invalid and backup file is also invalid
   if( file.exists(bak) ){
     warning("Unable to update configurations. The settings file is corrupted. \n",
-            "Resetting to default settings. The original copy has been backed up at \n", bak)
+            "Resetting to default settings. The original copy has been backed up at \n  ", bak)
     unlink(conf_file, force = TRUE)
     unlink(f)
     return()
@@ -256,7 +256,7 @@ load_setting <- function(reset_temp = TRUE){
       bak <- paste0(conf_file, strftime(Sys.time(), ".%y%m%d-%H%M%S.bak"))
       file.copy(conf_file, bak)
       unlink(conf_file, force = TRUE)
-      warning("Configuration file is corrupted: ", conf_file, "\nReset to default values. The original copy has been backed up at: ", bak)
+      warning("Configuration file is corrupted:\n  ", conf_file, "\nReset to default values. The original copy has been backed up at:\n  ", bak)
     })
   }
   s$session_string <- sess_str
@@ -418,19 +418,33 @@ finalize_installation <- function(
 
 .onAttach <- function(libname, pkgname) {
   # check if rhdf5 has been installed
-  if(isTRUE(system.file(package = "rhdf5") == "")){
-    packageStartupMessage("Package `raveio` has been successfully loaded. \nHowever, BioConductor package `rhdf5` has not been installed. \nPlease run the following command:\n\n  BiocManager::install('rhdf5', update = FALSE, type = 'source')\n")
+  s <- NULL
+
+  pkg <- getNamespace(pkgname)
+  if(length(pkg$.startup_msg)){
+    s <- c(pkg$.startup_msg, "")
   }
+
+  if(isTRUE(system.file(package = "rhdf5") == "")){
+    s <- c(s, "Package `raveio` has been successfully loaded. \nHowever, BioConductor package `rhdf5` has not been installed. \nPlease run the following command:\n\n  BiocManager::install('rhdf5', update = FALSE, type = 'source')\n")
+  }
+
+  if(length(s)){
+    s <- paste(s, collapse = "\n")
+    packageStartupMessage(s)
+  }
+
 }
 
 .onLoad <- function(libname, pkgname) {
 
   pkg <- getNamespace(pkgname)
   sess_str <- rand_string(15)
+  # .session_string <<- sess_str
   assign('.session_string', sess_str, envir = pkg)
 
   err_f <- function(e){
-    packageStartupMessage(e$message)
+    assign('.startup_msg', e$message, envir = pkg)
     NULL
   }
   s <- tryCatch({
@@ -441,6 +455,7 @@ finalize_installation <- function(
     s <- default_settings()
   }
 
+  .settings <<- s
   assign('.settings', s, envir = pkg)
   cenv <- environment(.subset2(s, 'reset'))
 
