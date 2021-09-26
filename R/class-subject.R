@@ -12,12 +12,13 @@ as_rave_subject <- function(subject_id, strict = TRUE){
   }
 }
 
-#' Definition for 'RAVE' subject class
+#' Defines 'RAVE' subject class
+#' @description \code{R6} class definition
 #' @export
 RAVESubject <- R6::R6Class(
   classname = 'RAVESubject',
   class = TRUE,
-  portable = TRUE,
+  portable = FALSE,
   private = list(
     .name = character(0),
     .path = character(0),

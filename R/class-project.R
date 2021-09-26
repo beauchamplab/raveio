@@ -26,7 +26,7 @@ get_projects <- function(){
 RAVEProject <- R6::R6Class(
   classname = 'RAVEProject',
   class = TRUE,
-  portable = TRUE,
+  portable = FALSE,
   private = list(
     .name = character(0),
     .path = character(0)

@@ -25,7 +25,7 @@ URL: https://beauchamplab.github.io/raveio/
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 SystemRequirements: little-endian platform
 biocViews: Infrastructure, DataImport
 Depends: R (>= 3.6.0)
@@ -33,19 +33,20 @@ Imports:
     utils,
     data.table,
     parallel,
-    yaml (>= 2.2.1),
-    fst (>= 0.9.2),
-    dipsaus (>= 0.0.9),
-    R.matlab (>= 3.6.2),
-    glue,
-    later,
-    stringr (>= 1.4.0),
-    rlang (>= 0.4.7),
+    BiocManager,
     edfReader (>= 1.2.1),
+    dipsaus (>= 0.0.9),
+    filearray (>= 0.1.1),
+    fst (>= 0.9.2),
+    glue,
     ini (>= 0.3.1),
     jsonlite (>= 1.7.0),
+    later,
+    R.matlab (>= 3.6.2),
     R6,
-    BiocManager
+    rlang (>= 0.4.7),
+    stringr (>= 1.4.0),
+    yaml (>= 2.2.1)
 Suggests:
     testthat,
     rhdf5 (>= 2.36.0)

@@ -2,11 +2,9 @@
 % Please edit documentation in R/class-preprocess.R
 \name{RAVEPreprocessSettings}
 \alias{RAVEPreprocessSettings}
-\title{Definition for preprocess configurations}
+\title{Defines preprocess configurations}
 \description{
-Definition for preprocess configurations
-
-Definition for preprocess configurations
+\code{R6} class definition
 }
 \examples{
 

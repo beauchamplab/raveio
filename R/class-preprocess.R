@@ -1,5 +1,6 @@
 
-#' Definition for preprocess configurations
+#' Defines preprocess configurations
+#' @description \code{R6} class definition
 #' @examples
 #'
 #' # The following example require downloading demo subject (~700 MB) from

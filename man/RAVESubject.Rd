@@ -2,11 +2,9 @@
 % Please edit documentation in R/class-subject.R
 \name{RAVESubject}
 \alias{RAVESubject}
-\title{Definition for 'RAVE' subject class}
+\title{Defines 'RAVE' subject class}
 \description{
-Definition for 'RAVE' subject class
-
-Definition for 'RAVE' subject class
+\code{R6} class definition
 }
 \seealso{
 \code{\link{load_meta2}}
