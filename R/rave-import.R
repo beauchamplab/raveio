@@ -48,6 +48,8 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   re$data_path <- file.path(re$rave_path, 'data')
   re$reference_path <- file.path(re$data_path, 'reference')
 
+  re$pipeline_path <- file.path(re$rave_path, 'pipeline')
+
 
 
   return(re)

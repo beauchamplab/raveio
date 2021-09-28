@@ -105,6 +105,10 @@ RAVEProject <- R6::R6Class(
     #' @field name project name, character
     name = function(){
       private$.name
+    },
+
+    pipeline_path = function(){
+      file.path(private$.path, '_project_pipeline')
     }
   )
 )

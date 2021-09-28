@@ -7,3 +7,5 @@
 ^CRAN-RELEASE$
 ^\.github$
 ^cache$
+inst/rave-pipelines/*/cache/*
+inst/rave-pipelines/*/shared/*

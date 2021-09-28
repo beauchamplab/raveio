@@ -24,7 +24,6 @@ BugReports: https://github.com/beauchamplab/raveio/issues
 URL: https://beauchamplab.github.io/raveio/
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.1.2
 SystemRequirements: little-endian platform
 biocViews: Infrastructure, DataImport
@@ -46,7 +45,9 @@ Imports:
     R6,
     rlang (>= 0.4.7),
     stringr (>= 1.4.0),
-    yaml (>= 2.2.1)
+    yaml (>= 2.2.1),
+    targets (>= 0.8.0),
+    callr (>= 3.7.0)
 Suggests:
     testthat,
     rhdf5 (>= 2.36.0)

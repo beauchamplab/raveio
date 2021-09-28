@@ -1,0 +1,9 @@
+epoch: auditory_onset
+electrodes: 14-16
+reference: default
+intervals:
+- - -1.0
+  - 2.0
+type:
+  - "power"
+
