@@ -25,8 +25,8 @@
 #' read_mat(f)
 #'
 #' # Matlab .mat >= v7.3, using hdf5
-#' # Make sure you have installed rhdf5 from bioConductor
-#' if( dipsaus::package_installed('rhdf5') ){
+#' # Make sure you have installed hdf5r
+#' if( dipsaus::package_installed('hdf5r') ){
 #'
 #' f <- tempfile()
 #' save_h5(x, file = f, name = 'x')
@@ -50,14 +50,10 @@ read_mat <- function(file, ram = TRUE){
   if( h5FileValid(file) ){
 
     dset_names <- h5_names(file)
-    if(ram){
-      re <- rhdf5::h5read(file, "/")
-    } else {
-      re <- sapply(dset_names, function(nm){
-        y <- load_h5(file, name = nm, ram = ram)
-        y
-      }, simplify = FALSE, USE.NAMES = TRUE)
-    }
+    re <- sapply(dset_names, function(nm){
+      y <- load_h5(file, name = nm, ram = ram)
+      y
+    }, simplify = FALSE, USE.NAMES = TRUE)
   }else{
     re <- R.matlab::readMat(file)
   }

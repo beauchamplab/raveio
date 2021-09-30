@@ -287,27 +287,41 @@ Tensor <- R6::R6Class(
       # expr = lapply(lazyeval::lazy_dots(...), function(x){x$env = .env; x})
       # class(expr) <- 'lazy_dots'
       # re = lazyeval::lazy_eval(expr, data = self$dimnames)
-      quos <- rlang::quos(...)
+      # quos <- rlang::quos(...)
+      is_missing_dots <- dipsaus::missing_dots(envir = environment())
+      quos <- match.call(expand.dots = TRUE)
+      # assign("quos", quos, envir = globalenv())
+      # assign('is_missing_dots', is_missing_dots, envir = globalenv())
+      quos <- as.list(quos)[-1]
       nms <- names(quos)
+
       if(length(nms) == 0){
         nms <- rep('', length(quos))
       }
-      quos <- lapply(seq_along(nms), function(ii){
+      sel <- !nms %in% c("drop", "data_only", ".env")
+      quos <- quos[sel][!is_missing_dots]
+      nms <- nms[sel][!is_missing_dots]
+
+      for(ii in seq_along(nms)){
         if( nms[[ii]] == '' ){
-          fml <- rlang::eval_tidy(quos[[ii]], env = ..wrapper)
-          if(rlang::is_formula(fml)){
-            return(list(
+          fml <- eval(quos[[ii]]) #eval(bquote(.(quos[[ii]])), env = ..wrapper)
+
+          # if is formula
+          if(dipsaus::sexp_type2(fml) == 6){
+            quos[[ii]] <- list(
               name = as.character(fml[[2]]),
               quo = fml[[3]]
-            ))
+            )
+            next
           }
         }
-        return(list(
+        quos[[ii]] <- list(
           name = nms[[ii]],
           quo = quos[[ii]]
-        ))
-      })
+        )
+      }
 
+      quos <- dipsaus::drop_nulls(quos)
 
       re <- lapply(quos, function(item){
         # Use eval_dirty!
@@ -542,19 +556,7 @@ Tensor <- R6::R6Class(
       }
 
       if(self$hybrid){
-        if(gc_delay <= 0){
-          private$.data <- NULL
-        }else if(!is.null(private$.data)){
-          self$last_used <- Sys.time()
-          later::later(function(){
-            delta <- difftime(Sys.time(), self$last_used, units = 'secs')
-
-            if(self$hybrid && all(file.exists(self$swap_file)) && (as.numeric(delta) - gc_delay >= - 0.001)){
-              # remove RAM data
-              private$.data <- NULL
-            }
-          }, delay = gc_delay)
-        }
+        private$.data <- NULL
       }
 
       return(d)

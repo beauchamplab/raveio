@@ -367,3 +367,21 @@ create_subject_pipeline <- function(
   }
   return(pipe_path)
 }
+
+#' @export
+pipeline_description <- function (file) {
+  # file <- file.path(pipeline, 'DESCRIPTION')
+  dcf <- read.dcf(file = file)
+  if (nrow(dcf) < 1L) {
+    stop(sprintf("DESCRIPTION file '%s' is corrupt",
+                 file), domain = NA)
+  }
+  desc <- as.list(dcf[1, ])
+  if ((length(desc) == 0)) {
+    stop(sprintf("DESCRIPTION file '%s' is missing or broken", file), domain = NA)
+  }
+  attr(desc, "file") <- file
+
+  class(desc) <- "packageDescription"
+  desc
+}

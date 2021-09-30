@@ -407,13 +407,13 @@ finalize_installation <- function(
   upgrade = c('ask', 'always', 'never'),
   async = TRUE){
 
-  # ignore async
-  upgrade <- match.arg(upgrade)
-  if( upgrade == 'ask' ) {
-    ensure_rhdf5(prompt = TRUE)
-  } else {
-    ensure_rhdf5(prompt = FALSE)
-  }
+  # # ignore async
+  # upgrade <- match.arg(upgrade)
+  # if( upgrade == 'ask' ) {
+  #   ensure_rhdf5(prompt = TRUE)
+  # } else {
+  #   ensure_rhdf5(prompt = FALSE)
+  # }
 }
 
 .onAttach <- function(libname, pkgname) {
@@ -425,9 +425,9 @@ finalize_installation <- function(
     s <- c(pkg$.startup_msg, "")
   }
 
-  if(isTRUE(system.file(package = "rhdf5") == "")){
-    s <- c(s, "Package `raveio` has been successfully loaded. \nHowever, BioConductor package `rhdf5` has not been installed. \nPlease run the following command:\n\n  BiocManager::install('rhdf5', update = FALSE, type = 'source')\n")
-  }
+  # if(isTRUE(system.file(package = "rhdf5") == "")){
+  #   s <- c(s, "Package `raveio` has been successfully loaded. \nHowever, BioConductor package `rhdf5` has not been installed. \nPlease run the following command:\n\n  BiocManager::install('rhdf5', update = FALSE, type = 'source')\n")
+  # }
 
   if(length(s)){
     s <- paste(s, collapse = "\n")
@@ -437,6 +437,8 @@ finalize_installation <- function(
 }
 
 .onLoad <- function(libname, pkgname) {
+
+  # Sys.unsetenv("RAVE_PIPELINE")
 
   pkg <- getNamespace(pkgname)
   sess_str <- rand_string(15)
