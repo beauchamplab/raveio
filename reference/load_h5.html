@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lazy Load 'HDF5' File via rhdf5 — load_h5 • raveio</title>
+<title>Lazy Load 'HDF5' File via hdf5r-package — load_h5 • raveio</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Lazy Load 'HDF5' File via rhdf5 — load_h5" />
+<meta property="og:title" content="Lazy Load 'HDF5' File via hdf5r-package — load_h5" />
 <meta property="og:description" content="Wrapper for class LazyH5, which load data with
 &quot;lazy&quot; mode - only read part of dataset when needed." />
 
@@ -112,8 +112,8 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Lazy Load 'HDF5' File via <span class="pkg">rhdf5</span></h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/hdf5.R'><code>R/hdf5.R</code></a></small>
+    <h1>Lazy Load 'HDF5' File via <code><a href='http://hhoeflin.github.io/hdf5r/reference/hdf5r-package.html'>hdf5r-package</a></code></h1>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/hdf5r.R'><code>R/hdf5r.R</code></a></small>
     <div class="hidden name"><code>load_h5.Rd</code></div>
     </div>
 
@@ -159,10 +159,7 @@ a <code><a href='LazyH5.html'>LazyH5</a></code> instance.</p>
     <div class='dont-index'><p><code><a href='save_h5.html'>save_h5</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'>if</span><span class='op'>(</span> <span class='fu'>dipsaus</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dipsaus/man/package_installed.html'>package_installed</a></span><span class='op'>(</span><span class='st'>'rhdf5'</span><span class='op'>)</span> <span class='op'>)</span><span class='op'>{</span>
-
-<span class='va'>file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>120</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>,<span class='fl'>5</span>,<span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># save x to file with name /group/dataset/1</span>
@@ -171,13 +168,11 @@ a <code><a href='LazyH5.html'>LazyH5</a></code> instance.</p>
 <span class='co'># read data</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>load_h5</span><span class='op'>(</span><span class='va'>file</span>, <span class='st'>'/group/dataset/1'</span>, ram <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>   <span class='co'># array</span>
-
+</div><div class='output co'>#&gt; [1] "array"</div><div class='input'>
 <span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'>load_h5</span><span class='op'>(</span><span class='va'>file</span>, <span class='st'>'/group/dataset/1'</span>, ram <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>   <span class='co'># LazyH5</span>
-
+</div><div class='output co'>#&gt; [1] "LazyH5" "R6"    </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>
-
-<span class='op'>}</span>
 </div><div class='output co'>#&gt; [1] 4 5 6</div><div class='input'>
 </div></pre>
   </div>

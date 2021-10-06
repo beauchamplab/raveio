@@ -171,7 +171,7 @@ data contained in 'Matlab' file into memory.</p>
 #&gt; 
 #&gt; attr(,"header")
 #&gt; attr(,"header")$description
-#&gt; [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.1.1, Created on: Thu Aug 19 18:01:11 2021                               "
+#&gt; [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.1.1, Created on: Wed Oct  6 15:38:38 2021                               "
 #&gt; 
 #&gt; attr(,"header")$version
 #&gt; [1] "5"
@@ -180,8 +180,8 @@ data contained in 'Matlab' file into memory.</p>
 #&gt; [1] "little"
 #&gt; </div><div class='input'>
 <span class='co'># Matlab .mat &gt;= v7.3, using hdf5</span>
-<span class='co'># Make sure you have installed rhdf5 from bioConductor</span>
-<span class='kw'>if</span><span class='op'>(</span> <span class='fu'>dipsaus</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dipsaus/man/package_installed.html'>package_installed</a></span><span class='op'>(</span><span class='st'>'rhdf5'</span><span class='op'>)</span> <span class='op'>)</span><span class='op'>{</span>
+<span class='co'># Make sure you have installed hdf5r</span>
+<span class='kw'>if</span><span class='op'>(</span> <span class='fu'>dipsaus</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dipsaus/man/package_installed.html'>package_installed</a></span><span class='op'>(</span><span class='st'>'hdf5r'</span><span class='op'>)</span> <span class='op'>)</span><span class='op'>{</span>
 
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='fu'><a href='save_h5.html'>save_h5</a></span><span class='op'>(</span><span class='va'>x</span>, file <span class='op'>=</span> <span class='va'>f</span>, name <span class='op'>=</span> <span class='st'>'x'</span><span class='op'>)</span>

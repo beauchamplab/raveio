@@ -112,7 +112,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Save objects to 'HDF5' file without trivial checks</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/hdf5.R'><code>R/hdf5.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/hdf5r.R'><code>R/hdf5r.R</code></a></small>
     <div class="hidden name"><code>save_h5.Rd</code></div>
     </div>
 
@@ -189,8 +189,6 @@ please store separately the real and imaginary parts.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span><span class='op'>(</span> <span class='fu'>dipsaus</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dipsaus/man/package_installed.html'>package_installed</a></span><span class='op'>(</span><span class='st'>'rhdf5'</span><span class='op'>)</span> <span class='op'>)</span><span class='op'>{</span>
-
 <span class='va'>file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>120</span>, dim <span class='op'>=</span> <span class='fl'>2</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span>
 
@@ -200,8 +198,6 @@ please store separately the real and imaginary parts.</p></td>
 <span class='co'># read data</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='load_h5.html'>load_h5</a></span><span class='op'>(</span><span class='va'>file</span>, <span class='st'>'/group/dataset/1'</span><span class='op'>)</span>
 <span class='va'>y</span><span class='op'>[</span><span class='op'>]</span>
-
-<span class='op'>}</span>
 </div><div class='output co'>#&gt; , , 1, 1
 #&gt; 
 #&gt;      [,1] [,2] [,3]
@@ -321,8 +317,7 @@ please store separately the real and imaginary parts.</p></td>
 #&gt;      [,1] [,2] [,3]
 #&gt; [1,]  115  117  119
 #&gt; [2,]  116  118  120
-#&gt; </div><div class='input'>
-</div></pre>
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

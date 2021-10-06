@@ -112,7 +112,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Check whether a 'HDF5' file can be opened for read/write</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/hdf5.R'><code>R/hdf5.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/hdf5r.R'><code>R/hdf5r.R</code></a></small>
     <div class="hidden name"><code>h5_valid.Rd</code></div>
     </div>
 
@@ -147,19 +147,30 @@ close all other connections to the file</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw'>if</span><span class='op'>(</span> <span class='fu'>dipsaus</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dipsaus/man/package_installed.html'>package_installed</a></span><span class='op'>(</span><span class='st'>'rhdf5'</span><span class='op'>)</span> <span class='op'>)</span><span class='op'>{</span>
-
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>27</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># No data written to the file, hence invalid</span>
 <span class='fu'>h5_valid</span><span class='op'>(</span><span class='va'>f</span>, <span class='st'>'r'</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
 <span class='fu'><a href='save_h5.html'>save_h5</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>f</span>, <span class='st'>'dset'</span><span class='op'>)</span>
 <span class='fu'>h5_valid</span><span class='op'>(</span><span class='va'>f</span>, <span class='st'>'w'</span><span class='op'>)</span>
-
-<span class='op'>}</span>
 </div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='co'># Open the file and hold a connection</span>
+<span class='va'>ptr</span> <span class='op'>&lt;-</span> <span class='fu'>hdf5r</span><span class='fu'>::</span><span class='va'><a href='http://hhoeflin.github.io/hdf5r/reference/H5File-class.html'>H5File</a></span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>filename <span class='op'>=</span> <span class='va'>f</span>, mode <span class='op'>=</span> <span class='st'>'w'</span><span class='op'>)</span>
+
+<span class='co'># Can read, but cannot write</span>
+<span class='fu'>h5_valid</span><span class='op'>(</span><span class='va'>f</span>, <span class='st'>'r'</span><span class='op'>)</span>  <span class='co'># TRUE</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'>h5_valid</span><span class='op'>(</span><span class='va'>f</span>, <span class='st'>'w'</span><span class='op'>)</span>  <span class='co'># FALSE</span>
+</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
+<span class='co'># However, this can be reset via `close_all=TRUE`</span>
+<span class='fu'>h5_valid</span><span class='op'>(</span><span class='va'>f</span>, <span class='st'>'r'</span>, close_all <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'>h5_valid</span><span class='op'>(</span><span class='va'>f</span>, <span class='st'>'w'</span><span class='op'>)</span>  <span class='co'># TRUE</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='co'># Now the connection is no longer valid</span>
+<span class='va'>ptr</span>
+</div><div class='output co'>#&gt; Class: H5File
+#&gt; ID: Object invalid</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
