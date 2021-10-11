@@ -40,8 +40,9 @@
 
 
 <meta property="og:title" content="'RAVE' pipeline functions — rave-pipeline" />
-<meta property="og:description" content="Utility functions for 'RAVE' pipelines. Please do not use them
-directly." />
+<meta property="og:description" content="Utility functions for 'RAVE' pipelines, currently designed for
+internal development use. The infrastructure will be deployed to 'RAVE' in
+the future to facilitate the &quot;self-expanding&quot; aim." />
 
 
 
@@ -73,7 +74,7 @@ directly." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.5</span>
       </span>
     </div>
 
@@ -118,11 +119,12 @@ directly." />
     </div>
 
     <div class="ref-description">
-    <p>Utility functions for 'RAVE' pipelines. Please do not use them
-directly.</p>
+    <p>Utility functions for 'RAVE' pipelines, currently designed for
+internal development use. The infrastructure will be deployed to 'RAVE' in
+the future to facilitate the "self-expanding" aim.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pipeline_root</span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>pipeline_root</span><span class='op'>(</span><span class='va'>root_path</span><span class='op'>)</span>
 
 <span class='fu'>pipeline_list</span><span class='op'>(</span>root_path <span class='op'>=</span> <span class='fu'>pipeline_root</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
@@ -198,7 +200,7 @@ directly.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path, root_path</th>
+      <th>root_path</th>
       <td><p>the root directory for pipeline templates</p></td>
     </tr>
     <tr>
@@ -220,7 +222,8 @@ name within subject's pipeline path</p></td>
     </tr>
     <tr>
       <th>pipe_dir</th>
-      <td><p>where the pipeline directory is; see 'Details'</p></td>
+      <td><p>where the pipeline directory is; can be set via system
+environment <code><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv("RAVE_PIPELINE"=...)</a></code></p></td>
     </tr>
     <tr>
       <th>type</th>
