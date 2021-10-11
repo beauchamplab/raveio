@@ -198,6 +198,7 @@ RAVESubject <- R6::R6Class(
       file.path(private$.dirs$data_path, 'cache')
     },
 
+    #' @field pipeline_path path to pipeline scripts under subject's folder
     pipeline_path = function(){
       private$.dirs$pipeline_path
     },

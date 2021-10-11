@@ -14,6 +14,8 @@ Definition for 'RAVE' project class
 \item{\code{path}}{project folder, absolute path}
 
 \item{\code{name}}{project name, character}
+
+\item{\code{pipeline_path}}{path to pipeline scripts under project's folder}
 }
 \if{html}{\out{</div>}}
 }

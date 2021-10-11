@@ -36,6 +36,8 @@ no path exists, values will be \code{NA}}
 
 \item{\code{cache_path}}{path to 'FST' copies under subject 'data' path}
 
+\item{\code{pipeline_path}}{path to pipeline scripts under subject's folder}
+
 \item{\code{epoch_names}}{possible epoch names}
 
 \item{\code{reference_names}}{possible reference names}

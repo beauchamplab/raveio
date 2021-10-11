@@ -54,7 +54,8 @@ pipeline_install_directory <- function(
 
 }
 
-
+#' @rdname rave-pipeline
+#' @export
 pipeline_root <- local({
   root <- NULL
   function(path){
@@ -75,6 +76,7 @@ pipeline_root <- local({
   }
 })
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_list <- function(root_path = pipeline_root()){
   names <-
@@ -96,6 +98,7 @@ pipeline_list <- function(root_path = pipeline_root()){
   names
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_find <- function(name, root_path = pipeline_root()){
 
@@ -122,6 +125,7 @@ pipeline_find <- function(name, root_path = pipeline_root()){
   stop("Cannot find RAVE pipeline `", name, "`. Have you installed it?")
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_attach <- function(name, root_path = pipeline_root()){
   path <- pipeline_find(name, root_path)

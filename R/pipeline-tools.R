@@ -7,6 +7,9 @@ load_target <- function(src){
   target
 }
 
+
+
+#' @rdname rave-pipeline
 #' @export
 load_targets <- function(...){
   targets <- lapply(c(...), load_target)
@@ -53,7 +56,7 @@ activate_pipeline <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
   pipe_dir
 }
 
-
+#' @rdname rave-pipeline
 #' @export
 pipeline_debug <- function(
   quick = TRUE,
@@ -143,6 +146,7 @@ pipeline_debug <- function(
   }
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_visualize <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
@@ -151,6 +155,7 @@ pipeline_visualize <- function(
   targets::tar_visnetwork(targets_only = TRUE, shortcut = FALSE)
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_run <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
@@ -183,6 +188,8 @@ pipeline_run <- function(
   invisible()
 }
 
+
+#' @rdname rave-pipeline
 #' @export
 pipeline_progress <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
@@ -202,6 +209,7 @@ pipeline_progress <- function(
   )
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_fork <- function(
   src = Sys.getenv("RAVE_PIPELINE", "."),
@@ -234,6 +242,7 @@ pipeline_fork <- function(
   dest
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_build <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
@@ -247,6 +256,7 @@ pipeline_build <- function(
   TRUE
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_read <- function(
   var_names,
@@ -275,6 +285,7 @@ pipeline_read <- function(
   return(re)
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_vartable <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
@@ -291,15 +302,17 @@ pipeline_vartable <- function(
   })
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_hasname <- function(
-  names,
+  var_names,
   pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
 ) {
   tbl <- pipeline_vartable(pipe_dir = pipe_dir)
-  names %in% tbl$name
+  var_names %in% tbl$name
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_watch <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
@@ -309,7 +322,7 @@ pipeline_watch <- function(
   targets::tar_watch(..., targets_only = targets_only, display = 'graph')
 }
 
-
+#' @rdname rave-pipeline
 #' @export
 create_subject_pipeline <- function(
   subject, pipeline_name, overwrite = FALSE,
@@ -368,6 +381,7 @@ create_subject_pipeline <- function(
   return(pipe_path)
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_description <- function (file) {
   # file <- file.path(pipeline, 'DESCRIPTION')

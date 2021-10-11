@@ -48,4 +48,11 @@ Imports:
     callr (>= 3.7.0),
     remotes (>= 2.4.0)
 Suggests:
-    testthat
+    testthat,
+    bs4Dash,
+    clustermq,
+    shiny,
+    shinybusy,
+    visNetwork,
+    shinyWidgets,
+    arrow

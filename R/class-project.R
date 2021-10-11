@@ -107,6 +107,7 @@ RAVEProject <- R6::R6Class(
       private$.name
     },
 
+    #' @field pipeline_path path to pipeline scripts under project's folder
     pipeline_path = function(){
       file.path(private$.path, '_project_pipeline')
     }
