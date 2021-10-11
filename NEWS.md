@@ -1,3 +1,12 @@
+raveio 0.0.5
+=======
+
+Major changes: 
+
+* Rewind back to `hdf5r` as it passes the `CRAN` checks now
+* Fixed `HDF5` bugs
+* Added pipeline functions to self-expand `RAVE`
+
 raveio 0.0.4
 =======
 
