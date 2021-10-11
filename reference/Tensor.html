@@ -380,7 +380,7 @@ the original instance</p></dd>
 
 <span class='co'># Enable hybrid mode</span>
 <span class='va'>ts</span><span class='op'>$</span><span class='fu'>to_swap_now</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b641fb82c74.fst </div><div class='input'>
+</div><div class='output co'>#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee6d4fba65.fst </div><div class='input'>
 <span class='co'># Hybrid mode, usually less than 1 MB</span>
 <span class='co'># `lobstr::obj_size(ts)` -&gt; 814 kB</span>
 
@@ -396,7 +396,7 @@ the original instance</p></dd>
 <span class='co'>#&gt; - B: 1, 2, 3, 4, 5, 6,...</span>
 <span class='co'>#&gt; - C: 6, 7, 8, 9</span>
 <span class='va'>end1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>; <span class='va'>end1</span> <span class='op'>-</span> <span class='va'>start1</span>
-</div><div class='output co'>#&gt; Time difference of 0.5474541 secs</div><div class='input'><span class='co'>#&gt; Time difference of 0.188035 secs</span>
+</div><div class='output co'>#&gt; Time difference of 0.4776571 secs</div><div class='input'><span class='co'>#&gt; Time difference of 0.188035 secs</span>
 
 <span class='co'># Join tensors</span>
 <span class='va'>ts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>ii</span><span class='op'>)</span><span class='op'>{</span>
@@ -406,26 +406,26 @@ the original instance</p></dd>
     varnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'A'</span>, <span class='st'>'B'</span>, <span class='st'>'C'</span><span class='op'>)</span>, use_index <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 <span class='op'>}</span><span class='op'>)</span>
 <span class='va'>ts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='join_tensors.html'>join_tensors</a></span><span class='op'>(</span><span class='va'>ts</span>, temporary <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b643983d48.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b647fdf43cf.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b641add0c9f.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b642667a880.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b645f677f32.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b643cfdc8d.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b644398aeef.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b645d04ef94.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b646f0d0d41.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b6441e15f5c.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b64333bb2ce.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b6414580ca9.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b6420a735ae.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b6441b54341.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b646352821a.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b643ddbabe7.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b6420f2ea6b.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b642bfc27b3.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b6437926f54.fst 
-#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpnPfRWC/w8OiKGC30dbUday/file6b646ecb104c.fst </div><div class='input'>
+</div><div class='output co'>#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee27184603.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee2a9c8302.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee95d0e29.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee3c4caa8c.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee4d50ec41.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee7bc6c70e.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee3736a79e.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee65369263.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee61c4d57e.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee419c7557.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee6dbc468.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee463b8b5c.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee6f3a6909.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee63c606eb.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee5df06179.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee508f7f1d.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee7ce2723c.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee76ba0131.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee2da474dc.fst 
+#&gt; Writing to path: /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpDQsss6/N6e6ogYae5Rk1x2/file11ee7f42eed.fst </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
