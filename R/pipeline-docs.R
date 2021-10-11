@@ -1,8 +1,10 @@
 #' @title 'RAVE' pipeline functions
 #' @name rave-pipeline
-#' @description Utility functions for 'RAVE' pipelines. Please do not use them
-#' directly.
-#' @param pipe_dir where the pipeline directory is; see 'Details'
+#' @description Utility functions for 'RAVE' pipelines, currently designed for
+#' internal development use. The infrastructure will be deployed to 'RAVE' in
+#' the future to facilitate the "self-expanding" aim.
+#' @param pipe_dir where the pipeline directory is; can be set via system
+#' environment \code{Sys.setenv("RAVE_PIPELINE"=...)}
 #' @param quick whether to skip finished targets to save time
 #' @param type how the pipeline should be executed; current choices are
 #' \code{"basic"} to run in the main session; \code{"async"} to run in
@@ -38,6 +40,6 @@
 #' @param file path to the 'DESCRIPTION' file under the pipeline folder, or
 #' pipeline collection folder that contains the pipeline information,
 #' structures, dependencies, etc.
-#' @param path,root_path the root directory for pipeline templates
+#' @param root_path the root directory for pipeline templates
 #' @param ... other parameters, targets, etc.
 NULL

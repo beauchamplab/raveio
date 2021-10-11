@@ -22,7 +22,7 @@
 \alias{pipeline_description}
 \title{'RAVE' pipeline functions}
 \usage{
-pipeline_root(path)
+pipeline_root(root_path)
 
 pipeline_list(root_path = pipeline_root())
 
@@ -95,7 +95,7 @@ create_subject_pipeline(
 pipeline_description(file)
 }
 \arguments{
-\item{path, root_path}{the root directory for pipeline templates}
+\item{root_path}{the root directory for pipeline templates}
 
 \item{name, pipeline_name}{the pipeline name to create; usually also the folder
 name within subject's pipeline path}
@@ -106,7 +106,8 @@ name within subject's pipeline path}
 
 \item{env, envir}{environment to execute the pipeline}
 
-\item{pipe_dir}{where the pipeline directory is; see 'Details'}
+\item{pipe_dir}{where the pipeline directory is; can be set via system
+environment \code{Sys.setenv("RAVE_PIPELINE"=...)}}
 
 \item{type}{how the pipeline should be executed; current choices are
 \code{"basic"} to run in the main session; \code{"async"} to run in
@@ -155,6 +156,7 @@ pipeline collection folder that contains the pipeline information,
 structures, dependencies, etc.}
 }
 \description{
-Utility functions for 'RAVE' pipelines. Please do not use them
-directly.
+Utility functions for 'RAVE' pipelines, currently designed for
+internal development use. The infrastructure will be deployed to 'RAVE' in
+the future to facilitate the "self-expanding" aim.
 }

@@ -58,14 +58,14 @@ pipeline_install_directory <- function(
 #' @export
 pipeline_root <- local({
   root <- NULL
-  function(path){
-    if(!missing(path)){
-      if(is.na(path)){ stop("pipeline root cannot be NA") }
-      if('.' %in% path){
-        path <- path[path != '.']
-        root <<- c(".", normalizePath(path))
+  function(root_path){
+    if(!missing(root_path)){
+      if(is.na(root_path)){ stop("pipeline root cannot be NA") }
+      if('.' %in% root_path){
+        root_path <- root_path[root_path != '.']
+        root <<- c(".", normalizePath(root_path))
       } else {
-        root <- normalizePath(path)
+        root <- normalizePath(root_path)
       }
     } else {
       if(is.null(root)){
