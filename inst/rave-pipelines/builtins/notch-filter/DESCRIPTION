@@ -1,0 +1,24 @@
+Package: notch-filter
+Type: rave-pipeline
+Title: 'RAVE' Pipeline to Apply Notch Filters
+Version: 0.0.1
+Language: en-US
+Encoding: UTF-8
+License: GPL-3
+Authors@R: c(
+    person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre"))
+    )
+Description: Apply notch filters to remove electric line noise of the 'iEEG' 
+    data in 'RAVE' and export diagnostic plots
+BugReports: https://github.com/beauchamplab/rave-pipelines/issues
+URL: https://github.com/beauchamplab/rave-pipelines/notch-filter
+Depends: R (>= 4.1.0)
+Imports:
+    dipsaus,
+    targets,
+    yaml,
+    raveio,
+    stringr,
+    raveutils
+Remotes:
+    dipterix/raveutils

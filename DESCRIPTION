@@ -27,7 +27,7 @@ Encoding: UTF-8
 RoxygenNote: 7.1.2
 SystemRequirements: little-endian platform
 biocViews: Infrastructure, DataImport
-Depends: R (>= 3.6.0)
+Depends: R (>= 4.0.0)
 Imports:
     utils,
     data.table,
@@ -46,8 +46,8 @@ Imports:
     yaml (>= 2.2.1),
     targets (>= 0.8.0),
     callr (>= 3.7.0),
-    remotes (>= 2.4.0),
-    threeBrain (>= 0.2.1)
+    remotes,
+    threeBrain (>= 0.2.3)
 Suggests:
     testthat,
     reticulate,

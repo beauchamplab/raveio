@@ -9,3 +9,5 @@
 ^cache$
 inst/rave-pipelines/*/cache/*
 inst/rave-pipelines/*/shared/*
+inst/rave-pipelines/*/shared/*
+inst/rave-pipelines/builtins/*

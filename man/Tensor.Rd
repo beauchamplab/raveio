@@ -9,6 +9,8 @@ data in seconds
 }
 \examples{
 
+if(interactive()){  # Avoid checkings from CRAN
+
 # Create a tensor
 ts <- Tensor$new(
   data = 1:18000000, c(3000,300,20),
@@ -42,6 +44,8 @@ ts <- lapply(1:20, function(ii){
     varnames = c('A', 'B', 'C'), use_index = 2)
 })
 ts <- join_tensors(ts, temporary = TRUE)
+
+}
 
 }
 \section{Public fields}{

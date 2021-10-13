@@ -1,0 +1,22 @@
+project_name: "test1"
+subject_code: "YAB"
+electrode_types:
+  - "LFP"
+lower_bound:
+  - 59
+  - 118
+  - 178
+upper_bound:
+  - 61
+  - 122
+  - 182
+source: "raw/{block}"
+save_pwelch: yes
+plots:
+  pwelch_window_size: "{2*sample_rate}"
+  pwelch_max_frequency: 300
+  pwelch_filtered_color: "red"
+  pwelch_original_color: "grey80"
+  histogram_bin_count: 100
+  font_size_level: 1
+save_pipeline: yes

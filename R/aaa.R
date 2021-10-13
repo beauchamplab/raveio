@@ -1,6 +1,9 @@
 #' @importFrom dipsaus %?<-%
 #' @importFrom glue glue
 #' @importFrom R6 R6Class
+#' @importFrom filearray filearray_load
+#' @importFrom filearray filearray_create
+#' @importFrom filearray fmap
 NULL
 
 #' @export

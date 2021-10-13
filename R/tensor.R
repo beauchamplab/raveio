@@ -23,6 +23,8 @@ temp_tensor_file <- function(filename = NA){
 #' data in seconds
 #' @examples
 #'
+#' if(interactive()){  # Avoid checkings from CRAN
+#'
 #' # Create a tensor
 #' ts <- Tensor$new(
 #'   data = 1:18000000, c(3000,300,20),
@@ -56,6 +58,8 @@ temp_tensor_file <- function(filename = NA){
 #'     varnames = c('A', 'B', 'C'), use_index = 2)
 #' })
 #' ts <- join_tensors(ts, temporary = TRUE)
+#'
+#' }
 #'
 #' @export
 Tensor <- R6::R6Class(

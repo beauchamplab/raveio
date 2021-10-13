@@ -1,0 +1,25 @@
+Package: morlet-wavelet
+Type: rave-pipeline
+Title: 'RAVE' Pipeline to Apply Discrete Wavelets
+Version: 0.0.1
+Language: en-US
+Encoding: UTF-8
+License: GPL-3
+Authors@R: c(
+    person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre"))
+    )
+Description: Apply 'Morlet' wavelet filters decompose electrode signals from
+    voltage to power and phase, and export diagnostic plots
+BugReports: https://github.com/beauchamplab/rave-pipelines/issues
+URL: https://github.com/beauchamplab/rave-pipelines/morlet-wavelet
+Depends: R (>= 4.1.0)
+Imports:
+    grDevices,
+    filearray,
+    dipsaus,
+    targets,
+    yaml,
+    raveio,
+    raveutils
+Remotes:
+    dipterix/raveutils

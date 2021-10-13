@@ -1,0 +1,12 @@
+project_name: "test1"
+subject_code: "YAB"
+blocks:
+  - "008"
+  - "010"
+  - "011"
+  - "012"
+electrodes: "13-16"
+sample_rate: 2000
+physical_unit: "as-is"
+file_format: 1
+save_pipeline: yes
