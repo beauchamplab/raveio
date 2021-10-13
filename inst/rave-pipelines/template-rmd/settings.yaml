@@ -1,3 +1,6 @@
+project_name: "PROJECT_NAME"
+subject_code: "SUBJECT_CODE"
+save_pipeline: yes
 epoch: auditory_onset
 electrodes: 14-16
 reference: default
@@ -10,4 +13,3 @@ baseline:
 - - -1
   - -0.2
 baseline_method: "decibel"
-

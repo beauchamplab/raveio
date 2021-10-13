@@ -61,7 +61,8 @@ activate_pipeline <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
 pipeline_debug <- function(
   quick = TRUE,
   env = parent.frame(),
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  skip_names
 ){
   pipe_dir <- activate_pipeline(pipe_dir)
 
@@ -72,13 +73,15 @@ pipeline_debug <- function(
   all_targets <- load_target("make-main.R")
 
   if(quick){
-    main_target_names <- unlist(lapply(main_targets, function(x){
-      x$settings$name
-    }))
-    target_names <- unlist(lapply(all_targets, function(x){
-      x$settings$name
-    }))
-    skip_names <- unname(target_names[!target_names %in% main_target_names])
+    if(missing(skip_names)){
+      main_target_names <- unlist(lapply(main_targets, function(x){
+        x$settings$name
+      }))
+      target_names <- unlist(lapply(all_targets, function(x){
+        x$settings$name
+      }))
+      skip_names <- unname(target_names[!target_names %in% main_target_names])
+    }
   } else {
     skip_names <- NULL
   }
@@ -324,10 +327,62 @@ pipeline_watch <- function(
 
 #' @rdname rave-pipeline
 #' @export
-create_subject_pipeline <- function(
+pipeline_create_template <- function(
+  root_path, pipeline_name, overwrite = FALSE,
+  activate = TRUE, template_type = c("rmd", 'r')
+) {
+  template_type <- match.arg(template_type)
+  pipeline_name <- tolower(pipeline_name)
+  stopifnot2(!pipeline_name %in% c("main", "imports", "initialize", "template"),
+             msg = "Pipeline name cannot be `main`, `imports`, `template`, or `initialize`")
+  pipe_path <- file.path(root_path, pipeline_name)
+  if(dir.exists(pipe_path)){
+    if(!overwrite){
+      stop("Pipeline ", pipeline_name, " already exists at\n  ", pipe_path)
+    } else {
+      unlink(pipe_path, recursive = TRUE)
+    }
+  }
+  dir_create2(pipe_path)
+  pipe_path <- normalizePath(pipe_path)
+
+  # create a skeleton template
+  template_path <- system.file("rave-pipelines", sprintf("template-%s", template_type), package = 'raveio', mustWork = TRUE)
+  fs_src <- list.files(template_path)
+  fs_dst <- stringr::str_replace_all(fs_src, "TEMPLATE", pipeline_name)
+  file.copy(file.path(template_path, fs_src), file.path(pipe_path, fs_dst), overwrite = overwrite, copy.date = TRUE)
+  fs <- file.path(pipe_path, fs_dst)
+  for(f in fs){
+    s <- readLines(f)
+    s <- stringr::str_replace_all(s, "TEMPLATE_PATH", pipe_path)
+    s <- stringr::str_replace_all(s, "TEMPLATE", pipeline_name)
+    s <- stringr::str_replace_all(s, "PROJECT_NAME", "demo")
+    s <- stringr::str_replace_all(s, "SUBJECT_CODE", "DemoSubject")
+    writeLines(s, f)
+  }
+  settings <- yaml::read_yaml(file.path(pipe_path, "settings.yaml"))
+  settings$epoch <- "default"
+  subject$electrodes <- dipsaus::deparse_svec(14L)
+  settings$reference <- "default"
+
+  save_yaml(settings, file.path(pipe_path, "settings.yaml"))
+
+  # build the pipeline
+  pipeline_build(pipe_path)
+
+  if(activate){
+    Sys.setenv("RAVE_PIPELINE" = pipe_path)
+  }
+  return(pipe_path)
+}
+
+#' @rdname rave-pipeline
+#' @export
+pipeline_create_subject_pipeline <- function(
   subject, pipeline_name, overwrite = FALSE,
-  activate = TRUE
+  activate = TRUE, template_type = c("rmd", 'r')
 ){
+  template_type <- match.arg(template_type)
   pipeline_name <- tolower(pipeline_name)
   stopifnot2(!pipeline_name %in% c("main", "imports", "initialize", "template"),
              msg = "Pipeline name cannot be `main`, `imports`, `template`, or `initialize`")
@@ -337,7 +392,7 @@ create_subject_pipeline <- function(
     stop("Pipeline ", pipeline_name, " already exists at\n  ", pipe_path)
   }
   # create a skeleton template
-  template_path <- system.file("rave-pipelines", "template", package = 'raveio', mustWork = TRUE)
+  template_path <- system.file("rave-pipelines", sprintf("template-%s", template_type), package = 'raveio', mustWork = TRUE)
   fs_src <- list.files(template_path)
   fs_dst <- stringr::str_replace_all(fs_src, "TEMPLATE", pipeline_name)
   dir_create2(pipe_path)

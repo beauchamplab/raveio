@@ -46,9 +46,13 @@ Imports:
     yaml (>= 2.2.1),
     targets (>= 0.8.0),
     callr (>= 3.7.0),
-    remotes (>= 2.4.0)
+    remotes (>= 2.4.0),
+    threeBrain (>= 0.2.1)
 Suggests:
     testthat,
+    reticulate,
+    knitr,
+    rmarkdown,
     bs4Dash,
     clustermq,
     shiny,

@@ -1,0 +1,251 @@
+---
+title: "RAVE Pipeline Markdown Template"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include = FALSE}
+# This code block sets up the engine environment
+# Please do not remove me
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+build_pipeline <- raveio::configure_knitr()
+```
+
+## Introduction
+
+A RAVE pipeline markdown is an interactive notebook that can keep your notes, code blocks, and corresponding results together, generating reports in various formats such as `PDF`, `html`, `Word`, `PowerPoint`. 
+
+The note parts are simply `markdown`s - the same as `jupyter notebook`, or github documentations. The code blocks support `R`, `python`, `c++`. When you hit the `Knit` button in this code editor panel, the r-markdown file will be compiled, generating reproducible documentation.
+
+With carefully designed structures, this r-markdown file will automatically generate `RAVE` pipeline scripts during the compilation. The pipeline script can be used by `RAVE` to convert your pipeline into interactive dashboard application. (This feature is currently under development)
+
+## "RAVE" Pipeline Code Block
+
+A `RAVE` pipeline markdown code block starts with ` ```{rave ... `. The block label following `rave` informative description of the target. After the target, the following RAVE-specific parameters configures how the block should be treated:
+
+* `language`: specifies the programming language used; choices are: `R`, `python`
+* `export`: variable name to be exported that will be available to the rest chunks
+* `depends`: indicates current block depends on variables generated from other blocks; this helps `RAVE` to build non-interactive pipeline scripts internally. For blocks written in `R`, the dependence can be automatically determined.
+
+Other parameters are available at [this `rmarkdown` book](https://bookdown.org/yihui/rmarkdown/)
+
+## An Example
+
+In the rest of the documentation, let's import the subject power data, baseline, and plot the collapsed mean as image.
+
+#### Step 1: Create `RAVE` subject's instances
+
+Noting that all the items in the `settings.yaml` are available as variables.
+
+```{rave load_subject, language = "R", export = "subject"}
+library(raveio)
+subject <- RAVESubject$new(
+  project_name = project_name, 
+  subject_code = subject_code
+)
+print(subject)
+
+# List subject details
+subject$epoch_names
+subject$reference_names
+subject$blocks
+subject$electrodes
+
+# Check if notch & wavelet has been applied on all electrodes
+all(subject$notch_filtered)
+all(subject$has_wavelet)
+```
+
+With `export="subject"`, the subject variable will be registered for the following chunks to use. Be aware that all other variables created in this block will not be exposed.
+
+#### Step 2: Load epoch and reference information
+
+```{rave load_epoch, language = "R", export = "epoch_instance"}
+epoch_instance <- raveio::RAVEEpoch$new(subject, epoch)
+head(epoch_instance$update_table())
+```
+
+```{rave load_reference, language = "R", export = "reference_table"}
+reference_table <- subject$meta_data(
+  meta_type = "reference", reference)
+head(reference_table)
+```
+
+#### Step 3: Initialize and load power data
+
+Initialize the electrode instances and register the epoch, reference information
+
+```{rave load_electrodes, language = "R", export = "electrode_instances"}
+requested_electrodes <- dipsaus::parse_svec(electrodes)
+requested_electrodes <- requested_electrodes[
+  requested_electrodes %in% subject$electrodes]
+electrode_instances <- lapply(requested_electrodes, function(ei){
+  e <- raveio::LFP_electrode$new(subject, number = ei)
+  
+  # set epoch
+  e$set_epoch(epoch_instance)
+
+  # set epoch range (-1 to 2 seconds relative to onset)
+  e$trial_intervals <- intervals
+
+  # set reference
+  ref_name <- subset(reference_table, Electrode == ei)[["Reference"]]
+  e$set_reference(ref_name)
+  e
+})
+names(electrode_instances) <- requested_electrodes
+```
+
+
+Start to load power. Here also create cache to the `RAVE` cache directory.
+
+```{rave load_and_cache_power, language = "R", export = "power"}
+power_list <- lapply(electrode_instances, function(e){
+  e$load_data("power")
+})
+target <- normalizePath(file.path("shared", "cache", "power"),
+                        mustWork = FALSE)
+  
+if(dir.exists(target)){
+  unlink(target, recursive = TRUE, force = TRUE)
+} else {
+  raveio::dir_create2(dirname(target))
+}
+power <- filearray::filearray_bind(
+  .list = power_list, symlink = TRUE, 
+  filebase = target)
+
+if(length(power_list)){
+  dnames <- dimnames(power_list[[1]])
+  dnames[[4]] <- as.integer(names(electrode_instances))
+  dimnames(power) <- dnames
+} else {
+  stop("No power data not loaded")
+}
+```
+
+#### Step 4: Baseline correction
+
+```{rave calculate_baseline, language = "R", export = "baseline_data"}
+dim <- dim(power)
+dim[length(dim)] <- 1
+plen <- prod(dim)
+target <- file.path(electrode_instances[[1]]$cache_root, "..")
+raveio::dir_create2(target)
+target <- normalizePath(target, mustWork = TRUE)
+target <- file.path(target, "_baseline")
+if(dir.exists(target)){
+  output <- filearray::filearray_load(target, "readwrite")
+  if(!all(dim(output) == dim(power))){
+    output$delete()
+  }
+  if(!identical(dimnames(output), dimnames(power))){
+    dimnames(output) <- dimnames(power)
+  }
+}
+if(!dir.exists(target)){
+  output <- filearray::filearray_create(
+    filebase = target,
+    dimension = dim(power),
+    type = "float",
+    partition_size = 1L
+  )
+}
+
+bl_range <- unlist(baseline)
+dnames <- dimnames(power)
+baseline_indexpoints <- which(
+  dnames$Time >= bl_range[[1]] & dnames$Time <= bl_range[[2]])
+
+filearray::fmap(power, function(input){
+  x <- input[[1]]
+  dim(x) <- dim
+  bl <- dipsaus::baseline_array(
+    x, along_dim = 2L,
+    baseline_indexpoints = baseline_indexpoints,
+    method = baseline_method
+  )
+  bl
+}, .y = output, .input_size = plen)
+
+baseline_data <- output
+```
+
+
+#### Step 5: Collapse baseline data
+
+```{rave collapse_by_trial_and_electrodes, language = "R", export = "collapsed"}
+
+dim <- dim(baseline_data)
+dim[length(dim)] <- 1
+plen <- prod(dim)
+collase_by_trial <- filearray::fmap2(baseline_data, function(input){
+  x <- input[[1]]
+  dim(x) <- dim
+  dipsaus::collapse(x, keep = c(2,1), average = TRUE)
+}, .input_size = plen, .simplify = TRUE)
+
+collapsed <- list(
+  collase_by_trial = collase_by_trial,
+  collase_by_trial_electrodes = dipsaus::collapse(
+    collase_by_trial, keep = c(1, 2), average = TRUE)
+)
+```
+
+```{r}
+brain <- threeBrain::freesurfer_brain2(
+  fs_subject_folder = subject$freesurfer_path, subject_name = subject$subject_code
+)
+brain$plot()
+```
+
+#### Step 6: Visualize
+
+```{rave plot_heatmap_collase_by_trial_electrodes, export = "collase_by_trial_timestamp", cue="always"}
+
+# Timestamp of when the plot is created
+collase_by_trial_timestamp <- Sys.time()
+
+# visualize
+dnames <- power$dimnames()
+
+image(
+  collapsed$collase_by_trial_electrodes,
+  y = dnames$Frequency,
+  ylab = "Frequency (Hz)",
+  x = dnames$Time, 
+  xlab = "Time (s)",
+  main = "Mean power across trial and electrodes"
+)
+
+```
+
+## Build, Visualize, & Run
+
+Please make sure the following code block is at the end of your pipeline file. This block will build the pipeline and generate a `make-TEMPLATE.R` script with your pipeline markdown file. `RAVE` will use the generated pipeline script to execute the pipeline in the dashboard application, or in massive production mode.
+
+```{r build, echo=FALSE, results='hide'}
+build_pipeline(make_file = "make-TEMPLATE.R")
+```
+
+
+Once the pipeline script `make-TEMPLATE.R` is built, you can visualize and execute the pipeline without the need of re-knit this document. Notice we use `r` block instead of `rave`. (This is because the code blocks are not part of pipeline targets.)
+
+```{r visualize, echo=FALSE}
+Sys.setenv("RAVE_PIPELINE" = normalizePath("."))
+raveio::pipeline_visualize()
+```
+
+
+```{r execute}
+Sys.setenv("RAVE_PIPELINE" = normalizePath("."))
+raveio::pipeline_run(type = "vanilla")
+raveio::pipeline_progress(method = 'details')
+```
+
+
+
+
+
+

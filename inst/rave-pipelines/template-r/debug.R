@@ -1,6 +1,6 @@
 ##' Let RAVE switch to this module pipeline
 ##'
-Sys.setenv("RAVE_PIPELINE" = "TEMPLATE_PATH")
+Sys.setenv("RAVE_PIPELINE" = normalizePath("TEMPLATE_PATH"))
 
 ##' Debug pipeline: assign variables to global environment
 ##' so that you can print them directly
@@ -8,8 +8,8 @@ Sys.setenv("RAVE_PIPELINE" = "TEMPLATE_PATH")
 ##' including its parent pipelines. This is useful is the current
 ##' pipeline is a combination of multiple sub-pipelines
 ##'
-# raveio::pipeline_debug(quick = FALSE)
-raveio::pipeline_debug()
+raveio::pipeline_debug(quick = FALSE)
+# raveio::pipeline_debug()
 
 ##' Visualize pipeline and the relationship between intermediate variables
 ##' This requires extra package `visNetwork`.
@@ -44,3 +44,19 @@ raveio::pipeline_read("project_name")
 ##'
 raveio::pipeline_watch()
 
+
+##' Some useful calls to add shortcuts to debug/run the pipeline
+##' Check `?dipsaus::rs_add_shortcut` for details. Make sure in the pop-up
+##' panel, search `dipsaus` and add shortcuts if necessary. Normally I would
+##' do `alt(option)+1` and `alt(option)+2`
+##'
+##' Once the shortcuts are added, you can use `alt(option)+1` to debug the module,
+##' and `alt(option)+2` to run the pipeline in production mode (non-interactive)
+
+dipsaus::rs_add_shortcut(1, {
+  raveio::pipeline_debug(quick = FALSE, env = .GlobalEnv)
+})
+
+dipsaus::rs_add_shortcut(2, {
+  raveio::pipeline_run()
+}, force = FALSE)

@@ -6,6 +6,9 @@
 #' @param pipe_dir where the pipeline directory is; can be set via system
 #' environment \code{Sys.setenv("RAVE_PIPELINE"=...)}
 #' @param quick whether to skip finished targets to save time
+#' @param skip_names hint of target names to fast skip provided they are
+#' up-to-date; only used when \code{quick=TRUE}. If missing, then
+#' \code{skip_names} will be automatically determined
 #' @param type how the pipeline should be executed; current choices are
 #' \code{"basic"} to run in the main session; \code{"async"} to run in
 #' a separate session without blocking the main session; \code{"vanilla"} to
@@ -34,6 +37,8 @@
 #' \code{\link{RAVESubject}} instance
 #' @param name,pipeline_name the pipeline name to create; usually also the folder
 #' name within subject's pipeline path
+#' @param template_type which template type to create; choices are \code{'r'}
+#' or \code{'rmd'}
 #' @param overwrite whether to overwrite existing pipeline; default is false
 #' so users can double-check; if true, then existing pipeline, including the
 #' data will be erased

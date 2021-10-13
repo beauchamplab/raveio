@@ -18,7 +18,8 @@
 \alias{pipeline_vartable}
 \alias{pipeline_hasname}
 \alias{pipeline_watch}
-\alias{create_subject_pipeline}
+\alias{pipeline_create_template}
+\alias{pipeline_create_subject_pipeline}
 \alias{pipeline_description}
 \title{'RAVE' pipeline functions}
 \usage{
@@ -35,7 +36,8 @@ load_targets(...)
 pipeline_debug(
   quick = TRUE,
   env = parent.frame(),
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  skip_names
 )
 
 pipeline_visualize(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
@@ -85,11 +87,20 @@ pipeline_watch(
   ...
 )
 
-create_subject_pipeline(
+pipeline_create_template(
+  root_path,
+  pipeline_name,
+  overwrite = FALSE,
+  activate = TRUE,
+  template_type = c("rmd", "r")
+)
+
+pipeline_create_subject_pipeline(
   subject,
   pipeline_name,
   overwrite = FALSE,
-  activate = TRUE
+  activate = TRUE,
+  template_type = c("rmd", "r")
 )
 
 pipeline_description(file)
@@ -108,6 +119,10 @@ name within subject's pipeline path}
 
 \item{pipe_dir}{where the pipeline directory is; can be set via system
 environment \code{Sys.setenv("RAVE_PIPELINE"=...)}}
+
+\item{skip_names}{hint of target names to fast skip provided they are
+up-to-date; only used when \code{quick=TRUE}. If missing, then
+\code{skip_names} will be automatically determined}
 
 \item{type}{how the pipeline should be executed; current choices are
 \code{"basic"} to run in the main session; \code{"async"} to run in
@@ -144,12 +159,15 @@ default is true}
 \item{complete_only}{whether only to show completed and up-to-date target
 variables; default is false}
 
-\item{subject}{character indicating valid 'RAVE' subject ID, or
-\code{\link{RAVESubject}} instance}
-
 \item{overwrite}{whether to overwrite existing pipeline; default is false
 so users can double-check; if true, then existing pipeline, including the
 data will be erased}
+
+\item{template_type}{which template type to create; choices are \code{'r'}
+or \code{'rmd'}}
+
+\item{subject}{character indicating valid 'RAVE' subject ID, or
+\code{\link{RAVESubject}} instance}
 
 \item{file}{path to the 'DESCRIPTION' file under the pipeline folder, or
 pipeline collection folder that contains the pipeline information,
