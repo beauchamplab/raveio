@@ -1,6 +1,6 @@
 #' Abstract definition of electrode class in RAVE
 #' @description This class is not intended for direct use. Please
-#' create new subclasses and implement some key methods.
+#' create new child classes and implement some key methods.
 #' @examples
 #' \dontrun{
 #'
@@ -71,10 +71,10 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @param number current electrode number or reference ID
     #' @param is_reference whether instance is a reference
     initialize = function(subject, number, is_reference = FALSE){
-      self$subject = raveio::as_rave_subject(subject)
-      self$number = number
-      self$reference = NULL
-      self$epoch = NULL
+      self$subject <- raveio::as_rave_subject(subject)
+      self$number <- number
+      self$reference <- NULL
+      self$epoch <- NULL
     },
 
     #' @description set reference for instance
@@ -83,7 +83,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' instance
     .set_reference = function(reference, type){
       if(missing(type)){
-        type = self$type
+        type <- self$type
       }
       stopifnot2(
         is.null(reference) || (
@@ -93,8 +93,8 @@ RAVEAbstarctElectrode <- R6::R6Class(
         msg = sprintf('set_reference must receive a %s electrode', sQuote(type))
       )
 
-      self$reference = reference
-      self$reference$epoch = self$epoch
+      self$reference <- reference
+      self$reference$epoch <- self$epoch
 
       self$reference$trial_intervals <- self$trial_intervals
 
@@ -106,12 +106,12 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' characters, make sure \code{"epoch_<name>.csv"} is in meta folder.
     set_epoch = function(epoch){
       if(!inherits(epoch, 'RAVEEpoch')){
-        epoch = RAVEEpoch$new(subject = self$subject, name = epoch)
+        epoch <- RAVEEpoch$new(subject = self$subject, name = epoch)
       }
       if(!is.null(self$reference)){
         self$reference$epoch <- epoch
       }
-      self$epoch = epoch
+      self$epoch <- epoch
     },
 
     #' @description method to clear cache on hard drive
@@ -167,7 +167,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
       if(is.null(self$reference)){
         'noref'
       } else {
-        ref = stringr::str_remove_all(self$reference$number, '(\\.h5$)|(^ref_)')
+        ref <- stringr::str_remove_all(self$reference$number, '(\\.h5$)|(^ref_)')
         sprintf('ref_%s', ref)
       }
     },
@@ -183,11 +183,13 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @field cache_root run-time cache path; \code{NA} if epoch or trial
     #' intervals are missing
     cache_root = function(){
-      if(!length(self$epoch)){
-        return(NA)
+      if(!length(self$epoch_name)){
+        stop("No epoch assigned. Please use `$set_epoch` method to set epoch.")
       }
       if(!length(self$trial_intervals)){
-        return(NA)
+        stop("No trial intervals added. Please set trial intervals, for example, by:\n",
+             "  x$trial_intervals <- list(c(-1,2)) \n",
+             "to load 1 second before onset and 2 seconds after onset.")
       }
       intv <- paste(
         sapply(self$trial_intervals, function(x){
@@ -197,7 +199,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
         }),
         collapse = "_"
       )
-      cache_path = raveio::raveio_getopt(
+      cache_path <- raveio::raveio_getopt(
         key = 'tensor_temp_path',
         default = '~/rave_data/cache_dir/')
       # save to cache_path/project/subject/epoch/cachename

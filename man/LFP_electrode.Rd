@@ -100,8 +100,6 @@ with current electrode type}
 \item \href{#method-reference_power}{\code{LFP_electrode$reference_power()}}
 \item \href{#method-reference_phase}{\code{LFP_electrode$reference_phase()}}
 \item \href{#method-reference_voltage}{\code{LFP_electrode$reference_voltage()}}
-\item \href{#method-is_power_cached}{\code{LFP_electrode$is_power_cached()}}
-\item \href{#method-epoch_power}{\code{LFP_electrode$epoch_power()}}
 \item \href{#method-clear_cache}{\code{LFP_electrode$clear_cache()}}
 \item \href{#method-clear_memory}{\code{LFP_electrode$clear_memory()}}
 \item \href{#method-clone}{\code{LFP_electrode$clone()}}
@@ -154,7 +152,7 @@ constructor
 \if{html}{\out{<a id="method-.load_noref_wavelet"></a>}}
 \if{latex}{\out{\hypertarget{method-.load_noref_wavelet}{}}}
 \subsection{Method \code{.load_noref_wavelet()}}{
-load un-referenced wavelet coefficients (internally used)
+load non-referenced wavelet coefficients (internally used)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$.load_noref_wavelet(reload = FALSE)}\if{html}{\out{</div>}}
 }
@@ -171,7 +169,7 @@ load un-referenced wavelet coefficients (internally used)
 \if{html}{\out{<a id="method-.load_noref_voltage"></a>}}
 \if{latex}{\out{\hypertarget{method-.load_noref_voltage}{}}}
 \subsection{Method \code{.load_noref_voltage()}}{
-load un-referenced voltage (internally used)
+load non-referenced voltage (internally used)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$.load_noref_voltage(srate, reload = FALSE)}\if{html}{\out{</div>}}
 }
@@ -246,7 +244,7 @@ method to load electrode data
 \if{html}{\out{<a id="method-load_unreferenced_voltage"></a>}}
 \if{latex}{\out{\hypertarget{method-load_unreferenced_voltage}{}}}
 \subsection{Method \code{load_unreferenced_voltage()}}{
-load voltage data, un-referenced
+load voltage data, non-referenced
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_unreferenced_voltage(block, persist = FALSE)}\if{html}{\out{</div>}}
 }
@@ -269,7 +267,7 @@ voltage data before reference
 \if{html}{\out{<a id="method-load_unreferenced_power"></a>}}
 \if{latex}{\out{\hypertarget{method-load_unreferenced_power}{}}}
 \subsection{Method \code{load_unreferenced_power()}}{
-load power data, un-referenced
+load power data, non-referenced
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_unreferenced_power(block, persist = FALSE)}\if{html}{\out{</div>}}
 }
@@ -292,7 +290,7 @@ power data before reference
 \if{html}{\out{<a id="method-load_unreferenced_phase"></a>}}
 \if{latex}{\out{\hypertarget{method-load_unreferenced_phase}{}}}
 \subsection{Method \code{load_unreferenced_phase()}}{
-load phase data, un-referenced
+load phase data, non-referenced
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_unreferenced_phase(block, persist = FALSE)}\if{html}{\out{</div>}}
 }
@@ -369,50 +367,6 @@ reference voltage for given block
 }
 \subsection{Returns}{
 referenced voltage
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_power_cached"></a>}}
-\if{latex}{\out{\hypertarget{method-is_power_cached}{}}}
-\subsection{Method \code{is_power_cached()}}{
-check whether power is cached in run-time set-ups
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$is_power_cached(before_onset, after_onset)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{before_onset}}{seconds before trial onset}
-
-\item{\code{after_onset}}{seconds after trial onset}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-logical whether power has been cached in a \code{lazyarray}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-epoch_power"></a>}}
-\if{latex}{\out{\hypertarget{method-epoch_power}{}}}
-\subsection{Method \code{epoch_power()}}{
-perform epoch on power with epoch and reference
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$epoch_power(before_onset, after_onset)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{before_onset}}{seconds before trial onset}
-
-\item{\code{after_onset}}{seconds after trial onset}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-An \code{lazyarray} object that can be subset like normal arrays
 }
 }
 \if{html}{\out{<hr>}}

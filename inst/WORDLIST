@@ -1,3 +1,4 @@
+AFNI
 BDF
 Beauchamp
 BrainVision
@@ -8,6 +9,7 @@ FreeSurfer
 HDF
 LFP
 Magnotti
+SUMA
 cloneable
 doi
 fst

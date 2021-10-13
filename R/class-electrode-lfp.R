@@ -90,23 +90,23 @@ LFP_electrode <- R6::R6Class(
       super$initialize(subject, number, is_reference)
       if(is_reference){
         # this is a reference electrode
-        self$is_reference = TRUE
-        ref_electrodes = stringr::str_match(number, 'ref_([0-9\\-,\\ ]+)')[,2]
+        self$is_reference <- TRUE
+        ref_electrodes <- stringr::str_match(number, 'ref_([0-9\\-,\\ ]+)')[,2]
 
         # no reference value, 'noref'
         if(is.na(ref_electrodes)){
-          ref_electrodes = ''
+          ref_electrodes <- ''
         }
 
-        e = dipsaus::parse_svec(ref_electrodes)
+        e <- dipsaus::parse_svec(ref_electrodes)
         if(length(e) == 0){
-          self$number = 'noref'
+          self$number <- 'noref'
         } else {
           if(length(e) == 1){
-            self$number = e
+            self$number <- e
           } else {
             # check subject reference directory
-            self$number = sprintf('ref_%s', ref_electrodes)
+            self$number <- sprintf('ref_%s', ref_electrodes)
             if(!file.exists(file.path(self$subject$reference_path,
                                       sprintf("%s.h5", self$number)))){
               rave_warn("Reference file {self$number}.h5 is missing")
@@ -119,7 +119,7 @@ LFP_electrode <- R6::R6Class(
 
     # data method
 
-    #' @description load un-referenced wavelet coefficients (internally used)
+    #' @description load non-referenced wavelet coefficients (internally used)
     #' @param reload whether to reload cache
     .load_noref_wavelet = function(reload = FALSE){
       noref_cache_path <- file.path(self$cache_root, "noref")
@@ -212,7 +212,7 @@ LFP_electrode <- R6::R6Class(
       return(arr)
     },
 
-    #' @description load un-referenced voltage (internally used)
+    #' @description load non-referenced voltage (internally used)
     #' @param srate voltage signal sample rate
     #' @param reload whether to reload cache
     .load_noref_voltage = function(srate, reload = FALSE){
@@ -463,7 +463,7 @@ LFP_electrode <- R6::R6Class(
 
     },
 
-    #' @description load voltage data, un-referenced
+    #' @description load voltage data, non-referenced
     #' @param block experiment block
     #' @param persist whether to persist in the instance, default is false,
     #' however, if this function will be called multiple times, set it to true.
@@ -483,14 +483,14 @@ LFP_electrode <- R6::R6Class(
 
       if(is.numeric(self$number)){
         # load from data
-        fst_path = file.path(self$subject$cache_path, 'voltage', 'raw', block, self$fst_fname)
+        fst_path <- file.path(self$subject$cache_path, 'voltage', 'raw', block, self$fst_fname)
         if(!file.exists(fst_path) && isTRUE(self$cached_reference == 'noref')){
-          fst_path = file.path(self$subject$cache_path, 'voltage', 'ref', block, self$fst_fname)
+          fst_path <- file.path(self$subject$cache_path, 'voltage', 'ref', block, self$fst_fname)
         }
-        h5_path = file.path(self$subject$data_path, 'voltage', self$h5_fname)
-        h5_name = sprintf('/raw/voltage/%s', block)
+        h5_path <- file.path(self$subject$data_path, 'voltage', self$h5_fname)
+        h5_name <- sprintf('/raw/voltage/%s', block)
 
-        re = load_fst_or_h5(
+        re <- load_fst_or_h5(
           fst_path = fst_path,
           h5_path = h5_path, h5_name = h5_name,
           fst_need_transpose = TRUE,
@@ -502,13 +502,13 @@ LFP_electrode <- R6::R6Class(
           return(0)
         }
         # load from reference folder
-        h5_path = file.path(self$subject$reference_path, self$h5_fname)
-        h5_name = sprintf('/voltage/%s', block)
-        re = load_h5(h5_path, h5_name, read_only = TRUE, ram = FALSE)
+        h5_path <- file.path(self$subject$reference_path, self$h5_fname)
+        h5_name <- sprintf('/voltage/%s', block)
+        re <- load_h5(h5_path, h5_name, read_only = TRUE, ram = FALSE)
       }
 
       if(persist){
-        private$persisted_voltage_unref = re[]
+        private$persisted_voltage_unref <- re[]
         return(private$persisted_voltage_unref)
       }
 
@@ -516,7 +516,7 @@ LFP_electrode <- R6::R6Class(
 
     },
 
-    #' @description load power data, un-referenced
+    #' @description load power data, non-referenced
     #' @param block experiment block
     #' @param persist whether to persist in the instance, default is false,
     #' however, if this function will be called multiple times, set it to true.
@@ -535,14 +535,14 @@ LFP_electrode <- R6::R6Class(
 
       if(is.numeric(self$number)){
         # load from data
-        fst_path = file.path(self$subject$cache_path, 'power', 'raw', block, self$fst_fname)
+        fst_path <- file.path(self$subject$cache_path, 'power', 'raw', block, self$fst_fname)
         if(!file.exists(fst_path) && isTRUE(self$cached_reference == 'noref')){
-          fst_path = file.path(self$subject$cache_path, 'power', 'ref', block, self$fst_fname)
+          fst_path <- file.path(self$subject$cache_path, 'power', 'ref', block, self$fst_fname)
         }
-        h5_path = file.path(self$subject$data_path, 'power', self$h5_fname)
-        h5_name = sprintf('/raw/power/%s', block)
+        h5_path <- file.path(self$subject$data_path, 'power', self$h5_fname)
+        h5_name <- sprintf('/raw/power/%s', block)
 
-        re = load_fst_or_h5(
+        re <- load_fst_or_h5(
           fst_path = fst_path,
           h5_path = h5_path, h5_name = h5_name,
           fst_need_transpose = TRUE,
@@ -558,19 +558,19 @@ LFP_electrode <- R6::R6Class(
         }
 
         # load from reference folder
-        h5_path = file.path(self$subject$reference_path, self$h5_fname)
-        h5_name = sprintf('/wavelet/coef/%s', block)
-        re = load_h5(h5_path, h5_name, read_only = TRUE, ram = TRUE)
+        h5_path <- file.path(self$subject$reference_path, self$h5_fname)
+        h5_name <- sprintf('/wavelet/coef/%s', block)
+        re <- load_h5(h5_path, h5_name, read_only = TRUE, ram = TRUE)
 
-        re = re[,,1, drop = FALSE] ^ 2
-        dim(re) = dim(re)[1:2]
-        private$persisted_power_unref = re
+        re <- re[,,1, drop = FALSE] ^ 2
+        dim(re) <- dim(re)[1:2]
+        private$persisted_power_unref <- re
         return(re)
 
       }
 
       if(persist){
-        private$persisted_power_unref = re[]
+        private$persisted_power_unref <- re[]
         return(private$persisted_power_unref)
       }
 
@@ -578,7 +578,7 @@ LFP_electrode <- R6::R6Class(
 
     },
 
-    #' @description load phase data, un-referenced
+    #' @description load phase data, non-referenced
     #' @param block experiment block
     #' @param persist whether to persist in the instance, default is false,
     #' however, if this function will be called multiple times, set it to true.
@@ -597,14 +597,14 @@ LFP_electrode <- R6::R6Class(
 
       if(is.numeric(self$number)){
         # load from data
-        fst_path = file.path(self$subject$cache_path, 'phase', 'raw', block, self$fst_fname)
+        fst_path <- file.path(self$subject$cache_path, 'phase', 'raw', block, self$fst_fname)
         if(!file.exists(fst_path) && isTRUE(self$cached_reference == 'noref')){
-          fst_path = file.path(self$subject$cache_path, 'phase', 'ref', block, self$fst_fname)
+          fst_path <- file.path(self$subject$cache_path, 'phase', 'ref', block, self$fst_fname)
         }
-        h5_path = file.path(self$subject$data_path, 'phase', self$h5_fname)
-        h5_name = sprintf('/raw/phase/%s', block)
+        h5_path <- file.path(self$subject$data_path, 'phase', self$h5_fname)
+        h5_name <- sprintf('/raw/phase/%s', block)
 
-        re = load_fst_or_h5(
+        re <- load_fst_or_h5(
           fst_path = fst_path,
           h5_path = h5_path, h5_name = h5_name,
           fst_need_transpose = TRUE,
@@ -620,19 +620,19 @@ LFP_electrode <- R6::R6Class(
         }
 
         # load from reference folder
-        h5_path = file.path(self$subject$reference_path, self$h5_fname)
-        h5_name = sprintf('/wavelet/coef/%s', block)
-        re = load_h5(h5_path, h5_name, read_only = TRUE, ram = TRUE)
+        h5_path <- file.path(self$subject$reference_path, self$h5_fname)
+        h5_name <- sprintf('/wavelet/coef/%s', block)
+        re <- load_h5(h5_path, h5_name, read_only = TRUE, ram = TRUE)
 
-        re = re[,,2, drop = FALSE]
-        dim(re) = dim(re)[1:2]
-        private$persisted_phase_unref = re
+        re <- re[,,2, drop = FALSE]
+        dim(re) <- dim(re)[1:2]
+        private$persisted_phase_unref <- re
         return(re)
 
       }
 
       if(persist){
-        private$persisted_phase_unref = re[]
+        private$persisted_phase_unref <- re[]
         return(private$persisted_phase_unref)
       }
 
@@ -653,13 +653,13 @@ LFP_electrode <- R6::R6Class(
         return(self$load_unreferenced_power(block, persist = FALSE)[])
       }
       # check whether cached
-      has_cached = self$reference_equals_cached
+      has_cached <- self$reference_equals_cached
 
       if( has_cached ){
-        fst_path = file.path(self$subject$cache_path, 'power', 'ref', block, self$fst_fname)
-        h5_path = file.path(self$subject$data_path, 'power', self$h5_fname)
-        h5_name = sprintf('/ref/power/%s', block)
-        re = load_fst_or_h5(
+        fst_path <- file.path(self$subject$cache_path, 'power', 'ref', block, self$fst_fname)
+        h5_path <- file.path(self$subject$data_path, 'power', self$h5_fname)
+        h5_name <- sprintf('/ref/power/%s', block)
+        re <- load_fst_or_h5(
           fst_path = fst_path,
           h5_path = h5_path, h5_name = h5_name,
           fst_need_transpose = TRUE,
@@ -668,13 +668,13 @@ LFP_electrode <- R6::R6Class(
         )
       } else {
         # calculate reference by yourself
-        power = self$load_unreferenced_power(block = block, persist = FALSE)
-        phase = self$load_unreferenced_phase(block = block, persist = FALSE)
-        ref_power = self$reference$load_unreferenced_power(block = block, persist = TRUE)
-        ref_phase = self$reference$load_unreferenced_phase(block = block, persist = TRUE)
+        power <- self$load_unreferenced_power(block = block, persist = FALSE)
+        phase <- self$load_unreferenced_phase(block = block, persist = FALSE)
+        ref_power <- self$reference$load_unreferenced_power(block = block, persist = TRUE)
+        ref_phase <- self$reference$load_unreferenced_phase(block = block, persist = TRUE)
 
-        coef = sqrt(power[]) * exp(phase[] * 1i) - sqrt(ref_power) * exp(ref_phase * 1i)
-        re = Mod(coef) ^ 2
+        coef <- sqrt(power[]) * exp(phase[] * 1i) - sqrt(ref_power) * exp(ref_phase * 1i)
+        re <- Mod(coef) ^ 2
       }
 
       re
@@ -690,13 +690,13 @@ LFP_electrode <- R6::R6Class(
         # noref!
         return(self$load_unreferenced_phase(block, persist = FALSE)[])
       }
-      has_cached = self$reference_equals_cached
+      has_cached <- self$reference_equals_cached
 
       if( has_cached ){
-        fst_path = file.path(self$subject$cache_path, 'phase', 'ref', block, self$fst_fname)
-        h5_path = file.path(self$subject$data_path, 'phase', self$h5_fname)
-        h5_name = sprintf('/ref/phase/%s', block)
-        re = load_fst_or_h5(
+        fst_path <- file.path(self$subject$cache_path, 'phase', 'ref', block, self$fst_fname)
+        h5_path <- file.path(self$subject$data_path, 'phase', self$h5_fname)
+        h5_name <- sprintf('/ref/phase/%s', block)
+        re <- load_fst_or_h5(
           fst_path = fst_path,
           h5_path = h5_path, h5_name = h5_name,
           fst_need_transpose = TRUE,
@@ -705,13 +705,13 @@ LFP_electrode <- R6::R6Class(
         )
       } else {
         # calculate reference by yourself
-        power = self$load_unreferenced_power(block = block, persist = FALSE)
-        phase = self$load_unreferenced_phase(block = block, persist = FALSE)
-        ref_power = self$reference$load_unreferenced_power(block = block, persist = TRUE)
-        ref_phase = self$reference$load_unreferenced_phase(block = block, persist = TRUE)
+        power <- self$load_unreferenced_power(block = block, persist = FALSE)
+        phase <- self$load_unreferenced_phase(block = block, persist = FALSE)
+        ref_power <- self$reference$load_unreferenced_power(block = block, persist = TRUE)
+        ref_phase <- self$reference$load_unreferenced_phase(block = block, persist = TRUE)
 
-        coef = sqrt(power[]) * exp(phase[] * 1i) - sqrt(ref_power) * exp(ref_phase * 1i)
-        re = Arg(coef)
+        coef <- sqrt(power[]) * exp(phase[] * 1i) - sqrt(ref_power) * exp(ref_phase * 1i)
+        re <- Arg(coef)
       }
 
       re
@@ -727,13 +727,13 @@ LFP_electrode <- R6::R6Class(
         # noref!
         return(self$load_unreferenced_voltage(block, persist = FALSE)[])
       }
-      has_cached = self$reference_equals_cached
+      has_cached <- self$reference_equals_cached
 
       if( has_cached ){
-        fst_path = file.path(self$subject$cache_path, 'voltage', 'ref', block, self$fst_fname)
-        h5_path = file.path(self$subject$data_path, 'voltage', self$h5_fname)
-        h5_name = sprintf('/ref/voltage/%s', block)
-        re = load_fst_or_h5(
+        fst_path <- file.path(self$subject$cache_path, 'voltage', 'ref', block, self$fst_fname)
+        h5_path <- file.path(self$subject$data_path, 'voltage', self$h5_fname)
+        h5_name <- sprintf('/ref/voltage/%s', block)
+        re <- load_fst_or_h5(
           fst_path = fst_path,
           h5_path = h5_path, h5_name = h5_name,
           fst_need_transpose = TRUE,
@@ -742,139 +742,32 @@ LFP_electrode <- R6::R6Class(
         )
       } else {
         # calculate reference by yourself
-        voltage = self$load_unreferenced_voltage(block = block, persist = FALSE)
-        ref_voltage = self$reference$load_unreferenced_voltage(block = block, persist = TRUE)
-        re = voltage-ref_voltage
+        voltage <- self$load_unreferenced_voltage(block = block, persist = FALSE)
+        ref_voltage <- self$reference$load_unreferenced_voltage(block = block, persist = TRUE)
+        re <- voltage-ref_voltage
       }
 
       re
     },
 
-    #' @description check whether power is cached in run-time set-ups
-    #' @param before_onset seconds before trial onset
-    #' @param after_onset seconds after trial onset
-    #' @return logical whether power has been cached in a \code{lazyarray}
-    is_power_cached = function(before_onset, after_onset){
-      stopifnot2(inherits(self$epoch, 'RAVEEpoch'), msg = 'You need to set electrode epoch first')
-      preproc = self$preprocess_info
-      stopifnot2(isTRUE(preproc$has_wavelet), msg = sprintf('Electrode %s does not have power data', self$number))
-      power_srate = wave_info$downsample_to
-      tidx = seq.int(- ceiling(before_onset * power_srate), ceiling(after_onset * power_srate))
-
-      dim = rep(NA_integer_, 4L)
-      dim[[1]] = self$epoch$n_trials
-      dim[[2]] = length(wave_info$frequencies)
-      dim[[3]] = length(tidx)
-      dim[[4]] = length(self$subject$electrodes)
-
-      tmp = sprintf('pre__%.4f_post_%.4f', before_onset, after_onset)
-      fst_cache_dir = file.path(self$cache_path, 'power', tmp)
-      fst_cache_file = file.path(fst_cache_dir, self$fst_fname)
-      fst_cache_meta = file.path(fst_cache_dir, 'lazyarray.meta')
-      if(file.exists(fst_cache_file) && file.exists(fst_cache_meta)){
-        arr <- lazyarray::load_lazyarray(fst_cache_dir, read_only = TRUE)
-        return(all(dim(arr) - dim == 0))
-      } else {
-        return(FALSE)
-      }
-    },
-
-    # epoch
-
-    #' @description perform epoch on power with epoch and reference
-    #' @param before_onset seconds before trial onset
-    #' @param after_onset seconds after trial onset
-    #' @return An \code{lazyarray} object that can be subset like normal arrays
-    epoch_power = function(before_onset, after_onset){
-      stopifnot2(inherits(self$epoch, 'RAVEEpoch'), msg = 'You need to set electrode epoch first')
-      preproc = self$preprocess_info
-      stopifnot2(isTRUE(preproc$has_wavelet), msg = sprintf('Electrode %s does not have power data', self$number))
-      wave_info = self$subject$preprocess_settings$wavelet_params
-      power_srate = wave_info$downsample_to
-
-      tbl = self$epoch$table
-      trials = self$epoch$trials
-      blk = unique(tbl$Block)
-
-      tidx = seq.int(- ceiling(before_onset * power_srate), ceiling(after_onset * power_srate))
-
-      tmp = sprintf('pre__%.4f_post_%.4f', before_onset, after_onset)
-      dir = file.path(self$cache_path, 'power', tmp)
-      if(!dir.exists(dir)){
-        # clculate dimension
-        dim = rep(NA_integer_, 4L)
-        dim[[1]] = self$epoch$n_trials
-        dim[[2]] = length(wave_info$frequencies)
-        dim[[3]] = length(tidx)
-        dim[[4]] = length(self$subject$electrodes)
-        dimnames = list(
-          Trial = trials,
-          Frequency = wave_info$frequencies,
-          Time = tidx / power_srate,
-          Electrode = self$subject$electrodes
-        )
-        tryCatch({
-          lazyarray::create_lazyarray(path = dir, storage_format = 'double', dim = dim,
-                                      dimnames = dimnames, multipart = TRUE, prefix = '',
-                                      compress_level = 0L, multipart_mode = 1L)
-        }, error = function(e){
-          rave_debug('Cache path already exists - {dir}')
-          lazyarray::load_lazyarray(path = dir, read_only = FALSE)
-        })
-      }
-      array = lazyarray::load_lazyarray(path = dir, read_only = FALSE)
-      dim = dim(array)
-      electrode_idx = which(self$subject$electrodes == self$number)[[1]]
-
-      private$referenced_power_cache_file = array$get_partition_fpath(electrode_idx, full_path = TRUE)
-      if(file.exists(private$referenced_power_cache_file)){
-        # temporarily cached
-        catgl('Partition exists')
-        return(lazyarray::load_lazyarray(path = dir, read_only = TRUE))
-      }
-      # else epoch
-      results = array(NA_real_, dim[c(1,2,3)])
-
-      for(b in blk){
-        ref_power = self$reference_power(b)
-
-        # find which trials in the block
-        sel = tbl$Block %in% b
-        sub_tbl = tbl[sel, ]
-        slice_idx = vapply(seq_len(nrow(sub_tbl)), function(ii){
-          row = sub_tbl[ii,]
-          t_pos = round(row$Time * power_srate)
-          as.integer(t_pos + tidx)
-        }, FUN.VALUE = tidx)
-        # freq x time x trial
-        ref_power <- ref_power[, as.vector(slice_idx)]
-        dim(ref_power) <- c(dim[c(2, 3)], sum(sel))
-        results[sel,,] = aperm(ref_power, c(3,1,2))
-      }
-
-      # write to array
-      array[,,,electrode_idx] = results
-      return(lazyarray::load_lazyarray(path = dir, read_only = TRUE))
-
-    },
-
     #' @description method to clear cache on hard drive
     #' @param ... ignored
-
     clear_cache = function(...){
-      f = private$referenced_power_cache_file
-      if(length(f) && file.exists(f)){
-        unlink(f)
-      }
+      try({
+        dir <- self$cache_root
+        if(!is.na(dir) && dir.exists(dir)){
+          unlink(dir, recursive = TRUE)
+        }
+      }, silent = TRUE)
     },
 
     #' @description method to clear memory
     #' @param ... ignored
     clear_memory = function(...){
-      private$persisted_voltage_unref = NULL
-      private$persisted_power_unref = NULL
-      private$persisted_phase_unref = NULL
-      private$persisted_coef_ref = NULL
+      private$persisted_voltage_unref <- NULL
+      private$persisted_power_unref <- NULL
+      private$persisted_phase_unref <- NULL
+      private$persisted_coef_ref <- NULL
       if(inherits(self$reference, 'RAVEAbstarctElectrode')){
         self$reference$clear_memory()
       }
@@ -906,7 +799,7 @@ LFP_electrode <- R6::R6Class(
     valid = function(){
       if(!self$exists) {return(FALSE)}
       if(self$is_reference) {return(TRUE)}
-      elec = self$subject$electrodes
+      elec <- self$subject$electrodes
       if(!self$number %in% elec){ return(FALSE) }
       # type matches with subject
       if(!isTRUE(self$subject$electrode_types[elec %in% self$number] == self$type)){
@@ -917,20 +810,20 @@ LFP_electrode <- R6::R6Class(
 
     #' @field raw_sample_rate voltage sample rate
     raw_sample_rate = function(){
-      elec = self$subject$electrodes
-      srate = self$subject$raw_sample_rates[elec %in% self$number]
+      elec <- self$subject$electrodes
+      srate <- self$subject$raw_sample_rates[elec %in% self$number]
       if(!length(srate)){
-        srate = NA
+        srate <- NA
       }
       srate
     },
 
     #' @field power_sample_rate power/phase sample rate
     power_sample_rate = function(){
-      elec = self$subject$electrodes
-      srate = self$subject$power_sample_rate[elec %in% self$number]
+      elec <- self$subject$electrodes
+      srate <- self$subject$power_sample_rate[elec %in% self$number]
       if(!length(srate)){
-        srate = NA
+        srate <- NA
       }
       srate
     },

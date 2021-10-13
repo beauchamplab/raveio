@@ -68,7 +68,7 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
   } else {
     if(recache){
       if( clean_before_cache ){
-        fs = list.files(file.path(fs_path, 'RAVE'), pattern = '\\.json$',
+        fs <- list.files(file.path(fs_path, 'RAVE'), pattern = '\\.json$',
                         all.files = FALSE, recursive = FALSE, full.names = TRUE,
                         ignore.case = TRUE, include.dirs = FALSE, no.. = TRUE)
         lapply(fs, unlink)
@@ -83,10 +83,10 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
     brain$set_electrodes(electrodes = electrode_table)
 
     if( compute_template ){
-      tf = tempfile()
-      new_table = brain$calculate_template_coordinates(save_to = tf)
+      tf <- tempfile()
+      new_table <- brain$calculate_template_coordinates(save_to = tf)
       if( file.exists(tf) ){
-        brain$electrodes$raw_table_path = NULL
+        brain$electrodes$raw_table_path <- NULL
         unlink(tf)
         # need to update meta
         save_meta2(
