@@ -176,8 +176,6 @@ with current electrode type</p></dd>
 <li><p><a href='#method-reference_power'><code>LFP_electrode$reference_power()</code></a></p></li>
 <li><p><a href='#method-reference_phase'><code>LFP_electrode$reference_phase()</code></a></p></li>
 <li><p><a href='#method-reference_voltage'><code>LFP_electrode$reference_voltage()</code></a></p></li>
-<li><p><a href='#method-is_power_cached'><code>LFP_electrode$is_power_cached()</code></a></p></li>
-<li><p><a href='#method-epoch_power'><code>LFP_electrode$epoch_power()</code></a></p></li>
 <li><p><a href='#method-clear_cache'><code>LFP_electrode$clear_cache()</code></a></p></li>
 <li><p><a href='#method-clear_memory'><code>LFP_electrode$clear_memory()</code></a></p></li>
 <li><p><a href='#method-clone'><code>LFP_electrode$clone()</code></a></p></li>
@@ -212,7 +210,7 @@ with current electrode type</p></dd>
 </dl><p></div></p>
 <p><hr>
 <a id="method-.load_noref_wavelet"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>.load_noref_wavelet()</code></h3>
-<p>load un-referenced wavelet coefficients (internally used)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>load non-referenced wavelet coefficients (internally used)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>LFP_electrode</span><span class='op'>$</span><span class='fu'>.load_noref_wavelet</span><span class='op'>(</span>reload <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -222,7 +220,7 @@ with current electrode type</p></dd>
 </dl><p></div></p>
 <p><hr>
 <a id="method-.load_noref_voltage"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>.load_noref_voltage()</code></h3>
-<p>load un-referenced voltage (internally used)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>load non-referenced voltage (internally used)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>LFP_electrode</span><span class='op'>$</span><span class='fu'>.load_noref_voltage</span><span class='op'>(</span><span class='va'>srate</span>, reload <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -269,7 +267,7 @@ with current electrode type</p></dd>
 </dl><p></div></p>
 <p><hr>
 <a id="method-load_unreferenced_voltage"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>load_unreferenced_voltage()</code></h3>
-<p>load voltage data, un-referenced</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>load voltage data, non-referenced</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>LFP_electrode</span><span class='op'>$</span><span class='fu'>load_unreferenced_voltage</span><span class='op'>(</span><span class='va'>block</span>, persist <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -284,7 +282,7 @@ however, if this function will be called multiple times, set it to true.</p></dd
 <p>voltage data before reference</p>
 <p><hr>
 <a id="method-load_unreferenced_power"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>load_unreferenced_power()</code></h3>
-<p>load power data, un-referenced</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>load power data, non-referenced</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>LFP_electrode</span><span class='op'>$</span><span class='fu'>load_unreferenced_power</span><span class='op'>(</span><span class='va'>block</span>, persist <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -299,7 +297,7 @@ however, if this function will be called multiple times, set it to true.</p></dd
 <p>power data before reference</p>
 <p><hr>
 <a id="method-load_unreferenced_phase"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>load_unreferenced_phase()</code></h3>
-<p>load phase data, un-referenced</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>load phase data, non-referenced</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>LFP_electrode</span><span class='op'>$</span><span class='fu'>load_unreferenced_phase</span><span class='op'>(</span><span class='va'>block</span>, persist <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -348,34 +346,6 @@ however, if this function will be called multiple times, set it to true.</p></dd
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
 <p>referenced voltage</p>
-<p><hr>
-<a id="method-is_power_cached"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>is_power_cached()</code></h3>
-<p>check whether power is cached in run-time set-ups</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>LFP_electrode</span><span class='op'>$</span><span class='fu'>is_power_cached</span><span class='op'>(</span><span class='va'>before_onset</span>, <span class='va'>after_onset</span><span class='op'>)</span></pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>before_onset</code></dt><dd><p>seconds before trial onset</p></dd>
-
-<dt><code>after_onset</code></dt><dd><p>seconds after trial onset</p></dd>
-
-</dl><p></div></p>
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>logical whether power has been cached in a <code>lazyarray</code></p>
-<p><hr>
-<a id="method-epoch_power"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>epoch_power()</code></h3>
-<p>perform epoch on power with epoch and reference</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>LFP_electrode</span><span class='op'>$</span><span class='fu'>epoch_power</span><span class='op'>(</span><span class='va'>before_onset</span>, <span class='va'>after_onset</span><span class='op'>)</span></pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>before_onset</code></dt><dd><p>seconds before trial onset</p></dd>
-
-<dt><code>after_onset</code></dt><dd><p>seconds after trial onset</p></dd>
-
-</dl><p></div></p>
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>An <code>lazyarray</code> object that can be subset like normal arrays</p>
 <p><hr>
 <a id="method-clear_cache"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clear_cache()</code></h3>
 <p>method to clear cache on hard drive</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
