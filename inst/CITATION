@@ -5,10 +5,12 @@ citEntry(entry = "Article",
          author       = personList(as.person("John F. Magnotti"),
                                    as.person("Zhengjia Wang"),
                                    as.person("Michael S. Beauchamp")),
-         journal      = "bioRxiv",
+         journal      = "NeuroImage",
          year         = "2020",
-         doi          = "10.1101/2020.06.02.129676",
-         textVersion  = "Magnotti, JF, Wang, Z, Beauchamp, MS. RAVE: comprehensive open-source software for reproducible analysis and visualization of intracranial EEG data."
+         volume       = "223",
+         pages        = "117341",
+         doi          = "10.1016/j.neuroimage.2020.117341",
+         textVersion  = "Magnotti, JF, Wang, Z, Beauchamp, MS. RAVE: comprehensive open-source software for reproducible analysis and visualization of intracranial EEG data. NeuroImage, 223, p.117341."
 )
 
 

@@ -1,3 +1,11 @@
+# `raveio` (0.0.5)
+
+Self checks indicated no error/warning. 
+
+* The platforms include `windows`, `ubuntu`, `fedora`, and `macOS`
+
+
+================================ past comments =================================
 # `raveio` (0.0.4)
 
 1. Require platform to be little-endian
@@ -6,8 +14,6 @@ Self checks indicated no error/warning.
 
 * The platforms include `windows`, `ubuntu`, `fedora`, and `macOS`
 
-
-================================ past comments =================================
 # `raveio` (0.0.3)
 
 New submission:
