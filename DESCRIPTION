@@ -1,6 +1,6 @@
 Package: raveio
 Type: Package
-Title: Utility Toolbox for RAVE Project
+Title: File-System Toolbox for RAVE Project
 Version: 0.0.5
 Language: en-US
 Authors@R: c(
