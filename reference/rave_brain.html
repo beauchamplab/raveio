@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Save data to comma separated value files with backups — safe_write_csv • raveio</title>
+<title>Load 'FreeSurfer' or 'AFNI/SUMA' brain from 'RAVE' — rave_brain • raveio</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Save data to comma separated value files with backups — safe_write_csv" />
-<meta property="og:description" content="Save comma separated value files, if file exists,
-backup original file." />
+<meta property="og:title" content="Load 'FreeSurfer' or 'AFNI/SUMA' brain from 'RAVE' — rave_brain" />
+<meta property="og:description" content="Create 3D visualization of the brain and visualize with
+modern web browsers" />
 
 
 
@@ -112,49 +112,91 @@ backup original file." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Save data to comma separated value files with backups</h1>
-    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/csv.R'><code>R/csv.R</code></a></small>
-    <div class="hidden name"><code>safe_write_csv.Rd</code></div>
+    <h1>Load 'FreeSurfer' or 'AFNI/SUMA' brain from 'RAVE'</h1>
+    <small class="dont-index">Source: <a href='https://github.com/beauchamplab/raveio/blob/master/R/threeBrain-instance.R'><code>R/threeBrain-instance.R</code></a></small>
+    <div class="hidden name"><code>rave_brain.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Save comma separated value files, if file exists,
-backup original file.</p>
+    <p>Create 3D visualization of the brain and visualize with
+modern web browsers</p>
     </div>
 
-    <pre class="usage"><span class='fu'>safe_write_csv</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>file</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rave_brain</span><span class='op'>(</span>
+  <span class='va'>subject</span>,
+  surfaces <span class='op'>=</span> <span class='st'>"pial"</span>,
+  use_141 <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  recache <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  clean_before_cache <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  compute_template <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  usetemplateifmissing <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x, file, ...</th>
-      <td><p>pass to <code>write.csv</code></p></td>
+      <th>subject</th>
+      <td><p>character, list, or <code><a href='RAVESubject.html'>RAVESubject</a></code> instance; for
+list or other objects, make sure <code>subject$subject_id</code> is a valid 'RAVE'
+subject 'ID'</p></td>
     </tr>
     <tr>
-      <th>quiet</th>
-      <td><p>whether to suppress overwrite message</p></td>
+      <th>surfaces</th>
+      <td><p>one or more brain surface types from <code>"pial"</code>,
+<code>"white"</code>, <code>"smoothwm"</code>, <code>"pial-outer-smoothed"</code>, etc.;
+check <code><a href='https://dipterix.org/threeBrain/reference/freesurfer_brain.html'>freesurfer_brain2</a></code></p></td>
+    </tr>
+    <tr>
+      <th>use_141</th>
+      <td><p>whether to use 'AFNI/SUMA' standard 141 brain</p></td>
+    </tr>
+    <tr>
+      <th>recache</th>
+      <td><p>whether to re-calculate cache; only should be used when
+the original 'FreeSurfer' or 'AFNI/SUMA' files are changed; such as new
+files are added</p></td>
+    </tr>
+    <tr>
+      <th>clean_before_cache</th>
+      <td><p>whether to clean the original cache before
+<code>recache</code>; only set it to be true if original cached files are
+corrupted</p></td>
+    </tr>
+    <tr>
+      <th>compute_template</th>
+      <td><p>whether to compute template mappings; useful when
+template mapping with multiple subjects are needed</p></td>
+    </tr>
+    <tr>
+      <th>usetemplateifmissing</th>
+      <td><p>whether to use template brain when the subject
+brain files are missing. If set to true, then a template (usually 'N27')
+brain will be displayed as an alternative solution, and electrodes will be
+rendered according to their <code>'MNI305'</code> coordinates, or
+<code>'VertexNumber'</code> if given.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Normalized path of <code>file</code></p>
+    <p>A <code>'threeBrain'</code> instance if brain is found or
+<code>usetemplateifmissing</code> is set to true; otherwise returns <code>NULL</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>a <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span>
 
-<span class='co'># File not exists, same as write file, returns normalized `f`</span>
-<span class='fu'>safe_write_csv</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>f</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp0y1DOe/filee4c43bc5b8c"</div><div class='input'>
-<span class='co'># Check whether file exists</span>
-<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
-<span class='co'># write again, and the old file will be copied</span>
-<span class='fu'>safe_write_csv</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>f</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp0y1DOe/filee4c43bc5b8c"</div><div class='input'>
+<span class='co'># Please make sure DemoSubject is correctly installed</span>
+<span class='co'># The subject is ~1GB from Github</span>
+<span class='va'>brain</span> <span class='op'>&lt;-</span> <span class='fu'>rave_brain</span><span class='op'>(</span><span class='st'>"demo/DemoSubject"</span><span class='op'>)</span>
+
+<span class='va'>brain</span>
+</div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='va'>brain</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+  <span class='va'>brain</span><span class='op'>$</span><span class='fu'>plot</span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
