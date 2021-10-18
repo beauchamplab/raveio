@@ -25,10 +25,21 @@ check_knit_packages <- function(languages = c("R", "python")){
 
 }
 
-rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", ...){
+rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", ..., target_names = NULL){
   # code <- options$code
   code <- paste(c("{", code, "}"), collapse = "\n")
   expr <- parse(text = code)[[1]]
+
+  if(is.null(deps) && !is.null(target_names)){
+    # Fix the following issues before the maintainer of the `targets`
+    # package is willing to consider this edge-cases
+    # https://github.com/ropensci/targets/issues/662
+    # https://github.com/ropensci/targets/issues/663
+    env <- knitr::knit_global()
+    deps <- globals::findGlobals(expr, envir = env)
+    deps <- deps[deps %in% target_names]
+  }
+
   bquote(
     targets::tar_target_raw(
       name = .(export),
@@ -42,7 +53,7 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", ...){
   )
 }
 
-rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", convert = FALSE, local = FALSE, ...){
+rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", convert = FALSE, local = FALSE, ..., target_names = NULL){
   bquote(
     targets::tar_target_raw(
       name = .(export),
@@ -71,9 +82,33 @@ rave_knitr_engine <- function(targets){
     if(grepl("^[^A-Za-z0-9\\-_.]+$", options$export)){
       stop("Chunk label (target name) must be valid variable name that ONLY contains letters, digits, `_`, `-`, or `.`")
     }
+    settings_names <- NULL
+    if(file.exists("settings.yaml")){
+      try({
+        settings_names <- names(load_yaml("settings.yaml"))
+      }, silent = TRUE)
+    }
 
-    if(options$export %in% sapply(targets, "[[", "export")){
-      stop("Chunk with the same export target `", options$export, "` already exists. Cannot have two targets sharing the same export name. Please consider renaming the exported variable name")
+    if(startsWith(options$export, ".")){
+      stop("Chunk export name cannot start with dot '.' (reserved). Violated export: `", options$export, "`. Please choose another variable name to export.")
+    }
+
+    if(options$export %in% settings_names){
+      stop("Chunk with the same export target `", options$export, "` already exists in the `settings.yaml`. Please choose another variable name to export.")
+    }
+
+    existing_names <- sapply(targets, "[[", "export")
+    if(options$export %in% existing_names){
+      if(interactive()){
+        old_options <- targets[[
+          which(existing_names == options$export)[[1]]
+        ]]
+        if(!identical(options$label, old_options$label)){
+          warning("Chunk with the same export target `", options$export, "` might have already existed. Cannot have two targets sharing the same export name. However, please ignore this warning if you are sure this is false positive.")
+        }
+      } else {
+        stop("Chunk with the same export target `", options$export, "` already exists. Cannot have two targets sharing the same export name. Please consider renaming the exported variable name")
+      }
     }
 
     lang <- options$language
@@ -131,14 +166,19 @@ rave_knitr_engine <- function(targets){
 rave_knitr_build <- function(targets, make_file){
   # generate targets
   targets <- as.list(targets)
-  nms <- lapply(targets, function(options){
-    options$label
-  })
+  dependence_names <- unlist(lapply(targets, "[[", "export"))
+  if(file.exists("settings.yaml")){
+    settings <- as.list(load_yaml("settings.yaml"))
+    dependence_names <- c(names(settings), dependence_names)
+  }
+
+  nms <- lapply(targets, "[[", "label")
   exprs <- structure(
     lapply(targets, function(options){
       switch(
         options$language,
         "R" = {
+          options$target_names <- dependence_names
           quos <- do.call(rave_knit_r, options)
         },
         "python" = {
