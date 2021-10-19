@@ -287,9 +287,9 @@ expression be evaluated</p></dd>
 <span class='co'># Save to local disk</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='fu'><a href='save_h5.html'>save_h5</a></span><span class='op'>(</span><span class='va'>x</span>, file <span class='op'>=</span> <span class='va'>f</span>, name <span class='op'>=</span> <span class='st'>'x'</span>, chunk <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span><span class='op'>)</span>, level <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpoJ0ZCj/filed4a3465643 =&gt; x (Dataset Created) 
-#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpoJ0ZCj/filed4a3465643 =&gt; x (Dataset Removed) 
-#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpoJ0ZCj/filed4a3465643 =&gt; x (Dataset Created) </div><div class='input'>
+</div><div class='output co'>#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpUlqyZk/file1303fd56348 =&gt; x (Dataset Created) 
+#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpUlqyZk/file1303fd56348 =&gt; x (Dataset Removed) 
+#&gt; /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpUlqyZk/file1303fd56348 =&gt; x (Dataset Created) </div><div class='input'>
 <span class='co'># Load via LazyFST</span>
 <span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='va'>LazyH5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>file_path <span class='op'>=</span> <span class='va'>f</span>, data_name <span class='op'>=</span> <span class='st'>'x'</span>, read_only <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
@@ -301,7 +301,7 @@ expression be evaluated</p></dd>
 <span class='co'># Read a slice of the data</span>
 <span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>[</span>,<span class='fl'>10</span>,<span class='op'>]</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    user  system elapsed 
-#&gt;   0.229   0.006   0.238 </div><div class='input'>
+#&gt;   0.215   0.003   0.217 </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
