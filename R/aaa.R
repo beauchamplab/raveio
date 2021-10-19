@@ -18,6 +18,15 @@ verbose_levels <-
     ordered = TRUE
   )
 
+str2lang_alt <- function (s) {
+  s <- sprintf("quote(%s)", stringr::str_trim(s))
+  eval(parse(text = s))
+}
+
+str2lang <- function (s) {
+  get0("str2lang", envir = baseenv(), ifnotfound = str2lang_alt)(s)
+}
+
 
 #' @title Print colored messages
 #' @param ...,.envir passed to \code{\link[glue]{glue}}
