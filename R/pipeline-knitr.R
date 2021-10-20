@@ -31,9 +31,8 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", ..., target
   expr <- parse(text = code)[[1]]
 
   if(is.null(deps) && !is.null(target_names)){
-    # Fix the following issues before the maintainer of the `targets`
+    # Fix the following issue before `targets`
     # package is willing to consider this edge-cases
-    # https://github.com/ropensci/targets/issues/662
     # https://github.com/ropensci/targets/issues/663
     env <- knitr::knit_global()
     deps <- globals::findGlobals(expr, envir = env)
