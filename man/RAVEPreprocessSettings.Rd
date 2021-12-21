@@ -87,6 +87,8 @@ locked}
 some projects}
 
 \item{\code{raw_path}}{raw data path}
+
+\item{\code{raw_path_type}}{raw data path type, 'native' or 'bids'}
 }
 \if{html}{\out{</div>}}
 }

@@ -119,7 +119,7 @@ RAVEPreprocessSettings <- R6::R6Class(
       elec <- self$electrodes
       imported <- self$data_imported[elec %in% electrodes]
       if(length(imported) && any(imported)){
-        stop('Electrodes ', dipsaus::deparse_svec(imported),
+        stop('Electrodes ', dipsaus::deparse_svec(elec[elec %in% electrodes]),
              ' have/has been imported. Cannot set electrodes')
       }
 
@@ -465,6 +465,12 @@ RAVEPreprocessSettings <- R6::R6Class(
     raw_path = function(){
       dirs <- rave_directories(subject_code = self$subject$subject_code, project_name = self$subject$project_name)
       dirs$raw_path
+    },
+
+    #' @field raw_path_type raw data path type, 'native' or 'bids'
+    raw_path_type = function(){
+      dirs <- rave_directories(subject_code = self$subject$subject_code, project_name = self$subject$project_name)
+      dirs$.raw_path_type
     }
 
   )

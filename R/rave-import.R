@@ -7,6 +7,7 @@ is_physical_unit <- function(unit, choices){
 
 volc_units <- c('V', 'mV', 'uV')
 
+#' @export
 rave_directories <- function(subject_code, project_name, blocks = NULL, .force_format = c('', 'native', 'BIDS')){
   .force_format <- match.arg(.force_format)
   re <- dipsaus::fastmap2()
@@ -22,11 +23,13 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   # raw path
   re$root_raw <- normalizePath(raveio_getopt('raw_data_dir'), mustWork = FALSE)
   re$raw_path <- file.path(re$root_raw, subject_code)
+  re$.raw_path_type <- "native"
   if(!dir.exists(re$raw_path)){
     raw_path <- file.path(bids_raw, project_name, sprintf('sub-%s', subject_code))
     if(dir.exists(raw_path)){
       re$root_raw <- bids_raw
       re$raw_path <- raw_path
+      re$.raw_path_type <- "bids"
     }
   }
 
@@ -55,8 +58,11 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   return(re)
 }
 
-rave_import_lfp <- function(project_name, subject_code, blocks, electrodes,
-                            sample_rate, conversion = NA, add = FALSE, data_type = 'LFP', ...){
+rave_import_lfp <- function(
+  project_name, subject_code, blocks, electrodes,
+  sample_rate, conversion = NA, add = FALSE,
+  data_type = 'LFP', ...
+) {
   pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
 
   if(!add && isTRUE(pretools$`@freeze_lfp_ecog`)){
@@ -65,28 +71,31 @@ rave_import_lfp <- function(project_name, subject_code, blocks, electrodes,
   }
 
   method <- class(project_name)[[1]]
-  # perform validation
-  res <- do.call(
-    sprintf('validate_raw_file_lfp.%s', method), list(
-      subject_code = subject_code,
-      blocks = blocks,
-      electrodes = electrodes,
-      check_content = TRUE,
-      project_name = project_name
-    )
-  )
 
-  if(!res){
-    reasons <- attr(res, 'reason')
-    if(!is.list(reasons) || !length(reasons)){ stop('rave_import error: unknown reason.') }
-    msg <- sapply(seq_along(reasons), function(ii){
-      nm <- names(reasons)[[ii]]
-      items <- reasons[[ii]]
-      paste0(ii, ' - ', nm, '\n', paste0('    ', items, collapse = '\n'))
-    })
-    stop('The following issues found when importing subject ',
-         sQuote(subject_code), ' into project ', sQuote(project_name),
-         '.\n', msg)
+  if(isTRUE(list(...)[["skip_validation"]])){
+    # perform validation
+    res <- do.call(
+      sprintf('validate_raw_file_lfp.%s', method), list(
+        subject_code = subject_code,
+        blocks = blocks,
+        electrodes = electrodes,
+        check_content = TRUE,
+        project_name = project_name
+      )
+    )
+
+    if(!res){
+      reasons <- attr(res, 'reason')
+      if(!is.list(reasons) || !length(reasons)){ stop('rave_import error: unknown reason.') }
+      msg <- sapply(seq_along(reasons), function(ii){
+        nm <- names(reasons)[[ii]]
+        items <- reasons[[ii]]
+        paste0(ii, ' - ', nm, '\n', paste0('    ', items, collapse = '\n'))
+      })
+      stop('The following issues found when importing subject ',
+           sQuote(subject_code), ' into project ', sQuote(project_name),
+           '.\n', msg)
+    }
   }
 
   # Not imported, import
