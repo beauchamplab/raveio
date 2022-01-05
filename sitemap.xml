@@ -106,6 +106,9 @@
     <loc>/reference/load_yaml.html</loc>
   </url>
   <url>
+    <loc>/reference/pipeline_install.html</loc>
+  </url>
+  <url>
     <loc>/reference/rave-pipeline.html</loc>
   </url>
   <url>
@@ -113,6 +116,9 @@
   </url>
   <url>
     <loc>/reference/rave_brain.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rave_directories.html</loc>
   </url>
   <url>
     <loc>/reference/rave_import.html</loc>
