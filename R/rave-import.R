@@ -7,6 +7,14 @@ is_physical_unit <- function(unit, choices){
 
 volc_units <- c('V', 'mV', 'uV')
 
+#' Returns a list of 'RAVE' directories
+#' @description This function is internally used and should not be called
+#' directly.
+#' @param subject_code 'RAVE' subject code
+#' @param project_name 'RAVE' project name
+#' @param blocks session or block names, optional
+#' @param .force_format format of the data, default is automatically detected.
+#' @return A list of directories
 #' @export
 rave_directories <- function(subject_code, project_name, blocks = NULL, .force_format = c('', 'native', 'BIDS')){
   .force_format <- match.arg(.force_format)

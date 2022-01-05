@@ -2,9 +2,12 @@
 % Please edit documentation in R/matlab.R
 \name{read_mat}
 \alias{read_mat}
+\alias{read_mat2}
 \title{Read 'Matlab' files}
 \usage{
 read_mat(file, ram = TRUE)
+
+read_mat2(file, ram = TRUE)
 }
 \arguments{
 \item{file}{path to a 'Matlab' file}

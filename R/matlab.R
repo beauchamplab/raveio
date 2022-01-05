@@ -60,3 +60,35 @@ read_mat <- function(file, ram = TRUE){
   re
 }
 
+#' @rdname read_mat
+#' @export
+read_mat2 <- function(file, ram = TRUE){
+  file <- normalizePath(file, mustWork = TRUE)
+  # Check if the file is HDF5 format
+  if( h5FileValid(file) ){
+
+    dset_names <- h5_names(file)
+    re <- dipsaus::fastmap2()
+    lapply(dset_names, function(nm){
+      y <- load_h5(file, name = nm, ram = ram)
+      nm_path <- strsplit(nm, "/")[[1]]
+      d <- re
+      for(ii in seq_along(nm_path)){
+        nm <- nm_path[[ii]]
+        if(ii != length(nm_path)){
+          if(!inherits(d[[nm]], 'fastmap2')){
+            d[[nm]] <- dipsaus::fastmap2()
+          }
+          d <- d[[nm]]
+        } else {
+          d[[nm]] <- y
+        }
+      }
+      NULL
+    })
+  }else{
+    re <- dipsaus::list_to_fastmap2(R.matlab::readMat(file))
+  }
+  re
+}
+

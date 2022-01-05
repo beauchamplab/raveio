@@ -1,6 +1,6 @@
 ##' Let RAVE switch to this module pipeline
 ##'
-Sys.setenv("RAVE_PIPELINE" = "~/Dropbox/projects/rave-pipelines/import-LFP")
+Sys.setenv("RAVE_PIPELINE" = "~/Dropbox/projects/shidashi-templates/AdminLTE3-rave/modules/import_raw/import-LFP/")
 
 ##' Debug pipeline: assign variables to global environment
 ##' so that you can print them directly
