@@ -221,9 +221,12 @@ pipeline_root <- local({
       if(any(is.na(root_path))){ stop("pipeline root cannot be NA") }
       if('.' %in% root_path){
         root_path <- root_path[root_path != '.']
-        root <<- c(".", normalizePath(root_path, mustWork = TRUE))
+        root <<- c(".", normalizePath(root_path, mustWork = FALSE))
       } else {
-        root <<- normalizePath(root_path, mustWork = TRUE)
+        root <<- normalizePath(root_path, mustWork = FALSE)
+      }
+      if(!any(dir.exists(root))){
+        warning("The following pipeline root directories do not exist: \n  |> ", paste(root, collapse = "\n  |> "))
       }
     } else {
       if(is.null(root)){

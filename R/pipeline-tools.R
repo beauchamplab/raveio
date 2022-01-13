@@ -149,6 +149,97 @@ pipeline_debug <- function(
   }
 }
 
+#' @export
+pipeline_run_interactive <- function(
+  names, skip_names, env = parent.frame(),
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
+){
+  pipe_dir <- activate_pipeline(pipe_dir)
+
+  # find targets that are not in the main
+  script <- attr(pipe_dir, "target_script")
+
+  main_targets <- load_target(script)
+  all_targets <- load_target("make-main.R")
+
+  main_target_names <- unlist(lapply(main_targets, function(x){
+    x$settings$name
+  }))
+  target_names <- unlist(lapply(all_targets, function(x){
+    x$settings$name
+  }))
+  if(missing(skip_names)){
+    skip_names <- unname(target_names[!target_names %in% main_target_names])
+  }
+
+  if(length(skip_names)){
+    # build with targets
+    do.call(targets::tar_make, list(
+      callr_function = NULL,
+      envir = env, names = skip_names
+    ))
+    for(nm in skip_names){
+      assign(nm, pipeline_read(nm, pipe_dir = pipe_dir), envir = env)
+    }
+  }
+
+  w <- getOption("width", 80)
+  started <- Sys.time()
+
+  nms <- names(all_targets)
+
+  for(nm in names){
+    ii <- which(target_names == nm)
+    if(length(ii)){
+
+      desc <- nms[[ii]]
+      if(desc == "") {
+        desc <- "(No name)"
+      } else {
+        desc <- stringr::str_split(nms[[ii]], "_")[[1]]
+        desc[[1]] <- stringr::str_to_sentence(desc[[1]])
+        desc <- paste(desc, collapse = " ")
+      }
+
+      ...t <- all_targets[[ii]]
+      name <- ...t$settings$name
+      r <- w - stringr::str_length(nm) - 14
+      if( r <= 2 ){ r <- 2 }
+      nm <- paste(c(
+        sprintf(" (%.2f s) ", dipsaus::time_delta(started, Sys.time())),
+        rep("-", r), " ", nm, "\n"), collapse = "")
+      catgl(nm, level = "INFO")
+
+      counter <- Sys.time()
+      {
+        message("Evaluating -> ", name, "\r", appendLF = FALSE)
+        expr <- ...t$command$expr
+        tryCatch({
+          v <- eval(expr, new.env(parent = env))
+          assign(name, v, envir = env)
+          str <- deparse1(v)
+          str <- stringr::str_replace_all(str, "\t|\n", "  ")
+          r <- w - stringr::str_length(name) - 25
+          if(r < 0){
+            r <- w - 5
+            s <- "`{name}` <- \n    "
+          } else {
+            s <- "`{name}` <- "
+          }
+          str <- stringr::str_sub(str, end = r)
+          delta <- dipsaus::time_delta(counter, Sys.time())
+          catgl(sprintf("[+%6.2f s] ", delta), s, str, "\n")
+        }, error = function(e){
+          e$call <- expr
+          stop(e)
+        })
+        counter <- Sys.time()
+      }
+    }
+
+  }
+}
+
 #' @rdname rave-pipeline
 #' @export
 pipeline_visualize <- function(
@@ -362,7 +453,7 @@ pipeline_create_template <- function(
   }
   settings <- yaml::read_yaml(file.path(pipe_path, "settings.yaml"))
   settings$epoch <- "default"
-  subject$electrodes <- dipsaus::deparse_svec(14L)
+  settings$electrodes <- dipsaus::deparse_svec(14L)
   settings$reference <- "default"
 
   save_yaml(settings, file.path(pipe_path, "settings.yaml"))
