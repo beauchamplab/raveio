@@ -122,6 +122,116 @@ RAVESubject <- R6::R6Class(
           dir_create2(path)
         }
       }
+    },
+
+    get_epoch = function(epoch_name, as_table = FALSE, trial_starts = 0){
+      if(length(epoch_name) != 1){
+        stop("Only one epoch is allowed at a time.")
+      }
+      if(!isTRUE(epoch_name %in% self$epoch_names)){
+        stop("Subject ", self$subject_id, " has no epoch name called: ", sQuote(epoch_name), "\n  Please check folder\n    ", self$meta_path, "\n  and make sure ", sQuote(sprintf("epoch_%s.csv", epoch_name)), " exists.")
+      }
+      epoch <- RAVEEpoch$new(subject = self, name = epoch_name)
+      if(!length(epoch$trials)){
+        stop("Cannot load epoch file correctly: epoch file is missing or corrupted, or there is no trial in the epoch file. A typical RAVE-epoch file contains 4 columns (case-sensitive): Block (characters), Time (numerical), Trial (integer), Condition (characters).")
+      }
+      # trial starts from -1 sec but only 0.5 seconds are allowed
+      invalid_trials <- unlist(lapply(epoch$trials, function(ii){
+        info <- epoch$trial_at(ii, df = FALSE)
+        if(info$Time + trial_starts < 0){
+          return(ii)
+        }
+        return()
+      }))
+
+      if(any(invalid_trials)){
+        stop("Trial ", dipsaus::deparse_svec(invalid_trials), " start too soon after the beginning of the sessions (less than ", sprintf("%.2f seconds", -trial_starts), "). Please adjust the trial start time (i.e. ", sQuote("Pre"), " if you are using the RAVE application).")
+      }
+
+      if( as_table ){
+        epoch <- epoch$table
+      }
+      epoch
+    },
+
+    get_reference = function(reference_name, simplify = FALSE){
+      if(length(reference_name) != 1){
+        stop("Only one reference is allowed at a time.")
+      }
+      if(!isTRUE(reference_name %in% self$reference_names)){
+        stop("Subject ", self$subject_id, " has no reference name called: ", sQuote(reference_name), "\n  Please check folder\n    ", self$meta_path, "\n  and make sure ", sQuote(sprintf("reference_%s.csv", reference_name)), " exists.")
+      }
+
+      reference_table <- self$meta_data(meta_type = 'reference', meta_name = reference_name)
+
+      if(!is.data.frame(reference_table)){
+        stop("Cannot load reference file correctly. A typical RAVE-reference file contains 4 columns (case-sensitive): Electrode (integer), Group (characters), Reference (characters), Type (characters).")
+      }
+
+      if(simplify){
+        return(reference_table$Reference)
+      }
+      reference_table
+    },
+
+    get_electrode_table = function(electrodes, reference_name,
+                                   subset = FALSE, simplify = FALSE){
+      preproc <- self$preprocess_settings
+      all_electrodes <- self$electrodes
+
+      if(!missing(electrodes)){
+        # Get electrodes to be loaded
+        if(is.character(electrodes)){
+          load_electrodes <- dipsaus::parse_svec(electrodes)
+        } else {
+          load_electrodes <- electrodes
+        }
+        valid_electrodes <- self$valid_electrodes(reference_name = reference_name)
+        # 1. get electrodes to be truly loaded
+        load_electrodes <- load_electrodes[load_electrodes %in% valid_electrodes]
+        if(!length(load_electrodes)) {
+          stop("There is no valid electrodes to be loaded. The valid electrodes are: ", dipsaus::deparse_svec(valid_electrodes), ".")
+        }
+        sel <- all_electrodes %in% load_electrodes
+        if(!all(preproc$has_wavelet[sel])){
+          imcomplete <- all_electrodes[all_electrodes %in% load_electrodes & !preproc$has_wavelet]
+          stop("The following electrodes do not have power spectrum: \n  ", dipsaus::deparse_svec(imcomplete),
+               "\nPlease run wavelet module first.")
+        }
+        reference_table <- self$get_reference(reference_name, simplify = FALSE)
+      } else {
+        reference_table <- NULL
+      }
+
+      electrode_table <- self$meta_data("electrodes")
+
+      if(!is.data.frame(electrode_table)){
+        stop("Cannot load electrode.csv correctly. A basic RAVE-electrode file contains 5 columns (case-sensitive): Electrode (integer), Coord_x (numerical), Coord_y (numerical), Coord_y (numerical), Label (characters).")
+      }
+
+      if(!is.null(reference_table)){
+        electrode_table <- merge(electrode_table, reference_table, by = 'Electrode', all.x = TRUE, all.y = FALSE)
+        electrode_table$isLoaded <- electrode_table$Electrode %in% load_electrodes
+        if(subset){
+          electrode_table <- electrode_table[electrode_table$isLoaded, ]
+        }
+      }
+
+      if(simplify){
+        return(electrode_table$Electrode)
+      }
+      electrode_table
+    },
+
+    get_frequency = function(simplify = TRUE){
+      frequency_table <- self$meta_data('frequencies')
+      if(!is.data.frame(frequency_table)){
+        stop("Cannot load frequency table. Please run wavelet first.")
+      }
+      if(simplify){
+        return(frequency_table$Frequency)
+      }
+      frequency_table
     }
 
   ),

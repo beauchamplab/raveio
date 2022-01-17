@@ -25,7 +25,7 @@ check_knit_packages <- function(languages = c("R", "python")){
 
 }
 
-rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", ..., target_names = NULL){
+rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", pattern = NULL, ..., target_names = NULL){
   # code <- options$code
   code <- paste(c("{", code, "}"), collapse = "\n")
   expr <- parse(text = code)[[1]]
@@ -39,6 +39,9 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", ..., target
     deps <- deps[deps %in% target_names]
   }
 
+  if(is.character(pattern)){
+    pattern <- parse(text = pattern)
+  }
   bquote(
     targets::tar_target_raw(
       name = .(export),
@@ -47,12 +50,18 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", ..., target
         return(.(str2lang(export)))
       }),
       deps = .(deps),
-      cue = targets::tar_cue(.(cue))
+      cue = targets::tar_cue(.(cue)),
+      pattern = .(pattern),
+      iteration = "list"
     )
   )
 }
 
-rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", convert = FALSE, local = FALSE, ..., target_names = NULL){
+rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", pattern = NULL, convert = FALSE, local = FALSE, ..., target_names = NULL){
+  if(is.character(pattern)){
+    pattern <- parse(text = pattern)
+  }
+
   bquote(
     targets::tar_target_raw(
       name = .(export),
@@ -65,7 +74,9 @@ rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", conver
         return(reticulate::py[[.(export)]])
       }),
       deps = .(deps),
-      cue = targets::tar_cue(.(cue))
+      cue = targets::tar_cue(.(cue)),
+      pattern = .(pattern),
+      iteration = "list"
     )
   )
 }

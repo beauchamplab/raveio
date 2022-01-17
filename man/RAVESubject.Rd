@@ -71,6 +71,10 @@ no path exists, values will be \code{NA}}
 \item \href{#method-meta_data}{\code{RAVESubject$meta_data()}}
 \item \href{#method-valid_electrodes}{\code{RAVESubject$valid_electrodes()}}
 \item \href{#method-initialize_paths}{\code{RAVESubject$initialize_paths()}}
+\item \href{#method-get_epoch}{\code{RAVESubject$get_epoch()}}
+\item \href{#method-get_reference}{\code{RAVESubject$get_reference()}}
+\item \href{#method-get_electrode_table}{\code{RAVESubject$get_electrode_table()}}
+\item \href{#method-get_frequency}{\code{RAVESubject$get_frequency()}}
 \item \href{#method-clone}{\code{RAVESubject$clone()}}
 }
 }
@@ -181,6 +185,47 @@ create subject's directories on hard disk
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_epoch"></a>}}
+\if{latex}{\out{\hypertarget{method-get_epoch}{}}}
+\subsection{Method \code{get_epoch()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_epoch(epoch_name, as_table = FALSE, trial_starts = 0)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_reference"></a>}}
+\if{latex}{\out{\hypertarget{method-get_reference}{}}}
+\subsection{Method \code{get_reference()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_reference(reference_name, simplify = FALSE)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_electrode_table"></a>}}
+\if{latex}{\out{\hypertarget{method-get_electrode_table}{}}}
+\subsection{Method \code{get_electrode_table()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_electrode_table(
+  electrodes,
+  reference_name,
+  subset = FALSE,
+  simplify = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_frequency"></a>}}
+\if{latex}{\out{\hypertarget{method-get_frequency}{}}}
+\subsection{Method \code{get_frequency()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_frequency(simplify = TRUE)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

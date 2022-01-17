@@ -56,6 +56,20 @@ activate_pipeline <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
   pipe_dir
 }
 
+#' @export
+pipeline_target_names <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")){
+  pipe_dir <- activate_pipeline(pipe_dir)
+
+  # find targets that are not in the main
+  script <- attr(pipe_dir, "target_script")
+
+  all_targets <- load_target("make-main.R")
+  target_names <- unlist(lapply(all_targets, function(x){
+    x$settings$name
+  }))
+  target_names
+}
+
 #' @rdname rave-pipeline
 #' @export
 pipeline_debug <- function(
@@ -249,38 +263,6 @@ pipeline_visualize <- function(
   targets::tar_visnetwork(targets_only = TRUE, shortcut = FALSE)
 }
 
-#' @rdname rave-pipeline
-#' @export
-pipeline_run <- function(
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  type = c("basic", "async", "vanilla", "custom"),
-  envir = parent.frame(), callr_function = NULL,
-  ...){
-
-  pipe_dir <- activate_pipeline(pipe_dir)
-
-  type <- match.arg(type)
-  if(type == "custom"){
-    if(is.null(callr_function)){
-      stop("Please specify `callr_function`. Examples are `callr::r`, `callr::r_bg`, ...; see `?targets::tar_make`")
-    }
-  } else {
-    callr_function <- switch (
-      type,
-      "basic" = NULL,
-      "async" = callr::r_bg,
-      "vanilla" = callr::r
-    )
-  }
-  force(envir)
-
-  targets::tar_make(
-    callr_function = callr_function,
-    envir = envir, ...
-  )
-
-  invisible()
-}
 
 
 #' @rdname rave-pipeline
