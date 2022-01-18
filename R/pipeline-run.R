@@ -122,7 +122,8 @@ pipeline_run_async <- function(
   more_args$pipe_dir <- pipe_dir
   # more_args$reporter <- "silent"
 
-  check <- dipsaus::rs_exec(bquote({
+  func <- function(){}
+  body(func) <- bquote({
     if(.(use_future)){
       dipsaus::make_forked_clusters(
         on_failure = "multisession",
@@ -137,9 +138,9 @@ pipeline_run_async <- function(
       do.call(ns[[.(paste0("pipeline_run_", type))]], args)
     })
 
-  }), quoted = TRUE, wait = FALSE, focus_on_console = TRUE,
-  rs = use_rs_job, packages = packages, name = rs_job_name,
-  ignore.stdout = TRUE)
+  })
+  job <- callr::r_bg(func = func, package = FALSE, poll_connection = TRUE, supervise = TRUE, error = "error")
+
   tarnames <- pipeline_target_names(pipe_dir = pipe_dir)
   tarnames_readable <- names(tarnames)
 
@@ -149,14 +150,7 @@ pipeline_run_async <- function(
       quiet = progress_quiet
     )
     callback <- function(){
-      state <- check()
-      if(state == 0) {
-        progress$close()
-        resolve(attr(state, 'rs_exec_result'))
-      } else if(state < 0){
-        progress$close()
-        reject(attr(state, 'rs_exec_error'))
-      } else {
+      if(job$is_alive()){
         # ravedash::add_callback(callback)
         later::later(callback, delay = check_interval)
 
@@ -188,8 +182,15 @@ pipeline_run_async <- function(
           }
 
         }, silent = TRUE)
+      } else {
 
-
+        progress$close()
+        tryCatch({
+          res <- job$get_result()
+          resolve(res)
+        }, error = function(e){
+          reject(e$message)
+        })
       }
     }
     later::later(callback, delay = check_interval)
