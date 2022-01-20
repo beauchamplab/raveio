@@ -167,6 +167,10 @@ no path exists, values will be <code>NA</code></p></dd>
 <li><p><a href="#method-meta_data"><code>RAVESubject$meta_data()</code></a></p></li>
 <li><p><a href="#method-valid_electrodes"><code>RAVESubject$valid_electrodes()</code></a></p></li>
 <li><p><a href="#method-initialize_paths"><code>RAVESubject$initialize_paths()</code></a></p></li>
+<li><p><a href="#method-get_epoch"><code>RAVESubject$get_epoch()</code></a></p></li>
+<li><p><a href="#method-get_reference"><code>RAVESubject$get_reference()</code></a></p></li>
+<li><p><a href="#method-get_electrode_table"><code>RAVESubject$get_electrode_table()</code></a></p></li>
+<li><p><a href="#method-get_frequency"><code>RAVESubject$get_frequency()</code></a></p></li>
 <li><p><a href="#method-clone"><code>RAVESubject$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
@@ -281,15 +285,138 @@ default is false</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-get_epoch"></a><div class="section">
+<h3 id="method-get-epoch-">Method <code>get_epoch()</code><a class="anchor" aria-label="anchor" href="#method-get-epoch-"></a></h3>
+<p>check and get subject's epoch information</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_epoch</span><span class="op">(</span><span class="va">epoch_name</span>, as_table <span class="op">=</span> <span class="cn">FALSE</span>, trial_starts <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>epoch_name</code></dt>
+<dd><p>epoch name, depending on the subject's meta files</p></dd>
+
+
+<dt><code>as_table</code></dt>
+<dd><p>whether to convert to <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code>; default
+is false</p></dd>
+
+
+<dt><code>trial_starts</code></dt>
+<dd><p>the start of the trial relative to epoch time;
+default is 0</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
+<p>If <code>as_table</code> is <code>FALSE</code>, then returns as
+<code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance; otherwise returns epoch table; will
+raise errors when file is missing or the epoch is invalid.</p>
+</div>
+
+</div><p></p><hr><a id="method-get_reference"></a><div class="section">
+<h3 id="method-get-reference-">Method <code>get_reference()</code><a class="anchor" aria-label="anchor" href="#method-get-reference-"></a></h3>
+<p>check and get subject's reference information</p><div class="section">
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_reference</span><span class="op">(</span><span class="va">reference_name</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>reference_name</code></dt>
+<dd><p>reference name, depending on the subject's meta
+file settings</p></dd>
+
+
+<dt><code>simplify</code></dt>
+<dd><p>whether to only return the reference column</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
+<p>If <code>simplify</code> is true, returns a vector of reference
+electrode names, otherwise returns the whole table; will
+raise errors when file is missing or the reference is invalid.</p>
+</div>
+
+</div><p></p><hr><a id="method-get_electrode_table"></a><div class="section">
+<h3 id="method-get-electrode-table-">Method <code>get_electrode_table()</code><a class="anchor" aria-label="anchor" href="#method-get-electrode-table-"></a></h3>
+<p>check and get subject's electrode table with electrodes
+that are load-able</p><div class="section">
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_electrode_table</span><span class="op">(</span>
+  <span class="va">electrodes</span>,
+  <span class="va">reference_name</span>,
+  subset <span class="op">=</span> <span class="cn">FALSE</span>,
+  simplify <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>electrodes</code></dt>
+<dd><p>characters indicating integers such as
+<code>"1-14,20-30"</code>, or integer vector of electrode numbers</p></dd>
+
+
+<dt><code>reference_name</code></dt>
+<dd><p>see method <code>get_reference</code></p></dd>
+
+
+<dt><code>subset</code></dt>
+<dd><p>whether to subset the resulting data table</p></dd>
+
+
+<dt><code>simplify</code></dt>
+<dd><p>whether to only return electrodes</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
+<p>If <code>simplify</code> is true, returns a vector of electrodes
+that are valid (or won't be excluded) under given reference; otherwise
+returns a table. If <code>subset</code> is true, then the table will be
+subset and only rows with electrodes to be loaded will be kept.</p>
+</div>
+
+</div><p></p><hr><a id="method-get_frequency"></a><div class="section">
+<h3 id="method-get-frequency-">Method <code>get_frequency()</code><a class="anchor" aria-label="anchor" href="#method-get-frequency-"></a></h3>
+<p>check and get subject's frequency table, time-freqency
+decomposition is needed.</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_frequency</span><span class="op">(</span>simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>simplify</code></dt>
+<dd><p>whether to simplify as vector</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<p>If <code>simplify</code> is true, returns a vector of frequencies;
+otherwise returns a table.</p>
+</div>
+
+</div><p></p><hr><a id="method-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -313,7 +440,7 @@ default is false</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>
