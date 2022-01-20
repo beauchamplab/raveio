@@ -124,6 +124,15 @@ RAVESubject <- R6::R6Class(
       }
     },
 
+    #' @description check and get subject's epoch information
+    #' @param epoch_name epoch name, depending on the subject's meta files
+    #' @param as_table whether to convert to \code{\link{data.frame}}; default
+    #' is false
+    #' @param trial_starts the start of the trial relative to epoch time;
+    #' default is 0
+    #' @return If \code{as_table} is \code{FALSE}, then returns as
+    #' \code{\link{RAVEEpoch}} instance; otherwise returns epoch table; will
+    #' raise errors when file is missing or the epoch is invalid.
     get_epoch = function(epoch_name, as_table = FALSE, trial_starts = 0){
       if(length(epoch_name) != 1){
         stop("Only one epoch is allowed at a time.")
@@ -154,6 +163,13 @@ RAVESubject <- R6::R6Class(
       epoch
     },
 
+    #' @description check and get subject's reference information
+    #' @param reference_name reference name, depending on the subject's meta
+    #' file settings
+    #' @param simplify whether to only return the reference column
+    #' @return If \code{simplify} is true, returns a vector of reference
+    #' electrode names, otherwise returns the whole table; will
+    #' raise errors when file is missing or the reference is invalid.
     get_reference = function(reference_name, simplify = FALSE){
       if(length(reference_name) != 1){
         stop("Only one reference is allowed at a time.")
@@ -174,6 +190,17 @@ RAVESubject <- R6::R6Class(
       reference_table
     },
 
+    #' @description check and get subject's electrode table with electrodes
+    #' that are load-able
+    #' @param electrodes characters indicating integers such as
+    #' \code{"1-14,20-30"}, or integer vector of electrode numbers
+    #' @param reference_name see method \code{get_reference}
+    #' @param subset whether to subset the resulting data table
+    #' @param simplify whether to only return electrodes
+    #' @return If \code{simplify} is true, returns a vector of electrodes
+    #' that are valid (or won't be excluded) under given reference; otherwise
+    #' returns a table. If \code{subset} is true, then the table will be
+    #' subset and only rows with electrodes to be loaded will be kept.
     get_electrode_table = function(electrodes, reference_name,
                                    subset = FALSE, simplify = FALSE){
       preproc <- self$preprocess_settings
@@ -223,6 +250,11 @@ RAVESubject <- R6::R6Class(
       electrode_table
     },
 
+    #' @description check and get subject's frequency table, time-freqency
+    #' decomposition is needed.
+    #' @param simplify whether to simplify as vector
+    #' @return If \code{simplify} is true, returns a vector of frequencies;
+    #' otherwise returns a table.
     get_frequency = function(simplify = TRUE){
       frequency_table <- self$meta_data('frequencies')
       if(!is.data.frame(frequency_table)){

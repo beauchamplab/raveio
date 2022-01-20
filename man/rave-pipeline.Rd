@@ -10,6 +10,7 @@
 \alias{pipeline_run}
 \alias{pipeline_run_async}
 \alias{load_targets}
+\alias{pipeline_target_names}
 \alias{pipeline_debug}
 \alias{pipeline_visualize}
 \alias{pipeline_progress}
@@ -47,16 +48,15 @@ pipeline_run_async(
   use_future = TRUE,
   type = c("basic", "vanilla", "custom"),
   check_interval = 1,
-  packages = NULL,
-  use_rs_job = FALSE,
-  rs_job_name = "rave-pipeline",
   progress_title = "Executing in Progress",
   progress_max = NA,
-  progress_quiet = !(use_rs_job || dipsaus::shiny_is_running()),
+  progress_quiet = !dipsaus::shiny_is_running(),
   ...
 )
 
 load_targets(...)
+
+pipeline_target_names(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
 
 pipeline_debug(
   quick = TRUE,
@@ -139,7 +139,15 @@ run customized scheduler \code{callr_function}}
 
 \item{callr_function}{function to customized when \code{type="custom"}}
 
+\item{use_future}{whether to use \code{future} package}
+
 \item{...}{other parameters, targets, etc.}
+
+\item{check_interval}{when running in background (non-blocking mode),
+how often to check the pipeline}
+
+\item{progress_title, progress_max, progress_quiet}{control the progress,
+see \code{\link[dipsaus]{progress2}}.}
 
 \item{quick}{whether to skip finished targets to save time}
 
@@ -193,5 +201,6 @@ structures, dependencies, etc.}
 \description{
 Utility functions for 'RAVE' pipelines, currently designed for
 internal development use. The infrastructure will be deployed to 'RAVE' in
-the future to facilitate the "self-expanding" aim.
+the future to facilitate the "self-expanding" aim. Please check the official
+'RAVE' website.
 }

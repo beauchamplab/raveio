@@ -190,24 +190,61 @@ create subject's directories on hard disk
 \if{html}{\out{<a id="method-get_epoch"></a>}}
 \if{latex}{\out{\hypertarget{method-get_epoch}{}}}
 \subsection{Method \code{get_epoch()}}{
+check and get subject's epoch information
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_epoch(epoch_name, as_table = FALSE, trial_starts = 0)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{epoch_name}}{epoch name, depending on the subject's meta files}
+
+\item{\code{as_table}}{whether to convert to \code{\link{data.frame}}; default
+is false}
+
+\item{\code{trial_starts}}{the start of the trial relative to epoch time;
+default is 0}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+If \code{as_table} is \code{FALSE}, then returns as
+\code{\link{RAVEEpoch}} instance; otherwise returns epoch table; will
+raise errors when file is missing or the epoch is invalid.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_reference"></a>}}
 \if{latex}{\out{\hypertarget{method-get_reference}{}}}
 \subsection{Method \code{get_reference()}}{
+check and get subject's reference information
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_reference(reference_name, simplify = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{reference_name}}{reference name, depending on the subject's meta
+file settings}
+
+\item{\code{simplify}}{whether to only return the reference column}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+If \code{simplify} is true, returns a vector of reference
+electrode names, otherwise returns the whole table; will
+raise errors when file is missing or the reference is invalid.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_electrode_table"></a>}}
 \if{latex}{\out{\hypertarget{method-get_electrode_table}{}}}
 \subsection{Method \code{get_electrode_table()}}{
+check and get subject's electrode table with electrodes
+that are load-able
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_electrode_table(
   electrodes,
@@ -217,15 +254,48 @@ create subject's directories on hard disk
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{electrodes}}{characters indicating integers such as
+\code{"1-14,20-30"}, or integer vector of electrode numbers}
+
+\item{\code{reference_name}}{see method \code{get_reference}}
+
+\item{\code{subset}}{whether to subset the resulting data table}
+
+\item{\code{simplify}}{whether to only return electrodes}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+If \code{simplify} is true, returns a vector of electrodes
+that are valid (or won't be excluded) under given reference; otherwise
+returns a table. If \code{subset} is true, then the table will be
+subset and only rows with electrodes to be loaded will be kept.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_frequency"></a>}}
 \if{latex}{\out{\hypertarget{method-get_frequency}{}}}
 \subsection{Method \code{get_frequency()}}{
+check and get subject's frequency table, time-freqency
+decomposition is needed.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_frequency(simplify = TRUE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{simplify}}{whether to simplify as vector}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+If \code{simplify} is true, returns a vector of frequencies;
+otherwise returns a table.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

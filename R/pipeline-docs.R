@@ -2,7 +2,8 @@
 #' @name rave-pipeline
 #' @description Utility functions for 'RAVE' pipelines, currently designed for
 #' internal development use. The infrastructure will be deployed to 'RAVE' in
-#' the future to facilitate the "self-expanding" aim.
+#' the future to facilitate the "self-expanding" aim. Please check the official
+#' 'RAVE' website.
 #' @param pipe_dir where the pipeline directory is; can be set via system
 #' environment \code{Sys.setenv("RAVE_PIPELINE"=...)}
 #' @param quick whether to skip finished targets to save time
@@ -46,5 +47,10 @@
 #' pipeline collection folder that contains the pipeline information,
 #' structures, dependencies, etc.
 #' @param root_path the root directory for pipeline templates
+#' @param use_future whether to use \code{future} package
+#' @param check_interval when running in background (non-blocking mode),
+#' how often to check the pipeline
+#' @param progress_title,progress_max,progress_quiet control the progress,
+#' see \code{\link[dipsaus]{progress2}}.
 #' @param ... other parameters, targets, etc.
 NULL

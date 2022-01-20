@@ -56,6 +56,7 @@ activate_pipeline <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
   pipe_dir
 }
 
+#' @rdname rave-pipeline
 #' @export
 pipeline_target_names <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")){
   pipe_dir <- activate_pipeline(pipe_dir)
@@ -163,7 +164,7 @@ pipeline_debug <- function(
   }
 }
 
-#' @export
+# May be removed later if not really useful
 pipeline_run_interactive <- function(
   names, skip_names, env = parent.frame(),
   pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")

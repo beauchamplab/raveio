@@ -108,11 +108,10 @@ pipeline_run_async <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
   callr_function = NULL, use_future = TRUE,
   type = c("basic", "vanilla", "custom"),
-  check_interval = 1, packages = NULL,
-  use_rs_job = FALSE, rs_job_name = "rave-pipeline",
+  check_interval = 1,
   progress_title = "Executing in Progress",
   progress_max = NA,
-  progress_quiet = !(use_rs_job || dipsaus::shiny_is_running()),
+  progress_quiet = !dipsaus::shiny_is_running(),
   ...){
   type <- match.arg(type)
   callr_function <- substitute(callr_function)

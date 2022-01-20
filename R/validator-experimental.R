@@ -1,3 +1,25 @@
+#' @title Prepare 'RAVE' subject power (over frequency and time) data
+#' @param subject character of project and subject, such as \code{"demo/YAB"},
+#' or \code{\link{RAVESubject}} instance
+#' @param electrodes integer vector of electrodes
+#' @param epoch_name epoch name to be loaded
+#' @param reference_name reference settings to be loaded
+#' @param time_windows a list of time windows that are relative to epoch onset
+#' time
+#' @return A \code{\link[dipsaus]{fastmap2}} (basically a list) of objects:
+#' \describe{
+#' \item{\code{subject}}{A \code{\link{RAVESubject}} instance}
+#' \item{\code{epoch_name}}{Same as input \code{epoch_name}}
+#' \item{\code{epoch}}{A \code{\link{RAVEEpoch}} instance}
+#' \item{\code{reference_name}}{Same as input \code{reference_name}}
+#' \item{\code{reference_table}}{A data frame of reference}
+#' \item{\code{electrode_table}}{A data frame of electrode information}
+#' \item{\code{frequency}}{A vector of frequencies}
+#' \item{\code{time_points}}{A vector of time-points}
+#' \item{\code{power_list}}{A list of power data of the electrodes}
+#' \item{\code{power_dimnames}}{A list of trial indices, frequencies, time
+#' points, and electrodes that are loaded}
+#' }
 #' @export
 prepare_power <- function(subject, electrodes,
                           epoch_name, reference_name,
@@ -68,14 +90,13 @@ prepare_power <- function(subject, electrodes,
   re$electrode_table <- electrode_table
 
   frequency_table <- subject$get_frequency(simplify = FALSE)
-  re$frequency_table <- frequency_table
+  re$frequency <- frequency_table$Frequency
 
   loading <- subset(electrode_table, subset = electrode_table$isLoaded)
   electrode_list <- unique(loading$Electrode)
   re$electrode_list <- electrode_list
 
-  ref_table <- subset(reference_table, Electrode %in%
-                        electrode_list)
+  ref_table <- reference_table[reference_table$Electrode %in% electrode_list, ]
   references_list <- unique(ref_table$Reference)
   re$references_list <- references_list
 
@@ -121,6 +142,7 @@ prepare_power <- function(subject, electrodes,
   power_dimnames <- dimnames(power_list[[1]])
   power_dimnames$Electrode <- electrode_list
   re$power_dimnames <- power_dimnames
+  re$time_points <- power_dimnames$Time
 
   re
 }
