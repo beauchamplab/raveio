@@ -124,6 +124,51 @@ RAVESubject <- R6::R6Class(
       }
     },
 
+    #' @description set default key-value pair for the subject, used by 'RAVE'
+    #' modules
+    #' @param key character
+    #' @param value value of the key
+    #' @return The same as \code{value}
+    set_default = function(key, value){
+
+      stopifnot2(is.character(key) && length(key) == 1, msg = "`key` must be a character of length 1")
+      force(value)
+      default_path <- file.path(self$meta_path, "defaults.yaml")
+      defaults <- dipsaus::fastmap2()
+      if(file.exists(default_path)){
+        load_yaml(default_path, map = defaults)
+      }
+      defaults[[key]] <- value
+      tmpfile <- tempfile()
+      on.exit({
+        unlink(tmpfile)
+      })
+      save_yaml(x = defaults, file = tmpfile)
+      file.copy(tmpfile, default_path, overwrite = TRUE, recursive = FALSE)
+      invisible(value)
+    },
+
+    #' @description get default key-value pairs for the subject, used by 'RAVE'
+    #' modules
+    #' @param ... single key, or a vector of character keys
+    #' @param default_if_missing default value is any key is missing
+    #' @param simplify whether to simplify the results if there is only one key
+    #' to fetch; default is \code{TRUE}
+    #' @return A named list of key-value pairs, or if one key is specified and
+    #' \code{simplify=TRUE}, then only the value will be returned.
+    get_default = function(..., default_if_missing = NULL, simplify = TRUE){
+      default_path <- file.path(self$meta_path, "defaults.yaml")
+      defaults <- dipsaus::fastmap2(missing_default = default_if_missing)
+      if(file.exists(default_path)){
+        load_yaml(default_path, map = defaults)
+      }
+      re <- defaults[...]
+      if(simplify && length(re) == 1){
+        re <- re[[1]]
+      }
+      re
+    },
+
     #' @description check and get subject's epoch information
     #' @param epoch_name epoch name, depending on the subject's meta files
     #' @param as_table whether to convert to \code{\link{data.frame}}; default

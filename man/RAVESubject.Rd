@@ -71,6 +71,8 @@ no path exists, values will be \code{NA}}
 \item \href{#method-meta_data}{\code{RAVESubject$meta_data()}}
 \item \href{#method-valid_electrodes}{\code{RAVESubject$valid_electrodes()}}
 \item \href{#method-initialize_paths}{\code{RAVESubject$initialize_paths()}}
+\item \href{#method-set_default}{\code{RAVESubject$set_default()}}
+\item \href{#method-get_default}{\code{RAVESubject$get_default()}}
 \item \href{#method-get_epoch}{\code{RAVESubject$get_epoch()}}
 \item \href{#method-get_reference}{\code{RAVESubject$get_reference()}}
 \item \href{#method-get_electrode_table}{\code{RAVESubject$get_electrode_table()}}
@@ -184,6 +186,56 @@ create subject's directories on hard disk
 \item{\code{include_freesurfer}}{whether to create 'FreeSurfer' path}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_default"></a>}}
+\if{latex}{\out{\hypertarget{method-set_default}{}}}
+\subsection{Method \code{set_default()}}{
+set default key-value pair for the subject, used by 'RAVE'
+modules
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$set_default(key, value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{character}
+
+\item{\code{value}}{value of the key}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The same as \code{value}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_default"></a>}}
+\if{latex}{\out{\hypertarget{method-get_default}{}}}
+\subsection{Method \code{get_default()}}{
+get default key-value pairs for the subject, used by 'RAVE'
+modules
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_default(..., default_if_missing = NULL, simplify = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{single key, or a vector of character keys}
+
+\item{\code{default_if_missing}}{default value is any key is missing}
+
+\item{\code{simplify}}{whether to simplify the results if there is only one key
+to fetch; default is \code{TRUE}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A named list of key-value pairs, or if one key is specified and
+\code{simplify=TRUE}, then only the value will be returned.
 }
 }
 \if{html}{\out{<hr>}}

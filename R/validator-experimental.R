@@ -60,7 +60,10 @@ prepare_power <- function(subject, electrodes,
     if(!length(subject$epoch_names)){
       stop("No epoch file found in this subject. Please check meta folder.")
     }
-    epoch_name <- subject$epoch_names[[1]]
+    epoch_name <- subject$get_default('epoch_name', default_if_missing = subject$epoch_names[[1]])
+    if(!epoch_name %in% subject$epoch_names){
+      epoch_name <- subject$epoch_names[[1]]
+    }
     message("No epoch_name specified, using epoch `", epoch_name, "`.")
   }
   epoch <- subject$get_epoch(epoch_name = epoch_name,
@@ -72,7 +75,10 @@ prepare_power <- function(subject, electrodes,
     if(!length(subject$reference_names)){
       stop("No reference file found in this subject. Please check meta folder.")
     }
-    reference_name <- subject$reference_names[[1]]
+    reference_name <- subject$get_default('reference_name', default_if_missing = subject$reference_names[[1]])
+    if(!reference_name %in% subject$reference_names){
+      reference_name <- subject$reference_names[[1]]
+    }
     message("No reference_name specified, using reference `", reference_name, "`.")
   }
   reference_table <-
