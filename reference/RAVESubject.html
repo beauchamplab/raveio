@@ -167,6 +167,8 @@ no path exists, values will be <code>NA</code></p></dd>
 <li><p><a href="#method-meta_data"><code>RAVESubject$meta_data()</code></a></p></li>
 <li><p><a href="#method-valid_electrodes"><code>RAVESubject$valid_electrodes()</code></a></p></li>
 <li><p><a href="#method-initialize_paths"><code>RAVESubject$initialize_paths()</code></a></p></li>
+<li><p><a href="#method-set_default"><code>RAVESubject$set_default()</code></a></p></li>
+<li><p><a href="#method-get_default"><code>RAVESubject$get_default()</code></a></p></li>
 <li><p><a href="#method-get_epoch"><code>RAVESubject$get_epoch()</code></a></p></li>
 <li><p><a href="#method-get_reference"><code>RAVESubject$get_reference()</code></a></p></li>
 <li><p><a href="#method-get_electrode_table"><code>RAVESubject$get_electrode_table()</code></a></p></li>
@@ -285,15 +287,71 @@ default is false</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-get_epoch"></a><div class="section">
-<h3 id="method-get-epoch-">Method <code>get_epoch()</code><a class="anchor" aria-label="anchor" href="#method-get-epoch-"></a></h3>
-<p>check and get subject's epoch information</p><div class="section">
+</div><p></p><hr><a id="method-set_default"></a><div class="section">
+<h3 id="method-set-default-">Method <code>set_default()</code><a class="anchor" aria-label="anchor" href="#method-set-default-"></a></h3>
+<p>set default key-value pair for the subject, used by 'RAVE'
+modules</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_epoch</span><span class="op">(</span><span class="va">epoch_name</span>, as_table <span class="op">=</span> <span class="cn">FALSE</span>, trial_starts <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">set_default</span><span class="op">(</span><span class="va">key</span>, <span class="va">value</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>key</code></dt>
+<dd><p>character</p></dd>
+
+
+<dt><code>value</code></dt>
+<dd><p>value of the key</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
+<p>The same as <code>value</code></p>
+</div>
+
+</div><p></p><hr><a id="method-get_default"></a><div class="section">
+<h3 id="method-get-default-">Method <code>get_default()</code><a class="anchor" aria-label="anchor" href="#method-get-default-"></a></h3>
+<p>get default key-value pairs for the subject, used by 'RAVE'
+modules</p><div class="section">
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_default</span><span class="op">(</span><span class="va">...</span>, default_if_missing <span class="op">=</span> <span class="cn">NULL</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>...</code></dt>
+<dd><p>single key, or a vector of character keys</p></dd>
+
+
+<dt><code>default_if_missing</code></dt>
+<dd><p>default value is any key is missing</p></dd>
+
+
+<dt><code>simplify</code></dt>
+<dd><p>whether to simplify the results if there is only one key
+to fetch; default is <code>TRUE</code></p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
+<p>A named list of key-value pairs, or if one key is specified and
+<code>simplify=TRUE</code>, then only the value will be returned.</p>
+</div>
+
+</div><p></p><hr><a id="method-get_epoch"></a><div class="section">
+<h3 id="method-get-epoch-">Method <code>get_epoch()</code><a class="anchor" aria-label="anchor" href="#method-get-epoch-"></a></h3>
+<p>check and get subject's epoch information</p><div class="section">
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_epoch</span><span class="op">(</span><span class="va">epoch_name</span>, as_table <span class="op">=</span> <span class="cn">FALSE</span>, trial_starts <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>epoch_name</code></dt>
 <dd><p>epoch name, depending on the subject's meta files</p></dd>
 
@@ -311,7 +369,7 @@ default is 0</p></dd>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
+<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
 <p>If <code>as_table</code> is <code>FALSE</code>, then returns as
 <code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance; otherwise returns epoch table; will
 raise errors when file is missing or the epoch is invalid.</p>
@@ -320,12 +378,12 @@ raise errors when file is missing or the epoch is invalid.</p>
 </div><p></p><hr><a id="method-get_reference"></a><div class="section">
 <h3 id="method-get-reference-">Method <code>get_reference()</code><a class="anchor" aria-label="anchor" href="#method-get-reference-"></a></h3>
 <p>check and get subject's reference information</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_reference</span><span class="op">(</span><span class="va">reference_name</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>reference_name</code></dt>
 <dd><p>reference name, depending on the subject's meta
 file settings</p></dd>
@@ -338,7 +396,7 @@ file settings</p></dd>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
 <p>If <code>simplify</code> is true, returns a vector of reference
 electrode names, otherwise returns the whole table; will
 raise errors when file is missing or the reference is invalid.</p>
@@ -348,7 +406,7 @@ raise errors when file is missing or the reference is invalid.</p>
 <h3 id="method-get-electrode-table-">Method <code>get_electrode_table()</code><a class="anchor" aria-label="anchor" href="#method-get-electrode-table-"></a></h3>
 <p>check and get subject's electrode table with electrodes
 that are load-able</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_electrode_table</span><span class="op">(</span>
   <span class="va">electrodes</span>,
   <span class="va">reference_name</span>,
@@ -358,7 +416,7 @@ that are load-able</p><div class="section">
 </div>
 
 <div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>electrodes</code></dt>
 <dd><p>characters indicating integers such as
 <code>"1-14,20-30"</code>, or integer vector of electrode numbers</p></dd>
@@ -379,7 +437,7 @@ that are load-able</p><div class="section">
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
+<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
 <p>If <code>simplify</code> is true, returns a vector of electrodes
 that are valid (or won't be excluded) under given reference; otherwise
 returns a table. If <code>subset</code> is true, then the table will be
@@ -390,12 +448,12 @@ subset and only rows with electrodes to be loaded will be kept.</p>
 <h3 id="method-get-frequency-">Method <code>get_frequency()</code><a class="anchor" aria-label="anchor" href="#method-get-frequency-"></a></h3>
 <p>check and get subject's frequency table, time-freqency
 decomposition is needed.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_frequency</span><span class="op">(</span>simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>simplify</code></dt>
 <dd><p>whether to simplify as vector</p></dd>
 
@@ -403,7 +461,7 @@ decomposition is needed.</p><div class="section">
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
 <p>If <code>simplify</code> is true, returns a vector of frequencies;
 otherwise returns a table.</p>
 </div>
@@ -411,12 +469,12 @@ otherwise returns a table.</p>
 </div><p></p><hr><a id="method-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
