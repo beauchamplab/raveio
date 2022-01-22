@@ -107,8 +107,7 @@ prepare_power <- function(subject, electrodes,
   re$references_list <- references_list
 
   # load references
-  ncores <- raveio_getopt("max_worker", default = 1L)
-  dipsaus::lapply_callr(references_list, function(ref_name){
+  dipsaus::lapply_async2(references_list, function(ref_name){
     ns <- asNamespace("raveio")
     ref <- ns$LFP_electrode$new(
       subject = subject,
@@ -117,16 +116,12 @@ prepare_power <- function(subject, electrodes,
     ref$trial_intervals <- time_windows
     reference_data <- ref$load_data(type = "power")
     NULL
-  }, .callback = function(ref_name){
+  }, callback = function(ref_name){
     sprintf("Loading Reference | %s", ref_name)
-  }, .globals = list(
-    subject = subject,
-    epoch = epoch,
-    time_windows = time_windows
-  ), .ncores = ncores, .packages = "raveio")
+  }, plan = FALSE)
 
   # load actual power, reference on the fly
-  power_list <- dipsaus::lapply_callr(electrode_list, function(e){
+  power_list <- dipsaus::lapply_async2(electrode_list, function(e){
     ns <- asNamespace('raveio')
     ref_name <- reference_table$Reference[reference_table$Electrode == e]
     el <- ns$LFP_electrode$new(subject = subject, e, is_reference = FALSE)
@@ -135,14 +130,9 @@ prepare_power <- function(subject, electrodes,
     el$set_epoch(epoch)
     el$trial_intervals <- time_windows
     el$load_data(type = "power")
-  }, .globals = list(
-    reference_table = reference_table,
-    subject = subject,
-    epoch = epoch,
-    time_windows = time_windows
-  ), .callback = function(e){
+  }, callback = function(e){
     sprintf("Loading Electrode | %s", e)
-  }, .ncores = ncores, .packages = "raveio")
+  }, plan = FALSE)
   re$power_list <- power_list
 
   power_dimnames <- dimnames(power_list[[1]])
