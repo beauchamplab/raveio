@@ -109,6 +109,9 @@
     <loc>/reference/pipeline_install.html</loc>
   </url>
   <url>
+    <loc>/reference/pipeline_settings_get_set.html</loc>
+  </url>
+  <url>
     <loc>/reference/prepare_power.html</loc>
   </url>
   <url>
@@ -170,5 +173,8 @@
   </url>
   <url>
     <loc>/reference/time_diff2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/with_future_parallel.html</loc>
   </url>
 </urlset>
