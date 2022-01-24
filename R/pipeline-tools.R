@@ -528,3 +528,74 @@ pipeline_description <- function (file) {
   class(desc) <- "packageDescription"
   desc
 }
+
+
+#' @name pipeline_settings_get_set
+#' @title Get or change pipeline input parameter settings
+#' @param key,... the character key(s) to get or set
+#' @param default the default value is key is missing
+#' @param constraint the constraint of the resulting value; if not \code{NULL},
+#' then result must be within the \code{constraint} values, otherwise the
+#' first element of \code{constraint} will be returned. This is useful to make
+#' sure the results stay within given options
+#' @param pipeline_settings_path the settings file of the pipeline, must be
+#' a 'yaml' file; default is \code{'settings.yaml'} in the current pipeline
+#' @return \code{pipeline_settings_set} returns a list of all the settings.
+#' \code{pipeline_settings_get} returns the value of given key.
+#' @export
+pipeline_settings_set <- function(
+  ...,
+  pipeline_settings_path = file.path(Sys.getenv("RAVE_PIPELINE", "."), "settings.yaml")
+){
+  if(!file.exists(pipeline_settings_path)){
+    stop("Cannot find settings file:\n  ", pipeline_settings_path)
+  }
+  settings <- load_yaml(pipeline_settings_path)
+  args <- list(...)
+  dipsaus::list_to_fastmap2(args, map = settings)
+  tf <- tempfile()
+  on.exit({ unlink(tf) })
+  raveio::save_yaml(x = settings, file = tf)
+  file.copy(from = tf, to = pipeline_settings_path,
+            overwrite = TRUE, recursive = FALSE)
+  settings
+}
+
+
+`%OF%` <- function(lhs, rhs){
+  if(length(rhs)){ de <- rhs[[1]] } else { de <- rhs }
+  lhs <- lhs[!is.na(lhs)]
+  if(!length(lhs)){ return(de) }
+  sel <- lhs %in% rhs
+  if(any(sel)){ return(lhs[sel][[1]]) }
+  return(de)
+}
+
+#' @rdname pipeline_settings_get_set
+#' @export
+pipeline_settings_get <- function(
+  key, default = NULL, constraint = NULL,
+  pipeline_settings_path = file.path(Sys.getenv("RAVE_PIPELINE", "."), "settings.yaml")) {
+  if(!file.exists(pipeline_settings_path)){
+    stop("Cannot find settings file:\n  ", pipeline_settings_path)
+  }
+
+  settings <- load_yaml(pipeline_settings_path)
+
+  if(missing(key)){ return(settings) }
+  if(!settings$`@has`(key)){
+    re <- default
+  } else {
+    re <- settings[[key]]
+  }
+
+  if(length(constraint)){
+    re <- re %OF% constraint
+  }
+  re
+
+}
+
+
+
+

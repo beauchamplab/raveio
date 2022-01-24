@@ -4,7 +4,10 @@
 \alias{get_projects}
 \title{Get all possible projects in 'RAVE' directory}
 \usage{
-get_projects()
+get_projects(refresh = TRUE)
+}
+\arguments{
+\item{refresh}{whether to refresh the cache; default is true}
 }
 \value{
 characters of project names

@@ -169,3 +169,48 @@ R_user_dir <- function (package, which = c("data", "config", "cache")) {
   file.path(path, "R", package)
 }
 
+#' Enable parallel computing provided by 'future' package within the context
+#' @param expr the expression to be evaluated
+#' @param env environment of the \code{expr}
+#' @param quoted whether \code{expr} has been quoted; default is false
+#' @param on_failure alternative 'future' plan to use if forking a process
+#' is disallowed; this usually occurs on 'Windows' machines; see details.
+#' @param ... additional parameters passing into
+#' \code{\link[dipsaus]{make_forked_clusters}}
+#' @return The evaluation results of \code{expr}
+#' @details Some 'RAVE' functions such as \code{\link{prepare_power}} support
+#' parallel computing to speed up. However, the parallel computing is optional.
+#' You can enable it by wrapping the function calls within
+#' \code{with_future_parallel} (see examples).
+#'
+#' The default plan is to use 'forked' R sessions. This is a convenient, fast,
+#' and relative simple way to create multiple R processes that share the same
+#' memories. However, on some machines such as 'Windows' the support has not
+#' yet been implemented. In such cases, the plan fall backs to a back-up
+#' specified by \code{on_failure}. By default, \code{on_failure} is
+#' \code{'multisession'}, a heavier implementation than forking the process, and
+#' slightly longer ramp-up time.
+#' However, the difference should be marginal for most of the functions.
+#'
+#' When parallel computing is enabled, the number of parallel workers is
+#' specified by the option \code{raveio_getopt("max_worker", 1L)}.
+#' @examples
+#' \dontrun{
+#'
+#' with_future_parallel({
+#'   prepare_power("demo/DemoSubject")
+#' })
+#'
+#' }
+#' @export
+with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
+                                 on_failure = 'multisession', ...){
+  if(!quoted){
+    expr <- substitute(expr)
+  }
+  dipsaus::make_forked_clusters(
+    workers = raveio::raveio_getopt("max_worker", 1L),
+    on_failure = on_failure, clean = TRUE, ...
+  )
+  eval(expr, envir = env)
+}

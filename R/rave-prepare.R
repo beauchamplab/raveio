@@ -23,7 +23,17 @@
 #' @export
 prepare_power <- function(subject, electrodes,
                           epoch_name, reference_name,
-                          time_windows = c(-1,2)) {
+                          time_windows) {
+  re <- dipsaus::fastmap2()
+
+  # Subject instance
+  subject <- as_rave_subject(subject, strict = TRUE)
+  re$subject <- subject
+
+  if(missing(time_windows)){
+    time_windows <- subject$get_default("time_windows", default_if_missing = list(c(0, 2)))
+    message("No time_windows specified, using default: ", deparse(time_windows))
+  }
 
   if(!is.list(time_windows)){
     time_windows <- unlist(time_windows)
@@ -48,12 +58,6 @@ prepare_power <- function(subject, electrodes,
       stop("`time_windows` time intervals must be in ascending order")
     }
   })
-
-  re <- dipsaus::fastmap2()
-
-  # Subject instance
-  subject <- as_rave_subject(subject, strict = TRUE)
-  re$subject <- subject
 
   # Epoch
   if(missing(epoch_name)){

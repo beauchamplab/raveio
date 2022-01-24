@@ -331,7 +331,7 @@ subset and only rows with electrodes to be loaded will be kept.
 \if{html}{\out{<a id="method-get_frequency"></a>}}
 \if{latex}{\out{\hypertarget{method-get_frequency}{}}}
 \subsection{Method \code{get_frequency()}}{
-check and get subject's frequency table, time-freqency
+check and get subject's frequency table, time-frequency
 decomposition is needed.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_frequency(simplify = TRUE)}\if{html}{\out{</div>}}

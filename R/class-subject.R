@@ -295,7 +295,7 @@ RAVESubject <- R6::R6Class(
       electrode_table
     },
 
-    #' @description check and get subject's frequency table, time-freqency
+    #' @description check and get subject's frequency table, time-frequency
     #' decomposition is needed.
     #' @param simplify whether to simplify as vector
     #' @return If \code{simplify} is true, returns a vector of frequencies;

@@ -14,12 +14,20 @@ as_rave_project <- function(project, ...){
 
 
 #' Get all possible projects in 'RAVE' directory
+#' @param refresh whether to refresh the cache; default is true
 #' @return characters of project names
-get_projects <- function(){
-  projects <- list.dirs(raveio_getopt('data_dir'), full.names = FALSE, recursive = FALSE)
-  projects <- projects[stringr::str_detect(projects, '^[a-zA-Z0-9]+')]
-  projects
-}
+#' @export
+get_projects <- local({
+  re <- NULL
+  function(refresh = TRUE){
+    if(refresh || !length(re)){
+      projects <- list.dirs(raveio_getopt('data_dir'), full.names = FALSE, recursive = FALSE)
+      projects <- projects[stringr::str_detect(projects, '^[a-zA-Z0-9]+')]
+      re <<- projects
+    }
+    re
+  }
+})
 
 #' Definition for 'RAVE' project class
 #' @export
