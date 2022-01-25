@@ -79,9 +79,9 @@ locked}
 \item{\code{@freeze_blocks}}{whether to free block, internally used}
 
 \item{\code{@freeze_lfp_ecog}}{whether to freeze electrodes that record
-'LFP' and 'ECoG' signals, internally used}
+'LFP' signals, internally used}
 
-\item{\code{@lfp_ecog_sample_rate}}{'LFP' and 'ECoG' sample rates, internally used}
+\item{\code{@lfp_ecog_sample_rate}}{'LFP' sample rates, internally used}
 
 \item{\code{all_blocks}}{characters, all possible blocks even not included in
 some projects}
@@ -173,7 +173,7 @@ set electrodes
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$set_electrodes(
   electrodes,
-  type = c("LFP", "ECoG", "Spike", "EEG"),
+  type = SIGNAL_TYPES,
   add = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -183,8 +183,7 @@ set electrodes
 \describe{
 \item{\code{electrodes}}{integer vectors}
 
-\item{\code{type}}{type of electrodes, options are \code{LFP}, \code{ECoG},
-and \code{Spike}.}
+\item{\code{type}}{signal type of electrodes, see \code{\link{SIGNAL_TYPES}}}
 
 \item{\code{add}}{whether to add to current settings}
 }
@@ -197,10 +196,7 @@ and \code{Spike}.}
 \subsection{Method \code{set_sample_rates()}}{
 set sample frequency
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$set_sample_rates(
-  srate,
-  type = c("LFP", "ECoG", "Spike", "EEG")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$set_sample_rates(srate, type = SIGNAL_TYPES)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -209,7 +205,7 @@ set sample frequency
 \item{\code{srate}}{sample rate, must be positive number}
 
 \item{\code{type}}{electrode type to set sample rate. In 'rave', all electrodes
-with the same type must have the same sample rate.}
+with the same signal type must have the same sample rate.}
 }
 \if{html}{\out{</div>}}
 }

@@ -640,8 +640,7 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 #' @param electrodes integers electrode numbers
 #' @param format integer from 1 to 6, or character. For characters, you can get
 #' options by running \code{names(IMPORT_FORMATS)}
-#' @param data_type electrode type; only \code{'LFP'}, \code{'ECoG'}, and
-#' \code{'EEG'} are supported
+#' @param data_type electrode signal type; see \code{\link{SIGNAL_TYPES}}
 #' @param sample_rate sample frequency, must be positive
 #' @param conversion physical unit conversion, choices are \code{NA},
 #' \code{V}, \code{mV}, \code{uV}
@@ -728,22 +727,18 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 #'
 #' @export
 rave_import <- function(project_name, subject_code, blocks, electrodes, format,
-                        sample_rate, conversion = NA, data_type = c('LFP', 'ECoG', 'EEG'),
+                        sample_rate, conversion = NA, data_type = 'LFP',
                         task_runs = NULL, add = FALSE, ...){
 
-  data_type <- match.arg(data_type)
-
-  .type <- list(
-    'ECoG' = 'A',
-    'LFP' = 'A',
-    'EEG' = 'A'
-  )[[data_type]]
+  stopifnot2(isTRUE(data_type %in% SIGNAL_TYPES), msg = paste(
+    "Unsupported electrode signal type:", data_type
+  ))
 
   switch (
-    .type,
+    data_type,
 
     # Continuous iEEG/EEG signals, will be wavelet and perform spectral analysis
-    'A' = {
+    'LFP' = {
       generic_name <- IMPORT_FORMATS[[format]]
 
       if(!is_valid_ish(generic_name, max_len = 1L, mode = 'character', blank = TRUE)){
@@ -769,6 +764,9 @@ rave_import <- function(project_name, subject_code, blocks, electrodes, format,
         add = add, data_type = data_type,
         ...
       )
+    },
+    {
+      stop("Electrode with signal type: ", data_type, " has not been implemented yet")
     }
   )
 

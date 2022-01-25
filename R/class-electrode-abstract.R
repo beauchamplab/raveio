@@ -43,12 +43,20 @@ RAVEAbstarctElectrode <- R6::R6Class(
   portable = FALSE,
   cloneable = TRUE,
   private = list(
-    intervals = list()
+    intervals = list(),
+    .type = 'Unknown',
+    .location = "Others"
   ),
   public = list(
 
-    #' @field type type of electrode
-    type = 'Electrode',  # LFP, Mini, EKG, Microwire...
+
+    #' @field power_enabled whether the electrode can be used in power analyses
+    #' such as frequency, or frequency-time analyses;
+    #' this usually requires transforming the electrode raw voltage signals
+    #' using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+    #' 'multi-taper', etc. If an electrode has power data, then it's power data
+    #' can be loaded via \code{\link{prepare_power}} method.
+    power_enabled = FALSE,
 
     #' @field subject subject instance (\code{\link{RAVESubject}})
     subject = NULL,
@@ -136,6 +144,25 @@ RAVEAbstarctElectrode <- R6::R6Class(
 
   ),
   active = list(
+
+    #' @field type signal type of the electrode, such as 'LFP', 'Spike', and
+    #' 'EKG'; default is 'Unknown'
+    type = function(){
+      private$.type
+    },
+
+    #' @field location location type of the electrode, see
+    #' \code{\link{LOCATION_TYPES}} for details
+    location = function(v){
+      if(!missing(v)){
+        if(!v %in% LOCATION_TYPES){
+          warning("Unsupported electrode location type: ", v, ". Use `Others` instead.")
+          v <- "Others"
+        }
+        private$.location <- v
+      }
+      private$.location
+    },
 
     #' @field exists whether electrode exists in subject
     exists = function(){

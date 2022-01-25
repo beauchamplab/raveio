@@ -55,7 +55,12 @@ e$clear_memory()
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{type}}{type of electrode}
+\item{\code{power_enabled}}{whether the electrode can be used in power analyses
+such as frequency, or frequency-time analyses;
+this usually requires transforming the electrode raw voltage signals
+using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+'multi-taper', etc. If an electrode has power data, then it's power data
+can be loaded via \code{\link{prepare_power}} method.}
 }
 \if{html}{\out{</div>}}
 }

@@ -51,12 +51,19 @@ LFP_electrode <- R6::R6Class(
     persisted_power_unref = NULL,
     persisted_phase_unref = NULL,
     persisted_coef_ref = NULL,
-    referenced_power_cache_file = character(0)
+    referenced_power_cache_file = character(0),
+    .type = 'LFP',
+    .location = 'iEEG'
   ),
   public = list(
 
-    #' @field type type of electrode
-    type = 'LFP',
+    #' @field power_enabled whether the electrode can be used in power analyses
+    #' such as frequency, or frequency-time analyses;
+    #' this usually requires transforming the electrode raw voltage signals
+    #' using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+    #' 'multi-taper', etc. If an electrode has power data, then it's power data
+    #' can be loaded via \code{\link{prepare_power}} method.
+    power_enabled = TRUE,
 
     #' @description set reference for current electrode
     #' @param reference either \code{NULL} or \code{LFP_electrode} instance
@@ -865,3 +872,4 @@ LFP_electrode <- R6::R6Class(
 
   )
 )
+

@@ -25,6 +25,9 @@ save_meta2 <- function(data, meta_type, project_name, subject_code){
       data$Coord_z <- 0
       data$Label <- ''
     }
+    if(!"LocationType" %in% names(data)){
+      data$LocationType <- "iEEG"
+    }
 
     safe_write_csv(data, file = file.path(meta_dir, 'electrodes.csv'), row.names = FALSE)
   }else if(meta_type == 'time_points'){
@@ -78,6 +81,17 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
         if(any(na_labels)){
           tbl$Label[na_labels] <- paste0('Unlabeled', seq_len(sum(na_labels)))
         }
+
+        if(!'LocationType' %in% names(tbl)){
+          tbl$LocationType <- "iEEG"
+        }
+        if(any(!tbl$LocationType %in% LOCATION_TYPES)){
+          usp <- unique(tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES])
+          warning("Unsupported electrode location type(s) found: ", paste(usp, collapse = ", "),
+                  ". Alter these electrode types to `Others`.")
+          tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES] <- "Others"
+        }
+        tbl$LocationType[is.na(tbl$LocationType)] <- "Others"
 
         return(tbl)
       }

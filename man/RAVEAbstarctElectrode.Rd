@@ -47,7 +47,12 @@ e$.set_reference(ref, e$type)
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{type}}{type of electrode}
+\item{\code{power_enabled}}{whether the electrode can be used in power analyses
+such as frequency, or frequency-time analyses;
+this usually requires transforming the electrode raw voltage signals
+using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+'multi-taper', etc. If an electrode has power data, then it's power data
+can be loaded via \code{\link{prepare_power}} method.}
 
 \item{\code{subject}}{subject instance (\code{\link{RAVESubject}})}
 
@@ -65,6 +70,12 @@ or an electrode instance inherits \code{RAVEAbstarctElectrode}}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{type}}{signal type of the electrode, such as 'LFP', 'Spike', and
+'EKG'; default is 'Unknown'}
+
+\item{\code{location}}{location type of the electrode, see
+\code{\link{LOCATION_TYPES}} for details}
+
 \item{\code{exists}}{whether electrode exists in subject}
 
 \item{\code{preprocess_file}}{path to preprocess 'HDF5' file}

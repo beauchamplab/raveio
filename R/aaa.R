@@ -6,6 +6,28 @@
 #' @importFrom filearray fmap
 NULL
 
+#' @name raveio-constants
+#' @title The constant variables
+#' @details
+#' \code{SIGNAL_TYPES} has the following options: \code{'LFP'}, \code{'Spike'},
+#' \code{'EKG'}, \code{'Audio'}, \code{'Photodiode'}, or \code{'Unknown'}. As
+#' of 'raveio' \code{0.0.6}, only \code{'LFP'} (see \code{\link{LFP_electrode}})
+#' signal type is supported.
+#'
+#'
+#' \code{LOCATION_TYPES} is a list of the electrode location types:
+#' \code{'iEEG'} (this includes the next two), \code{'sEEG'} (stereo),
+#' \code{'ECoG'} (surface), \code{'EEG'} (scalp),
+#' \code{'Others'}. See field \code{'location'} in
+#' \code{\link{RAVEAbstarctElectrode}}
+#'
+#' @export
+SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Audio', 'Photodiode', 'Unknown')
+
+#' @rdname raveio-constants
+#' @export
+LOCATION_TYPES <- c('iEEG', 'sEEG', 'ECoG', 'EEG', 'Others')
+
 #' @export
 glue::glue
 

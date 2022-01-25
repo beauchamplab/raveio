@@ -12,7 +12,7 @@ rave_import(
   format,
   sample_rate,
   conversion = NA,
-  data_type = c("LFP", "ECoG", "EEG"),
+  data_type = "LFP",
   task_runs = NULL,
   add = FALSE,
   ...
@@ -42,8 +42,7 @@ options by running \code{names(IMPORT_FORMATS)}}
 \item{conversion}{physical unit conversion, choices are \code{NA},
 \code{V}, \code{mV}, \code{uV}}
 
-\item{data_type}{electrode type; only \code{'LFP'}, \code{'ECoG'}, and
-\code{'EEG'} are supported}
+\item{data_type}{electrode signal type; see \code{\link{SIGNAL_TYPES}}}
 
 \item{task_runs}{for 'BIDS' formats only, see Section "Block vs. Session"}
 

@@ -4,7 +4,14 @@
 \alias{prepare_power}
 \title{Prepare 'RAVE' subject power (over frequency and time) data}
 \usage{
-prepare_power(subject, electrodes, epoch_name, reference_name, time_windows)
+prepare_power(
+  subject,
+  electrodes,
+  epoch_name,
+  reference_name,
+  time_windows,
+  signal_types = c("LFP")
+)
 }
 \arguments{
 \item{subject}{character of project and subject, such as \code{"demo/YAB"},
@@ -18,6 +25,11 @@ or \code{\link{RAVESubject}} instance}
 
 \item{time_windows}{a list of time windows that are relative to epoch onset
 time}
+
+\item{signal_types}{electrode signal types to be considered; default is
+'LFP'. This option rarely needs to change unless you really want to check
+the power data from other types. For other signal types, check
+\code{\link{SIGNAL_TYPES}}}
 }
 \value{
 A \code{\link[dipsaus]{fastmap2}} (basically a list) of objects:

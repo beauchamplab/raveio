@@ -6,6 +6,10 @@
 #' @param reference_name reference settings to be loaded
 #' @param time_windows a list of time windows that are relative to epoch onset
 #' time
+#' @param signal_types electrode signal types to be considered; default is
+#' 'LFP'. This option rarely needs to change unless you really want to check
+#' the power data from other types. For other signal types, check
+#' \code{\link{SIGNAL_TYPES}}
 #' @return A \code{\link[dipsaus]{fastmap2}} (basically a list) of objects:
 #' \describe{
 #' \item{\code{subject}}{A \code{\link{RAVESubject}} instance}
@@ -23,7 +27,12 @@
 #' @export
 prepare_power <- function(subject, electrodes,
                           epoch_name, reference_name,
-                          time_windows) {
+                          time_windows, signal_types = c("LFP")) {
+  unsupported_signal_types <- signal_types[!signal_types %in% SIGNAL_TYPES]
+  if(length(unsupported_signal_types)){
+    stop("Unsupported signal type(s): ", paste(unsupported_signal_types, collapse = ", "))
+  }
+
   re <- dipsaus::fastmap2()
 
   # Subject instance
@@ -91,12 +100,25 @@ prepare_power <- function(subject, electrodes,
   re$reference_table <- reference_table
 
   if(missing(electrodes)){
-    electrodes <- subject$electrodes
-    message("No electrodes specified, loading all electrodes.")
+    electrodes <- dipsaus::parse_svec(subject$get_default(
+      "electrodes", default_if_missing = subject$electrodes))
+    message("No electrodes specified, loading default electrodes: ", dipsaus::deparse_svec(electrodes))
+  } else {
+    electrodes <- dipsaus::parse_svec(electrodes)
   }
+  electrodes <- sort(electrodes, decreasing = FALSE)
+  electrode_types <- subject$electrode_types
+  available_electrodes <- subject$electrodes[electrode_types %in% signal_types & subject$has_wavelet]
+  electrodes <- electrodes[electrodes %in% available_electrodes]
+
+  if(!length(electrodes)){
+    stop("No electrode is available to load. Please check if you have run wavelet, or adjust the `signal_types`.")
+  }
+
   electrode_table <- subject$get_electrode_table(
     electrodes = electrodes,
     reference_name = reference_name)
+
   re$electrode_table <- electrode_table
 
   frequency_table <- subject$get_frequency(simplify = FALSE)
@@ -105,6 +127,9 @@ prepare_power <- function(subject, electrodes,
   loading <- subset(electrode_table, subset = electrode_table$isLoaded)
   electrode_list <- unique(loading$Electrode)
   re$electrode_list <- electrode_list
+
+  electrode_signal_types <- subject$electrode_types[subject$electrodes %in% electrode_list]
+  re$electrode_signal_types <- electrode_signal_types
 
   ref_table <- reference_table[reference_table$Electrode %in% electrode_list, ]
   references_list <- unique(ref_table$Reference)
@@ -139,10 +164,129 @@ prepare_power <- function(subject, electrodes,
   }, plan = FALSE)
   re$power_list <- power_list
 
+  # create electrode instances
+  electrode_instances <- lapply(electrode_list, function(e){
+    ref_name <- reference_table$Reference[reference_table$Electrode == e]
+    el <- LFP_electrode$new(subject = subject, e, is_reference = FALSE)
+    ref <- LFP_electrode$new(subject = subject, ref_name, is_reference = TRUE)
+    el
+  })
+  names(electrode_instances) <- electrode_list
+
+  re$electrode_instances <- electrode_instances
   power_dimnames <- dimnames(power_list[[1]])
   power_dimnames$Electrode <- electrode_list
   re$power_dimnames <- power_dimnames
+  re$power_dim <- sapply(power_dimnames, length)
   re$time_points <- power_dimnames$Time
 
+  # generate a list that should be used to calculate digest
+  digest_key <- list(
+    subject_id = subject$subject_id,
+    epoch_table = epoch$table[c("Block", "Time", "Trial")],
+    reference_table = reference_table,
+    time_points = power_dimnames$Time,
+    electrodes = electrode_list,
+    frequency_table = frequency_table,
+    electrode_signal_types = electrode_signal_types
+  )
+  binded_power_path <- dipsaus::digest(digest_key)
+  cache_root <- file.path(
+    raveio::raveio_getopt(key = 'tensor_temp_path', default = '~/rave_data/cache_dir/'),
+    "_binded_arrays_", binded_power_path, "power"
+  )
+  dir_create2(cache_root)
+
+  re$power <- dipsaus::fastmap2()
+  for(signal_type in unique(electrode_signal_types)){
+    # find electrodes
+    fbase <- file.path(cache_root, signal_type)
+    tmp_list <- power_list[electrode_signal_types == signal_type]
+    arr_dnames <- power_dimnames
+    arr_dnames$Electrode <- electrode_list[electrode_signal_types == signal_type]
+
+    if(length(tmp_list)){
+      # save to fbase
+      if(dir.exists(fbase)){
+        arr <- tryCatch({
+          filearray::filearray_load(fbase, mode = "readonly")
+        }, error = function(e){
+          unlink(fbase, recursive = TRUE, force = TRUE)
+          arr <- filearray::filearray_bind(.list = tmp_list, filebase = fbase, symlink = TRUE)
+          arr$.mode <- "readwrite"
+          dimnames(arr) <- arr_dnames
+          arr$.mode <- "readonly"
+        })
+      } else {
+        arr <- filearray::filearray_bind(.list = tmp_list, filebase = fbase, symlink = TRUE)
+        arr$.mode <- "readwrite"
+        dimnames(arr) <- arr_dnames
+        arr$.mode <- "readonly"
+      }
+
+      re$power[[signal_type]] <- arr
+    }
+
+  }
+
   re
+}
+
+#' @title Validate time windows to be used
+#' @description Make sure the time windows are valid intervals and returns
+#' a reshaped window list
+#' @param time_windows vectors or a list of time intervals
+#' @return A list of time intervals (ordered, length of 2)
+#' @examples
+#'
+#'
+#' # Simple time window
+#' validate_time_window(c(-1, 2))
+#'
+#' # Multiple windows
+#' validate_time_window(c(-1, 2, 3, 5))
+#'
+#' # alternatively
+#' validate_time_window(list(c(-1, 2), c(3, 5)))
+#'
+#'
+#' \dontrun{
+#'
+#' # Incorrect usage (will raise errors)
+#'
+#'   # Invalid interval (length must be two for each intervals)
+#'   validate_time_window(list(c(-1, 2, 3, 5)))
+#'
+#'   # Time intervals must be in ascending order
+#'   validate_time_window(c(2, 1))
+#'
+#' }
+#'
+#'
+#' @export
+validate_time_window <- function(time_windows){
+  if(!is.list(time_windows)){
+    time_windows <- unlist(time_windows)
+    if(length(time_windows) %% 2 != 0){
+      stop("`time_windows` must be a list of time intervals (length 2)")
+    }
+    time_windows <- matrix(time_windows, nrow = 2, byrow = FALSE)
+    time_windows <- as.list(as.data.frame(time_windows))
+    time_windows <- unname(time_windows)
+  }
+  lapply(time_windows, function(x){
+    if(length(x) != 2){
+      stop("`time_windows` must be a list of time intervals (length 2)")
+    }
+    if(!is.numeric(x)){
+      stop("`time_windows` must be a list of 'numerical' time intervals")
+    }
+    if(anyNA(x)){
+      stop("`time_windows` cannot contain NAs")
+    }
+    if(x[[1]] > x[[2]]){
+      stop("`time_windows` time intervals must be in ascending order")
+    }
+  })
+  time_windows
 }
