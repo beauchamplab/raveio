@@ -69,7 +69,7 @@ structure and 'BIDS' (very limited) format. Please see
   <span class="va">format</span>,
   <span class="va">sample_rate</span>,
   conversion <span class="op">=</span> <span class="cn">NA</span>,
-  data_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span>, <span class="st">"ECoG"</span>, <span class="st">"EEG"</span><span class="op">)</span>,
+  data_type <span class="op">=</span> <span class="st">"LFP"</span>,
   task_runs <span class="op">=</span> <span class="cn">NULL</span>,
   add <span class="op">=</span> <span class="cn">FALSE</span>,
   <span class="va">...</span>
@@ -102,8 +102,7 @@ options by running <code>names(IMPORT_FORMATS)</code></p></dd>
 <dd><p>physical unit conversion, choices are <code>NA</code>,
 <code>V</code>, <code>mV</code>, <code>uV</code></p></dd>
 <dt>data_type</dt>
-<dd><p>electrode type; only <code>'LFP'</code>, <code>'ECoG'</code>, and
-<code>'EEG'</code> are supported</p></dd>
+<dd><p>electrode signal type; see <code><a href="raveio-constants.html">SIGNAL_TYPES</a></code></p></dd>
 <dt>task_runs</dt>
 <dd><p>for 'BIDS' formats only, see Section "Block vs. Session"</p></dd>
 <dt>add</dt>

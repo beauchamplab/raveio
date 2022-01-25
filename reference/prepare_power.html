@@ -53,7 +53,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">prepare_power</span><span class="op">(</span><span class="va">subject</span>, <span class="va">electrodes</span>, <span class="va">epoch_name</span>, <span class="va">reference_name</span>, <span class="va">time_windows</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">prepare_power</span><span class="op">(</span>
+  <span class="va">subject</span>,
+  <span class="va">electrodes</span>,
+  <span class="va">epoch_name</span>,
+  <span class="va">reference_name</span>,
+  <span class="va">time_windows</span>,
+  signal_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -70,6 +77,11 @@ or <code><a href="RAVESubject.html">RAVESubject</a></code> instance</p></dd>
 <dt>time_windows</dt>
 <dd><p>a list of time windows that are relative to epoch onset
 time</p></dd>
+<dt>signal_types</dt>
+<dd><p>electrode signal types to be considered; default is
+'LFP'. This option rarely needs to change unless you really want to check
+the power data from other types. For other signal types, check
+<code><a href="raveio-constants.html">SIGNAL_TYPES</a></code></p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

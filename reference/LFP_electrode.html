@@ -61,8 +61,13 @@ Definition for 'LFP' electrodes"><!-- mathjax --><script src="https://cdnjs.clou
     </div>
     <div id="public-fields">
     <h2>Public fields</h2>
-    <p></p><div class="r6-fields"><dl><dt><code>type</code></dt>
-<dd><p>type of electrode</p></dd>
+    <p></p><div class="r6-fields"><dl><dt><code>power_enabled</code></dt>
+<dd><p>whether the electrode can be used in power analyses
+such as frequency, or frequency-time analyses;
+this usually requires transforming the electrode raw voltage signals
+using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+'multi-taper', etc. If an electrode has power data, then it's power data
+can be loaded via <code><a href="prepare_power.html">prepare_power</a></code> method.</p></dd>
 
 
 </dl><p></p></div>

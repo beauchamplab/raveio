@@ -144,11 +144,11 @@ locked</p></dd>
 
 <dt><code>@freeze_lfp_ecog</code></dt>
 <dd><p>whether to freeze electrodes that record
-'LFP' and 'ECoG' signals, internally used</p></dd>
+'LFP' signals, internally used</p></dd>
 
 
 <dt><code>@lfp_ecog_sample_rate</code></dt>
-<dd><p>'LFP' and 'ECoG' sample rates, internally used</p></dd>
+<dd><p>'LFP' sample rates, internally used</p></dd>
 
 
 <dt><code>all_blocks</code></dt>
@@ -244,7 +244,7 @@ structure is not native, for example, 'BIDS' format</p></dd>
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEPreprocessSettings</span><span class="op">$</span><span class="fu">set_electrodes</span><span class="op">(</span>
   <span class="va">electrodes</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span>, <span class="st">"ECoG"</span>, <span class="st">"Spike"</span>, <span class="st">"EEG"</span><span class="op">)</span>,
+  type <span class="op">=</span> <span class="va">SIGNAL_TYPES</span>,
   add <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div><p></p></div>
 </div>
@@ -256,8 +256,7 @@ structure is not native, for example, 'BIDS' format</p></dd>
 
 
 <dt><code>type</code></dt>
-<dd><p>type of electrodes, options are <code>LFP</code>, <code>ECoG</code>,
-and <code>Spike</code>.</p></dd>
+<dd><p>signal type of electrodes, see <code><a href="raveio-constants.html">SIGNAL_TYPES</a></code></p></dd>
 
 
 <dt><code>add</code></dt>
@@ -271,10 +270,7 @@ and <code>Spike</code>.</p></dd>
 <h3 id="method-set-sample-rates-">Method <code>set_sample_rates()</code><a class="anchor" aria-label="anchor" href="#method-set-sample-rates-"></a></h3>
 <p>set sample frequency</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEPreprocessSettings</span><span class="op">$</span><span class="fu">set_sample_rates</span><span class="op">(</span>
-  <span class="va">srate</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span>, <span class="st">"ECoG"</span>, <span class="st">"Spike"</span>, <span class="st">"EEG"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEPreprocessSettings</span><span class="op">$</span><span class="fu">set_sample_rates</span><span class="op">(</span><span class="va">srate</span>, type <span class="op">=</span> <span class="va">SIGNAL_TYPES</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -285,7 +281,7 @@ and <code>Spike</code>.</p></dd>
 
 <dt><code>type</code></dt>
 <dd><p>electrode type to set sample rate. In 'rave', all electrodes
-with the same type must have the same sample rate.</p></dd>
+with the same signal type must have the same sample rate.</p></dd>
 
 
 </dl><p></p></div>
