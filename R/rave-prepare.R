@@ -206,29 +206,34 @@ prepare_power <- function(subject, electrodes,
     arr_dnames$Electrode <- electrode_list[electrode_signal_types == signal_type]
 
     if(length(tmp_list)){
-      # save to fbase
-      if(dir.exists(fbase)){
-        arr <- tryCatch({
-          filearray::filearray_load(fbase, mode = "readonly")
-        }, error = function(e){
+
+      arr <- tryCatch({
+        filearray::filearray_checkload(
+          fbase, mode = "readonly", symlink_ok = TRUE,
+          rave_signature = binded_power_path,
+          signal_type = signal_type,
+          rave_data_type = "power"
+        )
+      }, error = function(e){
+        if(file.exists(fbase)){
           unlink(fbase, recursive = TRUE, force = TRUE)
-          arr <- filearray::filearray_bind(.list = tmp_list, filebase = fbase, symlink = TRUE)
-          arr$.mode <- "readwrite"
-          dimnames(arr) <- arr_dnames
-          arr$.mode <- "readonly"
-        })
-      } else {
+        }
         arr <- filearray::filearray_bind(.list = tmp_list, filebase = fbase, symlink = TRUE)
         arr$.mode <- "readwrite"
+        arr$.header$rave_signature <- binded_power_path
+        arr$.header$signal_type <- signal_type
+        arr$.header$rave_data_type <- "power"
         dimnames(arr) <- arr_dnames
         arr$.mode <- "readonly"
-      }
+        arr
+      })
 
       re$power[[signal_type]] <- arr
     }
 
   }
 
+  class(re) <- c("rave_prepare_power", "rave_repository", "fastmap2", "list")
   re
 }
 

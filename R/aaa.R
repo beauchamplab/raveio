@@ -28,6 +28,8 @@ SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Audio', 'Photodiode', 'Unknown')
 #' @export
 LOCATION_TYPES <- c('iEEG', 'sEEG', 'ECoG', 'EEG', 'Others')
 
+RAVEIO_FILEARRAY_VERSION <- 1L
+
 #' @export
 glue::glue
 
