@@ -56,7 +56,7 @@ power_baseline(
 \arguments{
 \item{x}{R array, \code{\link[filearray]{filearray}},
 \code{\link{ECoGTensor}}, or \code{'rave_prepare_power'} object created by
-\code{\link{prepare_power}}.}
+\code{\link{prepare_subject_power}}.}
 
 \item{baseline_windows}{list of baseline window (intervals)}
 
@@ -69,12 +69,12 @@ power_baseline(
 \item{...}{passed to other methods}
 
 \item{signal_types}{signal types to perform baseline corrections; applied
-to power repository object produced by \code{\link{prepare_power}}; default
-is \code{'LFP'}}
+to power repository object produced by \code{\link{prepare_subject_power}};
+default is \code{'LFP'}}
 
 \item{electrodes}{the electrodes to be included in baseline calculation;
-for power repository object produced by \code{\link{prepare_power}} only;
-default is all available electrodes in each of \code{signal_types}}
+for power repository object produced by \code{\link{prepare_subject_power}}
+only; default is all available electrodes in each of \code{signal_types}}
 
 \item{filebase}{where to store the output; default is \code{NULL} and is
 automatically determined}
@@ -117,9 +117,10 @@ be shared across electrodes (e.g. in some mini-electrodes), remove
 # Please see https://rave.wiki/ for more details
 
 library(raveio)
-repo <- prepare_power(subject = "demo/DemoSubject",
-                      time_windows = c(-1, 3),
-                      electrodes = 14)
+repo <- prepare_subject_power(
+  subject = "demo/DemoSubject",
+  time_windows = c(-1, 3),
+  electrodes = 14)
 
 ##### Direct baseline on LFP data
 baselined <- power_baseline(

@@ -4,7 +4,7 @@
 #' @title Calculate power baseline
 #' @param x R array, \code{\link[filearray]{filearray}},
 #' \code{\link{ECoGTensor}}, or \code{'rave_prepare_power'} object created by
-#' \code{\link{prepare_power}}.
+#' \code{\link{prepare_subject_power}}.
 #' @param baseline_windows list of baseline window (intervals)
 #' @param method baseline method; choices are \code{'percentage'},
 #' \code{'sqrt_percentage'}, \code{'decibel'}, \code{'zscore'},
@@ -14,11 +14,11 @@
 #' automatically determined
 #' @param hybrid whether the array will be
 #' @param signal_types signal types to perform baseline corrections; applied
-#' to power repository object produced by \code{\link{prepare_power}}; default
-#' is \code{'LFP'}
+#' to power repository object produced by \code{\link{prepare_subject_power}};
+#' default is \code{'LFP'}
 #' @param electrodes the electrodes to be included in baseline calculation;
-#' for power repository object produced by \code{\link{prepare_power}} only;
-#' default is all available electrodes in each of \code{signal_types}
+#' for power repository object produced by \code{\link{prepare_subject_power}}
+#' only; default is all available electrodes in each of \code{signal_types}
 #' @param ... passed to other methods
 #'
 #' @return Usually the same type as the input: for arrays,
@@ -52,9 +52,10 @@
 #' # Please see https://rave.wiki/ for more details
 #'
 #' library(raveio)
-#' repo <- prepare_power(subject = "demo/DemoSubject",
-#'                       time_windows = c(-1, 3),
-#'                       electrodes = 14)
+#' repo <- prepare_subject_power(
+#'   subject = "demo/DemoSubject",
+#'   time_windows = c(-1, 3),
+#'   electrodes = 14)
 #'
 #' ##### Direct baseline on LFP data
 #' baselined <- power_baseline(

@@ -32,9 +32,9 @@ The evaluation results of \code{expr}
 Enable parallel computing provided by 'future' package within the context
 }
 \details{
-Some 'RAVE' functions such as \code{\link{prepare_power}} support
-parallel computing to speed up. However, the parallel computing is optional.
-You can enable it by wrapping the function calls within
+Some 'RAVE' functions such as \code{\link{prepare_subject_power}}
+support parallel computing to speed up. However, the parallel computing is
+optional. You can enable it by wrapping the function calls within
 \code{with_future_parallel} (see examples).
 
 The default plan is to use 'forked' R sessions. This is a convenient, fast,
@@ -52,8 +52,9 @@ specified by the option \code{raveio_getopt("max_worker", 1L)}.
 \examples{
 \dontrun{
 
+library(raveio)
 with_future_parallel({
-  prepare_power("demo/DemoSubject")
+  prepare_subject_power("demo/DemoSubject")
 })
 
 }

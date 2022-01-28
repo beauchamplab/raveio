@@ -52,7 +52,7 @@ such as frequency, or frequency-time analyses;
 this usually requires transforming the electrode raw voltage signals
 using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
 'multi-taper', etc. If an electrode has power data, then it's power data
-can be loaded via \code{\link{prepare_power}} method.}
+can be loaded via \code{\link{prepare_subject_power}} method.}
 
 \item{\code{subject}}{subject instance (\code{\link{RAVESubject}})}
 
