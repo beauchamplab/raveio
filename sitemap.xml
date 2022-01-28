@@ -52,6 +52,9 @@
     <loc>/reference/as_rave_unit.html</loc>
   </url>
   <url>
+    <loc>/reference/cache_path.html</loc>
+  </url>
+  <url>
     <loc>/reference/catgl.html</loc>
   </url>
   <url>
@@ -115,10 +118,10 @@
     <loc>/reference/power_baseline.html</loc>
   </url>
   <url>
-    <loc>/reference/prepare_power.html</loc>
+    <loc>/reference/rave-pipeline.html</loc>
   </url>
   <url>
-    <loc>/reference/rave-pipeline.html</loc>
+    <loc>/reference/rave-prepare.html</loc>
   </url>
   <url>
     <loc>/reference/rave-raw-validation.html</loc>

@@ -68,6 +68,7 @@
   method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"percentage"</span>, <span class="st">"sqrt_percentage"</span>, <span class="st">"decibel"</span>, <span class="st">"zscore"</span>, <span class="st">"sqrt_zscore"</span><span class="op">)</span>,
   units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Frequency"</span>, <span class="st">"Trial"</span>, <span class="st">"Electrode"</span><span class="op">)</span>,
   signal_types <span class="op">=</span> <span class="st">"LFP"</span>,
+  <span class="va">electrodes</span>,
   <span class="va">...</span>
 <span class="op">)</span>
 
@@ -107,7 +108,7 @@
     <dl><dt>x</dt>
 <dd><p>R array, <code><a href="http://dipterix.org/filearray/reference/filearray.html" class="external-link">filearray</a></code>,
 <code><a href="ECoGTensor.html">ECoGTensor</a></code>, or <code>'rave_prepare_power'</code> object created by
-<code><a href="prepare_power.html">prepare_power</a></code>.</p></dd>
+<code><a href="rave-prepare.html">prepare_subject_power</a></code>.</p></dd>
 <dt>baseline_windows</dt>
 <dd><p>list of baseline window (intervals)</p></dd>
 <dt>method</dt>
@@ -120,8 +121,12 @@
 <dd><p>passed to other methods</p></dd>
 <dt>signal_types</dt>
 <dd><p>signal types to perform baseline corrections; applied
-to power repository object produced by <code><a href="prepare_power.html">prepare_power</a></code>; default
-is <code>'LFP'</code></p></dd>
+to power repository object produced by <code><a href="rave-prepare.html">prepare_subject_power</a></code>;
+default is <code>'LFP'</code></p></dd>
+<dt>electrodes</dt>
+<dd><p>the electrodes to be included in baseline calculation;
+for power repository object produced by <code><a href="rave-prepare.html">prepare_subject_power</a></code>
+only; default is all available electrodes in each of <code>signal_types</code></p></dd>
 <dt>filebase</dt>
 <dd><p>where to store the output; default is <code>NULL</code> and is
 automatically determined</p></dd>
@@ -162,9 +167,10 @@ be shared across electrodes (e.g. in some mini-electrodes), remove
 <span class="r-in"><span class="co"># Please see https://rave.wiki/ for more details</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://beauchamplab.github.io/raveio/" class="external-link">raveio</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">repo</span> <span class="op">&lt;-</span> <span class="fu"><a href="prepare_power.html">prepare_power</a></span><span class="op">(</span>subject <span class="op">=</span> <span class="st">"demo/DemoSubject"</span>,</span>
-<span class="r-in">                      time_windows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span class="r-in">                      electrodes <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">repo</span> <span class="op">&lt;-</span> <span class="fu"><a href="rave-prepare.html">prepare_subject_power</a></span><span class="op">(</span></span>
+<span class="r-in">  subject <span class="op">=</span> <span class="st">"demo/DemoSubject"</span>,</span>
+<span class="r-in">  time_windows <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span class="r-in">  electrodes <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">##### Direct baseline on LFP data</span></span>
 <span class="r-in"><span class="va">baselined</span> <span class="op">&lt;-</span> <span class="fu">power_baseline</span><span class="op">(</span></span>
