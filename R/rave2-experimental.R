@@ -1,5 +1,58 @@
 # Will be rave 2.0 package
 
+#' @export
+collapse2 <- function(x, keep, method = c("mean", "sum"), ...){
+  UseMethod("collapse2")
+}
+
+#' @export
+collapse2.FileArray <- function(x, keep, method = c("mean", "sum"), ...){
+  method <- match.arg(method)
+  dm <- dim(x)
+  ndims <- length(dm)
+  stopifnot(all(keep %in% seq_len(ndims)))
+  if(setequal(keep, seq_len(ndims))){
+    return(aperm(x[], keep))
+  }
+  if(setequal(c(keep, ndims), seq_len(ndims))){
+    return(x$collapse(keep = keep, method = method))
+  }
+
+  pdim <- dm
+  pdim[[ndims]] <- 1
+  is_mean <- method == "mean"
+  re <- filearray::fmap2(list(x), fun = function(v){
+    v <- array(v[[1]], dim = pdim)
+    dipsaus::collapse(v, keep, average = is_mean)
+  }, .input_size = prod(pdim), .simplify = TRUE)
+  if(!ndims %in% keep){
+    re <- dipsaus::collapse(re, seq_along(keep), average = is_mean)
+  }
+  dim(re) <- dm[keep]
+  dnames <- dimnames(x)
+  if(length(dnames) == ndims){
+    dimnames(re) <- dnames[keep]
+  }
+  re
+}
+
+#' @export
+collapse2.Tensor <- function(x, keep, method = c("mean", "sum"), ...){
+  method <- match.arg(method)
+  x$collapse(keep = keep, method = method)
+}
+
+#' @export
+collapse2.array <- function(x, keep, method = c("mean", "sum"), ...){
+  method <- match.arg(method)
+  ndims <- length(dim(x))
+  stopifnot(all(keep %in% seq_len(ndims)))
+  if(setequal(keep, seq_len(ndims))){
+    return(aperm(x, keep))
+  }
+  dipsaus::collapse(x, keep, average = method == "mean")
+}
+
 #' @name power_baseline
 #' @title Calculate power baseline
 #' @param x R array, \code{\link[filearray]{filearray}},
