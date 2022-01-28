@@ -190,46 +190,58 @@ prepare_power <- function(subject, electrodes,
     frequency_table = frequency_table,
     electrode_signal_types = electrode_signal_types
   )
-  binded_power_path <- dipsaus::digest(digest_key)
-  cache_root <- file.path(
-    raveio::raveio_getopt(key = 'tensor_temp_path', default = '~/rave_data/cache_dir/'),
-    "_binded_arrays_", binded_power_path, "power"
-  )
-  dir_create2(cache_root)
+  digest_string <- dipsaus::digest(digest_key)
+  # cache_root <- file.path( cache_root(), "_binded_arrays_", digest_string, "power")
+  # dir_create2(cache_root)
 
   re$power <- dipsaus::fastmap2()
   for(signal_type in unique(electrode_signal_types)){
     # find electrodes
-    fbase <- file.path(cache_root, signal_type)
-    tmp_list <- power_list[electrode_signal_types == signal_type]
+    # fbase <- file.path(cache_root, signal_type)
+    sel <- electrode_signal_types == signal_type
+    elecs <- electrode_list[sel]
+    tmp_list <- power_list[sel]
     arr_dnames <- power_dimnames
-    arr_dnames$Electrode <- electrode_list[electrode_signal_types == signal_type]
+    arr_dnames$Electrode <- elecs
 
-    if(length(tmp_list)){
+    re$power[[signal_type]] <- list(
+      electrodes = elecs,
+      data_list = tmp_list,
+      signature = dipsaus::digest(c(digest_string, elecs))
+    )
 
-      arr <- tryCatch({
-        filearray::filearray_checkload(
-          fbase, mode = "readonly", symlink_ok = TRUE,
-          rave_signature = binded_power_path,
-          signal_type = signal_type,
-          rave_data_type = "power"
-        )
-      }, error = function(e){
-        if(file.exists(fbase)){
-          unlink(fbase, recursive = TRUE, force = TRUE)
-        }
-        arr <- filearray::filearray_bind(.list = tmp_list, filebase = fbase, symlink = TRUE)
-        arr$.mode <- "readwrite"
-        arr$.header$rave_signature <- binded_power_path
-        arr$.header$signal_type <- signal_type
-        arr$.header$rave_data_type <- "power"
-        dimnames(arr) <- arr_dnames
-        arr$.mode <- "readonly"
-        arr
-      })
-
-      re$power[[signal_type]] <- arr
-    }
+    # if(length(tmp_list)){
+    #
+    #   arr <- tryCatch({
+    #     filearray::filearray_checkload(
+    #       fbase, mode = "readonly", symlink_ok = TRUE,
+    #       rave_signature = digest_string,
+    #       signal_type = signal_type,
+    #       rave_data_type = "power"
+    #     )
+    #   }, error = function(e){
+    #     if(file.exists(fbase)){
+    #       unlink(fbase, recursive = TRUE, force = TRUE)
+    #     }
+    #     symlink <- getOption("filearray.symlink_enabled", symlink_enabled())
+    #     arr <- filearray::filearray_bind(
+    #         .list = tmp_list,
+    #         filebase = fbase,
+    #         symlink = symlink,
+    #         overwrite = TRUE,
+    #         cache_ok = TRUE
+    #       )
+    #     arr$.mode <- "readwrite"
+    #     arr$.header$rave_signature <- digest_string
+    #     arr$.header$signal_type <- signal_type
+    #     arr$.header$rave_data_type <- "power"
+    #     dimnames(arr) <- arr_dnames
+    #     arr$.mode <- "readonly"
+    #     arr
+    #   })
+    #
+    #   re$power[[signal_type]] <- arr
+    # }
 
   }
 

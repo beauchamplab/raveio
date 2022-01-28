@@ -16,6 +16,9 @@
 #' @param signal_types signal types to perform baseline corrections; applied
 #' to power repository object produced by \code{\link{prepare_power}}; default
 #' is \code{'LFP'}
+#' @param electrodes the electrodes to be included in baseline calculation;
+#' for power repository object produced by \code{\link{prepare_power}} only;
+#' default is all available electrodes in each of \code{signal_types}
 #' @param ... passed to other methods
 #'
 #' @return Usually the same type as the input: for arrays,
@@ -91,7 +94,7 @@ power_baseline.rave_prepare_power <- function(
   x, baseline_windows,
   method = c("percentage", "sqrt_percentage", "decibel", "zscore", "sqrt_zscore"),
   units = c("Frequency", "Trial", "Electrode"),
-  signal_types = "LFP", ...
+  signal_types = "LFP", electrodes, ...
 ){
   method <- match.arg(method)
   force(baseline_windows)
@@ -99,26 +102,146 @@ power_baseline.rave_prepare_power <- function(
   if(is.na(signal_types)){
     signal_types <- names(x$power)
   }
+  if(missing(electrodes)){
+    electrodes <- x$electrode_list
+  }
 
-  x$baselined <- dipsaus::fastmap2()
+  if(!inherits(x$baselined, "fastmap2")){
+    x$baselined <- dipsaus::fastmap2()
+  }
+
+  # Prepare global variables
+  baseline_windows <- validate_time_window(baseline_windows)
+  units <- units[!units %in% "Time"]
+  if(!length(units) || !all(units %in% c("Frequency", "Trial", "Electrode"))){
+    stop('`units` must contain 1-3 of the followings: "Frequency", "Trial", "Electrode" (case-sensitive)')
+  }
+  unit_dims <- c(1L, 3L, 4L)[c("Frequency", "Trial", "Electrode") %in% units]
+
   for(signal_type in signal_types){
-    x$power[[signal_type]]
+    sub <- x$power[[signal_type]]
+    sel <- sub$electrodes %in% electrodes
+
+    # contains no electrode
+    if(!any(sel)){
+      x$baselined$`@remove`(signal_type)
+      next
+    }
+
+    sub_list <- sub$data_list[sel]
+    sub_elec <- sub$electrodes[sel]
+
+    dnames <- dimnames(sub_list[[1]])
+    dnames$Electrode <- sub_elec
+    dm <- dim(sub_list[[1]])
+    dm[[length(dm)]] <- length(sub_elec)
+    time_index <- unique(unlist(lapply(baseline_windows, function(w){
+      which(dnames$Time >= w[[1]] & dnames$Time <= w[[2]])
+    })))
+
+    # calculate signature
+    digest_key <- list(
+      input_signature = sub$signature,
+      signal_type = signal_type,
+      rave_data_type = "power",
+      method = method,
+      unit_dims = unit_dims,
+      time_index = time_index,
+      dimension = dm
+    )
+
+    signature <- dipsaus::digest(digest_key)
 
     output <- x$baselined[[signal_type]]
     if(inherits(output, "FileArray")){
-      filebase <- output.filebase
+      filebase <- output$.filebase
     } else {
-      filebase <- NULL
+      filebase <- file.path(cache_root(), "_baselined_arrays_", signature)
     }
-    baselined <- power_baseline.FileArray(
-      x = x$power[[signal_type]],
-      baseline_windows = baseline_windows,
-      method = method,
-      units = units,
-      filebase = filebase,
-      ...
-    )
-    x$baselined[[signal_type]] <- baselined
+
+    res <- tryCatch({
+      res <- filearray::filearray_checkload(
+        filebase, mode = "readwrite", symlink_ok = FALSE,
+        rave_signature = signature,
+        signal_type = signal_type,
+        rave_data_type = "power-baselined",
+        ready = TRUE,  # The rest procedure might go wrong, in case failure
+        RAVEIO_FILEARRAY_VERSION = RAVEIO_FILEARRAY_VERSION
+      )
+      # No need to baseline again, the settings haven't changed
+      x$baselined[[signal_type]] <- res
+      # message("Using existing cache")
+      next
+    }, error = function(e){
+      # message(e$message)
+      if(dir.exists(filebase)){ unlink(filebase, recursive = TRUE, force = TRUE) }
+      dir_create2(dirname(filebase))
+      res <- filearray::filearray_create(filebase, dm, type = "float", partition_size = 1)
+      res$.mode <- "readwrite"
+      res$.header$rave_signature <- signature
+      res$.header$signal_type <- signal_type
+      res$.header$rave_data_type <- "power-baselined"
+      res$.header$baseline_method <- method
+      res$.header$unit_dims <- unit_dims
+      res$.header$time_index <- time_index
+      res$.header$baseline_windows <- baseline_windows
+      res$.header$RAVEIO_FILEARRAY_VERSION <- RAVEIO_FILEARRAY_VERSION
+      res$.header$ready <- FALSE
+      dimnames(res) <- dnames
+      # # automatically run
+      # res$.save_header()
+      res
+    })
+
+    if("Electrode" %in% units){
+      input_list <- lapply(seq_along(sub_elec), function(ii){
+        list(
+          index = ii,
+          electrode = sub_elec[[ii]],
+          array = sub_list[[ii]]
+        )
+      })
+
+      dipsaus::lapply_async2(
+        input_list,
+        FUN = function(el) {
+          res[, , , el$index] <- dipsaus::baseline_array(
+            x = el$array[drop = FALSE],
+            along_dim = 2L,
+            baseline_indexpoints = time_index,
+            unit_dims = unit_dims,
+            method = method
+          )
+          NULL
+        },
+        plan = FALSE,
+        callback = function(el) {
+          sprintf("Baseline correction | %s (signal type: %s)",
+                  el$electrode,
+                  signal_type)
+        }
+      )
+    } else {
+      bind_base <- file.path(cache_root(), "_binded_arrays_", sub$signature, "power")
+      dir_create2(dirname(bind_base))
+      bind_array <- filearray::filearray_bind(
+        .list = sub$data_list,
+        symlink = symlink_enabled(),
+        filebase = bind_base,
+        overwrite = TRUE, cache_ok = TRUE)
+
+      res[] <- dipsaus::baseline_array(
+        x = bind_array[,,, which(sel),drop=FALSE],
+        along_dim = 2L,
+        baseline_indexpoints = time_index,
+        unit_dims = unit_dims,
+        method = method
+      )
+    }
+
+
+    res$set_header("ready", TRUE)
+    x$baselined[[signal_type]] <- res
   }
 
   return(x)
@@ -163,16 +286,12 @@ power_baseline.FileArray <- function(
     method = method,
     unit_dims = unit_dims,
     time_index = time_index,
-    baseline_windows = baseline_windows,
     dimension = dm
   )
   signature <- dipsaus::digest(digest_key)
 
   if(!length(filebase)){
-    filebase <- file.path(
-      raveio::raveio_getopt(key = 'tensor_temp_path', default = '~/rave_data/cache_dir/'),
-      "_baselined_arrays_", signature
-    )
+    filebase <- file.path(cache_root(), "_baselined_arrays_", signature)
   }
   dir_create2(dirname(filebase))
 
@@ -315,10 +434,7 @@ power_baseline.ECoGTensor <- function(
   signature <- dipsaus::digest(digest_key)
 
   if(!length(filebase)){
-    filebase <- file.path(
-      raveio::raveio_getopt(key = 'tensor_temp_path', default = '~/rave_data/cache_dir/'),
-      "_baselined_arrays_old_", signature
-    )
+    filebase <- file.path(cache_root(), "_baselined_arrays_old_", signature)
   }
   dir_create2(filebase)
 

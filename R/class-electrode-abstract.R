@@ -226,9 +226,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
         }),
         collapse = "_"
       )
-      cache_path <- raveio::raveio_getopt(
-        key = 'tensor_temp_path',
-        default = '~/rave_data/cache_dir/')
+      cache_path <- raveio::cache_root()
       # save to cache_path/project/subject/epoch/cachename
       # cachename = reference + elec type
 

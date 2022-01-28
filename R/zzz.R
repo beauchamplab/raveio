@@ -371,6 +371,18 @@ raveio_resetopt <- function(all = FALSE){
   invisible(as.list(s))
 }
 
+
+# get options whether the data directory is on network
+# If enabled, then HDF5 files should be copied to local tempdir
+# and read if there are multiiple reads from the same file
+using_netdrive <- function(){
+  if(raveio_getopt("using_netdrive", FALSE)){
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
 #' @rdname raveio-option
 #' @export
 raveio_getopt <- function(key, default = NA, temp = TRUE){

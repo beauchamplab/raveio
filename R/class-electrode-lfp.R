@@ -116,7 +116,7 @@ LFP_electrode <- R6::R6Class(
             self$number <- sprintf('ref_%s', ref_electrodes)
             if(!file.exists(file.path(self$subject$reference_path,
                                       sprintf("%s.h5", self$number)))){
-              rave_warn("Reference file {self$number}.h5 is missing")
+              catgl("Reference file {self$number}.h5 is missing", level = "WARNING")
             }
           }
         }
@@ -133,10 +133,18 @@ LFP_electrode <- R6::R6Class(
       arr_path <- file.path(noref_cache_path, "coef")
 
       if(file.exists(arr_path)){
+
         if(reload){
           unlink(arr_path, recursive = TRUE, force = TRUE)
         } else {
-          return(filearray::filearray_load(arr_path, "readonly"))
+          tryCatch({
+            return(filearray::filearray_checkload(
+              filebase = arr_path, mode = "readonly",
+              symlink_ok = FALSE, valid = TRUE
+            ))
+          }, error = function(e){
+            unlink(arr_path, recursive = TRUE, force = TRUE)
+          })
         }
       }
 
@@ -182,6 +190,25 @@ LFP_electrode <- R6::R6Class(
         Electrode = self$number
       )
 
+      if(using_netdrive()){
+        tempdir(check = TRUE)
+        power_file <- tempfile(fileext = ".h5", pattern = "temppower_")
+        phase_file <- tempfile(fileext = ".h5", pattern = "tempphase_")
+        on.exit({
+          if(file.exists(power_file)){
+            unlink(power_file)
+          }
+          if(file.exists(phase_file)){
+            unlink(phase_file)
+          }
+        }, add = TRUE, after = TRUE)
+        file.copy(self$power_file, to = power_file)
+        file.copy(self$phase_file, to = phase_file)
+      } else {
+        power_file <- self$power_file
+        phase_file <- self$phase_file
+      }
+
       for(b in blocks){
         sel <- epoch_tbl$Block == b
         if(!any(sel)){
@@ -197,17 +224,17 @@ LFP_electrode <- R6::R6Class(
 
         if( self$is_reference ){
           h5_name <- sprintf('/wavelet/coef/%s', b)
-          block_data <- load_h5(file = self$power_file, name = h5_name)
+          block_data <- load_h5(file = power_file, name = h5_name, ram = HDF5_EAGERLOAD)
           coef <- block_data[,tp,]
           dim(coef) <- c(nrow(coef), dim(tp), 2)
           coef <- coef[,,,1] * exp(1i * coef[,,,2])
         } else {
           h5_name <- sprintf('/raw/power/%s', b)
-          block_data <- load_h5(file = self$power_file, name = h5_name)
+          block_data <- load_h5(file = power_file, name = h5_name, ram = HDF5_EAGERLOAD)
           power <- block_data[, tp]
           dim(power) <- c(nrow(power), dim(tp))
           h5_name <- sprintf('/raw/phase/%s', b)
-          block_data <- load_h5(file = self$phase_file, name = h5_name)
+          block_data <- load_h5(file = phase_file, name = h5_name, ram = HDF5_EAGERLOAD)
           phase <- block_data[, tp]
           dim(phase) <- c(nrow(phase), dim(tp))
           coef <- sqrt(power) * exp(1i * phase)
@@ -215,6 +242,7 @@ LFP_electrode <- R6::R6Class(
         arr[,,trials,1] <- coef
       }
 
+      arr$set_header("valid", TRUE)
       error <- FALSE
       return(arr)
     },
@@ -287,10 +315,10 @@ LFP_electrode <- R6::R6Class(
 
         if( self$is_reference ){
           h5_name <- sprintf('/voltage/%s', b)
-          block_data <- load_h5(file = self$voltage_file, name = h5_name)
+          block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
         } else {
           h5_name <- sprintf('/raw/voltage/%s', b)
-          block_data <- load_h5(file = self$voltage_file, name = h5_name)
+          block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
         }
         voltage <- block_data[tp]
         dim(voltage) <- dim(tp)
@@ -341,7 +369,7 @@ LFP_electrode <- R6::R6Class(
       arr <- filearray::filearray_create(
         filebase = arr_path,
         dimension = dim,
-        type = ifelse(type == "coef", "complex", "double"),
+        type = ifelse(type == "coef", "complex", "float"),
         partition_size = 1
       )
       on.exit({
@@ -476,6 +504,7 @@ LFP_electrode <- R6::R6Class(
     #' however, if this function will be called multiple times, set it to true.
     #' @return voltage data before reference
     load_unreferenced_voltage = function(block, persist = FALSE){
+      # Probably deprecated?
       stopifnot2(block %in% self$subject$blocks, msg = sprintf(
         'Block %s doesn not exists', block
       ))
@@ -511,7 +540,7 @@ LFP_electrode <- R6::R6Class(
         # load from reference folder
         h5_path <- file.path(self$subject$reference_path, self$h5_fname)
         h5_name <- sprintf('/voltage/%s', block)
-        re <- load_h5(h5_path, h5_name, read_only = TRUE, ram = FALSE)
+        re <- load_h5(h5_path, h5_name, read_only = TRUE, ram = HDF5_EAGERLOAD)
       }
 
       if(persist){

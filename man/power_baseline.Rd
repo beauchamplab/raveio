@@ -22,6 +22,7 @@ power_baseline(
   method = c("percentage", "sqrt_percentage", "decibel", "zscore", "sqrt_zscore"),
   units = c("Frequency", "Trial", "Electrode"),
   signal_types = "LFP",
+  electrodes,
   ...
 )
 
@@ -70,6 +71,10 @@ power_baseline(
 \item{signal_types}{signal types to perform baseline corrections; applied
 to power repository object produced by \code{\link{prepare_power}}; default
 is \code{'LFP'}}
+
+\item{electrodes}{the electrodes to be included in baseline calculation;
+for power repository object produced by \code{\link{prepare_power}} only;
+default is all available electrodes in each of \code{signal_types}}
 
 \item{filebase}{where to store the output; default is \code{NULL} and is
 automatically determined}
