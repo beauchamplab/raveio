@@ -1,10 +1,28 @@
 # Will be rave 2.0 package
 
+#' @title Collapse high-dimensional tensor array
+#' @param x R array, \code{\link[filearray]{FileArray-class}}, or
+#' \code{\link{Tensor}} object
+#' @param keep integer vector, the margins to keep
+#' @param method character, calculates mean or sum of the array when collapsing
+#' @param ... passed to other methods
+#' @return A collapsed array (or a vector or matrix), depending on \code{keep}
+#' @seealso \code{\link[dipsaus]{collapse}}
+#' @examples
+#'
+#' x <- array(1:16, rep(2, 4))
+#'
+#' collapse2(x, c(3, 2))
+#'
+#' # Alternative method, but slower when `x` is a large array
+#' apply(x, c(3, 2), mean)
+#'
 #' @export
 collapse2 <- function(x, keep, method = c("mean", "sum"), ...){
   UseMethod("collapse2")
 }
 
+#' @rdname collapse2
 #' @export
 collapse2.FileArray <- function(x, keep, method = c("mean", "sum"), ...){
   method <- match.arg(method)
@@ -12,40 +30,65 @@ collapse2.FileArray <- function(x, keep, method = c("mean", "sum"), ...){
   ndims <- length(dm)
   stopifnot(all(keep %in% seq_len(ndims)))
   if(setequal(keep, seq_len(ndims))){
-    return(aperm(x[], keep))
+    return(aperm(x[drop=FALSE], keep))
   }
-  if(setequal(c(keep, ndims), seq_len(ndims))){
-    return(x$collapse(keep = keep, method = method))
-  }
-
   pdim <- dm
   pdim[[ndims]] <- 1
   is_mean <- method == "mean"
-  re <- filearray::fmap2(list(x), fun = function(v){
-    v <- array(v[[1]], dim = pdim)
-    dipsaus::collapse(v, keep, average = is_mean)
-  }, .input_size = prod(pdim), .simplify = TRUE)
-  if(!ndims %in% keep){
+
+  if(ndims %in% keep){
+    pdim <- pdim[-ndims]
+    lidx <- which(keep == ndims)[[1]]
+    keep_alt <- keep[-lidx]
+    re <- filearray::fmap2(list(x), fun = function(v){
+      v <- array(v[[1]], dim = pdim)
+      dipsaus::collapse(v, keep_alt, average = is_mean)
+    }, .input_size = prod(pdim), .simplify = TRUE)
+    redim <- dim(re)
+    rendim <- length(redim)
+    if(rendim > 1 && rendim != lidx){
+      if(lidx == 1){
+        od <- c(rendim, seq_along(keep_alt))
+      } else {
+        od <- seq_along(keep_alt)
+        od <- c(od[seq_len(lidx - 1)], rendim, od[-seq_len(lidx - 1)])
+      }
+      re <- aperm(re, od)
+    }
+  } else {
+    re <- filearray::fmap2(list(x), fun = function(v){
+      v <- array(v[[1]], dim = pdim)
+      dipsaus::collapse(v, keep, average = is_mean)
+    }, .input_size = prod(pdim), .simplify = TRUE)
     re <- dipsaus::collapse(re, seq_along(keep), average = is_mean)
   }
-  dim(re) <- dm[keep]
+
   dnames <- dimnames(x)
-  if(length(dnames) == ndims){
-    dimnames(re) <- dnames[keep]
+  if(length(keep) > 1){
+    dim(re) <- dm[keep]
+    if(length(dnames) == ndims){
+      dimnames(re) <- dnames[keep]
+    }
+  } else if(length(dnames) == ndims){
+    names(re) <- dnames[[keep]]
   }
+
   re
 }
 
+#' @rdname collapse2
 #' @export
 collapse2.Tensor <- function(x, keep, method = c("mean", "sum"), ...){
   method <- match.arg(method)
   x$collapse(keep = keep, method = method)
 }
 
+#' @rdname collapse2
 #' @export
 collapse2.array <- function(x, keep, method = c("mean", "sum"), ...){
   method <- match.arg(method)
   ndims <- length(dim(x))
+  keep <- as.integer(keep)
   stopifnot(all(keep %in% seq_len(ndims)))
   if(setequal(keep, seq_len(ndims))){
     return(aperm(x, keep))
