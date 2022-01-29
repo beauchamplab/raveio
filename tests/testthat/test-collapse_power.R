@@ -37,7 +37,6 @@ test_that("collapse_power", {
     )
   )
   re <- collapse_power(x, analysis_index_cubes)
-  re2 <- collapse_power(x[], analysis_index_cubes)
 
   for(jj in seq_along(analysis_index_cubes)){
     cube <- analysis_index_cubes[[jj]]
@@ -57,6 +56,13 @@ test_that("collapse_power", {
       }
     }
 
+  }
+
+  re2 <- collapse_power(x[], analysis_index_cubes)
+
+  for(jj in seq_along(analysis_index_cubes)){
+    cube <- analysis_index_cubes[[jj]]
+    cube_data <- x[cube$Frequency, cube$Time, cube$Trial, cube$Electrode, drop = FALSE]
     actual2 <- re2[[jj]]
     nms <- names(actual2)
     tmp <- cbind( grepl("freq", nms), grepl("time", nms), grepl("trial", nms), grepl("elec", nms) )

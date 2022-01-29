@@ -79,20 +79,21 @@ collapse_power.array <- function(x, analysis_index_cubes){
     re <- dipsaus::fastmap2()
     cube_data <- x[cube$Frequency, cube$Time, cube$Trial, cube$Electrode, drop = FALSE]
     # freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
-    re$time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3, 4), average = TRUE)
-    re$freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3, 4), average = TRUE)
+    time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3, 4), average = FALSE)
+    freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3, 4), average = FALSE)
 
-    re$freq_elec <- dipsaus::collapse(re$freq_trial_elec, keep = c(1, 3), average = TRUE)
-    re$trial_elec <- dipsaus::collapse(re$freq_trial_elec, keep = c(2, 3), average = TRUE)
-    re$time_elec <- dipsaus::collapse(re$time_trial_elec, keep = c(1, 3), average = TRUE)
 
-    re$freq_time <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
-    re$freq_trial <- dipsaus::collapse(re$freq_trial_elec, keep = c(1, 2), average = TRUE)
-    re$time_trial <- dipsaus::collapse(re$time_trial_elec, keep = c(1, 2), average = TRUE)
-    re$freq <- rowMeans(re$freq_time)
-    re$time <- rowMeans(re$time_elec)
-    re$trial <- rowMeans(re$trial_elec)
-    re$elec <- colMeans(re$freq_elec)
+    re$freq_elec <- dipsaus::collapse(freq_trial_elec, keep = c(1, 3), average = FALSE) / prod(dm[c(2, 3)])
+    re$trial_elec <- dipsaus::collapse(freq_trial_elec, keep = c(2, 3), average = FALSE) / prod(dm[c(1, 2)])
+    re$time_elec <- dipsaus::collapse(time_trial_elec, keep = c(1, 3), average = FALSE) / prod(dm[c(1, 3)])
+
+    re$freq_time <- dipsaus::collapse(cube_data, keep = c(1, 2), average = FALSE) / prod(dm[c(3, 4)])
+    re$freq_trial <- dipsaus::collapse(freq_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 4)])
+    re$time_trial <- dipsaus::collapse(time_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(1, 4)])
+    re$freq <- rowMeans(re$freq_time) / prod(dm[-1])
+    re$time <- rowMeans(re$time_elec) / prod(dm[-2])
+    re$trial <- rowMeans(re$trial_elec) / prod(dm[-3])
+    re$elec <- colMeans(re$freq_elec) / prod(dm[-4])
     class(re) <- c("power_collapse_list", class(re))
     re
   })
@@ -124,25 +125,26 @@ collapse_power.FileArray <- function(x, analysis_index_cubes){
   # freq_time_trial <- array(0, pdim)
 
   fun <- function(e){
-    v <- x[, , , e, drop = FALSE]
-    dim(v) <- pdim
+    v <- array(x[, , , e, drop = FALSE], pdim)
     # freq_time_trial <<- freq_time_trial + v
     re <- list()
     for(ii in seq_along(analysis_index_cubes)){
       cube <- analysis_index_cubes[[ii]]
 
       if(e %in% cube$Electrode){
+        # print(cube)
+        # print(dim(v))
         cube_data <- v[cube$Frequency, cube$Time, cube$Trial, drop = FALSE]
-        freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
-        time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3), average = TRUE)
-        freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3), average = TRUE)
+        freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = FALSE)
+        time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3), average = FALSE)
+        freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3), average = FALSE)
 
         re[[sprintf("freq_time_elec_%s", ii)]] <- freq_time_elec
         re[[sprintf("time_trial_elec_%s", ii)]] <- time_trial_elec
         re[[sprintf("freq_trial_elec_%s", ii)]] <- freq_trial_elec
-        re[[sprintf("freq_elec_%s", ii)]] <- rowMeans(freq_time_elec)
-        re[[sprintf("time_elec_%s", ii)]] <- colMeans(freq_time_elec)
-        re[[sprintf("trial_elec_%s", ii)]] <- colMeans(freq_trial_elec)
+        re[[sprintf("freq_elec_%s", ii)]] <- rowSums(freq_time_elec)
+        re[[sprintf("time_elec_%s", ii)]] <- colSums(freq_time_elec)
+        re[[sprintf("trial_elec_%s", ii)]] <- colSums(freq_trial_elec)
       }
 
     }
@@ -152,6 +154,9 @@ collapse_power.FileArray <- function(x, analysis_index_cubes){
   initial_collapse <- dipsaus::lapply_async2(
     x = which(elec_sel), FUN = fun, plan = FALSE
   )
+  # initial_collapse <- lapply(
+  #   which(elec_sel), FUN = fun
+  # )
 
 
   # initial_names <- rownames(initial_collapse)
@@ -179,13 +184,17 @@ collapse_power.FileArray <- function(x, analysis_index_cubes){
       }
 
       # re$freq_time_trial <- freq_time_trial[cube$Frequency, cube$Time, cube$Trial, drop = FALSE]
-      re$freq_time <- dipsaus::collapse(re$freq_time_elec, keep = c(1, 2), average = TRUE)
-      re$freq_trial <- dipsaus::collapse(re$freq_trial_elec, keep = c(1, 2), average = TRUE)
-      re$freq <- rowMeans(re$freq_time)
-      re$time_trial <- dipsaus::collapse(re$time_trial_elec, keep = c(1, 2), average = TRUE)
-      re$time <- rowMeans(re$time_elec)
-      re$trial <- rowMeans(re$trial_elec)
-      re$elec <- colMeans(re$freq_elec)
+      re$freq_elec <- re$freq_elec / prod(dm[c(2, 3)])
+      re$time_elec <- re$time_elec / prod(dm[c(1, 3)])
+      re$trial_elec <- re$trial_elec / prod(dm[c(1, 2)])
+      re$freq_time <- dipsaus::collapse(re$freq_time_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(3, 4)])
+      re$freq_trial <- dipsaus::collapse(re$freq_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 4)])
+      re$time_trial <- dipsaus::collapse(re$time_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 3)])
+      re$freq <- rowSums(re$freq_time) / prod(dm[-1])
+      re$time <- rowSums(re$time_elec) / prod(dm[-2])
+      re$trial <- rowSums(re$trial_elec) / prod(dm[-3])
+      re$elec <- rowSums(re$freq_elec) / prod(dm[-4])
+      re$`@remove`(c("freq_time_elec", "time_trial_elec", "freq_trial_elec"))
       class(re) <- c("power_collapse_list", class(re))
       re
     }),
@@ -214,4 +223,4 @@ print.power_collapse_list <- function(x, ...){
 #     Time = 1:20
 #   )
 # )
-# re <- collapse_power(x, analysis_index_cubes)
+# re <- collapse_power(x, analysis_index_cubes = list(list()))
