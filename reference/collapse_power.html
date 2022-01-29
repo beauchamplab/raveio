@@ -130,18 +130,16 @@ and <code>Electrode</code></p></dd>
 <span class="r-in">  A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Trial <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, Frequency <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span class="r-in">  B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Trial <span class="op">=</span> <span class="fl">6</span><span class="op">:</span><span class="fl">10</span>, Time <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.vector(X):</span> argument "X" is missing, with no default</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Plot power over frequency and time</span></span>
 <span class="r-in"><span class="va">groupB_result</span> <span class="op">&lt;-</span> <span class="va">results</span><span class="op">$</span><span class="va">B</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'results' not found</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">groupB_result</span><span class="op">$</span><span class="va">freq_time</span><span class="op">)</span>,</span>
 <span class="r-in">      x <span class="op">=</span> <span class="va">dnames</span><span class="op">$</span><span class="va">Time</span><span class="op">[</span><span class="va">groupB_result</span><span class="op">$</span><span class="va">cube_index</span><span class="op">$</span><span class="va">Time</span><span class="op">]</span>,</span>
 <span class="r-in">      y <span class="op">=</span> <span class="va">dnames</span><span class="op">$</span><span class="va">Frequency</span><span class="op">[</span><span class="va">groupB_result</span><span class="op">$</span><span class="va">cube_index</span><span class="op">$</span><span class="va">Frequency</span><span class="op">]</span>,</span>
 <span class="r-in">      xlab <span class="op">=</span> <span class="st">"Time (s)"</span>,</span>
 <span class="r-in">      ylab <span class="op">=</span> <span class="st">"Frequency (Hz)"</span>,</span>
 <span class="r-in">      xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">dnames</span><span class="op">$</span><span class="va">Time</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in image(t(groupB_result$freq_time), x = dnames$Time[groupB_result$cube_index$Time],     y = dnames$Frequency[groupB_result$cube_index$Frequency],     xlab = "Time (s)", ylab = "Frequency (Hz)", xlim = range(dnames$Time)):</span> object 'groupB_result' not found</span>
+<span class="r-plt img"><img src="collapse_power-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 </code></pre></div>
