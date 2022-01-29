@@ -238,7 +238,7 @@ with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
   if(!quoted){
     expr <- substitute(expr)
   }
-  if(is.na(max_workers) && max_workers >= 1){
+  if(!is.na(max_workers) && max_workers >= 1){
     max_workers <- min(as.integer(max_workers), raveio_getopt("max_worker", 1L))
   } else {
     max_workers <- raveio_getopt("max_worker", 1L)
