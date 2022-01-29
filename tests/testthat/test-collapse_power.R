@@ -37,15 +37,14 @@ test_that("collapse_power", {
     )
   )
   re <- collapse_power(x, analysis_index_cubes)
+  re2 <- collapse_power(x[], analysis_index_cubes)
 
-  for(ii in seq_along(analysis_index_cubes)){
-    cube <- analysis_index_cubes[[ii]]
+  for(jj in seq_along(analysis_index_cubes)){
+    cube <- analysis_index_cubes[[jj]]
     cube_data <- x[cube$Frequency, cube$Time, cube$Trial, cube$Electrode, drop = FALSE]
-    actual <- re[[ii]]
-
+    actual <- re[[jj]]
     nms <- names(actual)
     tmp <- cbind( grepl("freq", nms), grepl("time", nms), grepl("trial", nms), grepl("elec", nms) )
-
     for(ii in seq_along(nms)){
       nm <- nms[[ii]]
       sel <- tmp[ii,]
@@ -55,6 +54,22 @@ test_that("collapse_power", {
         act <- actual[[nm]]
         expect_equal(dim(act), dim(expected))
         expect_true(all(range(act / expected - 1) < 1e-6))
+      }
+    }
+
+    actual2 <- re2[[jj]]
+    nms <- names(actual2)
+    tmp <- cbind( grepl("freq", nms), grepl("time", nms), grepl("trial", nms), grepl("elec", nms) )
+
+    for(ii in seq_along(nms)){
+      nm <- nms[[ii]]
+      sel <- tmp[ii,]
+      if(any(sel)){
+        # print(nm)
+        expected <- apply(cube_data, which(sel), mean)
+        act2 <- actual2[[nm]]
+        expect_equal(dim(act2), dim(expected))
+        expect_true(all(range(act2 / expected - 1) < 1e-6))
       }
     }
 

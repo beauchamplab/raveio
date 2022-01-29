@@ -9,6 +9,7 @@ with_future_parallel(
   env = parent.frame(),
   quoted = FALSE,
   on_failure = "multisession",
+  max_workers = NA,
   ...
 )
 }
@@ -21,6 +22,9 @@ with_future_parallel(
 
 \item{on_failure}{alternative 'future' plan to use if forking a process
 is disallowed; this usually occurs on 'Windows' machines; see details.}
+
+\item{max_workers}{maximum of workers; default is automatically set by
+\code{raveio_getopt("max_worker",1L)}}
 
 \item{...}{additional parameters passing into
 \code{\link[dipsaus]{make_forked_clusters}}}

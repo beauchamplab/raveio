@@ -555,7 +555,7 @@ pipeline_settings_set <- function(
   dipsaus::list_to_fastmap2(args, map = settings)
   tf <- tempfile()
   on.exit({ unlink(tf) })
-  raveio::save_yaml(x = settings, file = tf)
+  save_yaml(x = settings, file = tf)
   file.copy(from = tf, to = pipeline_settings_path,
             overwrite = TRUE, recursive = FALSE)
   settings

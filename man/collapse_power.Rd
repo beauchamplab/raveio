@@ -2,9 +2,15 @@
 % Please edit documentation in R/collapse-power.R
 \name{collapse_power}
 \alias{collapse_power}
+\alias{collapse_power.array}
+\alias{collapse_power.FileArray}
 \title{Collapse power array with given analysis cubes}
 \usage{
 collapse_power(x, analysis_index_cubes)
+
+\method{collapse_power}{array}(x, analysis_index_cubes)
+
+\method{collapse_power}{FileArray}(x, analysis_index_cubes)
 }
 \arguments{
 \item{x}{a \code{\link[filearray]{FileArray-class}} array, must have 4 modes

@@ -54,6 +54,54 @@
 #'
 #' @export
 collapse_power <- function(x, analysis_index_cubes){
+  UseMethod("collapse_power")
+}
+
+#' @rdname collapse_power
+#' @export
+collapse_power.array <- function(x, analysis_index_cubes){
+
+  dm <- dim(x)
+  ndims <- length(dm)
+  pdim <- dm[-ndims]
+  nelec <- dm[[ndims]]
+  group_names <- names(analysis_index_cubes)
+
+  analysis_index_cubes <- lapply(analysis_index_cubes, function(cube){
+    cube$Frequency %?<-% seq_len(dm[[1]])
+    cube$Time %?<-% seq_len(dm[[2]])
+    cube$Trial %?<-% seq_len(dm[[3]])
+    cube$Electrode %?<-% seq_len(dm[[4]])
+    cube
+  })
+
+  lapply(analysis_index_cubes, function(cube){
+    re <- dipsaus::fastmap2()
+    cube_data <- x[cube$Frequency, cube$Time, cube$Trial, cube$Electrode, drop = FALSE]
+    # freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
+    re$time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3, 4), average = TRUE)
+    re$freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3, 4), average = TRUE)
+
+    re$freq_elec <- dipsaus::collapse(re$freq_trial_elec, keep = c(1, 3), average = TRUE)
+    re$trial_elec <- dipsaus::collapse(re$freq_trial_elec, keep = c(2, 3), average = TRUE)
+    re$time_elec <- dipsaus::collapse(re$time_trial_elec, keep = c(1, 3), average = TRUE)
+
+    re$freq_time <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
+    re$freq_trial <- dipsaus::collapse(re$freq_trial_elec, keep = c(1, 2), average = TRUE)
+    re$time_trial <- dipsaus::collapse(re$time_trial_elec, keep = c(1, 2), average = TRUE)
+    re$freq <- rowMeans(re$freq_time)
+    re$time <- rowMeans(re$time_elec)
+    re$trial <- rowMeans(re$trial_elec)
+    re$elec <- colMeans(re$freq_elec)
+    class(re) <- c("power_collapse_list", class(re))
+    re
+  })
+
+}
+
+#' @rdname collapse_power
+#' @export
+collapse_power.FileArray <- function(x, analysis_index_cubes){
 
   dm <- dim(x)
   ndims <- length(dm)
@@ -101,13 +149,9 @@ collapse_power <- function(x, analysis_index_cubes){
     re
   }
 
-  if(inherits(future::plan(), "multicore")){
-    initial_collapse <- dipsaus::lapply_async2(
-      x = which(elec_sel), FUN = fun, plan = FALSE
-    )
-  } else {
-    initial_collapse <- lapply(which(elec_sel), fun)
-  }
+  initial_collapse <- dipsaus::lapply_async2(
+    x = which(elec_sel), FUN = fun, plan = FALSE
+  )
 
 
   # initial_names <- rownames(initial_collapse)

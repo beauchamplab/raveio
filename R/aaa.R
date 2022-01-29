@@ -201,6 +201,8 @@ R_user_dir <- function (package, which = c("data", "config", "cache")) {
 #' @param quoted whether \code{expr} has been quoted; default is false
 #' @param on_failure alternative 'future' plan to use if forking a process
 #' is disallowed; this usually occurs on 'Windows' machines; see details.
+#' @param max_workers maximum of workers; default is automatically set by
+#' \code{raveio_getopt("max_worker",1L)}
 #' @param ... additional parameters passing into
 #' \code{\link[dipsaus]{make_forked_clusters}}
 #' @return The evaluation results of \code{expr}
@@ -231,12 +233,18 @@ R_user_dir <- function (package, which = c("data", "config", "cache")) {
 #' }
 #' @export
 with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
-                                 on_failure = 'multisession', ...){
+                                 on_failure = 'multisession', max_workers = NA,
+                                 ...){
   if(!quoted){
     expr <- substitute(expr)
   }
+  if(is.na(max_workers) && max_workers >= 1){
+    max_workers <- min(as.integer(max_workers), raveio_getopt("max_worker", 1L))
+  } else {
+    max_workers <- raveio_getopt("max_worker", 1L)
+  }
   dipsaus::make_forked_clusters(
-    workers = raveio::raveio_getopt("max_worker", 1L),
+    workers = max_workers,
     on_failure = on_failure, clean = TRUE, ...
   )
   eval(expr, envir = env)

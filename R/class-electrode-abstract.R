@@ -79,7 +79,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @param number current electrode number or reference ID
     #' @param is_reference whether instance is a reference
     initialize = function(subject, number, is_reference = FALSE){
-      self$subject <- raveio::as_rave_subject(subject)
+      self$subject <- as_rave_subject(subject)
       self$number <- number
       self$reference <- NULL
       self$epoch <- NULL
@@ -226,7 +226,8 @@ RAVEAbstarctElectrode <- R6::R6Class(
         }),
         collapse = "_"
       )
-      cache_path <- raveio::cache_root()
+
+      cache_path <- get("cache_root", envir = asNamespace('raveio'), inherits = FALSE)()
       # save to cache_path/project/subject/epoch/cachename
       # cachename = reference + elec type
 

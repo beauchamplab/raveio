@@ -123,18 +123,18 @@ pipeline_run_async <- function(
 
   func <- function(){}
   body(func) <- bquote({
-    if(.(use_future)){
-      dipsaus::make_forked_clusters(
-        on_failure = "multisession",
-        workers = raveio::raveio_getopt("max_worker", 1L)
-      )
-    }
     local({
       ns <- asNamespace('raveio')
       args <- .(more_args)
       args$callr_function <- .(callr_function)
       args$envir <- globalenv()
-      do.call(ns[[.(paste0("pipeline_run_", type))]], args)
+      if(.(use_future)){
+        ns$with_future_parallel({
+          do.call(ns[[.(paste0("pipeline_run_", type))]], args)
+        })
+      } else {
+        do.call(ns[[.(paste0("pipeline_run_", type))]], args)
+      }
     })
 
   })

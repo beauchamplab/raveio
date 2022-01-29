@@ -78,10 +78,10 @@ time_diff2 <- function(start, end, units = 'secs', label = ''){
 #'
 #' @export
 cache_root <- function(check = FALSE){
-  re <- raveio::raveio_getopt(key = 'tensor_temp_path', default = NULL)
+  re <- raveio_getopt(key = 'tensor_temp_path', default = NULL)
   if(!length(re)){
     re <- '~/rave_data/cache_dir/'
-    raveio::raveio_setopt(key = 'tensor_temp_path', value = re)
+    raveio_setopt(key = 'tensor_temp_path', value = re)
   }
   if(check){
     re <- dir_create2(re)
