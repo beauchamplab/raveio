@@ -58,6 +58,7 @@
   env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,
   quoted <span class="op">=</span> <span class="cn">FALSE</span>,
   on_failure <span class="op">=</span> <span class="st">"multisession"</span>,
+  max_workers <span class="op">=</span> <span class="cn">NA</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -73,6 +74,9 @@
 <dt>on_failure</dt>
 <dd><p>alternative 'future' plan to use if forking a process
 is disallowed; this usually occurs on 'Windows' machines; see details.</p></dd>
+<dt>max_workers</dt>
+<dd><p>maximum of workers; default is automatically set by
+<code>raveio_getopt("max_worker",1L)</code></p></dd>
 <dt>...</dt>
 <dd><p>additional parameters passing into
 <code><a href="https://rdrr.io/pkg/dipsaus/man/make_forked_clusters.html" class="external-link">make_forked_clusters</a></code></p></dd>
