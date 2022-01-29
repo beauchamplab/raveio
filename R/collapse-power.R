@@ -75,35 +75,42 @@ collapse_power <- function(x, analysis_index_cubes){
 
   # freq_time_trial <- array(0, pdim)
 
-  initial_collapse <- dipsaus::lapply_async2(
-    x = which(elec_sel),
-    FUN = function(e){
-      v <- x[, , , e, drop = FALSE]
-      dim(v) <- pdim
-      # freq_time_trial <<- freq_time_trial + v
-      re <- list()
-      for(ii in seq_along(analysis_index_cubes)){
-        cube <- analysis_index_cubes[[ii]]
+  fun <- function(e){
+    v <- x[, , , e, drop = FALSE]
+    dim(v) <- pdim
+    # freq_time_trial <<- freq_time_trial + v
+    re <- list()
+    for(ii in seq_along(analysis_index_cubes)){
+      cube <- analysis_index_cubes[[ii]]
 
-        if(e %in% cube$Electrode){
-          cube_data <- v[cube$Frequency, cube$Time, cube$Trial, drop = FALSE]
-          freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
-          time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3), average = TRUE)
-          freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3), average = TRUE)
+      if(e %in% cube$Electrode){
+        cube_data <- v[cube$Frequency, cube$Time, cube$Trial, drop = FALSE]
+        freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
+        time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3), average = TRUE)
+        freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3), average = TRUE)
 
-          re[[sprintf("freq_time_elec_%s", ii)]] <- freq_time_elec
-          re[[sprintf("time_trial_elec_%s", ii)]] <- time_trial_elec
-          re[[sprintf("freq_trial_elec_%s", ii)]] <- freq_trial_elec
-          re[[sprintf("freq_elec_%s", ii)]] <- rowMeans(freq_time_elec)
-          re[[sprintf("time_elec_%s", ii)]] <- colMeans(freq_time_elec)
-          re[[sprintf("trial_elec_%s", ii)]] <- colMeans(freq_trial_elec)
-        }
-
+        re[[sprintf("freq_time_elec_%s", ii)]] <- freq_time_elec
+        re[[sprintf("time_trial_elec_%s", ii)]] <- time_trial_elec
+        re[[sprintf("freq_trial_elec_%s", ii)]] <- freq_trial_elec
+        re[[sprintf("freq_elec_%s", ii)]] <- rowMeans(freq_time_elec)
+        re[[sprintf("time_elec_%s", ii)]] <- colMeans(freq_time_elec)
+        re[[sprintf("trial_elec_%s", ii)]] <- colMeans(freq_trial_elec)
       }
-      re
-    },
-    plan = FALSE
-  )
+
+    }
+    re
+  }
+
+  if(inherits(future::plan(), "multicore")){
+    initial_collapse <- dipsaus::lapply_async2(
+      x = which(elec_sel), FUN = fun, plan = FALSE
+    )
+  } else {
+    initial_collapse <- lapply(
+      x = which(elec_sel), FUN = fun
+    )
+  }
+
 
   # initial_names <- rownames(initial_collapse)
   #
