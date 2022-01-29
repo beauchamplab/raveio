@@ -106,9 +106,7 @@ collapse_power <- function(x, analysis_index_cubes){
       x = which(elec_sel), FUN = fun, plan = FALSE
     )
   } else {
-    initial_collapse <- lapply(
-      x = which(elec_sel), FUN = fun
-    )
+    initial_collapse <- lapply(which(elec_sel), fun)
   }
 
 
