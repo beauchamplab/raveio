@@ -101,7 +101,7 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
   }), names = sprintf("%s_%s", ref_mat[, 1], ref_mat[, 2]))
   re$reference_instances <- dipsaus::drop_nulls(reference_instances)
 
-  # ----- reference_instances -----
+  # ----- electrode_instances -----
   electrode_instances <- structure(lapply(seq_along(electrode_list), function(ii){
     e <- electrode_list[[ii]]
     signal_type <- electrode_signal_types[[ii]]

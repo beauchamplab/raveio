@@ -34,55 +34,21 @@
 #' }
 #'
 #' @export
-LFP_electrode <- R6::R6Class(
-  classname = 'LFP_electrode',
+LFP_reference <- R6::R6Class(
+  classname = 'LFP_reference',
   inherit = RAVEAbstarctElectrode,
   portable = FALSE,
   lock_class = TRUE,
   private = list(
     .type = 'LFP',
     .location = 'iEEG',
-    .is_reference = FALSE,
-    .power_enabled = TRUE,
-    check_dimensions = function(type = c("voltage", "power", "phase", "coef")){
-      type <- match.arg(type)
-      # Check time-points
-      if(type == "voltage"){
-        srate <- self$raw_sample_rate
-        freq <- NULL
-      } else {
-        srate <- self$power_sample_rate
-        freq <- self$subject$meta_data("frequencies")
-        if(!is.data.frame(freq) || !length(freq) || !length(freq[[1]])){
-          stop("Frequency length is zero. Have you applied time-frequency decomposition?")
-        }
-      }
-      tidx <- unlist(lapply(self$trial_intervals, function(x){
-        x <- round(x * srate)
-        seq(x[1], x[2])
-      }))
-      stopifnot2(length(tidx), msg = "Trial window has length of 0")
-
-      # Check blocks
-      epoch_tbl <- self$epoch$table
-      blocks <- unique(epoch_tbl$Block)
-      if(!all(blocks %in% self$subject$blocks)){
-        blocks <- blocks[!blocks %in% self$subject$blocks]
-        stop("Some blocks cannot be found: ", paste(blocks, collapse = ", "))
-      }
-      list(
-        tidx = tidx,
-        srate = srate,
-        epoch_tbl = epoch_tbl,
-        blocks = blocks,
-        freq = freq
-      )
-    }
+    .is_reference = TRUE,
+    .power_enabled = TRUE
   ),
   public = list(
 
     print = function(){
-      cat("<Electrode>\n")
+      cat("<Reference electrode>\n")
       cat(sprintf("  Project: %s\n", self$subject$project_name))
       cat(sprintf("  Subject: %s\n", self$subject$subject_code))
       cat(sprintf("  Reference label: %s\n", self$number))
@@ -106,42 +72,40 @@ LFP_electrode <- R6::R6Class(
     #' @description set reference for current electrode
     #' @param reference either \code{NULL} or \code{LFP_electrode} instance
     set_reference = function(reference){
-      if(!length(reference)){
-        return(super$set_reference(NULL))
+      # Do nothing as this is already a reference electrode
+      if(length(reference)){
+        stop("Please do not add reference to another reference")
       }
-      if(is.character(reference)){
-        if(reference == "noref"){
-          return(super$set_reference(NULL))
-        }
-        ref_inst <- LFP_reference$new(subject = self$subject, number = reference)
-        if(!ref_inst$exists){
-          stop("Cannot find reference: ", reference)
-        }
-        return(super$set_reference(ref_inst))
-      }
-      if(!inherits(reference, "LFP_reference")){
-        stop("Reference must be a valid `LFP_reference` instance or characters")
-      }
-      if(!reference$exists){
-        stop("Cannot find reference: ", reference$number)
-      }
-      return(super$set_reference(reference))
-
     },
 
     #' @description constructor
-    #' @param subject,number,is_reference see constructor in
+    #' @param subject,number see constructor in
     #' \code{\link{RAVEAbstarctElectrode}}
     initialize = function(subject, number){
       super$initialize(subject, number)
 
-      has_power <- file.exists(self$power_file)
-      has_phase <- file.exists(self$phase_file)
-      has_volt <- file.exists(self$voltage_file)
-      if(!all(has_power, has_phase, has_volt)){
-        catgl("Electrode {self$number} is missing {ifelse(has_power, '', 'power')}{ifelse(has_phase, '', ', phase')}{ifelse(has_volt, '', ', voltage')} data\n", level = "WARNING")
+      ref_electrodes <- gsub("[^0-9,\\ -]+", '', number)
+      e <- dipsaus::parse_svec(ref_electrodes)
+
+      if(length(e) == 0){
+        self$number <- 'noref'
+      } else {
+        if(length(e) == 1){
+          self$number <- e
+        } else {
+          # check subject reference directory
+          self$number <- sprintf('ref_%s', dipsaus::deparse_svec(e))
+          if(!file.exists(file.path(self$subject$reference_path,
+                                    sprintf("%s.h5", self$number)))){
+            catgl("Reference file {self$number}.h5 is missing", level = "WARNING")
+          }
+        }
       }
+
     },
+
+
+    # data method
 
     #' @description load non-referenced wavelet coefficients (internally used)
     #' @param reload whether to reload cache
@@ -149,9 +113,28 @@ LFP_electrode <- R6::R6Class(
     #' returns 0, otherwise returns a \code{\link[filearray]{FileArray-class}}
     .load_noref_wavelet = function(reload = FALSE){
 
-      check_res <- private$check_dimensions("coef")
+      srate <- self$power_sample_rate
+      stopifnot2(!is.na(srate), msg = "Cannot find power sample rate. Have you applied time-frequency decomposition?")
+      tidx <- unlist(lapply(self$trial_intervals, function(x){
+        x <- round(x * srate)
+        seq(x[1], x[2])
+      }))
+      stopifnot2(length(tidx), msg = "Trial window has length of 0")
 
-      arr_path <- file.path(self$cache_root, "noref", "coef")
+      if(!length(self$number) || self$number == "noref"){
+        return(0)
+      }
+
+      epoch_tbl <- self$epoch$table
+
+      freq <- self$subject$meta_data("frequencies")
+      nfreq <- nrow(freq)
+      ntrial <- nrow(epoch_tbl)
+      ntime <- length(tidx)
+
+      noref_cache_path <- file.path(self$cache_root, "noref")
+      arr_path <- file.path(noref_cache_path, "coef")
+
       if(file.exists(arr_path)){
         if(reload){
           unlink(arr_path, recursive = TRUE, force = TRUE)
@@ -166,18 +149,8 @@ LFP_electrode <- R6::R6Class(
           })
         }
       }
-      dir_create2(dirname(arr_path))
 
-      tidx <- check_res$tidx
-      srate <- check_res$srate
-      epoch_tbl <- check_res$epoch_tbl
-      blocks <- check_res$blocks
-      freq <- check_res$freq
-
-      nfreq <- nrow(freq)
-      ntrial <- nrow(epoch_tbl)
-      ntime <- length(tidx)
-
+      dir_create2(noref_cache_path)
       blocks <- unique(epoch_tbl$Block)
       if(!all(blocks %in% self$subject$blocks)){
         blocks <- blocks[!blocks %in% self$subject$blocks]
@@ -262,8 +235,12 @@ LFP_electrode <- R6::R6Class(
     #' @param reload whether to reload cache
     .load_noref_voltage = function(reload = FALSE){
 
-      check_res <- private$check_dimensions("voltage")
-      arr_path <- file.path(self$cache_root, "noref", "voltage")
+      if(!length(self$number) || self$number == "noref"){
+        return(0)
+      }
+
+      noref_cache_path <- file.path(self$cache_root, "noref")
+      arr_path <- file.path(noref_cache_path, "voltage")
 
       if(file.exists(arr_path)){
         if(reload){
@@ -280,12 +257,23 @@ LFP_electrode <- R6::R6Class(
         }
       }
 
-      dir_create2(dirname(arr_path))
+      dir_create2(noref_cache_path)
 
-      tidx <- check_res$tidx
-      srate <- check_res$srate
-      epoch_tbl <- check_res$epoch_tbl
-      blocks <- check_res$blocks
+      srate <- self$raw_sample_rate
+
+      tidx <- unlist(lapply(self$trial_intervals, function(x){
+        x <- round(x * srate)
+        seq(x[1], x[2])
+      }))
+      epoch_tbl <- self$epoch$table
+
+      blocks <- unique(epoch_tbl$Block)
+
+      if(!all(blocks %in% self$subject$blocks)){
+        blocks <- blocks[!blocks %in% self$subject$blocks]
+        stop("Some blocks cannot be found: ", paste(blocks, collapse = ", "))
+      }
+
       ntrial <- nrow(epoch_tbl)
       ntime <- length(tidx)
 
@@ -340,8 +328,17 @@ LFP_electrode <- R6::R6Class(
                              reload = FALSE){
       type <- match.arg(type)
 
-      private$check_dimensions(type = "coef")
+      noref_e <- self$.load_noref_wavelet()
+      if( is.numeric(noref_e) && noref_e == 0 ){ return(0) }
+      if( type == "coef" ){
+        return(noref_e)
+      }
+
       arr_path <- file.path(self$cache_root, self$reference_name, type)
+
+      # noref_cache_path <- file.path(self$cache_root, "noref")
+      # arr_path <- file.path(noref_cache_path, "coef")
+
       if(file.exists(arr_path)){
         if(reload){
           unlink(arr_path, recursive = TRUE, force = TRUE)
@@ -357,25 +354,12 @@ LFP_electrode <- R6::R6Class(
         }
       }
 
-      noref_e <- self$.load_noref_wavelet()
-
-      if(!inherits(self$reference, "LFP_reference") || self$reference_name == "noref"){
-        ref_e <- 0
-        no_reference <- TRUE
-        if( type == "coef" ){
-          return(noref_e)
-        }
-      } else {
-        ref_e <- self$reference$.load_noref_wavelet()
-        no_reference <- FALSE
-      }
-
       dir_create2(dirname(arr_path))
       dim <- dim(noref_e)
       arr <- filearray::filearray_create(
         filebase = arr_path,
         dimension = dim,
-        type = ifelse(type == "coef", "complex", "float"),
+        type = "float",
         partition_size = 1
       )
       dimnames(arr) <- dimnames(noref_e)
@@ -385,35 +369,14 @@ LFP_electrode <- R6::R6Class(
       f <- switch (
         type,
         "power" = {
-          if(no_reference){
-            filearray::fmap(list(noref_e), function(v){
-              Mod(v[[1]])^2
-            }, .y = arr)
-          } else {
-            filearray::fmap(list(noref_e, ref_e), function(v){
-              Mod(v[[1]] - v[[2]])^2
-            }, .y = arr)
-          }
+          filearray::fmap(list(noref_e), function(v){
+            Mod(v[[1]])^2
+          }, .y = arr)
         },
         "phase" = {
-          if(no_reference){
-            filearray::fmap(list(noref_e), function(v){
-              Arg(v[[1]])
-            }, .y = arr)
-          } else {
-            filearray::fmap(list(noref_e, ref_e), function(v){
-              Arg(v[[1]] - v[[2]])
-            }, .y = arr)
-          }
-        },
-        "coef" = {
-          if(no_reference){
-            return(noref_e)
-          } else {
-            filearray::fmap(list(noref_e, ref_e), function(v){
-              v[[1]] - v[[2]]
-            }, .y = arr)
-          }
+          filearray::fmap(list(noref_e), function(v){
+            Arg(v[[1]])
+          }, .y = arr)
         }, {
           stop("Code bug: unregistered data type: ", type)
         }
@@ -427,50 +390,7 @@ LFP_electrode <- R6::R6Class(
     #' @description load referenced voltage (internally used)
     #' @param reload whether to reload cache
     .load_voltage = function(reload = FALSE){
-      # self$.load_noref_voltage(reload = reload)
-
-      check_res <- private$check_dimensions(type = "voltage")
-      arr_path <- file.path(self$cache_root, self$reference_name, "voltage")
-      arr <- filearray_checkload_or_remove(
-        filebase = arr_path, mode = "readonly",
-        symlink_ok = FALSE, valid = TRUE
-      )
-      if(inherits(arr, "FileArray")){
-        return(arr)
-      }
-
-      noref_e <- self$.load_noref_voltage()
-      if(self$reference_name == "noref"){
-        return(noref_e)
-      }
-      ref_e <- self$reference$.load_noref_voltage()
-
-      tidx <- check_res$tidx
-      srate <- check_res$srate
-      epoch_tbl <- check_res$epoch_tbl
-      blocks <- check_res$blocks
-
-      ntrial <- nrow(epoch_tbl)
-      ntime <- length(tidx)
-
-      # when noref and type=="coef"
-      dim <- dim(noref_e)
-      arr <- filearray_create2(
-        filebase = arr_path,
-        dimension = dim,
-        type = "double",
-        partition_size = 1,
-        dimnames = dimnames(noref_e)
-      )
-
-      filearray::fmap(list(noref_e, ref_e), function(input){
-        input[[1]] - input[[2]]
-      }, .y = arr)
-
-      arr$set_header("valid", TRUE)
-      arr$.mode <- "readonly"
-
-      arr
+      self$.load_noref_voltage(reload = reload)
     },
 
 
@@ -513,23 +433,29 @@ LFP_electrode <- R6::R6Class(
   ),
   active = list(
 
+    #' @field exists whether electrode exists in subject
+    exists = function(){
+      if( is.numeric(self$number) ){
+        super$exists
+      } else if( isTRUE(self$number == 'noref') ) {
+        return(TRUE)
+      } else {
+        file.exists(file.path(self$subject$reference_path,
+                              self$h5_fname))
+      }
+    },
+
     #' @field h5_fname 'HDF5' file name
     h5_fname = function(){
       sprintf('%s.h5', self$number)
     },
 
+
     #' @field valid whether current electrode is valid: subject exists and
     #' contains current electrode or reference; subject electrode type matches
     #' with current electrode type
     valid = function(){
-      if(!self$exists) {return(FALSE)}
-      elec <- self$subject$electrodes
-      if(!self$number %in% elec){ return(FALSE) }
-      # type matches with subject
-      if(!isTRUE(self$subject$electrode_types[elec %in% self$number] == self$type)){
-        return(FALSE)
-      }
-      return(TRUE)
+      return(self$exists)
     },
 
     #' @field raw_sample_rate voltage sample rate
@@ -554,22 +480,38 @@ LFP_electrode <- R6::R6Class(
 
     #' @field preprocess_info preprocess information
     preprocess_info = function(){
-      self$subject$preprocess_settings$electrode_info(electrode = self$number)
+      # self$subject$preprocess_settings$electrode_info(electrode = self$number)
+      NULL
     },
 
     #' @field power_file path to power 'HDF5' file
     power_file = function(){
-      super$power_file
+      if(is.numeric(self$number)){
+        return(super$power_file)
+      } else {
+        return(file.path(self$subject$reference_path,
+                         self$h5_fname))
+      }
     },
 
     #' @field phase_file path to phase 'HDF5' file
     phase_file = function(){
-      super$phase_file
+      if(is.numeric(self$number)){
+        return(super$phase_file)
+      } else {
+        return(file.path(self$subject$reference_path,
+                         self$h5_fname))
+      }
     },
 
     #' @field voltage_file path to voltage 'HDF5' file
     voltage_file = function(){
-      super$voltage_file
+      if(!is.numeric(self$number)){
+        return(file.path(self$subject$reference_path,
+                         self$h5_fname))
+      } else {
+        return(super$voltage_file)
+      }
     }
 
   )
@@ -577,6 +519,6 @@ LFP_electrode <- R6::R6Class(
 
 
 
-# self = LFP_electrode$new('demo/DemoSubject', 14); self$trial_intervals <- c(-1,2); self$set_epoch("auditory_onset")
+# self = LFP_reference$new(aa$subject, 'ref_13-16,24'); self$trial_intervals <- c(-1,2); self$epoch <- aa$epoch
 # self$load_data('wave')
 # self$load_data('volt')

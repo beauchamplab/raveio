@@ -39,21 +39,14 @@ ref_name <- subset(reference_table, Electrode == 14)[["Reference"]]
 ref_name
 
 # load & set reference
-ref <- generator$new(e$subject, ref_name, is_reference = TRUE)
-e$.set_reference(ref, e$type)
+ref <- generator$new(e$subject, ref_name)
+e$set_reference(ref)
 
 }
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{power_enabled}}{whether the electrode can be used in power analyses
-such as frequency, or frequency-time analyses;
-this usually requires transforming the electrode raw voltage signals
-using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
-'multi-taper', etc. If an electrode has power data, then it's power data
-can be loaded via \code{\link{prepare_subject_power}} method.}
-
 \item{\code{subject}}{subject instance (\code{\link{RAVESubject}})}
 
 \item{\code{number}}{integer stands for electrode number or reference ID}
@@ -62,8 +55,6 @@ can be loaded via \code{\link{prepare_subject_power}} method.}
 or an electrode instance inherits \code{RAVEAbstarctElectrode}}
 
 \item{\code{epoch}}{a \code{\link{RAVEEpoch}} instance}
-
-\item{\code{is_reference}}{whether this instance is a reference electrode}
 }
 \if{html}{\out{</div>}}
 }
@@ -72,6 +63,15 @@ or an electrode instance inherits \code{RAVEAbstarctElectrode}}
 \describe{
 \item{\code{type}}{signal type of the electrode, such as 'LFP', 'Spike', and
 'EKG'; default is 'Unknown'}
+
+\item{\code{power_enabled}}{whether the electrode can be used in power analyses
+such as frequency, or frequency-time analyses;
+this usually requires transforming the electrode raw voltage signals
+using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+'multi-taper', etc. If an electrode has power data, then it's power data
+can be loaded via \code{\link{prepare_subject_power}} method.}
+
+\item{\code{is_reference}}{whether this instance is a reference electrode}
 
 \item{\code{location}}{location type of the electrode, see
 \code{\link{LOCATION_TYPES}} for details}
@@ -101,7 +101,7 @@ intervals are missing}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{RAVEAbstarctElectrode$new()}}
-\item \href{#method-.set_reference}{\code{RAVEAbstarctElectrode$.set_reference()}}
+\item \href{#method-set_reference}{\code{RAVEAbstarctElectrode$set_reference()}}
 \item \href{#method-set_epoch}{\code{RAVEAbstarctElectrode$set_epoch()}}
 \item \href{#method-clear_cache}{\code{RAVEAbstarctElectrode$clear_cache()}}
 \item \href{#method-clear_memory}{\code{RAVEAbstarctElectrode$clear_memory()}}
@@ -115,7 +115,7 @@ intervals are missing}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$new(subject, number, is_reference = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$new(subject, number)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -124,27 +124,23 @@ constructor
 \item{\code{subject}}{character or \code{\link{RAVESubject}} instance}
 
 \item{\code{number}}{current electrode number or reference ID}
-
-\item{\code{is_reference}}{whether instance is a reference}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.set_reference"></a>}}
-\if{latex}{\out{\hypertarget{method-.set_reference}{}}}
-\subsection{Method \code{.set_reference()}}{
+\if{html}{\out{<a id="method-set_reference"></a>}}
+\if{latex}{\out{\hypertarget{method-set_reference}{}}}
+\subsection{Method \code{set_reference()}}{
 set reference for instance
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$.set_reference(reference, type)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$set_reference(reference)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{reference}}{\code{NULL} or \code{RAVEAbstarctElectrode} instance}
-
-\item{\code{type}}{reference electrode type, default is the same as current
+\item{\code{reference}}{\code{NULL} or \code{RAVEAbstarctElectrode} instance
 instance}
 }
 \if{html}{\out{</div>}}

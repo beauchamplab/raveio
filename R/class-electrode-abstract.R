@@ -33,8 +33,8 @@
 #' ref_name
 #'
 #' # load & set reference
-#' ref <- generator$new(e$subject, ref_name, is_reference = TRUE)
-#' e$.set_reference(ref, e$type)
+#' ref <- generator$new(e$subject, ref_name)
+#' e$set_reference(ref)
 #'
 #' }
 #' @export
@@ -45,18 +45,12 @@ RAVEAbstarctElectrode <- R6::R6Class(
   private = list(
     intervals = list(),
     .type = 'Unknown',
-    .location = "Others"
+    .location = "Others",
+    .power_enabled = FALSE,
+    .is_reference = FALSE
   ),
   public = list(
 
-
-    #' @field power_enabled whether the electrode can be used in power analyses
-    #' such as frequency, or frequency-time analyses;
-    #' this usually requires transforming the electrode raw voltage signals
-    #' using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
-    #' 'multi-taper', etc. If an electrode has power data, then it's power data
-    #' can be loaded via \code{\link{prepare_subject_power}} method.
-    power_enabled = FALSE,
 
     #' @field subject subject instance (\code{\link{RAVESubject}})
     subject = NULL,
@@ -71,14 +65,10 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @field epoch a \code{\link{RAVEEpoch}} instance
     epoch = NULL,
 
-    #' @field is_reference whether this instance is a reference electrode
-    is_reference = FALSE,
-
     #' @description constructor
     #' @param subject character or \code{\link{RAVESubject}} instance
     #' @param number current electrode number or reference ID
-    #' @param is_reference whether instance is a reference
-    initialize = function(subject, number, is_reference = FALSE){
+    initialize = function(subject, number){
       self$subject <- as_rave_subject(subject)
       self$number <- number
       self$reference <- NULL
@@ -87,24 +77,33 @@ RAVEAbstarctElectrode <- R6::R6Class(
 
     #' @description set reference for instance
     #' @param reference \code{NULL} or \code{RAVEAbstarctElectrode} instance
-    #' @param type reference electrode type, default is the same as current
     #' instance
-    .set_reference = function(reference, type){
-      if(missing(type)){
-        type <- self$type
-      }
+    set_reference = function(reference){
       stopifnot2(
         is.null(reference) || (
           inherits(reference, 'RAVEAbstarctElectrode') &&
-            reference$type == type
+            reference$type == self$type
         ),
-        msg = sprintf('set_reference must receive a %s electrode', sQuote(type))
+        msg = sprintf('set_reference must receive either NULL or a electrode of the same type (%s)', sQuote(self$type))
       )
 
       self$reference <- reference
-      self$reference$epoch <- self$epoch
+      if(!is.null(reference)){
 
-      self$reference$trial_intervals <- self$trial_intervals
+        self_epoch <- !is.null(self$epoch)
+        ref_epoch <- !is.null(reference$epoch)
+
+        if(self_epoch && ref_epoch && !identical(self$epoch$name, reference$epoch$name)){
+          # compare epoch names
+          stop("Electrode ", self$number, " has different epoch name to its reference: ",
+                  self$epoch$name, " != ", reference$epoch$name, ".")
+        } else if (self_epoch && !ref_epoch){
+          self$reference$epoch <- self$epoch
+        } else if (!self_epoch && ref_epoch){
+          self$epoch <- self$reference$epoch
+        }
+        self$reference$trial_intervals <- self$trial_intervals
+      }
 
       return(self$reference)
     },
@@ -150,6 +149,22 @@ RAVEAbstarctElectrode <- R6::R6Class(
     type = function(){
       private$.type
     },
+
+    #' @field power_enabled whether the electrode can be used in power analyses
+    #' such as frequency, or frequency-time analyses;
+    #' this usually requires transforming the electrode raw voltage signals
+    #' using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+    #' 'multi-taper', etc. If an electrode has power data, then it's power data
+    #' can be loaded via \code{\link{prepare_subject_power}} method.
+    power_enabled = function(){
+      private$.power_enabled
+    },
+
+    #' @field is_reference whether this instance is a reference electrode
+    is_reference = function(){
+      private$.is_reference
+    },
+
 
     #' @field location location type of the electrode, see
     #' \code{\link{LOCATION_TYPES}} for details
@@ -243,15 +258,12 @@ RAVEAbstarctElectrode <- R6::R6Class(
       if(!missing(v)){
         if(!length(v)){
           private$intervals <- list()
+        } else {
+          private$intervals <- validate_time_window(v)
         }
-        if(!is.list(v)){
-          v <- list(v)
-        }
-        stopifnot2(all(sapply(v, length) == 2), msg = "`set_intervals` requires intervals of length two")
-        private$intervals <- v
 
         if(!is.null(self$reference)){
-          self$reference$trial_intervals <- v
+          self$reference$trial_intervals <- private$intervals
         }
 
       }
