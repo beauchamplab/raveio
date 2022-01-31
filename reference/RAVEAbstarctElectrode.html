@@ -57,16 +57,7 @@ create new child classes and implement some key methods.</p>
 
     <div id="public-fields">
     <h2>Public fields</h2>
-    <p></p><div class="r6-fields"><dl><dt><code>power_enabled</code></dt>
-<dd><p>whether the electrode can be used in power analyses
-such as frequency, or frequency-time analyses;
-this usually requires transforming the electrode raw voltage signals
-using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
-'multi-taper', etc. If an electrode has power data, then it's power data
-can be loaded via <code><a href="rave-prepare.html">prepare_subject_power</a></code> method.</p></dd>
-
-
-<dt><code>subject</code></dt>
+    <p></p><div class="r6-fields"><dl><dt><code>subject</code></dt>
 <dd><p>subject instance (<code><a href="RAVESubject.html">RAVESubject</a></code>)</p></dd>
 
 
@@ -83,10 +74,6 @@ or an electrode instance inherits <code>RAVEAbstarctElectrode</code></p></dd>
 <dd><p>a <code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance</p></dd>
 
 
-<dt><code>is_reference</code></dt>
-<dd><p>whether this instance is a reference electrode</p></dd>
-
-
 </dl><p></p></div>
     </div>
     <div id="active-bindings">
@@ -94,6 +81,19 @@ or an electrode instance inherits <code>RAVEAbstarctElectrode</code></p></dd>
     <p></p><div class="r6-active-bindings"><dl><dt><code>type</code></dt>
 <dd><p>signal type of the electrode, such as 'LFP', 'Spike', and
 'EKG'; default is 'Unknown'</p></dd>
+
+
+<dt><code>power_enabled</code></dt>
+<dd><p>whether the electrode can be used in power analyses
+such as frequency, or frequency-time analyses;
+this usually requires transforming the electrode raw voltage signals
+using signal processing methods such as 'Fourier', 'wavelet', 'Hilbert',
+'multi-taper', etc. If an electrode has power data, then it's power data
+can be loaded via <code><a href="rave-prepare.html">prepare_subject_power</a></code> method.</p></dd>
+
+
+<dt><code>is_reference</code></dt>
+<dd><p>whether this instance is a reference electrode</p></dd>
 
 
 <dt><code>location</code></dt>
@@ -147,7 +147,7 @@ intervals are missing</p></dd>
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
 <ul><li><p><a href="#method-new"><code>RAVEAbstarctElectrode$new()</code></a></p></li>
-<li><p><a href="#method-.set_reference"><code>RAVEAbstarctElectrode$.set_reference()</code></a></p></li>
+<li><p><a href="#method-set_reference"><code>RAVEAbstarctElectrode$set_reference()</code></a></p></li>
 <li><p><a href="#method-set_epoch"><code>RAVEAbstarctElectrode$set_epoch()</code></a></p></li>
 <li><p><a href="#method-clear_cache"><code>RAVEAbstarctElectrode$clear_cache()</code></a></p></li>
 <li><p><a href="#method-clear_memory"><code>RAVEAbstarctElectrode$clear_memory()</code></a></p></li>
@@ -157,7 +157,7 @@ intervals are missing</p></dd>
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/RAVEAbstarctElectrode.html">RAVEAbstarctElectrode</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">subject</span>, <span class="va">number</span>, is_reference <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/RAVEAbstarctElectrode.html">RAVEAbstarctElectrode</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">subject</span>, <span class="va">number</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -170,28 +170,20 @@ intervals are missing</p></dd>
 <dd><p>current electrode number or reference ID</p></dd>
 
 
-<dt><code>is_reference</code></dt>
-<dd><p>whether instance is a reference</p></dd>
-
-
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-.set_reference"></a><div class="section">
-<h3 id="method-set-reference-">Method <code>.set_reference()</code><a class="anchor" aria-label="anchor" href="#method-set-reference-"></a></h3>
+</div><p></p><hr><a id="method-set_reference"></a><div class="section">
+<h3 id="method-set-reference-">Method <code>set_reference()</code><a class="anchor" aria-label="anchor" href="#method-set-reference-"></a></h3>
 <p>set reference for instance</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEAbstarctElectrode</span><span class="op">$</span><span class="fu">.set_reference</span><span class="op">(</span><span class="va">reference</span>, <span class="va">type</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEAbstarctElectrode</span><span class="op">$</span><span class="fu">set_reference</span><span class="op">(</span><span class="va">reference</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>reference</code></dt>
-<dd><p><code>NULL</code> or <code>RAVEAbstarctElectrode</code> instance</p></dd>
-
-
-<dt><code>type</code></dt>
-<dd><p>reference electrode type, default is the same as current
+<dd><p><code>NULL</code> or <code>RAVEAbstarctElectrode</code> instance
 instance</p></dd>
 
 
@@ -318,8 +310,8 @@ depending on child class implementations</p></dd>
 <span class="r-in"><span class="va">ref_name</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># load &amp; set reference</span></span>
-<span class="r-in"><span class="va">ref</span> <span class="op">&lt;-</span> <span class="va">generator</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">e</span><span class="op">$</span><span class="va">subject</span>, <span class="va">ref_name</span>, is_reference <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">e</span><span class="op">$</span><span class="fu">.set_reference</span><span class="op">(</span><span class="va">ref</span>, <span class="va">e</span><span class="op">$</span><span class="va">type</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">ref</span> <span class="op">&lt;-</span> <span class="va">generator</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">e</span><span class="op">$</span><span class="va">subject</span>, <span class="va">ref_name</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">e</span><span class="op">$</span><span class="fu">set_reference</span><span class="op">(</span><span class="va">ref</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
