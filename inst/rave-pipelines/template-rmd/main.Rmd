@@ -81,7 +81,7 @@ requested_electrodes <- dipsaus::parse_svec(electrodes)
 requested_electrodes <- requested_electrodes[
   requested_electrodes %in% subject$electrodes]
 electrode_instances <- lapply(requested_electrodes, function(ei){
-  e <- raveio::LFP_electrode$new(subject, number = ei)
+  e <- raveio::new_electrode(subject, number = ei, signal_type = "LFP")
   
   # set epoch
   e$set_epoch(epoch_instance)

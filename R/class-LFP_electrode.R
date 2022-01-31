@@ -1,16 +1,22 @@
 #' Definitions of reference with 'LFP' signal type
+#' @description Please use a safer \code{\link{new_electrode}} function to
+#' create instances. This documentation is to describe the member methods
+#' of the electrode class \code{LFP_electrode}
 #'
 #' @examples
 #' \dontrun{
 #'
 #' # Download subject demo/DemoSubject
 #'
-#' Electrode 14 as reference electrode (Bipolar referencing)
-#' e <- LFP_reference$new('demo/DemoSubject', number = "ref_14")
 #'
-#' # Reference "ref_13-16,24" (CAR or white-matter reference)
-#' ref <- LFP_reference$new('demo/DemoSubject', number = "ref_13-16,24")
-#' ref
+#' # Electrode 14 in demo/DemoSubject
+#' subject <- as_rave_subject("demo/DemoSubject")
+#' e <- new_electrode(subject = subject, number = 14, signal_type = "LFP")
+#'
+#' # Load CAR reference "ref_13-16,24"
+#' ref <- new_reference(subject = subject, number = "ref_13-16,24",
+#'                      signal_type = "LFP")
+#' e$set_reference(ref)
 #'
 #' # Set epoch
 #' e$set_epoch(epoch = 'auditory_onset')
@@ -28,8 +34,23 @@
 #' # Subset power
 #' subset(power, Time ~ Time < 0, Electrode ~ Electrode == 14)
 #'
+#' # Draw baseline
+#' tempfile <- tempfile()
+#' bl <- power_baseline(power, baseline_windows = c(-1, 0),
+#'                      method = "decibel", filebase = tempfile)
+#' collapsed_power <- collapse2(bl, keep = c(2,1))
+#' # Visualize
+#' dname <- dimnames(bl)
+#' image(collapsed_power, x = dname$Time, y = dname$Frequency,
+#'       xlab = "Time (s)", ylab = "Frequency (Hz)",
+#'       main = "Mean power over trial (Baseline: -1~0 seconds)",
+#'       sub = glue('Electrode {e$number} (Reference: {ref$number})'))
+#' abline(v = 0, lty = 2, col = 'blue')
+#' text(x = 0, y = 20, "Audio onset", col = "blue", cex = 0.6)
+#'
 #' # clear cache on hard disk
 #' e$clear_cache()
+#' ref$clear_cache()
 #'
 #' }
 #'
@@ -81,11 +102,13 @@ LFP_electrode <- R6::R6Class(
   ),
   public = list(
 
+    #' @description print electrode summary
     print = function(){
       cat("<Electrode>\n")
       cat(sprintf("  Project: %s\n", self$subject$project_name))
       cat(sprintf("  Subject: %s\n", self$subject$subject_code))
-      cat(sprintf("  Reference label: %s\n", self$number))
+      cat(sprintf("  Electrode number: %s\n", self$number))
+      cat(sprintf("  Referenced against: %s\n", self$reference_name))
       cat("  Location type:", self$location, "\n")
       cat("  Signal type:", self$type, "\n")
       cat("  Sample rates:\n")

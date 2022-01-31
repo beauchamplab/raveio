@@ -1,15 +1,23 @@
 #' Definitions of reference with 'LFP' signal type
+#' @description Please use a safer \code{\link{new_reference}} function to
+#' create instances. This documentation is to describe the member methods
+#' of the electrode class \code{LFP_reference}
 #'
 #' @examples
 #' \dontrun{
 #'
 #' # Download subject demo/DemoSubject
 #'
-#' Electrode 14 as reference electrode (Bipolar referencing)
-#' e <- LFP_reference$new('demo/DemoSubject', number = "ref_14")
+#'
+#' subject <- as_rave_subject("demo/DemoSubject")
+#'
+#' # Electrode 14 as reference electrode (Bipolar referencing)
+#' e <- new_reference(subject = subject, number = "ref_14",
+#'                    signal_type = "LFP")
 #'
 #' # Reference "ref_13-16,24" (CAR or white-matter reference)
-#' ref <- LFP_reference$new('demo/DemoSubject', number = "ref_13-16,24")
+#' ref <- new_reference(subject = subject, number = "ref_13-16,24",
+#'                      signal_type = "LFP")
 #' ref
 #'
 #' # Set epoch
@@ -47,6 +55,7 @@ LFP_reference <- R6::R6Class(
   ),
   public = list(
 
+    #' @description print reference summary
     print = function(){
       cat("<Reference electrode>\n")
       cat(sprintf("  Project: %s\n", self$subject$project_name))

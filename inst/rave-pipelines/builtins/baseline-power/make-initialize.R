@@ -50,7 +50,7 @@ library(targets)
     electrodes,
     {
       inst <- lapply(settings_initialize$electrodes, function(ei){
-        e <- raveio::LFP_electrode$new(basic_info$subject, number = ei)
+        e <- raveio::new_electrode(basic_info$subject, number = ei, signal_type = "LFP")
 
         # set epoch
         e$set_epoch(epoch)
