@@ -272,3 +272,57 @@ RAVEAbstarctElectrode <- R6::R6Class(
   )
 )
 
+#' @export
+new_electrode <- function(subject, number, ..., signal_type){
+  number <- as.integer(number)
+  stopifnot(length(number) && !is.na(number))
+
+  subject <- as_rave_subject(subject, strict = FALSE)
+  signal_type_expected <- subject$electrode_types[subject$electrodes == number]
+
+  if(missing(signal_type)){
+    signal_type <- signal_type_expected
+  } else {
+    signal_type <- match.arg(signal_type, choices = SIGNAL_TYPES)
+    if(signal_type_expected != signal_type){
+      catgl("Electrode {number} has signal type {signal_type_expected} but loaded as {signal_type}. This might cause some issues later", level = "WARNING")
+    }
+  }
+
+  generator <- get(sprintf("%s_electrode", signal_type),
+                   envir = asNamespace('raveio'),
+                   inherits = FALSE)
+
+  if(!inherits(generator, "R6ClassGenerator")){
+    stop("Cannot find class definition for electrode with ", signal_type, " signal type.")
+  }
+  generator$new(subject = subject, number, ...)
+}
+
+
+#' @export
+new_reference <- function(subject, number = NULL, ..., signal_type){
+  if(!length(number) || number == "noref"){ return(NULL) }
+
+  subject <- as_rave_subject(subject, strict = FALSE)
+
+  if(missing(signal_type)){
+    elec <- dipsaus::parse_svec(gsub("[^0-9 -]", "", number))
+    sel <- subject$electrodes %in% elec
+    if(!any(sel)){
+      stop("Cannot determine the signal type of ", number, ". Please specify `signal_type`")
+    }
+    signal_type <- subject$electrode_types[sel][[1]]
+  } else {
+    signal_type <- match.arg(signal_type, choices = SIGNAL_TYPES)
+  }
+
+  generator <- get(sprintf("%s_reference", signal_type),
+                   envir = asNamespace('raveio'),
+                   inherits = FALSE)
+
+  if(!inherits(generator, "R6ClassGenerator")){
+    stop("Cannot find class definition for reference with ", signal_type, " signal type.")
+  }
+  generator$new(subject = subject, number, ...)
+}

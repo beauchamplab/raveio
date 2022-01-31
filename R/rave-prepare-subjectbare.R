@@ -90,14 +90,7 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
     electrode_signal_types
   ))
   reference_instances <- structure(apply(ref_mat, 1, function(y){
-    generator <- get0(sprintf("%s_electrode", y[[2]]), ifnotfound = NULL)
-    if(!inherits(generator, "R6ClassGenerator")){
-      stop("Unsupported signal type: ", y[[2]])
-    }
-    ref_name <- y[[1]]
-    ref <- generator$new(subject = subject,
-                         ref_name, is_reference = TRUE)
-    ref
+    new_reference(subject = subject, number = y[[1]], signal_type = y[[2]])
   }), names = sprintf("%s_%s", ref_mat[, 1], ref_mat[, 2]))
   re$reference_instances <- dipsaus::drop_nulls(reference_instances)
 
@@ -105,15 +98,11 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
   electrode_instances <- structure(lapply(seq_along(electrode_list), function(ii){
     e <- electrode_list[[ii]]
     signal_type <- electrode_signal_types[[ii]]
-    generator <- get0(sprintf("%s_electrode", signal_type), ifnotfound = NULL)
-    if(!inherits(generator, "R6ClassGenerator")){
-      stop("Unsupported signal type: ",signal_type)
-    }
-
     ref_name <- reference_table$Reference[reference_table$Electrode == e][[1]]
     ref_name <- sprintf("%s_%s", ref_name, signal_type)
-    el <- generator$new(subject = subject, e, is_reference = FALSE)
     ref <- reference_instances[[ref_name]]
+
+    el <- new_electrode(subject = subject, number = e, signal_type = signal_type)
     el$set_reference(ref)
     el
   }), names = sprintf("e_%d", electrode_list))
