@@ -107,6 +107,16 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
     el
   }), names = sprintf("e_%d", electrode_list))
   re$electrode_instances <- electrode_instances
+
+  digest_key <- list(
+    subject_id = re$subject$subject_id,
+    reference_table = re$reference_table,
+    electrodes = re$electrode_list,
+    electrode_signal_types = re$electrode_signal_types
+  )
+  digest_string <- dipsaus::digest(digest_key)
+  re$signature <- structure(digest_string, contents = names(digest_key))
+
   class(re) <- c("rave_prepare_subject", "rave_repository", "fastmap2", "list")
   re
 
@@ -173,6 +183,19 @@ prepare_subject_with_epoch <- function(subject, electrodes, reference_name, epoc
     NULL
   })
 
+
+
+  digest_key <- list(
+    subject_id = re$subject$subject_id,
+    epoch_table = re$epoch$table,
+    reference_table = re$reference_table,
+    electrode_list = re$electrode_list,
+    electrode_signal_types = re$electrode_signal_types,
+    time_windows = re$time_windows
+  )
+  digest_string <- dipsaus::digest(digest_key)
+  re$signature <- structure(digest_string, contents = names(digest_key))
+
   class(re) <- c(
     "rave_prepare_with_epoch",
     "rave_prepare_subject", "rave_repository",
@@ -229,11 +252,13 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
     epoch_table = re$epoch$table[c("Block", "Time", "Trial")],
     reference_table = re$reference_table,
     time_points = power_dimnames$Time,
-    electrodes = re$electrode_list,
+    electrode_list = re$electrode_list,
     frequency_table = frequency_table,
     electrode_signal_types = re$electrode_signal_types
   )
   digest_string <- dipsaus::digest(digest_key)
+
+  re$signature <- structure(digest_string, contents = names(digest_key))
 
   re$power <- dipsaus::fastmap2()
   for(signal_type in signal_types){
