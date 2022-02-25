@@ -1,3 +1,4 @@
+#' @title Pipeline result object
 PipelineResult <- R6::R6Class(
   classname = "PipelineResult",
   portable = TRUE,
@@ -24,12 +25,24 @@ PipelineResult <- R6::R6Class(
   ),
   public = list(
 
+    #' @field progressor progress bar object, usually generated from \code{\link[dipsaus]{progress2}}
     progressor = NULL,
+
+    #' @field promise a \code{\link[promises]{promise}} instance that monitors
+    #' the pipeline progress
     promise = NULL,
+
+    #' @field verbose whether to print warning messages
     verbose = FALSE,
+
+    #' @field names names of the pipeline to build
     names = NULL,
+
+    #' @field check_interval used when \code{async=TRUE} in
+    #' \code{\link{pipeline_run}}, interval in seconds to check the progress
     check_interval = 0.1,
 
+    #' @description check if result is valid, raises errors when invalidated
     validate = function(){
       if(private$.invalidated){
         stop("This result has been invalidated")
@@ -37,18 +50,22 @@ PipelineResult <- R6::R6Class(
       invisible()
     },
 
+    #' @description invalidate the pipeline result
     invalidate = function(){
       private$.invalidated <- TRUE
       private$.state <- "invalidated"
       if(inherits(private$.process, 'process')){
         try({
-          private$.process$kill()
+          if(isTRUE(private$.process$is_alive())){
+            private$.process$kill()
+          }
           private$.process <- NULL
         }, silent = !self$verbose)
       }
       private$close_progressor()
     },
 
+    #' @description get pipeline progress
     get_progress = function(){
       self$validate()
       tbl <- raveio::pipeline_progress(pipe_dir = private$.path, method = "details")
@@ -87,6 +104,9 @@ PipelineResult <- R6::R6Class(
 
     },
 
+    #' @description constructor (internal)
+    #' @param path pipeline path
+    #' @param verbose whether to print warnings
     initialize = function(path = character(0L), verbose = FALSE){
       private$.path <- path
       private$.current_progress <- 0
@@ -94,6 +114,14 @@ PipelineResult <- R6::R6Class(
       self$verbose <- isTRUE(as.logical(verbose))
     },
 
+    #' @description run pipeline (internal)
+    #' @param expr expression to evaluate
+    #' @param env environment of \code{expr}
+    #' @param quoted whether \code{expr} has been quoted
+    #' @param async whether the process runs in other sessions
+    #' @param process the process object inherits \code{\link[callr]{process}},
+    #' will be inferred from \code{expr} if \code{process=NULL},
+    #' and will raise errors if cannot be found
     run = function(expr, env = parent.frame(), quoted = FALSE,
                    async = FALSE, process = NULL) {
       if(!quoted){
@@ -137,6 +165,7 @@ PipelineResult <- R6::R6Class(
               callback <- function(){
                 continue <- tryCatch({
                   if(private$.invalidated){
+                    private$.state <- "canceled"
                     self$invalidate()
                     e <- simpleCondition("Pipeline canceled")
                     reject(e)
@@ -146,6 +175,7 @@ PipelineResult <- R6::R6Class(
                   progress <- self$get_progress()
 
                   if(!private$.process$is_alive()){
+                    private$.state <- "finished"
                     private$close_progressor()
                     private$.process$get_result()
                     resolve(private$.vartable)
@@ -168,6 +198,7 @@ PipelineResult <- R6::R6Class(
 
                   TRUE
                 }, error = function(e){
+                  private$.state <- "errored"
                   private$close_progressor()
                   reject(e)
                   FALSE
@@ -184,6 +215,7 @@ PipelineResult <- R6::R6Class(
 
           },
           onRejected = function(e) {
+            private$.state <- "errored"
             private$close_progressor()
             stop(e)
           }
@@ -194,18 +226,98 @@ PipelineResult <- R6::R6Class(
         promise <- promises::then(
           promise,
           onFulfilled = function(...){
+            private$.state <- "finished"
             self$variables
             return(private$.vartable)
+          },
+          onRejected = function(e){
+            private$.state <- "errored"
+            private$close_progressor()
+            stop(e)
           }
         )
         self$promise <- promise
       }
 
-    }
+    },
 
+    #' @description wait until some targets get finished
+    #' @param names target names to wait, default is \code{NULL}, i.e. to
+    #' wait for all targets that have been scheduled
+    #' @param timeout maximum waiting time in seconds
+    #' @return \code{TRUE} if the target is finished, or \code{FALSE} if
+    #' timeout is reached
+    await = function(names = NULL, timeout = Inf){
+      if(!self$valid){ return(FALSE) }
+      promise_impl <- attr(self$promise, "promise_impl")
+      now <- Sys.time()
+      if(length(names)){
+        missing_names <- names[!names %in% self$variables]
+        if(length(missing_names)){
+          stop("Unable to watch the following names: ", paste(missing_names, collapse = ", "))
+        }
+      } else {
+        names <- self$variables
+      }
+      sel <- which(private$.vartable$name %in% names)
+      while(
+        !promise_impl$status() %in% c("fulfilled", "rejected") &&
+        !later::loop_empty()
+      ){
+        later::run_now(0.1)
+
+        if(private$.current_progress >= max(sel) &&
+           !any(private$.vartable$progress %in% c("initialize", "started"))) {
+          return(TRUE)
+        }
+
+        if(timeout <= as.numeric(Sys.time() - now, units = 'secs')){
+          return(FALSE)
+        }
+      }
+      return(TRUE)
+    },
+
+
+    #' @description print method
+    print = function(){
+      cat("<Pipeline result container> ")
+      if(private$.invalidated){
+        cat("(Invalidated)\n")
+      } else {
+        cat("\nprocess:", private$.process_type)
+        if(private$.state == 'running'){
+          cat(sprintf(
+            "\nstatus: %s (%d of %d)\n",
+            private$.state,
+            private$.current_progress,
+            length(self$variables)
+          ))
+        } else {
+          cat(sprintf(
+            "\nstatus: %s\n",
+            private$.state
+          ))
+        }
+
+      }
+    },
+
+
+    #' @description get results
+    #' @param names the target names to read
+    #' @param ... passed to code{link{pipeline_read}}
+    get_values = function(names = NULL, ...){
+      self$validate()
+      if(!length(names)){
+        names <- self$variables
+      }
+      raveio::pipeline_read(var_names = names, pipe_dir = private$.path, ...)
+    }
   ),
   active = list(
 
+    #' @field variables target variables of the pipeline
     variables = function(){
       if(!is.data.frame(private$.vartable)){
         self$validate()
@@ -236,9 +348,11 @@ PipelineResult <- R6::R6Class(
           progress = "initialize",
           stringsAsFactors = FALSE
         )
+        # tbl$included <- TRUE
         if(length(self$names)){
           sel <- tbl$name %in% self$names
           if(any(sel)){
+            # tbl$included <- sel
             tbl <- tbl[tbl$name %in% self$names, ]
           }
         }
@@ -246,12 +360,25 @@ PipelineResult <- R6::R6Class(
       }
       private$.vartable$name
     },
+
+    #' @field variable_descriptions readable descriptions of the target variables
     variable_descriptions = function(){
       self$variables
       private$.vartable$description
     },
+
+    #' @field valid logical true or false whether the result instance hasn't
+    #' been invalidated
     valid = function(){
       !private$.invalidated
+    },
+
+    #' @field status result status, possible status are \code{'initialize'},
+    #' \code{'running'}, \code{'finished'}, \code{'canceled'},
+    #' and \code{'errored'}. Note that \code{'finished'} only means the pipeline
+    #' process has been finished.
+    status = function(){
+      private$.state
     }
 
   )

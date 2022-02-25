@@ -202,6 +202,24 @@ or \code{'rmd'}}
 pipeline collection folder that contains the pipeline information,
 structures, dependencies, etc.}
 }
+\value{
+\describe{
+\item{\code{pipeline_root}}{the root directories of the pipelines}
+\item{\code{pipeline_list}}{the available pipeline names under \code{pipeline_root}}
+\item{\code{pipeline_find}}{the path to the pipeline}
+\item{\code{pipeline_run}}{a \code{\link{PipelineResult}} instance}
+\item{\code{load_targets}}{a list of targets to build}
+\item{\code{pipeline_target_names}}{a vector of characters indicating the pipeline target names}
+\item{\code{pipeline_visualize}}{a widget visualizing the target dependence structure}
+\item{\code{pipeline_progress}}{a table of building progress}
+\item{\code{pipeline_fork}}{a normalized path of the forked pipeline directory}
+\item{\code{pipeline_read}}{the value of corresponding \code{var_names}, or a named list if \code{var_names} has more than one element}
+\item{\code{pipeline_vartable}}{a table of summaries of the variables; can raise errors if pipeline has never been executed}
+\item{\code{pipeline_hasname}}{logical, whether the pipeline has variable built}
+\item{\code{pipeline_watch}}{a basic shiny application to monitor the progress}
+\item{\code{pipeline_description}}{the list of descriptions of the pipeline or pipeline collection}
+}
+}
 \description{
 Utility functions for 'RAVE' pipelines, currently designed for
 internal development use. The infrastructure will be deployed to 'RAVE' in
