@@ -69,22 +69,16 @@ the future to facilitate the "self-expanding" aim. Please check the official
 
 <span class="fu">pipeline_run</span><span class="op">(</span>
   pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"basic"</span>, <span class="st">"async"</span>, <span class="st">"vanilla"</span>, <span class="st">"custom"</span><span class="op">)</span>,
-  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,
+  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,
+  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,
+  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
   callr_function <span class="op">=</span> <span class="cn">NULL</span>,
-  use_future <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_run_async</span><span class="op">(</span>
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  callr_function <span class="op">=</span> <span class="cn">NULL</span>,
-  use_future <span class="op">=</span> <span class="cn">TRUE</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"basic"</span>, <span class="st">"vanilla"</span>, <span class="st">"custom"</span><span class="op">)</span>,
-  check_interval <span class="op">=</span> <span class="fl">1</span>,
-  progress_title <span class="op">=</span> <span class="st">"Executing in Progress"</span>,
+  names <span class="op">=</span> <span class="cn">NULL</span>,
+  async <span class="op">=</span> <span class="cn">FALSE</span>,
+  check_interval <span class="op">=</span> <span class="fl">0.5</span>,
+  progress_quiet <span class="op">=</span> <span class="op">!</span><span class="va">async</span>,
   progress_max <span class="op">=</span> <span class="cn">NA</span>,
-  progress_quiet <span class="op">=</span> <span class="op">!</span><span class="fu">dipsaus</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dipsaus/man/shiny_is_running.html" class="external-link">shiny_is_running</a></span><span class="op">(</span><span class="op">)</span>,
+  progress_title <span class="op">=</span> <span class="st">"Running pipeline"</span>,
   <span class="va">...</span>
 <span class="op">)</span>
 
@@ -167,24 +161,35 @@ name within subject's pipeline path</p></dd>
 <dt>pipe_dir</dt>
 <dd><p>where the pipeline directory is; can be set via system
 environment <code>Sys.setenv("RAVE_PIPELINE"=...)</code></p></dd>
+<dt>scheduler</dt>
+<dd><p>how to schedule the target jobs: default is <code>'none'</code>,
+which is sequential. If you have multiple heavy-weighted jobs that can be
+scheduled at the same time, you can choose <code>'future'</code> or
+<code>'clustermq'</code></p></dd>
 <dt>type</dt>
 <dd><p>how the pipeline should be executed; current choices are
-<code>"basic"</code> to run in the main session; <code>"async"</code> to run in
-a separate session without blocking the main session; <code>"vanilla"</code> to
-run in a separate session and wait for the results; or <code>"custom"</code> to
-run customized scheduler <code>callr_function</code></p></dd>
+<code>"smart"</code> to enable 'future' package if possible, <code>'callr'</code>
+to use <code><a href="https://callr.r-lib.org/reference/r.html" class="external-link">r</a></code>, or <code>'vanilla'</code> to run everything
+sequentially in the main session.</p></dd>
 <dt>callr_function</dt>
-<dd><p>function to customized when <code>type="custom"</code></p></dd>
-<dt>use_future</dt>
-<dd><p>whether to use <code>future</code> package</p></dd>
-<dt>...</dt>
-<dd><p>other parameters, targets, etc.</p></dd>
+<dd><p>function that will be passed to
+<code><a href="https://docs.ropensci.org/targets/reference/tar_make.html" class="external-link">tar_make</a></code>; will be forced to be <code>NULL</code> if
+<code>type='vanilla'</code>, or <code><a href="https://callr.r-lib.org/reference/r.html" class="external-link">r</a></code> if
+<code>type='callr'</code></p></dd>
+<dt>names</dt>
+<dd><p>the names of pipeline targets that are to be executed; default
+is <code>NULL</code>, which runs all targets; use <code>pipeline_target_names</code>
+to check all your available target names.</p></dd>
+<dt>async</dt>
+<dd><p>whether to run pipeline without blocking the main session</p></dd>
 <dt>check_interval</dt>
 <dd><p>when running in background (non-blocking mode),
 how often to check the pipeline</p></dd>
 <dt>progress_title, progress_max, progress_quiet</dt>
 <dd><p>control the progress,
 see <code><a href="https://rdrr.io/pkg/dipsaus/man/progress2.html" class="external-link">progress2</a></code>.</p></dd>
+<dt>...</dt>
+<dd><p>other parameters, targets, etc.</p></dd>
 <dt>quick</dt>
 <dd><p>whether to skip finished targets to save time</p></dd>
 <dt>env, envir</dt>
@@ -234,6 +239,52 @@ or <code>'rmd'</code></p></dd>
 <dd><p>path to the 'DESCRIPTION' file under the pipeline folder, or
 pipeline collection folder that contains the pipeline information,
 structures, dependencies, etc.</p></dd>
+</dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <dl><dt><code>pipeline_root</code></dt>
+<dd><p>the root directories of the pipelines</p></dd>
+
+<dt><code>pipeline_list</code></dt>
+<dd><p>the available pipeline names under <code>pipeline_root</code></p></dd>
+
+<dt><code>pipeline_find</code></dt>
+<dd><p>the path to the pipeline</p></dd>
+
+<dt><code>pipeline_run</code></dt>
+<dd><p>a <code><a href="PipelineResult.html">PipelineResult</a></code> instance</p></dd>
+
+<dt><code>load_targets</code></dt>
+<dd><p>a list of targets to build</p></dd>
+
+<dt><code>pipeline_target_names</code></dt>
+<dd><p>a vector of characters indicating the pipeline target names</p></dd>
+
+<dt><code>pipeline_visualize</code></dt>
+<dd><p>a widget visualizing the target dependence structure</p></dd>
+
+<dt><code>pipeline_progress</code></dt>
+<dd><p>a table of building progress</p></dd>
+
+<dt><code>pipeline_fork</code></dt>
+<dd><p>a normalized path of the forked pipeline directory</p></dd>
+
+<dt><code>pipeline_read</code></dt>
+<dd><p>the value of corresponding <code>var_names</code>, or a named list if <code>var_names</code> has more than one element</p></dd>
+
+<dt><code>pipeline_vartable</code></dt>
+<dd><p>a table of summaries of the variables; can raise errors if pipeline has never been executed</p></dd>
+
+<dt><code>pipeline_hasname</code></dt>
+<dd><p>logical, whether the pipeline has variable built</p></dd>
+
+<dt><code>pipeline_watch</code></dt>
+<dd><p>a basic shiny application to monitor the progress</p></dd>
+
+<dt><code>pipeline_description</code></dt>
+<dd><p>the list of descriptions of the pipeline or pipeline collection</p></dd>
+
+
 </dl></div>
 
   </div>
