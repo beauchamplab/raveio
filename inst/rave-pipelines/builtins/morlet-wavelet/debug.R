@@ -19,9 +19,9 @@ raveio::pipeline_visualize()
 
 ##' Test run the pipeline in production mode
 ##'
-# raveio::pipeline_run(type = "async")
+# raveio::pipeline_run(async = TRUE)
 raveio::pipeline_run(names = "apply_morlet_wavelet")
-raveio::pipeline_run(names = "plot_wavelet_power", type = "async")
+raveio::pipeline_run(names = "plot_wavelet_power", async = TRUE)
 
 ##' Check pipeline progress to see status (cached/skipped, built, errored...)
 ##' Must run `raveio::pipeline_run()` first, otherwise error will occur

@@ -2,198 +2,133 @@
 #' @export
 pipeline_run <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  type = c("basic", "async", "vanilla", "custom"),
-  envir = parent.frame(), callr_function = NULL,
-  use_future = FALSE,
-  ...){
-
-  pipe_dir <- activate_pipeline(pipe_dir)
-
-  type <- match.arg(type)
-  if(type == "async") {
-    stop("type == 'async' is deprecated now, consider using `pipeline_run_async` instead.")
-  }
-  if(use_future && type == "async"){
-    stop("Cannot run async pipeline using future package.")
-  }
-  if(type == "custom"){
-    if(is.null(callr_function)){
-      stop("Please specify `callr_function`. Examples are `callr::r`, `callr::r_bg`, ...; see `?targets::tar_make`")
-    }
-  } else {
-    callr_function <- switch (
-      type,
-      "basic" = NULL,
-      "async" = callr::r_bg,
-      "vanilla" = callr::r
-    )
-  }
-  force(envir)
-
-  if(use_future){
-    targets::tar_make_future(
-      callr_function = callr_function,
-      envir = envir,
-      workers = raveio_getopt("max_worker", default = 1L),
-      ...
-    )
-  } else {
-    targets::tar_make(
-      callr_function = callr_function,
-      envir = envir, ...
-    )
-  }
-
-  invisible()
-}
-
-
-pipeline_run_basic <- function(
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  envir = parent.frame(), callr_function = NULL,
-  use_future = FALSE, ...){
-
-  pipe_dir <- activate_pipeline(pipe_dir)
-  force(envir)
-
-  if(use_future){
-    targets::tar_make_future(callr_function = NULL, envir = envir,
-                             workers = raveio_getopt("max_worker", default = 1L), ...)
-  } else {
-    targets::tar_make( callr_function = NULL, envir = envir, ...)
-  }
-
-  invisible()
-}
-
-pipeline_run_vanilla <- function(
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  envir = parent.frame(), callr_function = NULL,
-  use_future = FALSE, ...){
-
-  pipe_dir <- activate_pipeline(pipe_dir)
-  force(envir)
-
-  if(use_future){
-    targets::tar_make_future(callr_function = callr::r, envir = envir,
-                             workers = raveio_getopt("max_worker", default = 1L), ...)
-  } else {
-    targets::tar_make( callr_function = callr::r, envir = envir, ...)
-  }
-
-  invisible()
-}
-
-pipeline_run_custom <- function(
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  envir = parent.frame(), callr_function = NULL,
-  use_future = FALSE, ...){
-
-  pipe_dir <- activate_pipeline(pipe_dir)
-  force(envir)
-
-  if(use_future){
-    targets::tar_make_future(callr_function = callr_function, envir = envir,
-                             workers = raveio_getopt("max_worker", default = 1L), ...)
-  } else {
-    targets::tar_make( callr_function = callr_function, envir = envir, ...)
-  }
-
-  invisible()
-}
-
-#' @rdname rave-pipeline
-#' @export
-pipeline_run_async <- function(
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  callr_function = NULL, use_future = TRUE,
-  type = c("basic", "vanilla", "custom"),
-  check_interval = 1,
-  progress_title = "Executing in Progress",
+  scheduler = c("none", "future", "clustermq"),
+  type = c("smart", "callr", "vanilla"),
+  envir = new.env(parent = globalenv()),
+  callr_function = NULL,
+  names = NULL,
+  async = FALSE,
+  check_interval = 0.5,
+  progress_quiet = !async,
   progress_max = NA,
-  progress_quiet = !dipsaus::shiny_is_running(),
+  progress_title = "Running pipeline",
   ...){
+
+  pipe_dir <- activate_pipeline(pipe_dir)
+
   type <- match.arg(type)
+  scheduler <- match.arg(scheduler)
   callr_function <- substitute(callr_function)
 
-  more_args <- list(...)
-  more_args$use_future <- use_future
-  more_args$pipe_dir <- pipe_dir
-  # more_args$reporter <- "silent"
 
-  func <- function(){}
-  body(func) <- bquote({
-    local({
-      ns <- asNamespace('raveio')
-      args <- .(more_args)
-      args$callr_function <- .(callr_function)
-      args$envir <- globalenv()
-      if(.(use_future)){
-        ns$with_future_parallel({
-          do.call(ns[[.(paste0("pipeline_run_", type))]], args)
-        })
-      } else {
-        do.call(ns[[.(paste0("pipeline_run_", type))]], args)
-      }
-    })
+  clustermq_scheduler <- getOption('clustermq.scheduler', NA)
+  if(scheduler == "clustermq"){
+    # if(!identical(clustermq_scheduler, "LOCAL")){
+    #   callr_function <- NULL
+    # }
+    callr_function <- NULL
+  }
 
-  })
-  job <- callr::r_bg(func = func, package = FALSE, poll_connection = TRUE, supervise = TRUE, error = "error")
+  if(type == "vanilla"){
+    callr_function <- NULL
+  } else if (type == "callr") {
+    callr_function <- quote(callr::r)
+  }
 
-  tarnames <- pipeline_target_names(pipe_dir = pipe_dir)
-  tarnames_readable <- names(tarnames)
+  args <- list(
+    names = names,
+    envir = envir,
+    callr_function = NULL,
+    ...
+  )
 
-  promises::promise(function(resolve, reject) {
-    progress <- dipsaus::progress2(
-      progress_title, max = progress_max, shiny_auto_close = FALSE,
-      quiet = progress_quiet
-    )
-    callback <- function(){
-      if(job$is_alive()){
-        # ravedash::add_callback(callback)
-        later::later(callback, delay = check_interval)
-
-        try({
-          tbl <- pipeline_progress(pipe_dir = pipe_dir, method = "details")
-          sel <- tbl$progress %in% "started"
-          if(any(sel)){
-            names <- tbl$name[seq_len(max(which(sel)))]
-            cur_val <- progress$get_value()
-            if(cur_val > 0){
-              names <- names[-seq_len(cur_val)]
-            }
-            for(nm in names){
-              ii <- which(tarnames == nm)
-              if(!length(ii)){
-                ii <- which(startsWith(nm, tarnames))
-              }
-              ii <- ii[[1]]
-              if(length(tarnames_readable) < ii || tarnames_readable[[ii]] == ""){
-                msg <- sprintf('Calculating `%s`', nm)
-              } else {
-                msg <- unlist(strsplit(tarnames_readable[ii], "[_-]+"))
-                msg <- msg[msg != ""]
-                msg <- paste(msg, collapse = " ")
-                msg <- sprintf("%s (calculating `%s`)", msg, nm)
-              }
-              progress$inc(msg)
-            }
-          }
-
-        }, silent = TRUE)
-      } else {
-
-        progress$close()
-        tryCatch({
-          res <- job$get_result()
-          resolve(res)
-        }, error = function(e){
-          reject(e$message)
-        })
-      }
+  fun <- function(){}
+  environment(fun) <- globalenv()
+  body(fun) <- bquote({
+    ns <- asNamespace('raveio')
+    callr_function <- eval(.(callr_function))
+    args <- .(args)
+    if(!is.null(callr_function)){
+      args$callr_function <- callr_function
     }
-    later::later(callback, delay = check_interval)
+    clustermq_scheduler <- .(clustermq_scheduler)
+
+    all_names <- ns$pipeline_target_names(pipe_dir = .(pipe_dir))
+    if(length(args$names)) {
+      if(!is.character(args$names)){
+        stop("pipeline_run: `names` must be NULL or characters")
+      }
+      missing_names <- args$names[!args$names %in% all_names]
+      if(length(missing_names)) {
+        stop("pipeline_run: the following `names` cannot be found: ", paste(missing_names, collapse = ", "))
+      }
+    } else {
+      args$names <- NULL
+    }
+
+    if(.(type) == "smart"){
+      local <- ns$with_future_parallel
+    }
+
+    if("none" == .(scheduler)){
+      local({ do.call(targets::tar_make, args) })
+    } else if("future" == .(scheduler)){
+      args$workers <- ns$raveio_getopt("max_worker", default = 1L)
+      local({ do.call(targets::tar_make_future, args) })
+    } else {
+
+      if(is.na(clustermq_scheduler)) {
+        clustermq_scheduler <- "multiprocess"
+      }
+      options('clustermq.scheduler' = clustermq_scheduler)
+      if(identical(clustermq_scheduler, "LOCAL")){
+        local({ do.call(targets::tar_make_clustermq, args) })
+      } else {
+        args$workers <- ns$raveio_getopt("max_worker", default = 1L)
+        do.call(targets::tar_make_clustermq, args)
+      }
+
+    }
+
   })
 
+
+  res <- PipelineResult$new(path = pipe_dir, verbose = TRUE)
+  res$check_interval <- check_interval
+  res$names <- names
+
+  if(!progress_quiet && is.na(progress_max)){
+    if(length(names)){
+      progress_max <- length(names)
+    } else {
+      progress_max <- length(pipeline_target_names(pipe_dir = pipe_dir))
+    }
+  }
+  res$progressor <- dipsaus::progress2(
+    progress_title, max = progress_max, shiny_auto_close = !async,
+    quiet = progress_quiet
+  )
+
+  if(async){
+
+
+    res$run(
+      async = TRUE,
+      expr = {
+        callr::r_bg(func = fun, package = FALSE, poll_connection = TRUE,
+                    supervise = TRUE, error = "error")
+      }
+    )
+    res
+  } else {
+    res$run(
+      async = FALSE,
+      expr = {
+        fun()
+      }
+    )
+  }
+
+  res
 }
 

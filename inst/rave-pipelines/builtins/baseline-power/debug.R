@@ -11,7 +11,7 @@ raveio::pipeline_debug()
 raveio::pipeline_visualize()
 
 ## Actual test run
-# raveio::pipeline_run(type = "async")
+# raveio::pipeline_run(async = TRUE)
 # raveio::pipeline_run()
 
 ##' Check pipeline progress. Must run `raveio::pipeline_run()` first,

@@ -234,7 +234,8 @@ rave_knitr_build <- function(targets, make_file){
             quote({
               load_yaml(settings_path)
             }),
-            deps = "settings_path"
+            deps = "settings_path",
+            cue = targets::tar_cue("always")
           )
         )
       ), extras, exprs)

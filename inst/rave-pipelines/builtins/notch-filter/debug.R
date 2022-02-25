@@ -19,7 +19,6 @@ raveio::pipeline_visualize()
 
 ##' Test run the pipeline in production mode
 ##'
-# raveio::pipeline_run(type = "async")
 raveio::pipeline_run()
 
 ##' Check pipeline progress to see status (cached/skipped, built, errored...)

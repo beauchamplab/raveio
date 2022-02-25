@@ -8,7 +8,6 @@
 \alias{pipeline_find}
 \alias{pipeline_attach}
 \alias{pipeline_run}
-\alias{pipeline_run_async}
 \alias{load_targets}
 \alias{pipeline_target_names}
 \alias{pipeline_debug}
@@ -35,22 +34,16 @@ pipeline_attach(name, root_path = pipeline_root())
 
 pipeline_run(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  type = c("basic", "async", "vanilla", "custom"),
-  envir = parent.frame(),
+  scheduler = c("none", "future", "clustermq"),
+  type = c("smart", "callr", "vanilla"),
+  envir = new.env(parent = globalenv()),
   callr_function = NULL,
-  use_future = FALSE,
-  ...
-)
-
-pipeline_run_async(
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  callr_function = NULL,
-  use_future = TRUE,
-  type = c("basic", "vanilla", "custom"),
-  check_interval = 1,
-  progress_title = "Executing in Progress",
+  names = NULL,
+  async = FALSE,
+  check_interval = 0.5,
+  progress_quiet = !async,
   progress_max = NA,
-  progress_quiet = !dipsaus::shiny_is_running(),
+  progress_title = "Running pipeline",
   ...
 )
 
@@ -131,23 +124,34 @@ name within subject's pipeline path}
 \item{pipe_dir}{where the pipeline directory is; can be set via system
 environment \code{Sys.setenv("RAVE_PIPELINE"=...)}}
 
+\item{scheduler}{how to schedule the target jobs: default is \code{'none'},
+which is sequential. If you have multiple heavy-weighted jobs that can be
+scheduled at the same time, you can choose \code{'future'} or
+\code{'clustermq'}}
+
 \item{type}{how the pipeline should be executed; current choices are
-\code{"basic"} to run in the main session; \code{"async"} to run in
-a separate session without blocking the main session; \code{"vanilla"} to
-run in a separate session and wait for the results; or \code{"custom"} to
-run customized scheduler \code{callr_function}}
+\code{"smart"} to enable 'future' package if possible, \code{'callr'}
+to use \code{\link[callr]{r}}, or \code{'vanilla'} to run everything
+sequentially in the main session.}
 
-\item{callr_function}{function to customized when \code{type="custom"}}
+\item{callr_function}{function that will be passed to
+\code{\link[targets]{tar_make}}; will be forced to be \code{NULL} if
+\code{type='vanilla'}, or \code{\link[callr]{r}} if
+\code{type='callr'}}
 
-\item{use_future}{whether to use \code{future} package}
+\item{names}{the names of pipeline targets that are to be executed; default
+is \code{NULL}, which runs all targets; use \code{pipeline_target_names}
+to check all your available target names.}
 
-\item{...}{other parameters, targets, etc.}
+\item{async}{whether to run pipeline without blocking the main session}
 
 \item{check_interval}{when running in background (non-blocking mode),
 how often to check the pipeline}
 
 \item{progress_title, progress_max, progress_quiet}{control the progress,
 see \code{\link[dipsaus]{progress2}}.}
+
+\item{...}{other parameters, targets, etc.}
 
 \item{quick}{whether to skip finished targets to save time}
 
