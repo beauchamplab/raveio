@@ -142,11 +142,27 @@ catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture 
   call <- match.call()
   call <- deparse1(call, collapse = '\n')
 
-  if(missing(.pal)){
-    dipsaus::cat2(msg, level = level)
-  }else{
-    dipsaus::cat2(msg, level = level, pal = .pal)
+  # .envir = parent.frame(), level = 'DEBUG', .pal, .capture = FALSE
+  if(dipsaus::package_installed('ravedash')){
+    ns <- do.call('asNamespace', list('ravedash'))
+    ns$logger(msg, level = switch (
+      level,
+      "DEFAULT" = "trace",
+      "DEBUG" = "info",
+      "INFO" = "info",
+      "WARNING" = "warning",
+      'ERROR' = 'error',
+      'FATAL' = 'fatal',
+      { "debug" }
+    ))
+  } else {
+    if(missing(.pal)){
+      dipsaus::cat2(msg, level = level)
+    }else{
+      dipsaus::cat2(msg, level = level, pal = .pal)
+    }
   }
+
   return(invisible(msg))
 }
 

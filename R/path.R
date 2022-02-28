@@ -49,7 +49,7 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
     wsp <- 0.1 / (upload[3])
     if( wsp < 0.1 ) {
       if(!quiet){
-        dipsaus::cat2('Hard disk speed might be too slow. Abort speed test')
+        catgl('Hard disk speed might be too slow. Abort speed test')
       }
       sp <- c(wsp, wsp)
       raveio_setopt('drive_speed', sp)
