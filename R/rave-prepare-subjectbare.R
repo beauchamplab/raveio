@@ -226,7 +226,8 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
   # load references first
   ref_mat <- unique(sprintf("%s_%s", re$reference_table[re$reference_table$Electrode %in% re$electrode_list, "Reference"], electrode_signal_types))
 
-  refs <- dipsaus::lapply_async2(re$reference_instances[ref_mat], function(ref){
+  ref_instances <- dipsaus::drop_nulls(re$reference_instances[ref_mat])
+  refs <- dipsaus::lapply_async2(ref_instances, function(ref){
     ref$load_data(type = "power")
   }, callback = function(ref){
     sprintf("Loading Electrode | %s", ref$number)
