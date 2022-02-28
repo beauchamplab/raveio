@@ -148,12 +148,12 @@ catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture 
     ns$logger(msg, level = switch (
       level,
       "DEFAULT" = "trace",
-      "DEBUG" = "info",
+      "DEBUG" = "debug",
       "INFO" = "info",
       "WARNING" = "warning",
       'ERROR' = 'error',
       'FATAL' = 'fatal',
-      { "debug" }
+      { "trace" }
     ))
   } else {
     if(missing(.pal)){
