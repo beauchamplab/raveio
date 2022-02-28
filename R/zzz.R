@@ -50,45 +50,57 @@ safe_system2 <- function(cmd, args, ..., stdout = TRUE, stderr = FALSE, onFound 
 
 
 
-default_settings <- function(s = dipsaus::fastmap2()){
-  s[['..temp']] <- list()
-  s[['tensor_temp_path']] <- '~/rave_data/cache_dir/'
-  s[['verbose_level']] <- 'DEBUG'
-  s[['raw_data_dir']] <- '~/rave_data/raw_dir/'
-  s[['data_dir']] <- '~/rave_data/data_dir/'
-  s[['bids_data_dir']] <- '~/rave_data/bids_dir/'
-  s[['file_structure']] <- 'native'
+default_settings <- local({
+  defaults <- list()
 
-  # Not validated (but not recommended to change)
-  s[['module_root_dir']] <- '~/rave_modules/'
-  s[['module_lookup_file']] <- '~/rave_modules/modules.csv'
-  s[['delay_input']] <- 20
-  s[['test_mode']] <- FALSE
-  s[['fast_cache']] <- TRUE
-  s[['image_width']] <- 1280L
-  s[['image_height']] <- 768L
-  s[['drive_speed']] <- c(50, 20)
-  s[['disable_startup_speed_check']] <- FALSE
-  s[['max_worker']] <- parallel::detectCores() - 1
-  ram <- tryCatch({
-    dipsaus::get_ram() / 1024^3
-  }, error = function(e){
-    8
-  })
-  if(is.na(ram) || ram < 0.5){
-    ram <- 8
+  ensure_defaults <- function(){
+    if(!length(defaults)){
+      defaults[['..temp']] <- list()
+      defaults[['tensor_temp_path']] <- '~/rave_data/cache_dir/'
+      defaults[['verbose_level']] <- 'DEBUG'
+      defaults[['raw_data_dir']] <- '~/rave_data/raw_dir/'
+      defaults[['data_dir']] <- '~/rave_data/data_dir/'
+      defaults[['bids_data_dir']] <- '~/rave_data/bids_dir/'
+      defaults[['file_structure']] <- 'native'
+
+      # Not validated (but not recommended to change)
+      defaults[['module_root_dir']] <- '~/rave_modules/'
+      defaults[['module_lookup_file']] <- '~/rave_modules/modules.csv'
+      defaults[['delay_input']] <- 20
+      defaults[['test_mode']] <- FALSE
+      defaults[['fast_cache']] <- TRUE
+      defaults[['image_width']] <- 1280L
+      defaults[['image_height']] <- 768L
+      defaults[['drive_speed']] <- c(50, 20)
+      defaults[['disable_startup_speed_check']] <- FALSE
+      defaults[['max_worker']] <- parallel::detectCores() - 1
+      ram <- tryCatch({
+        dipsaus::get_ram() / 1024^3
+      }, error = function(e){
+        8
+      })
+      if(is.na(ram) || ram < 0.5){
+        ram <- 8
+      }
+      defaults[['max_mem']] <- ram
+
+      # Not used
+      defaults[['server_time_zone']] <- 'America/Chicago'
+      defaults[['suma_nodes_per_electrodes']] <- 42L
+      defaults[['matlab_path']] <- '/Applications/MATLAB_R2016b.app/bin'
+      defaults[['py2_path']] <- ''
+      defaults[['py3_path']] <- ''
+      defaults[['py_virtualenv']] <- ''
+    }
+    defaults <<- defaults
   }
-  s[['max_mem']] <- ram
 
-  # Not used
-  s[['server_time_zone']] <- 'America/Chicago'
-  s[['suma_nodes_per_electrodes']] <- 42L
-  s[['matlab_path']] <- '/Applications/MATLAB_R2016b.app/bin'
-  s[['py2_path']] <- ''
-  s[['py3_path']] <- ''
-  s[['py_virtualenv']] <- ''
-  s
-}
+  function(s = dipsaus::fastmap2()){
+    ensure_defaults()
+    dipsaus::list_to_fastmap2(defaults, map = s)
+    s
+  }
+})
 
 validate_settings <- function(s = dipsaus::fastmap2()){
   d <- default_settings()
