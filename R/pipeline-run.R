@@ -116,7 +116,7 @@ pipeline_run <- function(
       async = TRUE,
       expr = {
         callr::r_bg(func = fun, package = FALSE, poll_connection = TRUE,
-                    supervise = FALSE, error = "error")
+                    supervise = TRUE, error = "error")
       }
     )
     res
