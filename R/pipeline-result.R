@@ -153,6 +153,11 @@ PipelineResult <- R6::R6Class(
               } else {
                 stop("`PipelineResult`: `expr` must return a callr::r_process instance")
               }
+            },
+            onRejected = function(e) {
+              private$.state <- "errored"
+              private$close_progressor()
+              stop(e)
             }
           )
         }
