@@ -20,5 +20,5 @@ For more examples, see \code{\link{save_yaml}}.
 }
 \seealso{
 \code{\link[dipsaus]{fastmap2}}, \code{\link{save_yaml}},
-\code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}},
+\code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}}
 }

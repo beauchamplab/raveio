@@ -5,7 +5,8 @@
 #' @return A \code{\link[dipsaus]{fastmap2}}. If \code{map} is provided
 #' then return map, otherwise return newly created one
 #' @seealso \code{\link[dipsaus]{fastmap2}}, \code{\link{save_yaml}},
-#' \code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}},
+#' \code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}}
+#'
 #' @export
 load_yaml <- function(file, ..., map = NULL){
   re <- yaml::read_yaml(file = file, ...)
@@ -26,8 +27,9 @@ load_yaml <- function(file, ..., map = NULL){
 #' that can be transformed into named list via \code{as.list}
 #' @param file,... passed to \code{\link[yaml]{write_yaml}}
 #' @return Normalized file path
+#' @param sorted whether to sort the results by name; default is false
 #' @seealso \code{\link[dipsaus]{fastmap2}}, \code{\link{load_yaml}},
-#' \code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}},
+#' \code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}}
 #'
 #' @examples
 #'
@@ -48,8 +50,20 @@ load_yaml <- function(file, ..., map = NULL){
 #'
 #'
 #' @export
-save_yaml <- function(x, file, ...){
-  yaml::write_yaml(as.list(x), file = file, ...)
+save_yaml <- function(x, file, ..., sorted = FALSE){
+  if(inherits(x, 'fastmap')) {
+    x <- x$as_list(sort = sorted)
+  } else if(inherits(x, 'fastmap2')) {
+    x <- x[["@as_list"]](sort = sorted)
+  } else if(inherits(x, c('fastqueue', 'fastqueue2'))) {
+    x <- x$as_list()
+  } else if(sorted){
+    x <- as.list(x, sorted = sorted, ...)
+  } else {
+    # as.list generics only requires `x`, therefore `sorted` may cause errors
+    x <- as.list(x, ...)
+  }
+  yaml::write_yaml(x, file = file, ...)
   invisible(normalizePath(file))
 }
 

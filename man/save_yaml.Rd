@@ -4,13 +4,15 @@
 \alias{save_yaml}
 \title{Write named list to file}
 \usage{
-save_yaml(x, file, ...)
+save_yaml(x, file, ..., sorted = FALSE)
 }
 \arguments{
 \item{x}{a named list, \code{\link[dipsaus]{fastmap2}}, or anything
 that can be transformed into named list via \code{as.list}}
 
 \item{file, ...}{passed to \code{\link[yaml]{write_yaml}}}
+
+\item{sorted}{whether to sort the results by name; default is false}
 }
 \value{
 Normalized file path
@@ -39,5 +41,5 @@ map$d
 }
 \seealso{
 \code{\link[dipsaus]{fastmap2}}, \code{\link{load_yaml}},
-\code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}},
+\code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}}
 }

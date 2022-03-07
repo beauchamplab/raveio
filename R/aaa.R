@@ -155,6 +155,9 @@ catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture 
       'FATAL' = 'fatal',
       { "trace" }
     ))
+    if(level == 'FATAL') {
+      stop(msg)
+    }
   } else {
     if(missing(.pal)){
       dipsaus::cat2(msg, level = level)
