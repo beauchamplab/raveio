@@ -153,6 +153,7 @@ get_val2 <- function(x, key = NA, default = NULL, na=FALSE, min_len=1L, ...){
 #'
 #' # alternatively
 #' validate_time_window(list(c(-1, 2), c(3, 5)))
+#' validate_time_window(list(list(-1, 2), list(3, 5)))
 #'
 #'
 #' \dontrun{
@@ -179,7 +180,10 @@ validate_time_window <- function(time_windows){
     time_windows <- as.list(as.data.frame(time_windows))
     time_windows <- unname(time_windows)
   }
-  lapply(time_windows, function(x){
+  time_windows <- lapply(time_windows, function(x){
+    if(is.list(x)){
+      x <- unlist(x)
+    }
     if(length(x) != 2){
       stop("`time_windows` must be a list of time intervals (length 2)")
     }
@@ -192,6 +196,7 @@ validate_time_window <- function(time_windows){
     if(x[[1]] > x[[2]]){
       stop("`time_windows` time intervals must be in ascending order")
     }
+    x
   })
   time_windows
 }

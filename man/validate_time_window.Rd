@@ -27,6 +27,7 @@ validate_time_window(c(-1, 2, 3, 5))
 
 # alternatively
 validate_time_window(list(c(-1, 2), c(3, 5)))
+validate_time_window(list(list(-1, 2), list(3, 5)))
 
 
 \dontrun{
