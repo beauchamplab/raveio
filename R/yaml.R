@@ -64,7 +64,10 @@ save_yaml <- function(x, file, ..., sorted = FALSE){
     x <- as.list(x, ...)
   }
   yaml::write_yaml(x, file = file, ...)
-  invisible(normalizePath(file))
+  if(!inherits(file, "connection")) {
+    file <- normalizePath(file)
+  }
+  invisible(file)
 }
 
 
