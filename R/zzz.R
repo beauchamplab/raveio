@@ -74,6 +74,7 @@ default_settings <- local({
       defaults[['drive_speed']] <- c(50, 20)
       defaults[['disable_startup_speed_check']] <- FALSE
       defaults[['max_worker']] <- parallel::detectCores() - 1
+      defaults[['disable_fork_clusters']] <- FALSE
       ram <- tryCatch({
         dipsaus::get_ram() / 1024^3
       }, error = function(e){
@@ -157,6 +158,21 @@ validate_settings <- function(s = dipsaus::fastmap2()){
     file_structure <- d[['file_structure']]
   }
   s[['file_structure']] <- file_structure
+
+  # ------------- Whether to allow forked clusters ----------
+  disable_fork_clusters <- s[['disable_fork_clusters']]
+  if(!length(disable_fork_clusters)){ disable_fork_clusters <- FALSE }
+  if(!is.logical(disable_fork_clusters)){ disable_fork_clusters <- as.logical(disable_fork_clusters) }
+  if(isTRUE(disable_fork_clusters)){
+    options(
+      "dipsaus.no.fork" = TRUE,
+      "dipsaus.cluster.backup" = "multisession"
+    )
+  } else {
+    options("dipsaus.no.fork" = FALSE)
+    disable_fork_clusters <- FALSE
+  }
+  s[['disable_fork_clusters']] <- disable_fork_clusters
 
   s
 }
@@ -482,6 +498,7 @@ finalize_installation <- function(
   }
 
   .settings <<- s
+
   assign('.settings', s, envir = pkg)
   cenv <- environment(.subset2(s, 'reset'))
 
