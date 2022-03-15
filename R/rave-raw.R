@@ -413,7 +413,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
   if(length(attr(failed, 'reason'))){ return(failed) }
 
   snapshots <- paste(snapshots, collapse = "\n")
-  return(structure(TRUE, info = finfo, snapshot = snapshot, class = 'validate_success'))
+  return(structure(TRUE, info = finfo, snapshot = snapshots, class = 'validate_success'))
 }
 
 validate_raw_file_lfp.native_edf <- function(
