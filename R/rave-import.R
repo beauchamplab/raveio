@@ -54,6 +54,7 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   re$group_data_path <- file.path(re$project_path, '_project_data')
   re$subject_path <- file.path(re$project_path, subject_code)
   re$rave_path <- file.path(re$subject_path, 'rave')
+  re$note_path <- file.path(re$subject_path, 'notes', 'rave_notes')
   re$proprocess_path <- file.path(re$rave_path, 'preprocess')
   re$meta_path <- file.path(re$rave_path, 'meta')
   re$data_path <- file.path(re$rave_path, 'data')

@@ -38,6 +38,8 @@ no path exists, values will be \code{NA}}
 
 \item{\code{pipeline_path}}{path to pipeline scripts under subject's folder}
 
+\item{\code{note_path}}{path that stores 'RAVE' related subject notes}
+
 \item{\code{epoch_names}}{possible epoch names}
 
 \item{\code{reference_names}}{possible reference names}
@@ -195,7 +197,7 @@ create subject's directories on hard disk
 set default key-value pair for the subject, used by 'RAVE'
 modules
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$set_default(key, value)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$set_default(key, value, namespace = "default")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -204,6 +206,8 @@ modules
 \item{\code{key}}{character}
 
 \item{\code{value}}{value of the key}
+
+\item{\code{namespace}}{file name of the note (without post-fix)}
 }
 \if{html}{\out{</div>}}
 }
@@ -218,7 +222,12 @@ The same as \code{value}
 get default key-value pairs for the subject, used by 'RAVE'
 modules
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_default(..., default_if_missing = NULL, simplify = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_default(
+  ...,
+  default_if_missing = NULL,
+  simplify = TRUE,
+  namespace = "default"
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -230,6 +239,8 @@ modules
 
 \item{\code{simplify}}{whether to simplify the results if there is only one key
 to fetch; default is \code{TRUE}}
+
+\item{\code{namespace}}{file name of the note (without post-fix)}
 }
 \if{html}{\out{</div>}}
 }

@@ -112,6 +112,7 @@ RAVESubject <- R6::R6Class(
       dir_create2(self$cache_path)
       dir_create2(self$meta_path)
       dir_create2(self$pipeline_path)
+      dir_create2(self$note_path)
 
       # save preprocess
       self$preprocess_settings$save()
@@ -128,12 +129,21 @@ RAVESubject <- R6::R6Class(
     #' modules
     #' @param key character
     #' @param value value of the key
+    #' @param namespace file name of the note (without post-fix)
     #' @return The same as \code{value}
-    set_default = function(key, value){
+    set_default = function(key, value, namespace = "default"){
 
       stopifnot2(is.character(key) && length(key) == 1, msg = "`key` must be a character of length 1")
+      stopifnot2(is.character(namespace) && length(namespace) == 1, msg = "`namespace` must be a character of length 1")
+
+      stopifnot2(!grepl("[^A-Za-z0-9_-]", namespace), msg = "`namespace` can only contain letters, digits, dash (-), and/or underscore (_)")
+
+
       force(value)
-      default_path <- file.path(self$meta_path, "defaults.yaml")
+      if(!dir.exists(self$note_path)){
+        dir_create2(self$note_path)
+      }
+      default_path <- file.path(self$note_path, sprintf("%s.yaml", namespace))
       defaults <- dipsaus::fastmap2()
       if(file.exists(default_path)){
         load_yaml(default_path, map = defaults)
@@ -154,10 +164,14 @@ RAVESubject <- R6::R6Class(
     #' @param default_if_missing default value is any key is missing
     #' @param simplify whether to simplify the results if there is only one key
     #' to fetch; default is \code{TRUE}
+    #' @param namespace file name of the note (without post-fix)
     #' @return A named list of key-value pairs, or if one key is specified and
     #' \code{simplify=TRUE}, then only the value will be returned.
-    get_default = function(..., default_if_missing = NULL, simplify = TRUE){
-      default_path <- file.path(self$meta_path, "defaults.yaml")
+    get_default = function(..., default_if_missing = NULL, simplify = TRUE,
+                           namespace = "default"){
+      stopifnot2(is.character(namespace) && length(namespace) == 1, msg = "`namespace` must be a character of length 1")
+      stopifnot2(!grepl("[^A-Za-z0-9_-]", namespace), msg = "`namespace` can only contain letters, digits, dash (-), and/or underscore (_)")
+      default_path <- file.path(self$note_path, sprintf("%s.yaml", namespace))
       defaults <- dipsaus::fastmap2(missing_default = default_if_missing)
       if(file.exists(default_path)){
         load_yaml(default_path, map = defaults)
@@ -168,6 +182,7 @@ RAVESubject <- R6::R6Class(
       }
       re
     },
+
 
     #' @description check and get subject's epoch information
     #' @param epoch_name epoch name, depending on the subject's meta files
@@ -388,6 +403,11 @@ RAVESubject <- R6::R6Class(
     #' @field pipeline_path path to pipeline scripts under subject's folder
     pipeline_path = function(){
       private$.dirs$pipeline_path
+    },
+
+    #' @field note_path path that stores 'RAVE' related subject notes
+    note_path = function(){
+      private$.dirs$note_path
     },
 
     #' @field epoch_names possible epoch names

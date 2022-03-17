@@ -340,6 +340,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
   failed <- validation_failure(.add = TRUE)
   if(length(attr(failed, 'reason'))){ return(failed) }
 
+  snapshots <- ""
   if( check_content && length(electrodes) ){
     # progress <- dipsaus::progress2('Check electrode files within block', shiny_auto_close = TRUE, max = length(blocks) + 1)
     # Need to check content to see whether data is valid
