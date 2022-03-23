@@ -114,6 +114,10 @@ validate_settings <- function(s = dipsaus::fastmap2()){
     warning('Option tensor_temp_path is not length 1 character, reset to default')
     s[['tensor_temp_path']] <- d[['tensor_temp_path']]
   }
+  tpath <- s[['tensor_temp_path']]
+  # Set options so that ravetools can use this path
+  options("ravetools.tempdir" = tpath)
+  Sys.setenv("RAVETOOLS_TEMPDIR" = tpath)
 
   # ------------- catgl verbose level --------------
   verbose <- s[['verbose_level']]
