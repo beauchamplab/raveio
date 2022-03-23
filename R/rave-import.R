@@ -206,6 +206,7 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
   for(e in electrodes){
     pretools$data[[e]]$data_imported <- TRUE
   }
+  pretools$data$format <- which(unname(IMPORT_FORMATS) == "native_matlab")
   pretools$save()
 
 }
@@ -280,6 +281,7 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
   for(e in electrodes){
     pretools$data[[e]]$data_imported <- TRUE
   }
+  pretools$data$format <- which(unname(IMPORT_FORMATS) == "native_matlab2")
   pretools$save()
 
 }
@@ -376,6 +378,7 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
   for(e in electrodes){
     pretools$data[[e]]$data_imported <- TRUE
   }
+  pretools$data$format <- which(unname(IMPORT_FORMATS) == "native_edf")
   pretools$save()
 }
 
@@ -462,6 +465,7 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
   for(e in electrodes){
     pretools$data[[e]]$data_imported <- TRUE
   }
+  pretools$data$format <- which(unname(IMPORT_FORMATS) == "native_brainvis")
   pretools$save()
 }
 
@@ -545,6 +549,7 @@ rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks,
   for(e in electrodes){
     pretools$data[[e]]$data_imported <- TRUE
   }
+  pretools$data$format <- which(unname(IMPORT_FORMATS) == "bids_edf")
   pretools$save()
 }
 
@@ -671,6 +676,7 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
   for(e in electrodes){
     pretools$data[[e]]$data_imported <- TRUE
   }
+  pretools$data$format <- which(unname(IMPORT_FORMATS) == "bids_brainvis")
   pretools$save()
 }
 
