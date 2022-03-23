@@ -46,6 +46,39 @@ read_vmrk <- function(file) {
 
 }
 
+read_ini <- function (path, encoding = getOption("encoding")) {
+  regexp_section <- "^\\s*\\[\\s*(.+?)\\s*]"
+  regexp_keyval <- "^\\s*[^=]+=.+"
+  regexp_comment <- "^\\s*[;#]"
+  # trim <- function(x) gsub("^\\s*(.*?)\\s*$", "\\1", x)
+  re <- list()
+  con <- file(path, open = "r", encoding = encoding)
+  on.exit(close(con))
+  while (TRUE) {
+    line <- readLines(con, n = 1, warn = FALSE)
+
+    # EOF
+    if (!length(line)) { break }
+
+    # Comment line
+    if (grepl(regexp_comment, line)) { next }
+
+    # Section line
+    if (grepl(regexp_section, line)) {
+      matches <- regexec(regexp_section, line)
+      current_section <- regmatches(line, matches)[[1]][2]
+    }
+
+    if (grepl(regexp_keyval, line)) {
+      s <- strsplit(line, "=")[[1]]
+      key <- trimws(s[[1]], which = "both")
+      value <- trimws(paste0(s[-1], collapse = "="), which = "both")
+      ini[[current_section]] <- c(ini[[current_section]], structure(list(value), names = key))
+    }
+  }
+  ini
+}
+
 #' Load from 'BrainVision' file
 #' @description Read in \code{'eeg'} or \code{'ieeg'} data from 'BrainVision'
 #' files with \code{.eeg} or \code{.dat} extensions.
@@ -109,11 +142,13 @@ read_vmrk <- function(file) {
 #' @name read-brainvision-eeg
 NULL
 
+
 #' @rdname read-brainvision-eeg
 #' @export
 read_eeg_header <- function(file) {
   file <- normalizePath(file)
-  vhdr <- ini::read.ini(file)
+  # vhdr <- ini::read.ini(file)
+  vhdr <- read_ini(file)
 
   # https://www.brainproducts.com/files/public/products/more/BrainVisionCoreDataFormat_1-0.pdf
 

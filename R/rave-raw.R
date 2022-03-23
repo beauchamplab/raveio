@@ -241,8 +241,7 @@ validate_raw_file_lfp.native_matlab <- function(
       elec_bak <- as.integer(number[sel])
       files <- files[sel]
       abspaths <- file.path(info$path, files)
-      dipsaus::make_forked_clusters(workers = max(raveio_getopt('max_worker'), 1))
-      dlen <- lapply(abspaths, function(path){
+      dlen <- dipsaus::lapply_async2(abspaths, function(path){
         tryCatch({
           dl <- NA
           dat <- read_mat(path)
@@ -254,6 +253,8 @@ validate_raw_file_lfp.native_matlab <- function(
         }, error = function(e){
           NA
         })
+      }, plan = FALSE, callback = function(path) {
+        sprintf("Checking %s", basename(path))
       })
       dlen <- unlist(dlen)
       if(any(is.na(dlen)) || length(unique(dlen)) > 1){

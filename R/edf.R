@@ -121,3 +121,84 @@ read_edf_signal <- function(path, signal_numbers = NULL,
 
 }
 
+
+
+
+read_edf_signal2 <- function(path, signal_numbers,
+                            convert_volt = c('NA', 'V', 'mV', 'uV')){
+  header <- read_edf_header(path)
+  if(missing(signal_numbers)) {
+    signal_numbers <- seq_len(header$nSignals)
+  }
+  if(length(signal_numbers)) {
+    signal_numbers <- signal_numbers[!is.na(signal_numbers)]
+  }
+  signals <-
+    edfReader::readEdfSignals(header,
+                              signals = signal_numbers,
+                              simplify = FALSE,
+                              fragments = FALSE, physical = TRUE)
+
+  signal_names <- names(signals)
+
+  signal_order <- sapply(signal_names, function(nm){
+    signals[[nm]]$signalNumber
+  }, simplify = TRUE, USE.NAMES = TRUE)
+
+  elec_names <- sapply(signal_numbers, function(e){
+    sel <- signal_order == e
+    if(!any(sel)) { return(NA) }
+    signal_names[sel][[1]]
+  }, simplify = TRUE, USE.NAMES = TRUE)
+
+  if(any(isTRUE(is.na(convert_volt)))){
+    convert_volt <- NA
+  } else {
+    convert_volt <- match.arg(convert_volt)
+    if(convert_volt == 'NA'){
+      convert_volt <- NA
+    }
+  }
+
+
+  if(!is.na(convert_volt)){
+    cv <- c(1, 1e-3, 1e-6)[c('V', 'mV', 'uV') == convert_volt]
+  } else {
+    cv <- NA
+  }
+
+
+  get_signal <- function(number){
+    sel <- signal_order == number
+    if(!any(sel)){ stop('Cannot find channel/electrode number') }
+    nm <- signal_names[sel][[1]]
+    unit <- header$unit2[sel][[1]]
+    s <- signals[[nm]]$signal
+    if(length(cv) && !is.na(cv)){
+      cv2 <- c(1, 1e-3, 1e-6)[c('V', 'mV', 'uV') == unit]
+      if(length(cv2) == 1){
+        s <- (cv2 / cv) * s
+        unit <- convert_volt
+      }
+    }
+    list(
+      signal = s,
+      unit = unit
+    )
+  }
+
+  selected_signal_details <- lapply(signal_numbers, get_signal)
+
+  return(list(
+    header = header,
+    signals = signals,
+    all_signal_names = signal_names,
+    all_signal_numbers = signal_order,
+    selected_signal_names = elec_names,
+    selected_signal_numbers = signal_numbers,
+    selected_signal_details = selected_signal_details,
+    get_signal = get_signal
+  ))
+
+}
+

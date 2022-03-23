@@ -81,7 +81,7 @@ rave_import_lfp <- function(
 
   method <- class(project_name)[[1]]
 
-  if(isTRUE(list(...)[["skip_validation"]])){
+  if(!isTRUE(list(...)[["skip_validation"]])){
     # perform validation
     res <- do.call(
       sprintf('validate_raw_file_lfp.%s', method), list(
@@ -103,7 +103,7 @@ rave_import_lfp <- function(
       })
       stop('The following issues found when importing subject ',
            sQuote(subject_code), ' into project ', sQuote(project_name),
-           '.\n', msg)
+           '.\n', msg, call. = match.call())
     }
   }
 
@@ -138,6 +138,7 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
     check_content = FALSE,
     project_name = project_name
   )
+
   save_path <- file.path(pretools$subject$preprocess_path, 'voltage')
   save_path <- dir_create2(save_path)
 
@@ -147,33 +148,59 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
     unit <- 'NA'
   }
 
-  progress <-
-    dipsaus::progress2(
-      catgl('Importing {project_name}/{subject_code}', .capture = TRUE),
-      max = length(electrodes),
-      shiny_auto_close = TRUE
-    )
   file_info <- attr(res, 'info')
-  lapply(electrodes, function(e){
-    progress$inc(sprintf('Importing electrode %d', e))
-    regexp <- stringr::regex(sprintf('(^|[^0-9])%d\\.(mat|h5)$', e), ignore_case = TRUE)
-    cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
-    for(b in blocks){
-      info <- file_info[[b]]
-      sel <- stringr::str_detect(info$files, regexp)
-      src <- file.path(info$path, info$files[sel][[1]])
-      dat <- read_mat(src, ram = FALSE)
-      nm <- guess_raw_trace(dat, is_vector = TRUE)[[1]]
-      s <- as.numeric(dat[[nm]])
-      s[is.na(s)] <- 0
-      # save to HDF5
-      save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
-              chunk = 1024, replace = TRUE, quiet = TRUE)
-      save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
-              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
-    }
-    invisible()
-  })
+
+  dipsaus::lapply_async2(
+    electrodes, function(e) {
+      regexp <- stringr::regex(sprintf('(^|[^0-9])%d\\.(mat|h5)$', e), ignore_case = TRUE)
+      cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
+      for(b in blocks){
+        info <- file_info[[b]]
+        sel <- stringr::str_detect(info$files, regexp)
+        src <- file.path(info$path, info$files[sel][[1]])
+        dat <- read_mat(src, ram = FALSE)
+        nm <- guess_raw_trace(dat, is_vector = TRUE)[[1]]
+        s <- as.numeric(dat[[nm]])
+        s[is.na(s)] <- 0
+        # save to HDF5
+        save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
+                chunk = 1024, replace = TRUE, quiet = TRUE)
+        save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
+                chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+      }
+      invisible()
+    }, callback = function(e) {
+      sprintf("Importing %s/%s | electrode %s", project_name, subject_code, e)
+    }, plan = FALSE
+  )
+
+  # progress <-
+  #   dipsaus::progress2(
+  #     catgl('Importing {project_name}/{subject_code}', .capture = TRUE),
+  #     max = length(electrodes),
+  #     shiny_auto_close = TRUE
+  #   )
+  #
+  # lapply(electrodes, function(e){
+  #   progress$inc(sprintf('Importing electrode %d', e))
+  #   regexp <- stringr::regex(sprintf('(^|[^0-9])%d\\.(mat|h5)$', e), ignore_case = TRUE)
+  #   cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
+  #   for(b in blocks){
+  #     info <- file_info[[b]]
+  #     sel <- stringr::str_detect(info$files, regexp)
+  #     src <- file.path(info$path, info$files[sel][[1]])
+  #     dat <- read_mat(src, ram = FALSE)
+  #     nm <- guess_raw_trace(dat, is_vector = TRUE)[[1]]
+  #     s <- as.numeric(dat[[nm]])
+  #     s[is.na(s)] <- 0
+  #     # save to HDF5
+  #     save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
+  #             chunk = 1024, replace = TRUE, quiet = TRUE)
+  #     save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
+  #             chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+  #   }
+  #   invisible()
+  # })
 
   # Now set user conf
   for(e in electrodes){
@@ -291,27 +318,58 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
   progress <-
     dipsaus::progress2(
       catgl('Importing {project_name}/{subject_code}', .capture = TRUE),
-      max = (length(electrodes) + 1) * length(blocks),
+      max = length(blocks),
       shiny_auto_close = TRUE
     )
   file_info <- attr(res, 'info')
+
+  ncores <- raveio_getopt("max_worker", 1)
+  schedule_mat <- matrix(
+    rep(NA, ceiling(length(electrodes) / ncores) * ncores),
+    nrow = ncores
+  )
+  schedule_mat[seq_along(electrodes)] <- electrodes
+
+
   for(b in blocks){
     info <- file_info[[b]]
-    progress$inc(paste('Reading block', b))
+    progress$inc(paste('Processing block', b))
     edf_file <- file.path(info$path, info$files)
-    dat <- read_edf_signal(path = edf_file, signal_numbers = electrodes, convert_volt = conversion)
-    lapply(electrodes, function(e){
-      progress$inc(paste('Writing', b, '- electrode', e))
-      cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
-      signal <- dat$get_signal(number = e)
-      s <- as.numeric(signal$signal)
-      s[is.na(s)] <- 0
-      save_h5(x = as.vector(s), file = cfile, name = sprintf('raw/%s', b),
-              chunk = 1024, replace = TRUE, quiet = TRUE)
-      save_h5(x = signal$unit, file = cfile, name = sprintf('/units/%s', b),
-              chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
-      invisible()
+
+    dipsaus::lapply_async2(seq_len(ncores), function(margin) {
+      sub_es <- schedule_mat[margin, ]
+      sub_es <- sub_es[!is.na(sub_es)]
+      dat <- read_edf_signal2(path = edf_file, signal_numbers = sub_es, convert_volt = conversion)
+      lapply(sub_es, function(e){
+        # progress$inc(paste('Writing', b, '- electrode', e))
+        cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
+        signal <- dat$get_signal(number = e)
+        s <- as.numeric(signal$signal)
+        s[is.na(s)] <- 0
+        save_h5(x = as.vector(s), file = cfile, name = sprintf('raw/%s', b),
+                chunk = 1024, replace = TRUE, quiet = TRUE)
+        save_h5(x = signal$unit, file = cfile, name = sprintf('/units/%s', b),
+                chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+        invisible()
+      })
+    }, plan = FALSE, callback = function(margin) {
+      sprintf("Importing %s/%s | Block %s - chunk %s",
+              project_name, subject_code, b, margin)
     })
+
+    # dat <- read_edf_signal(path = edf_file, signal_numbers = electrodes, convert_volt = conversion)
+    # lapply(electrodes, function(e){
+    #   progress$inc(paste('Writing', b, '- electrode', e))
+    #   cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
+    #   signal <- dat$get_signal(number = e)
+    #   s <- as.numeric(signal$signal)
+    #   s[is.na(s)] <- 0
+    #   save_h5(x = as.vector(s), file = cfile, name = sprintf('raw/%s', b),
+    #           chunk = 1024, replace = TRUE, quiet = TRUE)
+    #   save_h5(x = signal$unit, file = cfile, name = sprintf('/units/%s', b),
+    #           chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+    #   invisible()
+    # })
   }
 
   # Now set user conf
