@@ -69,12 +69,31 @@ pipeline_run <- function(
     if(.(type) == "smart"){
       local <- ns$with_future_parallel
     }
+    make <- function(fun, use_local = TRUE) {
+      tryCatch({
+        if( use_local ) {
+          local({ do.call(fun, args) })
+        } else {
+          do.call(fun, args)
+        }
+
+      }, `tar_condition_file` = function(e) {
+        # destroy and try again, and throw all other errors
+        targets::tar_destroy(ask = FALSE, destroy = "meta")
+        if( use_local ) {
+          local({ do.call(fun, args) })
+        } else {
+          do.call(fun, args)
+        }
+      })
+    }
 
     if("none" == .(scheduler)){
-      local({ do.call(targets::tar_make, args) })
+      make( targets::tar_make )
     } else if("future" == .(scheduler)){
       args$workers <- ns$raveio_getopt("max_worker", default = 1L)
-      local({ do.call(targets::tar_make_future, args) })
+      make( targets::tar_make_future )
+      # local({ do.call(targets::tar_make_future, args) })
     } else {
 
       if(is.na(clustermq_scheduler)) {
@@ -82,10 +101,12 @@ pipeline_run <- function(
       }
       options('clustermq.scheduler' = clustermq_scheduler)
       if(identical(clustermq_scheduler, "LOCAL")){
-        local({ do.call(targets::tar_make_clustermq, args) })
+        make( targets::tar_make_clustermq )
+        # local({ do.call(targets::tar_make_clustermq, args) })
       } else {
         args$workers <- ns$raveio_getopt("max_worker", default = 1L)
-        do.call(targets::tar_make_clustermq, args)
+        # do.call(targets::tar_make_clustermq, args)
+        make( targets::tar_make_clustermq, use_local = FALSE )
       }
 
     }

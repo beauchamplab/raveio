@@ -89,9 +89,13 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
     ref_table$Reference,
     electrode_signal_types
   ))
-  reference_instances <- structure(apply(ref_mat, 1, function(y){
-    new_reference(subject = subject, number = y[[1]], signal_type = y[[2]])
-  }), names = sprintf("%s_%s", ref_mat[, 1], ref_mat[, 2]))
+  reference_instances <- structure(
+    lapply(seq_len(nrow(ref_mat)), function(ii){
+      y <- ref_mat[ii, ]
+      new_reference(subject = subject, number = y[[1]], signal_type = y[[2]])
+    }),
+    names = sprintf("%s_%s", ref_mat[, 1], ref_mat[, 2])
+  )
   re$reference_instances <- dipsaus::drop_nulls(reference_instances)
 
   # ----- electrode_instances -----

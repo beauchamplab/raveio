@@ -293,7 +293,25 @@ RAVESubject <- R6::R6Class(
       electrode_table <- self$meta_data("electrodes")
 
       if(!is.data.frame(electrode_table)){
-        stop("Cannot load electrode.csv correctly. A basic RAVE-electrode file contains 5 columns (case-sensitive): Electrode (integer), Coord_x (numerical), Coord_y (numerical), Coord_y (numerical), Label (characters).")
+
+        if(length(self$electrodes)) {
+          electrode_table <- data.frame(
+            Electrode = self$electrodes,
+            Coord_x = 0,
+            Coord_y = 0,
+            Coord_z = 0,
+            Label = "Nolabel",
+            SignalType = self$electrode_types
+          )
+          raveio::save_meta2(electrode_table, meta_type = "electrodes",
+                             project_name = self$project_name,
+                             subject_code = self$subject_code)
+          electrode_table <- self$meta_data("electrodes")
+          catgl("Cannot load electrode.csv correctly. A basic RAVE-electrode file contains 5 columns (case-sensitive): Electrode (integer), Coord_x (numerical), Coord_y (numerical), Coord_y (numerical), Label (characters). Creating a blank electrode file.", level = "WARNING")
+        } else {
+          stop("Cannot load electrode.csv correctly. A basic RAVE-electrode file contains 5 columns (case-sensitive): Electrode (integer), Coord_x (numerical), Coord_y (numerical), Coord_y (numerical), Label (characters).")
+        }
+
       }
 
       if(!is.null(reference_table)){
