@@ -28,6 +28,14 @@ SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Audio', 'Photodiode', 'Unknown')
 #' @export
 LOCATION_TYPES <- c('iEEG', 'sEEG', 'ECoG', 'EEG', 'Others')
 
+MNI305_to_MNI152 <- matrix(
+  c(0.9975, 0.0146, -0.013, 0,
+    -0.0073, 1.0009, -0.0093, 0,
+    0.0176, -0.0024, 0.9971, 0,
+    -0.0429, 1.5496, 1.184, 1),
+  nrow = 4L, byrow = FALSE
+)
+
 HDF5_EAGERLOAD <- TRUE
 
 RAVEIO_FILEARRAY_VERSION <- 1L
