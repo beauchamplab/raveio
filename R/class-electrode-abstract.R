@@ -384,7 +384,7 @@ new_reference <- function(subject, number, signal_type, ...){
   subject <- as_rave_subject(subject, strict = FALSE)
 
   if(missing(signal_type)){
-    elec <- dipsaus::parse_svec(gsub("[^0-9 -]", "", number))
+    elec <- dipsaus::parse_svec(gsub("[^0-9 ,-]", "", number))
     sel <- subject$electrodes %in% elec
     if(!any(sel)){
       stop("Cannot determine the signal type of ", number, ". Please specify `signal_type`")

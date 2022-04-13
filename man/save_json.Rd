@@ -3,7 +3,7 @@
 \name{save_json}
 \alias{save_json}
 \alias{load_json}
-\title{Save or load R object in 'json' format}
+\title{Save or load R object in 'JSON' format}
 \usage{
 save_json(
   x,
@@ -38,7 +38,7 @@ see 'Examples'.}
 R object.
 }
 \description{
-Save or load R object in 'json' format
+Save or load R object in 'JSON' format
 }
 \examples{
 

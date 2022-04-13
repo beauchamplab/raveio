@@ -1,4 +1,4 @@
-#' @title Save or load R object in 'json' format
+#' @title Save or load R object in 'JSON' format
 #' @param x R object to save
 #' @param con file or connection
 #' @param digits number of digits to save

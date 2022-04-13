@@ -61,6 +61,7 @@ Suggests:
     shinyWidgets,
     arrow,
     promises (>= 1.2.0.1),
+    ravetools,
     later (>= 1.3.0)
 Remotes: 
     dipterix/filearray,
