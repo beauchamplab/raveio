@@ -50,6 +50,11 @@ jobs:
           ./inst/hdf5_installer.sh
           ls ${{ env.HDF5_DIR }}
 
+      - name: Install brew packages on OSX
+        if: runner.os == 'macOS'
+        run: |
+          brew install glpk pkgconfig
+
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
