@@ -39,6 +39,9 @@ been invalidated}
 \code{'running'}, \code{'finished'}, \code{'canceled'},
 and \code{'errored'}. Note that \code{'finished'} only means the pipeline
 process has been finished.}
+
+\item{\code{process}}{(read-only) process object if the pipeline is running in
+\code{'async'} mode, or \code{NULL}; see \code{\link[callr]{r_bg}}.}
 }
 \if{html}{\out{</div>}}
 }

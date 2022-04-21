@@ -388,6 +388,8 @@ PipelineResult <- R6::R6Class(
       private$.state
     },
 
+    #' @field process (read-only) process object if the pipeline is running in
+    #' \code{'async'} mode, or \code{NULL}; see \code{\link[callr]{r_bg}}.
     process = function(){
       private$.process
     }

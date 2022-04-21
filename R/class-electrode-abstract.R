@@ -139,6 +139,20 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' depending on child class implementations
     load_data = function(type){
       .NotYetImplemented()
+    },
+
+    #' @description load electrode block-wise data (with reference),
+    #' useful when epoch is absent
+    #' @param blocks session blocks
+    #' @param type data type such as \code{"power"}, \code{"phase"},
+    #' \code{"voltage"}, \code{"wavelet-coefficient"}.
+    #' @param simplify whether to simplify the result
+    #' @return If \code{simplify} is enabled, and only one block is loaded,
+    #' then the result will be a vector (\code{type="voltage"}) or a matrix
+    #' (others), otherwise the result will be a named list where the names
+    #' are the blocks.
+    load_blocks = function(blocks, type, simplify = TRUE) {
+      .NotYetImplemented()
     }
 
   ),

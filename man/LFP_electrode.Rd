@@ -246,7 +246,9 @@ method to load electrode data
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{type}}{data type such as \code{"power"}, \code{"phase"},
-\code{"voltage"}, \code{"wavelet-coefficient"}.}
+\code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
+is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
+transforms are required.}
 }
 \if{html}{\out{</div>}}
 }
@@ -255,6 +257,8 @@ method to load electrode data
 \if{html}{\out{<a id="method-load_blocks"></a>}}
 \if{latex}{\out{\hypertarget{method-load_blocks}{}}}
 \subsection{Method \code{load_blocks()}}{
+load electrode block-wise data (with no reference),
+useful when epoch is absent
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_blocks(
   blocks,
@@ -263,6 +267,26 @@ method to load electrode data
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{blocks}}{session blocks}
+
+\item{\code{type}}{data type such as \code{"power"}, \code{"phase"},
+\code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
+is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
+transforms are required.}
+
+\item{\code{simplify}}{whether to simplify the result}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+If \code{simplify} is enabled, and only one block is loaded,
+then the result will be a vector (\code{type="voltage"}) or a matrix
+(others), otherwise the result will be a named list where the names
+are the blocks.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clear_cache"></a>}}

@@ -499,7 +499,9 @@ LFP_electrode <- R6::R6Class(
 
     #' @description method to load electrode data
     #' @param type data type such as \code{"power"}, \code{"phase"},
-    #' \code{"voltage"}, \code{"wavelet-coefficient"}.
+    #' \code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
+    #' is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
+    #' transforms are required.
     load_data = function(type = c(
       "power", "phase", "voltage", "wavelet-coefficient")){
 
@@ -515,6 +517,18 @@ LFP_electrode <- R6::R6Class(
 
     },
 
+    #' @description load electrode block-wise data (with no reference),
+    #' useful when epoch is absent
+    #' @param blocks session blocks
+    #' @param type data type such as \code{"power"}, \code{"phase"},
+    #' \code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
+    #' is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
+    #' transforms are required.
+    #' @param simplify whether to simplify the result
+    #' @return If \code{simplify} is enabled, and only one block is loaded,
+    #' then the result will be a vector (\code{type="voltage"}) or a matrix
+    #' (others), otherwise the result will be a named list where the names
+    #' are the blocks.
     load_blocks = function(blocks, type = c("power", "phase", "voltage", "wavelet-coefficient"), simplify = TRUE) {
       type <- match.arg(type)
       if(!length(blocks)) {
