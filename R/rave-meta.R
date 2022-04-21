@@ -73,6 +73,7 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
     if(meta_type == 'electrodes'){
       file <- file.path(meta_dir, 'electrodes.csv')
       if(file.exists(file)){
+
         tbl <- safe_read_csv(file)
         if(!'Label' %in% names(tbl)){
           tbl$Label <- NA
@@ -85,13 +86,13 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
         if(!'LocationType' %in% names(tbl)){
           tbl$LocationType <- "iEEG"
         }
-        if(any(!tbl$LocationType %in% LOCATION_TYPES)){
+        if(any(!tbl$LocationType %in% c(LOCATION_TYPES, ""))){
           usp <- unique(tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES])
           warning("Unsupported electrode location type(s) found: ", paste(usp, collapse = ", "),
-                  ". Alter these electrode types to `Others`.")
-          tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES] <- "Others"
+                  ". Alter these electrode types to `iEEG`. If you see this warning, it is most likely the `LocationType` column in `electrodes.csv` (subject meta folder) contains invalid elements. I have corrected for you, however, please double-check the file as my correction might be wrong.")
+          tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES] <- "iEEG"
         }
-        tbl$LocationType[is.na(tbl$LocationType)] <- "Others"
+        tbl$LocationType[is.na(tbl$LocationType) | tbl$LocationType == ""] <- "iEEG"
 
         return(tbl)
       }
