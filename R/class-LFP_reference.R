@@ -421,6 +421,51 @@ LFP_reference <- R6::R6Class(
 
     },
 
+    load_blocks = function(blocks, type = c("power", "phase", "voltage", "wavelet-coefficient"), simplify = TRUE) {
+      type <- match.arg(type)
+      if(!length(blocks)) {
+        if(simplify){ return(NULL) }
+        return(list())
+      }
+      stopifnot2(all(blocks %in% self$subject$blocks),
+                 msg = "Electrode `load_blocks`: all blocks must exist")
+
+      # check whether the reference is single electrode
+      single_electrode <- is.numeric(self$number)
+
+      re <- NULL
+
+      if(single_electrode) {
+
+        if(type == 'voltage') {
+          notch_filtered <- self$subject$notch_filtered[self$subject$electrodes %in% self$number]
+          if(!isTRUE(notch_filtered)) {
+            stop("load_blocks: electrode ", self$number, " has not been Notch-filtered.")
+          }
+          re <- load_blocks_voltage_single(self = self, blocks = blocks)
+        } else {
+          waveleted <- self$subject$has_wavelet[self$subject$electrodes %in% self$number]
+          if(!isTRUE(waveleted)) {
+            stop("load_blocks: electrode ", self$number, " has not been wavelet-transformed")
+          }
+          re <- load_blocks_wavelet_single(self = self, blocks = blocks, type = type)
+        }
+
+      } else {
+
+        if(type == 'voltage') {
+          re <- load_blocks_voltage_multi(self = self, blocks = blocks)
+        } else {
+          re <- load_blocks_wavelet_multi(self = self, blocks = blocks, type = type)
+        }
+
+      }
+
+      if(simplify && length(blocks) == 1){
+        re <- re[[1]]
+      }
+      return(re)
+    },
 
     #' @description method to clear cache on hard drive
     #' @param ... ignored
@@ -528,6 +573,132 @@ LFP_reference <- R6::R6Class(
 
 
 
-# self = LFP_reference$new(aa$subject, 'ref_13-16,24'); self$trial_intervals <- c(-1,2); self$epoch <- aa$epoch
-# self$load_data('wave')
-# self$load_data('volt')
+load_blocks_voltage_single <- function(self, blocks) {
+  "This is internally used, no check is performed. Please check blocks, wavelet..."
+  # load directly from HDF5 file
+  re <- structure(lapply(blocks, function(block){
+    load_h5(self$voltage_file,
+            name = sprintf("/raw/voltage/%s", block),
+            ram = TRUE)
+  }), names = blocks)
+  re
+}
+
+load_blocks_wavelet_single <- function(self, blocks, type) {
+  "This is internally used, no check is performed. Please check blocks, wavelet..."
+  # load directly from HDF5 file
+  if(type == "power") {
+    fun <- function(block) {
+      t(load_h5(self$power_file,
+                name = sprintf("/raw/power/%s", block),
+                ram = TRUE))
+    }
+  } else if(type == "phase") {
+    fun <- function(block) {
+      t(load_h5(self$phase_file,
+                name = sprintf("/raw/phase/%s", block),
+                ram = TRUE))
+    }
+  } else {
+    fun <- function(block){
+      power <- load_h5(self$power_file,
+                       name = sprintf("/raw/power/%s", block),
+                       ram = TRUE)
+      phase <- load_h5(self$phase_file,
+                       name = sprintf("/raw/phase/%s", block),
+                       ram = TRUE)
+      t(sqrt(power) * exp(1i * phase))
+    }
+  }
+
+  re <- structure(lapply(blocks, fun), names = blocks)
+  re
+}
+
+load_blocks_voltage_multi <- function(self, blocks) {
+  if(isTRUE(self$number %in% c("noref", ""))) {
+    return(structure(as.list(rep(0, length(blocks))), names = blocks))
+  }
+  # get the cache
+  cache_root <- gsub("\\.h5$", "", self$voltage_file, ignore.case = TRUE)
+  re <- structure(lapply(blocks, function(block){
+    cache_path <- file.path(cache_root, block, "voltage")
+    tryCatch({
+      arr <- filearray::filearray_checkload(
+        filebase = cache_path, mode = "readonly",
+        staged = TRUE
+      )
+      arr[]
+    }, error = function(e){
+      if(dir.exists(cache_path)) {
+        unlink(cache_path, recursive = TRUE)
+      }
+      dir_create2(dirname(cache_path))
+
+      # load from H5
+      ref <- raveio::load_h5(self$voltage_file,
+                             name = sprintf("/voltage/%s", block),
+                             ram = TRUE)
+      arr <- filearray::filearray_create(
+        filebase = cache_path, dimension = c(length(ref), 1L),
+        type = "double", partition_size = 1L
+      )
+      arr[] <- ref
+      arr$set_header("staged", TRUE)
+      arr$.mode <- "readonly"
+      ref
+    })
+
+  }), names = blocks)
+  return(re)
+}
+
+load_blocks_wavelet_multi <- function(self, blocks, type) {
+  if(isTRUE(self$number %in% c("noref", ""))) {
+    return(structure(as.list(rep(0, length(blocks))), names = blocks))
+  }
+
+  # get the cache
+  cache_root <- gsub("\\.h5$", "", self$power_file, ignore.case = TRUE)
+  re <- structure(lapply(blocks, function(block){
+    cache_path <- file.path(cache_root, block, "wavelet")
+    data <- tryCatch({
+      arr <- filearray::filearray_checkload(
+        filebase = cache_path, mode = "readonly",
+        staged = TRUE
+      )
+      arr[]
+    }, error = function(e){
+      if(dir.exists(cache_path)) {
+        unlink(cache_path, recursive = TRUE)
+      }
+      dir_create2(dirname(cache_path))
+
+      # load from H5
+      ref <- raveio::load_h5(self$power_file,
+                             name = sprintf("/wavelet/coef/%s", block),
+                             ram = TRUE)
+      dm <- dim(ref)[c(2,1)]
+      ref <- t(ref[,,1] * exp(1i * ref[,,2]))
+      arr <- filearray::filearray_create(
+        filebase = cache_path, dimension = dm,
+        type = "complex", partition_size = 1L
+      )
+      arr[] <- ref
+      arr$set_header("staged", TRUE)
+      arr$.mode <- "readonly"
+      ref
+    })
+
+    if(type == "power") {
+      data <- Mod(data)^2
+    } else if(type == "phase") {
+      data <- Arg(data)
+    }
+    data
+
+  }), names = blocks)
+  re
+}
+
+

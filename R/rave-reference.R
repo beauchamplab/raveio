@@ -72,6 +72,8 @@ generate_reference <- function(subject, electrodes) {
     dir_create2(dirname(sarray_path))
     sarray <- filearray::filearray_create(filebase = sarray_path, dimension = c(length(ref_signal), 1L), type = "double")
     sarray[] <- ref_signal
+    sarray$set_header("staged", TRUE)
+    sarray$.mode <- "readonly"
 
     # perform wavelet
     if(is.list(wavelet_params)) {
@@ -116,6 +118,8 @@ generate_reference <- function(subject, electrodes) {
       warray <- filearray::filearray_create(filebase = warray_path, dimension = dim(coef), type = "complex")
       warray[] <- coef
       rm(coef)
+      warray$.mode <- "readonly"
+      warray$set_header("staged", TRUE)
     } else {
       warray <- NULL
     }

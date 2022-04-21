@@ -86,6 +86,7 @@ with current electrode type}
 \item \href{#method-.load_wavelet}{\code{LFP_reference$.load_wavelet()}}
 \item \href{#method-.load_voltage}{\code{LFP_reference$.load_voltage()}}
 \item \href{#method-load_data}{\code{LFP_reference$load_data()}}
+\item \href{#method-load_blocks}{\code{LFP_reference$load_blocks()}}
 \item \href{#method-clear_cache}{\code{LFP_reference$clear_cache()}}
 \item \href{#method-clear_memory}{\code{LFP_reference$clear_memory()}}
 \item \href{#method-clone}{\code{LFP_reference$clone()}}
@@ -238,6 +239,19 @@ method to load electrode data
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-load_blocks"></a>}}
+\if{latex}{\out{\hypertarget{method-load_blocks}{}}}
+\subsection{Method \code{load_blocks()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LFP_reference$load_blocks(
+  blocks,
+  type = c("power", "phase", "voltage", "wavelet-coefficient"),
+  simplify = TRUE
+)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clear_cache"></a>}}

@@ -211,6 +211,8 @@ PipelineResult <- R6::R6Class(
 
                 if(continue){
                   later::later(callback, delay = self$check_interval)
+                } else {
+                  return()
                 }
               }
 
@@ -384,6 +386,10 @@ PipelineResult <- R6::R6Class(
     #' process has been finished.
     status = function(){
       private$.state
+    },
+
+    process = function(){
+      private$.process
     }
 
   )

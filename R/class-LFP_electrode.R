@@ -515,6 +515,62 @@ LFP_electrode <- R6::R6Class(
 
     },
 
+    load_blocks = function(blocks, type = c("power", "phase", "voltage", "wavelet-coefficient"), simplify = TRUE) {
+      type <- match.arg(type)
+      if(!length(blocks)) {
+        if(simplify){ return(NULL) }
+        return(list())
+      }
+      stopifnot2(all(blocks %in% self$subject$blocks),
+                 msg = "Electrode `load_blocks`: all blocks must exist")
+
+      # check whether notch filtered
+      sel <- self$subject$electrodes %in% self$number
+      notch_filtered <- self$subject$notch_filtered[sel]
+      has_wavelet <- self$subject$has_wavelet[sel]
+
+      if(type == "voltage" && !isTRUE(notch_filtered)) {
+        stop("load_blocks: please apply notch filters to electrode ", self$number, " first.")
+      }
+      if(type != "voltage" && !isTRUE(has_wavelet)) {
+        stop("load_blocks: please apply wavelets to electrode ", self$number, " first.")
+      }
+
+      has_reference <- !is.null(self$reference) && !self$reference$number %in% c('noref', '')
+
+      if(type == "voltage") {
+        dat <- load_blocks_voltage_single(self = self, blocks = blocks)
+        if(has_reference) {
+          ref <- self$reference$load_blocks(blocks = blocks, simplify = FALSE, type = "voltage")
+          for(block in blocks) {
+            dat[[block]] <- dat[[block]] - ref[[block]]
+          }
+        }
+      } else {
+
+        if(has_reference) {
+          ref <- self$reference$load_blocks(blocks = blocks, simplify = FALSE, type = "wavelet-coefficient")
+          dat <- load_blocks_wavelet_single(self = self, blocks = blocks, type = "wavelet-coefficient")
+          for(block in blocks) {
+            dat[[block]] <- dat[[block]] - ref[[block]]
+            if(type == "power") {
+              dat[[block]] <- Mod(dat[[block]])^2
+            } else if (type == "phase") {
+              dat[[block]] <- Arg(dat[[block]])
+            }
+          }
+        } else {
+          dat <- load_blocks_wavelet_single(self = self, blocks = blocks, type = type)
+        }
+      }
+
+      if(simplify && length(blocks) == 1) {
+        dat <- dat[[1]]
+      }
+
+      return(dat)
+
+    },
 
     #' @description method to clear cache on hard drive
     #' @param ... ignored

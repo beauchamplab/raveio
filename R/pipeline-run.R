@@ -42,7 +42,8 @@ pipeline_run <- function(
     ...
   )
 
-  fun <- function(){}
+  subprocess <- TRUE
+  fun <- function(subprocess = TRUE){}
   environment(fun) <- globalenv()
   body(fun) <- bquote({
     ns <- asNamespace('raveio')
@@ -66,6 +67,13 @@ pipeline_run <- function(
       args$names <- NULL
     }
 
+    if(subprocess) {
+      options(
+        "future.fork.enable" = FALSE,
+        "dipsaus.no.fork" = TRUE,
+        "dipsaus.cluster.backup" = "multisession"
+      )
+    }
     if(.(type) == "smart"){
       local <- ns$with_future_parallel
     }
@@ -136,7 +144,8 @@ pipeline_run <- function(
     res$run(
       async = TRUE,
       expr = {
-        callr::r_bg(func = fun, package = FALSE, poll_connection = TRUE,
+        callr::r_bg(func = fun, args = list(subprocess = TRUE),
+                    package = FALSE, poll_connection = TRUE,
                     supervise = TRUE, error = "error")
       }
     )
@@ -145,7 +154,7 @@ pipeline_run <- function(
     res$run(
       async = FALSE,
       expr = {
-        fun()
+        fun(subprocess = FALSE)
       }
     )
   }
