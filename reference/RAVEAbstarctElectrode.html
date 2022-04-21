@@ -152,6 +152,7 @@ intervals are missing</p></dd>
 <li><p><a href="#method-clear_cache"><code>RAVEAbstarctElectrode$clear_cache()</code></a></p></li>
 <li><p><a href="#method-clear_memory"><code>RAVEAbstarctElectrode$clear_memory()</code></a></p></li>
 <li><p><a href="#method-load_data"><code>RAVEAbstarctElectrode$load_data()</code></a></p></li>
+<li><p><a href="#method-load_blocks"><code>RAVEAbstarctElectrode$load_blocks()</code></a></p></li>
 <li><p><a href="#method-clone"><code>RAVEAbstarctElectrode$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -257,15 +258,48 @@ depending on child class implementations</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-load_blocks"></a><div class="section">
+<h3 id="method-load-blocks-">Method <code>load_blocks()</code><a class="anchor" aria-label="anchor" href="#method-load-blocks-"></a></h3>
+<p>load electrode block-wise data (with reference),
+useful when epoch is absent</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEAbstarctElectrode</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEAbstarctElectrode</span><span class="op">$</span><span class="fu">load_blocks</span><span class="op">(</span><span class="va">blocks</span>, <span class="va">type</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>blocks</code></dt>
+<dd><p>session blocks</p></dd>
+
+
+<dt><code>type</code></dt>
+<dd><p>data type such as <code>"power"</code>, <code>"phase"</code>,
+<code>"voltage"</code>, <code>"wavelet-coefficient"</code>.</p></dd>
+
+
+<dt><code>simplify</code></dt>
+<dd><p>whether to simplify the result</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
+<p>If <code>simplify</code> is enabled, and only one block is loaded,
+then the result will be a vector (<code>type="voltage"</code>) or a matrix
+(others), otherwise the result will be a named list where the names
+are the blocks.</p>
+</div>
+
+</div><p></p><hr><a id="method-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVEAbstarctElectrode</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
