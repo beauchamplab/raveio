@@ -8,10 +8,14 @@
 \usage{
 cache_root(check = FALSE)
 
-clear_cached_files(quiet = FALSE)
+clear_cached_files(subject_code, quiet = FALSE)
 }
 \arguments{
 \item{check}{whether to ensure the cache root path}
+
+\item{subject_code}{subject code to remove; default is missing. If
+\code{subject_code} is provided, then only this subject-related cache
+files will be removed.}
 
 \item{quiet}{whether to suppress the message}
 }
@@ -21,6 +25,14 @@ cache data; \code{clear_cached_files} returns nothing
 }
 \description{
 Manipulate cached data on the file systems
+}
+\details{
+'RAVE' intensively uses cache files. If running on personal
+computers, the disk space might be filled up very quickly. These cache
+files are safe to remove if there is no 'RAVE' instance running.
+Function \code{clear_cached_files} is designed to remove these cache files.
+To run this function, please make sure that all 'RAVE' instances
+are shutdown.
 }
 \examples{
 

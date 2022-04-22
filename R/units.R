@@ -70,8 +70,18 @@ time_diff2 <- function(start, end, units = 'secs', label = ''){
 #' @title Manipulate cached data on the file systems
 #' @param check whether to ensure the cache root path
 #' @param quiet whether to suppress the message
+#' @param subject_code subject code to remove; default is missing. If
+#' \code{subject_code} is provided, then only this subject-related cache
+#' files will be removed.
 #' @return \code{cache_root} returns the root path that stores the 'RAVE'
 #' cache data; \code{clear_cached_files} returns nothing
+#' @details 'RAVE' intensively uses cache files. If running on personal
+#' computers, the disk space might be filled up very quickly. These cache
+#' files are safe to remove if there is no 'RAVE' instance running.
+#' Function \code{clear_cached_files} is designed to remove these cache files.
+#' To run this function, please make sure that all 'RAVE' instances
+#' are shutdown.
+#'
 #' @examples
 #'
 #' cache_root()
@@ -91,31 +101,79 @@ cache_root <- function(check = FALSE){
 
 #' @rdname cache_path
 #' @export
-clear_cached_files <- function(quiet = FALSE){
-  dir <- '~/rave_data/cache_dir/'
-  if(dir.exists(dir)){
-    dir <- normalizePath(dir)
-    if(!quiet){
-      catgl("Clearing ", dir, level = "DEFAULT")
+clear_cached_files <- function(subject_code, quiet = FALSE){
+
+  if(missing(subject_code)) {
+    clear_dir <- function(dir) {
+      if(!dir.exists(dir)) { return() }
+      if(!quiet){
+        catgl("Clearing ", dir, level = "DEFAULT")
+      }
+      unlink(dir, recursive = TRUE)
     }
-    unlink(dir, recursive = TRUE)
-  }
-  dir <- R_user_dir('raveio', "cache")
-  if(dir.exists(dir)){
-    if(!quiet){
-      catgl("Clearing ", dir, level = "DEFAULT")
+  } else {
+
+    stopifnot2(grepl("^[a-zA-Z0-9_-]{1,}$", subject_code), msg = "clear_cached_files: Invalid subject_code, only letter, digits, _, - are allowed. Subject code cannot be blank as well.")
+
+    clear_dir <- function(dir) {
+      if(!dir.exists(dir)) { return() }
+
+      blpath <- file.path(dir, "_baselined_arrays_")
+      if(dir.exists(blpath)) {
+        if(!quiet){ catgl("Clearing ", blpath, level = "DEFAULT") }
+        unlink(blpath, recursive = TRUE)
+      }
+
+      rdirs <- list.files(
+        path = dir,
+        pattern = sprintf("(^|/)%s$", subject_code),
+        recursive = TRUE,
+        all.files = FALSE,
+        include.dirs = TRUE,
+        full.names = TRUE
+      )
+      rfiles <- rdirs[dir.exists(rdirs)]
+      rdirs <- rdirs[dir.exists(rdirs)]
+
+      if(length(rfiles)) {
+        if(!quiet){ catgl("Clearing {length(rfiles)} files with name {subject_code}",
+                          level = "DEFAULT") }
+        unlink(rfiles)
+      }
+      if(length(rdirs)) {
+        if(!quiet){ catgl("Clearing {length(rdirs)} directories with name {subject_code}",
+                          level = "DEFAULT") }
+        unlink(rdirs, recursive = TRUE)
+      }
+
     }
-    unlink(dir, recursive = TRUE)
+
+
   }
-  dir <- cache_root()
-  if(dir.exists(dir)){
-    if(!quiet){
-      catgl("Clearing ", dir, level = "DEFAULT")
-    }
-    unlink(dir, recursive = TRUE)
+
+  clear_dir('~/rave_data/cache_dir/')
+  clear_dir(R_user_dir('raveio', "cache"))
+  clear_dir(cache_root())
+
+  ravetools_path <- file.path(
+    getOption(
+      x = "ravetools.tempdir",
+      default = Sys.getenv(
+        x ="RAVETOOLS_TEMPDIR",
+        unset = tempdir(check = FALSE)
+      )
+    ),
+    "ravetools"
+  )
+
+  if(isTRUE(dir.exists(ravetools_path))) {
+    if(!quiet){ catgl("Clearing ", ravetools_path, level = "DEFAULT") }
+    unlink(ravetools_path, recursive = TRUE)
   }
+
+
   if(!quiet){
-    catgl("Done")
+    catgl("Done", level = "DEFAULT")
   }
 }
 
