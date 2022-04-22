@@ -55,13 +55,17 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">cache_root</span><span class="op">(</span>check <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="fu">clear_cached_files</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu">clear_cached_files</span><span class="op">(</span><span class="va">subject_code</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>check</dt>
 <dd><p>whether to ensure the cache root path</p></dd>
+<dt>subject_code</dt>
+<dd><p>subject code to remove; default is missing. If
+<code>subject_code</code> is provided, then only this subject-related cache
+files will be removed.</p></dd>
 <dt>quiet</dt>
 <dd><p>whether to suppress the message</p></dd>
 </dl></div>
@@ -69,6 +73,15 @@
     <h2>Value</h2>
     <p><code>cache_root</code> returns the root path that stores the 'RAVE'
 cache data; <code>clear_cached_files</code> returns nothing</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>'RAVE' intensively uses cache files. If running on personal
+computers, the disk space might be filled up very quickly. These cache
+files are safe to remove if there is no 'RAVE' instance running.
+Function <code>clear_cached_files</code> is designed to remove these cache files.
+To run this function, please make sure that all 'RAVE' instances
+are shutdown.</p>
     </div>
 
     <div id="ref-examples">
