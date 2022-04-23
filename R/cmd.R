@@ -1,5 +1,6 @@
 # Find command line paths
 
+
 #' @name rave_command_line_path
 #' @title Find and execute external command-line tools
 #' @param path path to normalize
@@ -22,6 +23,9 @@ normalize_commandline_path <- function(
     return(unset)
   }
   path <- normalizePath(path, winslash = "\\")
+  if(is_dry_run()) {
+    return(path)
+  }
 
   switch (
     type,
@@ -129,5 +133,9 @@ cmd_fsl_flirt <- function(error_on_missing = TRUE, unset = NA) {
 
 }
 
-
+#' @rdname rave_command_line_path
+#' @export
+is_dry_run <- function(){
+  isTRUE(raveio::raveio_getopt("cmd_dry_run", default = FALSE))
+}
 
