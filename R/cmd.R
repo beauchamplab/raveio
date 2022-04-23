@@ -28,7 +28,7 @@ normalize_commandline_path <- function(
     `dcm2niix` = {
       res <- ""
       suppressWarnings({
-        res <- system2(shQuote(path, type = "cmd"), args = "--version",
+        res <- system2(path, args = "--version",
                        wait = TRUE, stdout = TRUE, stderr = TRUE)
         if(any(grepl("dcm2niix", res, ignore.case = TRUE))) {
           return(path)
@@ -39,7 +39,7 @@ normalize_commandline_path <- function(
       recon_all <- file.path(path, "bin", "recon-all")
       if(file.exists(recon_all)){
         res <- system2(
-          command = shQuote(recon_all, type = "cmd"),
+          command = recon_all,
           args = "--version",
           env = c(sprintf(
             "FREESURFER_HOME=%s", shQuote(path, type = "cmd")
@@ -61,6 +61,7 @@ normalize_commandline_path <- function(
 }
 
 #' @rdname rave_command_line_path
+#' @export
 cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
 
   path <- normalize_commandline_path(
@@ -81,6 +82,7 @@ cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
 }
 
 #' @rdname rave_command_line_path
+#' @export
 cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
   path <- raveio::raveio_getopt("freesurfer_path", default = {
     Sys.getenv("FREESURFER_HOME", unset = local({
@@ -107,6 +109,7 @@ cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
 
 
 #' @rdname rave_command_line_path
+#' @export
 cmd_fsl_flirt <- function(error_on_missing = TRUE, unset = NA) {
 
   path <- normalize_commandline_path(
