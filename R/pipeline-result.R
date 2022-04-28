@@ -38,6 +38,8 @@ PipelineResult <- R6::R6Class(
     #' @field names names of the pipeline to build
     names = NULL,
 
+    async_callback = NULL,
+
     #' @field check_interval used when \code{async=TRUE} in
     #' \code{\link{pipeline_run}}, interval in seconds to check the progress
     check_interval = 0.1,
@@ -207,6 +209,12 @@ PipelineResult <- R6::R6Class(
                   private$close_progressor()
                   reject(e)
                   FALSE
+                })
+
+                tryCatch({
+                  if(is.function(self$async_callback)) {
+                    self$async_callback()
+                  }
                 })
 
                 if(continue){
