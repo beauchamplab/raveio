@@ -9,9 +9,9 @@ backup_file(path, remove = FALSE, quiet = FALSE)
 \arguments{
 \item{path}{path to a file or a directory}
 
-\item{quiet}{whether not to verbose the messages; default is false}
+\item{remove}{whether to remove the original path; default is false}
 
-\item{move}{whether to remove the original path; default is false}
+\item{quiet}{whether not to verbose the messages; default is false}
 }
 \value{
 \code{FALSE} if nothing to back up, or the back-up path

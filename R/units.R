@@ -234,7 +234,7 @@ symlink_enabled <- local({
 
 #' @title Back up and rename the file or directory
 #' @param path path to a file or a directory
-#' @param move whether to remove the original path; default is false
+#' @param remove whether to remove the original path; default is false
 #' @param quiet whether not to verbose the messages; default is false
 #' @return \code{FALSE} if nothing to back up, or the back-up path
 #' if \code{path} exists
