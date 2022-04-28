@@ -231,3 +231,89 @@ symlink_enabled <- local({
   }
 })
 
+
+#' @title Back up and rename the file or directory
+#' @param path path to a file or a directory
+#' @param move whether to remove the original path; default is false
+#' @param quiet whether not to verbose the messages; default is false
+#' @return \code{FALSE} if nothing to back up, or the back-up path
+#' if \code{path} exists
+#' @examples
+#'
+#' path <- tempfile()
+#' file.create(path)
+#'
+#' path2 <- backup_file(path, remove = TRUE)
+#'
+#' file.exists(c(path, path2))
+#' unlink(path2)
+#'
+#'
+#' @export
+backup_file <- function(path, remove = FALSE, quiet = FALSE) {
+
+  if(length(path) != 1 || is.na(path)) {
+    return(invisible(FALSE))
+  }
+  if(!file.exists(path)){ return(invisible(FALSE)) }
+
+  path <- normalizePath(path, mustWork = TRUE, winslash = "/")
+
+  is_dir <- dir.exists(path)
+
+  # find the extension
+  ext <- fileexts(path)
+
+  bname <- basename(path)
+  dname <- dirname(path)
+
+  if(ext == '') {
+    bname <- gsub("[/]+$", "", bname)
+  } else {
+    bname <- substr(bname, start = 1L, stop = nchar(bname) - nchar(ext) - 1)
+  }
+
+  # check if bname contains timestamp
+  bname <- gsub("_\\[backup_[0-9]{8}_[0-9]{6}\\]$", "", x = bname)
+
+  bname2 <- sprintf(
+    "%s_[backup_%s]%s",
+    bname,
+    strftime(Sys.time(), "%Y%m%d_%H%M%S"),
+    ifelse(ext == "", "", sprintf(".%s", ext))
+  )
+  if (!quiet) {
+    catgl("{ifelse(remove, 'Moving', 'Copying')} {ifelse(is_dir, 'directory', 'file')} {basename(path)}\n  => {bname2}")
+  }
+  path2 <- file.path(dname, bname2)
+
+  if( remove ) {
+    file.rename(from = path, to = path2)
+  } else {
+    if(is_dir) {
+      dir_create2(path2)
+      file.copy(
+        from = list.files(
+          path = path, all.files = TRUE, full.names = TRUE,
+          recursive = FALSE, include.dirs = TRUE, no.. = TRUE
+        ),
+        to = path2, overwrite = TRUE, recursive = TRUE,
+        copy.mode = TRUE, copy.date = TRUE
+      )
+    } else {
+      file.copy(from = path, to = path2, overwrite = TRUE,
+                copy.mode = TRUE, copy.date = TRUE, recursive = FALSE)
+    }
+  }
+
+  return(invisible(path2))
+
+}
+
+
+
+
+
+
+
+
