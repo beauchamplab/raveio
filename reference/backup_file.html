@@ -60,10 +60,10 @@
     <h2>Arguments</h2>
     <dl><dt>path</dt>
 <dd><p>path to a file or a directory</p></dd>
-<dt>remove</dt>
-<dd><p>whether to remove the original path; default is false</p></dd>
 <dt>quiet</dt>
 <dd><p>whether not to verbose the messages; default is false</p></dd>
+<dt>move</dt>
+<dd><p>whether to remove the original path; default is false</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -79,8 +79,8 @@ if <code>path</code> exists</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">path2</span> <span class="op">&lt;-</span> <span class="fu">backup_file</span><span class="op">(</span><span class="va">path</span>, remove <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Moving file file26a119e1e602</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> =&gt; file26a119e1e602_[backup_20220428_011051] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Moving file file42857e9c1471</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> =&gt; file42857e9c1471_[backup_20220428_011245] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">path</span>, <span class="va">path2</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE  TRUE</span>
