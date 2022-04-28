@@ -38,6 +38,8 @@ PipelineResult <- R6::R6Class(
     #' @field names names of the pipeline to build
     names = NULL,
 
+    #' @field async_callback function callback to call in each check loop;
+    #' only used when the pipeline is running in \code{async=TRUE} mode
     async_callback = NULL,
 
     #' @field check_interval used when \code{async=TRUE} in
@@ -170,11 +172,19 @@ PipelineResult <- R6::R6Class(
             self$promise <- promises::promise(function(resolve, reject){
 
               callback <- function(){
+
                 continue <- tryCatch({
                   if(private$.invalidated){
                     private$.state <- "canceled"
                     self$invalidate()
                     e <- simpleCondition("Pipeline canceled")
+
+                    tryCatch({
+                      if(is.function(self$async_callback)) {
+                        self$async_callback()
+                      }
+                    })
+
                     reject(e)
                     return()
                   }
@@ -211,15 +221,19 @@ PipelineResult <- R6::R6Class(
                   FALSE
                 })
 
-                tryCatch({
-                  if(is.function(self$async_callback)) {
-                    self$async_callback()
-                  }
-                })
-
                 if(continue){
                   later::later(callback, delay = self$check_interval)
+                  tryCatch({
+                    if(is.function(self$async_callback)) {
+                      self$async_callback()
+                    }
+                  })
                 } else {
+                  tryCatch({
+                    if(is.function(self$async_callback)) {
+                      self$async_callback()
+                    }
+                  })
                   return()
                 }
               }

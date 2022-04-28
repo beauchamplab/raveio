@@ -20,6 +20,9 @@ the pipeline progress}
 
 \item{\code{names}}{names of the pipeline to build}
 
+\item{\code{async_callback}}{function callback to call in each check loop;
+only used when the pipeline is running in \code{async=TRUE} mode}
+
 \item{\code{check_interval}}{used when \code{async=TRUE} in
 \code{\link{pipeline_run}}, interval in seconds to check the progress}
 }
