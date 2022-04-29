@@ -5,13 +5,13 @@
 \alias{normalize_commandline_path}
 \alias{cmd_dcm2niix}
 \alias{cmd_freesurfer_home}
-\alias{cmd_fsl_flirt}
+\alias{cmd_fsl_home}
 \alias{is_dry_run}
 \title{Find and execute external command-line tools}
 \usage{
 normalize_commandline_path(
   path,
-  type = c("dcm2niix", "freesurfer", "others"),
+  type = c("dcm2niix", "freesurfer", "fsl", "others"),
   unset = NA
 )
 
@@ -19,7 +19,7 @@ cmd_dcm2niix(error_on_missing = TRUE, unset = NA)
 
 cmd_freesurfer_home(error_on_missing = TRUE, unset = NA)
 
-cmd_fsl_flirt(error_on_missing = TRUE, unset = NA)
+cmd_fsl_home(error_on_missing = TRUE, unset = NA)
 
 is_dry_run()
 }

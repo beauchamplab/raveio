@@ -11,7 +11,7 @@
 #' missing.
 #' @export
 normalize_commandline_path <- function(
-  path, type = c("dcm2niix", "freesurfer", "others"),
+  path, type = c("dcm2niix", "freesurfer", "fsl", "others"),
   unset = NA) {
 
   type <- match.arg(type)
@@ -53,6 +53,12 @@ normalize_commandline_path <- function(
         if(grepl("freesurfer", res, ignore.case = TRUE)) {
           return(path)
         }
+      }
+    },
+    `fsl` = {
+      flirt <- file.path(path, "bin", "flirt")
+      if(file.exists(flirt)){
+        return(path)
       }
     },
     {
@@ -114,20 +120,20 @@ cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
 
 #' @rdname rave_command_line_path
 #' @export
-cmd_fsl_flirt <- function(error_on_missing = TRUE, unset = NA) {
+cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
 
   path <- normalize_commandline_path(
-    raveio::raveio_getopt("fsl_flirt_path", default = Sys.which("flirt")),
+    raveio::raveio_getopt("fsl_path", default = Sys.which("FSLDIR")),
     type = "others",
     unset = unset
   )
-  if(error_on_missing && !isTRUE(file.exists(path))) {
+  if(error_on_missing && !isTRUE(dir.exists(path))) {
     stop("Cannot find binary command `flirt`. ",
          "Please go to the following website to install it:\n\n",
          "  https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation\n\n",
          "If you have installed FSL-FLIRT, please use\n\n",
-         '  raveio::raveio_setopt("fsl_flirt_path", <path to flirt>)\n\n',
-         "to set the path. Remember to replace and quote <path to flirt>")
+         '  raveio::raveio_setopt("fsl_path", <path to FSL>)\n\n',
+         "to set the path. Remember to replace and quote <path to FSL>")
   }
   return(path)
 
