@@ -79,7 +79,9 @@ cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
     type = "dcm2niix",
     unset = unset
   )
-  if(error_on_missing && !isTRUE(file.exists(path))) {
+  if(error_on_missing && (
+    length(path) != 1 || is.na(path) || !isTRUE(file.exists(path))
+  )) {
     stop("Cannot find binary command `dcm2niix`. ",
          "Please go to the following website to install it:\n\n",
          "  https://github.com/rordenlab/dcm2niix#install\n\n",
@@ -105,7 +107,9 @@ cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
     }))
   })
   path <- normalize_commandline_path(path, type = "freesurfer", unset = unset)
-  if(error_on_missing && !isTRUE(file.exists(path))) {
+  if(error_on_missing && (
+    length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
+  )) {
     stop("Cannot find FreeSurfer home directory. ",
          "Please go to the following website to install it:\n\n",
          "  https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall\n\n",
@@ -127,7 +131,9 @@ cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
     type = "others",
     unset = unset
   )
-  if(error_on_missing && !isTRUE(dir.exists(path))) {
+  if(error_on_missing && (
+    length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
+  )) {
     stop("Cannot find binary command `flirt`. ",
          "Please go to the following website to install it:\n\n",
          "  https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation\n\n",
