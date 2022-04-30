@@ -389,17 +389,28 @@ RAVESubject <- R6::R6Class(
       # To find freesurfer directory, here are the paths to search
       # 0. if options('rave.freesurfer_dir') is provided, then XXX/subject/
       # 1. rave_data/project/subject/rave/fs
-      # 2. rave_data/project/subject/fs
-      # 3. rave_data/project/subject/subject
+      # 2. rave_data/project/subject/imaging/fs
+      # 3. rave_data/project/subject/fs
+      # 4. rave_data/project/subject/subject
+      # 5. raw_dir/subject/rave-imaging/fs
+      # 6. raw_dir/subject/fs
 
-      re <- file.path(getOption('rave.freesurfer_dir'), self$subject_code)
+      re <- as.character(file.path(getOption('rave.freesurfer_dir'), self$subject_code))
       if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
-      re <- file.path(self$rave_path, 'fs')
-      if(dir.exists(re) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
-      re <- file.path(self$path, 'fs')
-      if(dir.exists(re) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
-      re <- file.path(self$path, self$subject_code)
-      if(dir.exists(re) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
+      re <- as.character(file.path(self$rave_path, 'fs'))
+      if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
+      # update: check subject/imaging/fs provided by the new pipeline
+      re <- as.character(file.path(self$path, 'imaging', "fs"))
+      if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
+      re <- as.character(file.path(self$path, 'fs'))
+      if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
+      re <- as.character(file.path(self$path, self$subject_code))
+      if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
+      # update: check subject/imaging/fs provided by the new pipeline
+      re <- as.character(file.path(subject$preprocess_settings$raw_path, 'rave-imaging', "fs"))
+      if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
+      re <- as.character(file.path(subject$preprocess_settings$raw_path, "fs"))
+      if(isTRUE(dir.exists(re)) && threeBrain::check_freesurfer_path(re, autoinstall_template = FALSE)){ return(re) }
       return(NA)
     },
 
