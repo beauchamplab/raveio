@@ -178,6 +178,22 @@ validate_settings <- function(s = dipsaus::fastmap2()){
   }
   s[['disable_fork_clusters']] <- disable_fork_clusters
 
+  # ------------- 3D viewer templates ----------
+  template_subject <- s[['threeBrain_template_subject']]
+  if(length(template_subject) != 1 ||
+     is.na(template_subject) ||
+     !is.character(template_subject)) {
+    template_subject <- "N27"
+  } else {
+    temp_dir <- threeBrain::default_template_directory(check = FALSE)
+    if(!dir.exists(file.path(temp_dir, template_subject))) {
+      template_subject <- "N27"
+    }
+  }
+  options(threeBrain.template_subject = template_subject)
+  s[['threeBrain_template_subject']] <- template_subject
+
+
   s
 }
 
