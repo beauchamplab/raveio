@@ -1,13 +1,13 @@
 server {
   listen ${port};
   location / {
-    app_dir "${root_dir}/app/main";
+    app_dir "${root_dir}/app/rave-1.0/main";
     log_dir "${root_dir}/log";
     bookmark_state_dir "${root_dir}/bookmarks";
     directory_index on;
 
     location /preprocess {
-      app_dir "${root_dir}/app/preprocess";
+      app_dir "${root_dir}/app/rave-1.0/preprocess";
     }
 
   }

@@ -142,15 +142,15 @@ rave_server_configure <- function(
   catgl("Creating rave application... ", level = "TRACE")
   app_path <- file.path(root_dir, "app")
   if( rave_version == "1" ) {
-    dir_create2(file.path(app_path, "main"))
+    dir_create2(file.path(app_path, "rave-1.0", "main"))
     writeLines(
       "rave::start_rave()",
-      file.path(app_path, "main", "app.R")
+      file.path(app_path, "rave-1.0", "main", "app.R")
     )
-    dir_create2(file.path(app_path, "preprocess"))
+    dir_create2(file.path(app_path, "rave-1.0", "preprocess"))
     writeLines(
       "rave::rave_preprocess()",
-      file.path(app_path, "preprocess", "app.R")
+      file.path(app_path, "rave-1.0", "preprocess", "app.R")
     )
   } else {
     .NotYetImplemented()
@@ -200,11 +200,18 @@ rave_server_configure <- function(
     )
     # load the service
     try({
+      system("launchctl stop rave-server",
+             ignore.stderr = TRUE)
+    }, silent = TRUE)
+    try({
       system(sprintf("launchctl unload -w %s", shQuote(normalizePath(plist_path))),
              ignore.stderr = TRUE)
     }, silent = TRUE)
-    system(sprintf("launchctl load -w %s", shQuote(normalizePath(plist_path))))
-    caveat <- paste0('Please run the following shell command to launch rave-server:\n\n\tlaunchctl start rave-server\n\nor to use R command:\n\n\tsystem("launchctl start rave-server")\n\nto start the service. Once rave-server is started, open your browser, go to any of the following URL:\n\t', paste(sprintf("http://127.0.0.1:%s", ports), collapse = "\n\t"), "\n\nTo stop the server, use shell command:\n\n\tlaunchctl stop rave-server")
+    cmd <- sprintf("launchctl load -w %s", shQuote(normalizePath(plist_path)))
+    message("Registering service:\n  ", cmd)
+    system(cmd)
+
+    caveat <- paste0('Please run the following shell command to launch rave-server:\n\n\tlaunchctl start rave-server\n\nor to use R command:\n\n\tsystem("launchctl start rave-server")\n\nto start the service. Once rave-server is started, open your browser, go to any of the following URL:\n\t', paste(sprintf("http://127.0.0.1:%s", ports), collapse = "\n\t"), '\n\nTo stop the server, use shell command:\n\n\tlaunchctl stop rave-server\n\nor to use R command:\n\n\tsystem("launchctl stop rave-server")')
   }
 
 

@@ -16,7 +16,6 @@
     <key>ProgramArguments</key>
     <array>
       <string>/bin/bash</string>
-      <string>-c</string>
       <string>${rave_bin}/rave-server</string>
     </array>
 
