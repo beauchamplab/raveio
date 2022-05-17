@@ -147,6 +147,39 @@ cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
 
 #' @rdname rave_command_line_path
 #' @export
+cmd_homebrew <- function(error_on_missing = TRUE, unset = NA) {
+
+  path <- normalize_commandline_path(
+    raveio::raveio_getopt("homebrew_path", default = Sys.which("brew")),
+    type = "others",
+    unset = unset
+  )
+  if(length(path) != 1 || is.na(path) || !isTRUE(file.exists(path))) {
+
+    if(identical(Sys.info()[['machine']], "arm64")) {
+      path <- "/opt/homebrew/bin/brew"
+    } else {
+      path <- "/usr/local/bin/brew"
+    }
+
+  }
+  if(error_on_missing && (
+    length(path) != 1 || is.na(path) || !isTRUE(file.exists(path))
+  )) {
+    stop("Cannot find binary command `brew`. ",
+         "Please open terminal and run the following shell command:\n\n",
+         '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"\n\n',
+         "If you have installed brew, please use\n\n",
+         '  raveio::raveio_setopt("homebrew_path", <path to brew>)\n\n',
+         "to set the path. Remember to replace and quote <path to brew>")
+  }
+  return(path)
+
+}
+
+
+#' @rdname rave_command_line_path
+#' @export
 is_dry_run <- function(){
   isTRUE(raveio::raveio_getopt("cmd_dry_run", default = FALSE))
 }

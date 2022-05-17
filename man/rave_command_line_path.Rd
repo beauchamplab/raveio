@@ -6,6 +6,7 @@
 \alias{cmd_dcm2niix}
 \alias{cmd_freesurfer_home}
 \alias{cmd_fsl_home}
+\alias{cmd_homebrew}
 \alias{is_dry_run}
 \title{Find and execute external command-line tools}
 \usage{
@@ -20,6 +21,8 @@ cmd_dcm2niix(error_on_missing = TRUE, unset = NA)
 cmd_freesurfer_home(error_on_missing = TRUE, unset = NA)
 
 cmd_fsl_home(error_on_missing = TRUE, unset = NA)
+
+cmd_homebrew(error_on_missing = TRUE, unset = NA)
 
 is_dry_run()
 }
