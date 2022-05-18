@@ -5,9 +5,11 @@ server {
     log_dir "${root_dir}/log";
     bookmark_state_dir "${root_dir}/bookmarks";
     directory_index on;
+    app_idle_timeout 300;
 
     location /preprocess {
       app_dir "${root_dir}/app/rave-1.0/preprocess";
+      app_idle_timeout 0;
     }
 
   }

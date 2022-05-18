@@ -211,6 +211,11 @@ rave_server_configure <- function(
     message("Registering service:\n  ", cmd)
     system(cmd)
 
+    try({
+      system("launchctl stop rave-server",
+             ignore.stderr = TRUE)
+    }, silent = TRUE)
+
     caveat <- paste0('Please run the following shell command to launch rave-server:\n\n\tlaunchctl start rave-server\n\nor to use R command:\n\n\tsystem("launchctl start rave-server")\n\nto start the service. Once rave-server is started, open your browser, go to any of the following URL:\n\t', paste(sprintf("http://127.0.0.1:%s", ports), collapse = "\n\t"), '\n\nTo stop the server, use shell command:\n\n\tlaunchctl stop rave-server\n\nor to use R command:\n\n\tsystem("launchctl stop rave-server")')
   }
 
