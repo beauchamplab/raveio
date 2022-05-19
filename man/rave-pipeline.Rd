@@ -8,6 +8,7 @@
 \alias{pipeline_find}
 \alias{pipeline_attach}
 \alias{pipeline_run}
+\alias{pipeline_run_bare}
 \alias{load_targets}
 \alias{pipeline_target_names}
 \alias{pipeline_debug}
@@ -44,6 +45,16 @@ pipeline_run(
   progress_quiet = !async,
   progress_max = NA,
   progress_title = "Running pipeline",
+  ...
+)
+
+pipeline_run_bare(
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  scheduler = c("none", "future", "clustermq"),
+  type = c("smart", "callr", "vanilla"),
+  envir = new.env(parent = globalenv()),
+  callr_function = NULL,
+  names = NULL,
   ...
 )
 
