@@ -29,7 +29,16 @@ pipeline_install_directory <- function(
     unlink(tmp_dir, recursive = TRUE)
   }, add = TRUE)
   file.copy(config_path, file.path(tmp_dir, "DESCRIPTION"), overwrite = TRUE, recursive = FALSE)
-  remotes::install_deps(tmp_dir, upgrade = upgrade, force = force, ...)
+  if(upgrade || force) {
+    remotes::install_deps(tmp_dir, upgrade = upgrade, force = force, ...)
+  } else {
+    tryCatch({
+      remotes::install_deps(tmp_dir, upgrade = upgrade, force = force, ...)
+    }, error = function(e) {
+      # Github might set a rate limit on the request
+    })
+  }
+
 
   if( length(desc$InteractiveModules) ) {
     modules <- strsplit(desc$InteractiveModules, "[,\n]+")[[1]]
