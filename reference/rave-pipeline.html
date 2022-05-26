@@ -20,7 +20,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5.9012</span>
       </span>
     </div>
 
@@ -79,6 +79,16 @@ the future to facilitate the "self-expanding" aim. Please check the official
   progress_quiet <span class="op">=</span> <span class="op">!</span><span class="va">async</span>,
   progress_max <span class="op">=</span> <span class="cn">NA</span>,
   progress_title <span class="op">=</span> <span class="st">"Running pipeline"</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
+
+<span class="fu">pipeline_run_bare</span><span class="op">(</span>
+  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
+  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,
+  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,
+  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
+  callr_function <span class="op">=</span> <span class="cn">NULL</span>,
+  names <span class="op">=</span> <span class="cn">NULL</span>,
   <span class="va">...</span>
 <span class="op">)</span>
 
