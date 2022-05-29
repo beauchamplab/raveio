@@ -73,10 +73,10 @@ read_ini <- function (path, encoding = getOption("encoding")) {
       s <- strsplit(line, "=")[[1]]
       key <- trimws(s[[1]], which = "both")
       value <- trimws(paste0(s[-1], collapse = "="), which = "both")
-      ini[[current_section]] <- c(ini[[current_section]], structure(list(value), names = key))
+      re[[current_section]] <- c(re[[current_section]], structure(list(value), names = key))
     }
   }
-  ini
+  re
 }
 
 #' Load from 'BrainVision' file
