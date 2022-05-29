@@ -345,7 +345,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
   if( check_content && length(electrodes) ){
     # progress <- dipsaus::progress2('Check electrode files within block', shiny_auto_close = TRUE, max = length(blocks) + 1)
     # Need to check content to see whether data is valid
-    raveio::with_future_parallel({
+    with_future_parallel({
       snapshots <- dipsaus::lapply_async2(blocks, function(b){
         info <- finfo[[b]]
         files <- info$files[[1]]

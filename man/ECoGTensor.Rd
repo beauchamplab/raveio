@@ -17,29 +17,29 @@ Zhengjia Wang
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-flatten}{\code{ECoGTensor$flatten()}}
-\item \href{#method-new}{\code{ECoGTensor$new()}}
+\item \href{#method-ECoGTensor-flatten}{\code{ECoGTensor$flatten()}}
+\item \href{#method-ECoGTensor-new}{\code{ECoGTensor$new()}}
 }
 }
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id=".use_multi_files">}\href{../../raveio/html/Tensor.html#method-.use_multi_files}{\code{raveio::Tensor$.use_multi_files()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="collapse">}\href{../../raveio/html/Tensor.html#method-collapse}{\code{raveio::Tensor$collapse()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="finalize">}\href{../../raveio/html/Tensor.html#method-finalize}{\code{raveio::Tensor$finalize()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="get_data">}\href{../../raveio/html/Tensor.html#method-get_data}{\code{raveio::Tensor$get_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="operate">}\href{../../raveio/html/Tensor.html#method-operate}{\code{raveio::Tensor$operate()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="print">}\href{../../raveio/html/Tensor.html#method-print}{\code{raveio::Tensor$print()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="set_data">}\href{../../raveio/html/Tensor.html#method-set_data}{\code{raveio::Tensor$set_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="subset">}\href{../../raveio/html/Tensor.html#method-subset}{\code{raveio::Tensor$subset()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap">}\href{../../raveio/html/Tensor.html#method-to_swap}{\code{raveio::Tensor$to_swap()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap_now">}\href{../../raveio/html/Tensor.html#method-to_swap_now}{\code{raveio::Tensor$to_swap_now()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id=".use_multi_files"><a href='../../raveio/html/Tensor.html#method-Tensor-.use_multi_files'><code>raveio::Tensor$.use_multi_files()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="collapse"><a href='../../raveio/html/Tensor.html#method-Tensor-collapse'><code>raveio::Tensor$collapse()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="finalize"><a href='../../raveio/html/Tensor.html#method-Tensor-finalize'><code>raveio::Tensor$finalize()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="get_data"><a href='../../raveio/html/Tensor.html#method-Tensor-get_data'><code>raveio::Tensor$get_data()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="operate"><a href='../../raveio/html/Tensor.html#method-Tensor-operate'><code>raveio::Tensor$operate()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="print"><a href='../../raveio/html/Tensor.html#method-Tensor-print'><code>raveio::Tensor$print()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="set_data"><a href='../../raveio/html/Tensor.html#method-Tensor-set_data'><code>raveio::Tensor$set_data()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="subset"><a href='../../raveio/html/Tensor.html#method-Tensor-subset'><code>raveio::Tensor$subset()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap"><a href='../../raveio/html/Tensor.html#method-Tensor-to_swap'><code>raveio::Tensor$to_swap()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap_now"><a href='../../raveio/html/Tensor.html#method-Tensor-to_swap_now'><code>raveio::Tensor$to_swap_now()</code></a></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-flatten"></a>}}
-\if{latex}{\out{\hypertarget{method-flatten}{}}}
+\if{html}{\out{<a id="method-ECoGTensor-flatten"></a>}}
+\if{latex}{\out{\hypertarget{method-ECoGTensor-flatten}{}}}
 \subsection{Method \code{flatten()}}{
 converts tensor (array) to a table (data frame)
 \subsection{Usage}{
@@ -61,8 +61,8 @@ a data frame with the dimension names as index columns and
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-ECoGTensor-new"></a>}}
+\if{latex}{\out{\hypertarget{method-ECoGTensor-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{

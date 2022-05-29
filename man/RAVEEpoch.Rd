@@ -71,16 +71,16 @@ head(epoch$table)
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{RAVEEpoch$new()}}
-\item \href{#method-trial_at}{\code{RAVEEpoch$trial_at()}}
-\item \href{#method-update_table}{\code{RAVEEpoch$update_table()}}
-\item \href{#method-set_trial}{\code{RAVEEpoch$set_trial()}}
-\item \href{#method-clone}{\code{RAVEEpoch$clone()}}
+\item \href{#method-RAVEEpoch-new}{\code{RAVEEpoch$new()}}
+\item \href{#method-RAVEEpoch-trial_at}{\code{RAVEEpoch$trial_at()}}
+\item \href{#method-RAVEEpoch-update_table}{\code{RAVEEpoch$update_table()}}
+\item \href{#method-RAVEEpoch-set_trial}{\code{RAVEEpoch$set_trial()}}
+\item \href{#method-RAVEEpoch-clone}{\code{RAVEEpoch$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-RAVEEpoch-new"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEEpoch-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -99,8 +99,8 @@ folder}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-trial_at"></a>}}
-\if{latex}{\out{\hypertarget{method-trial_at}{}}}
+\if{html}{\out{<a id="method-RAVEEpoch-trial_at"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEEpoch-trial_at}{}}}
 \subsection{Method \code{trial_at()}}{
 get \code{ith} trial
 \subsection{Usage}{
@@ -118,8 +118,8 @@ get \code{ith} trial
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_table"></a>}}
-\if{latex}{\out{\hypertarget{method-update_table}{}}}
+\if{html}{\out{<a id="method-RAVEEpoch-update_table"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEEpoch-update_table}{}}}
 \subsection{Method \code{update_table()}}{
 manually update table field
 \subsection{Usage}{
@@ -131,8 +131,8 @@ manually update table field
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_trial"></a>}}
-\if{latex}{\out{\hypertarget{method-set_trial}{}}}
+\if{html}{\out{<a id="method-RAVEEpoch-set_trial"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEEpoch-set_trial}{}}}
 \subsection{Method \code{set_trial()}}{
 set one trial
 \subsection{Usage}{
@@ -156,8 +156,8 @@ set one trial
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-RAVEEpoch-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEEpoch-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

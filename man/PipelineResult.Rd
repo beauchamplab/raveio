@@ -51,20 +51,20 @@ process has been finished.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-validate}{\code{PipelineResult$validate()}}
-\item \href{#method-invalidate}{\code{PipelineResult$invalidate()}}
-\item \href{#method-get_progress}{\code{PipelineResult$get_progress()}}
-\item \href{#method-new}{\code{PipelineResult$new()}}
-\item \href{#method-run}{\code{PipelineResult$run()}}
-\item \href{#method-await}{\code{PipelineResult$await()}}
-\item \href{#method-print}{\code{PipelineResult$print()}}
-\item \href{#method-get_values}{\code{PipelineResult$get_values()}}
-\item \href{#method-clone}{\code{PipelineResult$clone()}}
+\item \href{#method-PipelineResult-validate}{\code{PipelineResult$validate()}}
+\item \href{#method-PipelineResult-invalidate}{\code{PipelineResult$invalidate()}}
+\item \href{#method-PipelineResult-get_progress}{\code{PipelineResult$get_progress()}}
+\item \href{#method-PipelineResult-new}{\code{PipelineResult$new()}}
+\item \href{#method-PipelineResult-run}{\code{PipelineResult$run()}}
+\item \href{#method-PipelineResult-await}{\code{PipelineResult$await()}}
+\item \href{#method-PipelineResult-print}{\code{PipelineResult$print()}}
+\item \href{#method-PipelineResult-get_values}{\code{PipelineResult$get_values()}}
+\item \href{#method-PipelineResult-clone}{\code{PipelineResult$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-validate"></a>}}
-\if{latex}{\out{\hypertarget{method-validate}{}}}
+\if{html}{\out{<a id="method-PipelineResult-validate"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-validate}{}}}
 \subsection{Method \code{validate()}}{
 check if result is valid, raises errors when invalidated
 \subsection{Usage}{
@@ -73,8 +73,8 @@ check if result is valid, raises errors when invalidated
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-invalidate"></a>}}
-\if{latex}{\out{\hypertarget{method-invalidate}{}}}
+\if{html}{\out{<a id="method-PipelineResult-invalidate"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-invalidate}{}}}
 \subsection{Method \code{invalidate()}}{
 invalidate the pipeline result
 \subsection{Usage}{
@@ -83,8 +83,8 @@ invalidate the pipeline result
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_progress"></a>}}
-\if{latex}{\out{\hypertarget{method-get_progress}{}}}
+\if{html}{\out{<a id="method-PipelineResult-get_progress"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-get_progress}{}}}
 \subsection{Method \code{get_progress()}}{
 get pipeline progress
 \subsection{Usage}{
@@ -93,8 +93,8 @@ get pipeline progress
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-PipelineResult-new"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-new}{}}}
 \subsection{Method \code{new()}}{
 constructor (internal)
 \subsection{Usage}{
@@ -112,8 +112,8 @@ constructor (internal)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-run"></a>}}
-\if{latex}{\out{\hypertarget{method-run}{}}}
+\if{html}{\out{<a id="method-PipelineResult-run"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-run}{}}}
 \subsection{Method \code{run()}}{
 run pipeline (internal)
 \subsection{Usage}{
@@ -145,8 +145,8 @@ and will raise errors if cannot be found}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-await"></a>}}
-\if{latex}{\out{\hypertarget{method-await}{}}}
+\if{html}{\out{<a id="method-PipelineResult-await"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-await}{}}}
 \subsection{Method \code{await()}}{
 wait until some targets get finished
 \subsection{Usage}{
@@ -169,8 +169,8 @@ timeout is reached
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-PipelineResult-print"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-print}{}}}
 \subsection{Method \code{print()}}{
 print method
 \subsection{Usage}{
@@ -179,8 +179,8 @@ print method
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_values"></a>}}
-\if{latex}{\out{\hypertarget{method-get_values}{}}}
+\if{html}{\out{<a id="method-PipelineResult-get_values"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-get_values}{}}}
 \subsection{Method \code{get_values()}}{
 get results
 \subsection{Usage}{
@@ -198,8 +198,8 @@ get results
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-PipelineResult-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineResult-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

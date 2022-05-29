@@ -22,17 +22,17 @@ Definition for 'RAVE' project class
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-print}{\code{RAVEProject$print()}}
-\item \href{#method-new}{\code{RAVEProject$new()}}
-\item \href{#method-subjects}{\code{RAVEProject$subjects()}}
-\item \href{#method-has_subject}{\code{RAVEProject$has_subject()}}
-\item \href{#method-group_path}{\code{RAVEProject$group_path()}}
-\item \href{#method-clone}{\code{RAVEProject$clone()}}
+\item \href{#method-RAVEProject-print}{\code{RAVEProject$print()}}
+\item \href{#method-RAVEProject-new}{\code{RAVEProject$new()}}
+\item \href{#method-RAVEProject-subjects}{\code{RAVEProject$subjects()}}
+\item \href{#method-RAVEProject-has_subject}{\code{RAVEProject$has_subject()}}
+\item \href{#method-RAVEProject-group_path}{\code{RAVEProject$group_path()}}
+\item \href{#method-RAVEProject-clone}{\code{RAVEProject$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-RAVEProject-print"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEProject-print}{}}}
 \subsection{Method \code{print()}}{
 override print method
 \subsection{Usage}{
@@ -48,8 +48,8 @@ override print method
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-RAVEProject-new"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEProject-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -67,8 +67,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-subjects"></a>}}
-\if{latex}{\out{\hypertarget{method-subjects}{}}}
+\if{html}{\out{<a id="method-RAVEProject-subjects"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEProject-subjects}{}}}
 \subsection{Method \code{subjects()}}{
 get all imported subjects within project
 \subsection{Usage}{
@@ -80,8 +80,8 @@ character vector
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-has_subject"></a>}}
-\if{latex}{\out{\hypertarget{method-has_subject}{}}}
+\if{html}{\out{<a id="method-RAVEProject-has_subject"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEProject-has_subject}{}}}
 \subsection{Method \code{has_subject()}}{
 whether a specific subject exists in this project
 \subsection{Usage}{
@@ -100,8 +100,8 @@ true or false whether subject is in the project
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-group_path"></a>}}
-\if{latex}{\out{\hypertarget{method-group_path}{}}}
+\if{html}{\out{<a id="method-RAVEProject-group_path"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEProject-group_path}{}}}
 \subsection{Method \code{group_path()}}{
 get group data path for 'rave' module
 \subsection{Usage}{
@@ -120,8 +120,8 @@ should a new one be created?}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-RAVEProject-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEProject-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

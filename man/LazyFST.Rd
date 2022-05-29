@@ -40,17 +40,17 @@ Zhengjia Wang
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-open}{\code{LazyFST$open()}}
-\item \href{#method-close}{\code{LazyFST$close()}}
-\item \href{#method-save}{\code{LazyFST$save()}}
-\item \href{#method-new}{\code{LazyFST$new()}}
-\item \href{#method-get_dims}{\code{LazyFST$get_dims()}}
-\item \href{#method-subset}{\code{LazyFST$subset()}}
+\item \href{#method-LazyFST-open}{\code{LazyFST$open()}}
+\item \href{#method-LazyFST-close}{\code{LazyFST$close()}}
+\item \href{#method-LazyFST-save}{\code{LazyFST$save()}}
+\item \href{#method-LazyFST-new}{\code{LazyFST$new()}}
+\item \href{#method-LazyFST-get_dims}{\code{LazyFST$get_dims()}}
+\item \href{#method-LazyFST-subset}{\code{LazyFST$subset()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-open"></a>}}
-\if{latex}{\out{\hypertarget{method-open}{}}}
+\if{html}{\out{<a id="method-LazyFST-open"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyFST-open}{}}}
 \subsection{Method \code{open()}}{
 to be compatible with \code{\link{LazyH5}}
 \subsection{Usage}{
@@ -69,8 +69,8 @@ none
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-close"></a>}}
-\if{latex}{\out{\hypertarget{method-close}{}}}
+\if{html}{\out{<a id="method-LazyFST-close"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyFST-close}{}}}
 \subsection{Method \code{close()}}{
 close the connection
 \subsection{Usage}{
@@ -91,8 +91,8 @@ none
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-save"></a>}}
-\if{latex}{\out{\hypertarget{method-save}{}}}
+\if{html}{\out{<a id="method-LazyFST-save"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyFST-save}{}}}
 \subsection{Method \code{save()}}{
 to be compatible with \code{\link{LazyH5}}
 \subsection{Usage}{
@@ -111,8 +111,8 @@ none
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-LazyFST-new"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyFST-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -134,8 +134,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_dims"></a>}}
-\if{latex}{\out{\hypertarget{method-get_dims}{}}}
+\if{html}{\out{<a id="method-LazyFST-get_dims"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyFST-get_dims}{}}}
 \subsection{Method \code{get_dims()}}{
 get data dimension
 \subsection{Usage}{
@@ -154,8 +154,8 @@ vector, dimensions
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-subset"></a>}}
-\if{latex}{\out{\hypertarget{method-subset}{}}}
+\if{html}{\out{<a id="method-LazyFST-subset"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyFST-subset}{}}}
 \subsection{Method \code{subset()}}{
 subset data
 \subsection{Usage}{

@@ -75,7 +75,7 @@ normalize_commandline_path <- function(
 cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
 
   path <- normalize_commandline_path(
-    raveio::raveio_getopt("dcm2niix_path", default = Sys.which("dcm2niix")),
+    raveio_getopt("dcm2niix_path", default = Sys.which("dcm2niix")),
     type = "dcm2niix",
     unset = unset
   )
@@ -96,7 +96,7 @@ cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
 #' @rdname rave_command_line_path
 #' @export
 cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
-  path <- raveio::raveio_getopt("freesurfer_path", default = {
+  path <- raveio_getopt("freesurfer_path", default = {
     Sys.getenv("FREESURFER_HOME", unset = local({
       fs <- c(
         "/Applications/freesurfer",
@@ -127,7 +127,7 @@ cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
 cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
 
   path <- normalize_commandline_path(
-    raveio::raveio_getopt("fsl_path", default = Sys.which("FSLDIR")),
+    raveio_getopt("fsl_path", default = Sys.which("FSLDIR")),
     type = "others",
     unset = unset
   )
@@ -150,7 +150,7 @@ cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
 cmd_homebrew <- function(error_on_missing = TRUE, unset = NA) {
 
   path <- normalize_commandline_path(
-    raveio::raveio_getopt("homebrew_path", default = Sys.which("brew")),
+    raveio_getopt("homebrew_path", default = Sys.which("brew")),
     type = "others",
     unset = unset
   )
@@ -181,6 +181,6 @@ cmd_homebrew <- function(error_on_missing = TRUE, unset = NA) {
 #' @rdname rave_command_line_path
 #' @export
 is_dry_run <- function(){
-  isTRUE(raveio::raveio_getopt("cmd_dry_run", default = FALSE))
+  isTRUE(raveio_getopt("cmd_dry_run", default = FALSE))
 }
 

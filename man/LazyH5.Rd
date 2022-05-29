@@ -39,19 +39,19 @@ Zhengjia Wang
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-finalize}{\code{LazyH5$finalize()}}
-\item \href{#method-print}{\code{LazyH5$print()}}
-\item \href{#method-new}{\code{LazyH5$new()}}
-\item \href{#method-save}{\code{LazyH5$save()}}
-\item \href{#method-open}{\code{LazyH5$open()}}
-\item \href{#method-close}{\code{LazyH5$close()}}
-\item \href{#method-subset}{\code{LazyH5$subset()}}
-\item \href{#method-get_dims}{\code{LazyH5$get_dims()}}
+\item \href{#method-LazyH5-finalize}{\code{LazyH5$finalize()}}
+\item \href{#method-LazyH5-print}{\code{LazyH5$print()}}
+\item \href{#method-LazyH5-new}{\code{LazyH5$new()}}
+\item \href{#method-LazyH5-save}{\code{LazyH5$save()}}
+\item \href{#method-LazyH5-open}{\code{LazyH5$open()}}
+\item \href{#method-LazyH5-close}{\code{LazyH5$close()}}
+\item \href{#method-LazyH5-subset}{\code{LazyH5$subset()}}
+\item \href{#method-LazyH5-get_dims}{\code{LazyH5$get_dims()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-finalize"></a>}}
-\if{latex}{\out{\hypertarget{method-finalize}{}}}
+\if{html}{\out{<a id="method-LazyH5-finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-finalize}{}}}
 \subsection{Method \code{finalize()}}{
 garbage collection method
 \subsection{Usage}{
@@ -63,8 +63,8 @@ none
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-LazyH5-print"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-print}{}}}
 \subsection{Method \code{print()}}{
 overrides print method
 \subsection{Usage}{
@@ -76,8 +76,8 @@ self instance
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-LazyH5-new"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -104,8 +104,8 @@ self instance
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-save"></a>}}
-\if{latex}{\out{\hypertarget{method-save}{}}}
+\if{html}{\out{<a id="method-LazyH5-save"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-save}{}}}
 \subsection{Method \code{save()}}{
 save data to a 'HDF5' file
 \subsection{Usage}{
@@ -150,8 +150,8 @@ of \code{x}. Try \code{mode(x)} or \code{storage.mode(x)} as hints.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-open"></a>}}
-\if{latex}{\out{\hypertarget{method-open}{}}}
+\if{html}{\out{<a id="method-LazyH5-open"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-open}{}}}
 \subsection{Method \code{open()}}{
 open connection
 \subsection{Usage}{
@@ -172,8 +172,8 @@ to write the data}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-close"></a>}}
-\if{latex}{\out{\hypertarget{method-close}{}}}
+\if{html}{\out{<a id="method-LazyH5-close"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-close}{}}}
 \subsection{Method \code{close()}}{
 close connection
 \subsection{Usage}{
@@ -191,8 +191,8 @@ will be closed}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-subset"></a>}}
-\if{latex}{\out{\hypertarget{method-subset}{}}}
+\if{html}{\out{<a id="method-LazyH5-subset"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-subset}{}}}
 \subsection{Method \code{subset()}}{
 subset data
 \subsection{Usage}{
@@ -218,8 +218,8 @@ subset of data
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_dims"></a>}}
-\if{latex}{\out{\hypertarget{method-get_dims}{}}}
+\if{html}{\out{<a id="method-LazyH5-get_dims"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-get_dims}{}}}
 \subsection{Method \code{get_dims()}}{
 get data dimension
 \subsection{Usage}{

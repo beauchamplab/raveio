@@ -80,23 +80,23 @@ as multiple files}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-finalize}{\code{Tensor$finalize()}}
-\item \href{#method-print}{\code{Tensor$print()}}
-\item \href{#method-.use_multi_files}{\code{Tensor$.use_multi_files()}}
-\item \href{#method-new}{\code{Tensor$new()}}
-\item \href{#method-subset}{\code{Tensor$subset()}}
-\item \href{#method-flatten}{\code{Tensor$flatten()}}
-\item \href{#method-to_swap}{\code{Tensor$to_swap()}}
-\item \href{#method-to_swap_now}{\code{Tensor$to_swap_now()}}
-\item \href{#method-get_data}{\code{Tensor$get_data()}}
-\item \href{#method-set_data}{\code{Tensor$set_data()}}
-\item \href{#method-collapse}{\code{Tensor$collapse()}}
-\item \href{#method-operate}{\code{Tensor$operate()}}
+\item \href{#method-Tensor-finalize}{\code{Tensor$finalize()}}
+\item \href{#method-Tensor-print}{\code{Tensor$print()}}
+\item \href{#method-Tensor-.use_multi_files}{\code{Tensor$.use_multi_files()}}
+\item \href{#method-Tensor-new}{\code{Tensor$new()}}
+\item \href{#method-Tensor-subset}{\code{Tensor$subset()}}
+\item \href{#method-Tensor-flatten}{\code{Tensor$flatten()}}
+\item \href{#method-Tensor-to_swap}{\code{Tensor$to_swap()}}
+\item \href{#method-Tensor-to_swap_now}{\code{Tensor$to_swap_now()}}
+\item \href{#method-Tensor-get_data}{\code{Tensor$get_data()}}
+\item \href{#method-Tensor-set_data}{\code{Tensor$set_data()}}
+\item \href{#method-Tensor-collapse}{\code{Tensor$collapse()}}
+\item \href{#method-Tensor-operate}{\code{Tensor$operate()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-finalize"></a>}}
-\if{latex}{\out{\hypertarget{method-finalize}{}}}
+\if{html}{\out{<a id="method-Tensor-finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-finalize}{}}}
 \subsection{Method \code{finalize()}}{
 release resource and remove files for temporary instances
 \subsection{Usage}{
@@ -105,8 +105,8 @@ release resource and remove files for temporary instances
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-Tensor-print"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-print}{}}}
 \subsection{Method \code{print()}}{
 print out the data dimensions and snapshot
 \subsection{Usage}{
@@ -125,8 +125,8 @@ self
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.use_multi_files"></a>}}
-\if{latex}{\out{\hypertarget{method-.use_multi_files}{}}}
+\if{html}{\out{<a id="method-Tensor-.use_multi_files"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-.use_multi_files}{}}}
 \subsection{Method \code{.use_multi_files()}}{
 Internally used, whether to use multiple files to cache
 data instead of one
@@ -143,8 +143,8 @@ data instead of one
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Tensor-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -188,8 +188,8 @@ files to save data by index; default stores in
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-subset"></a>}}
-\if{latex}{\out{\hypertarget{method-subset}{}}}
+\if{html}{\out{<a id="method-Tensor-subset"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-subset}{}}}
 \subsection{Method \code{subset()}}{
 subset tensor
 \subsection{Usage}{
@@ -215,8 +215,8 @@ the sliced data
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-flatten"></a>}}
-\if{latex}{\out{\hypertarget{method-flatten}{}}}
+\if{html}{\out{<a id="method-Tensor-flatten"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-flatten}{}}}
 \subsection{Method \code{flatten()}}{
 converts tensor (array) to a table (data frame)
 \subsection{Usage}{
@@ -238,8 +238,8 @@ a data frame with the dimension names as index columns and
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-to_swap"></a>}}
-\if{latex}{\out{\hypertarget{method-to_swap}{}}}
+\if{html}{\out{<a id="method-Tensor-to_swap"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-to_swap}{}}}
 \subsection{Method \code{to_swap()}}{
 Serialize tensor to a file and store it via
 \code{\link[fst]{write_fst}}
@@ -261,8 +261,8 @@ greater than \code{delay} in seconds, then swap immediately.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-to_swap_now"></a>}}
-\if{latex}{\out{\hypertarget{method-to_swap_now}{}}}
+\if{html}{\out{<a id="method-Tensor-to_swap_now"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-to_swap_now}{}}}
 \subsection{Method \code{to_swap_now()}}{
 Serialize tensor to a file and store it via
 \code{\link[fst]{write_fst}} immediately
@@ -280,8 +280,8 @@ loading}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_data}{}}}
+\if{html}{\out{<a id="method-Tensor-get_data"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-get_data}{}}}
 \subsection{Method \code{get_data()}}{
 restore data from hard drive to memory
 \subsection{Usage}{
@@ -302,8 +302,8 @@ original array
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_data"></a>}}
-\if{latex}{\out{\hypertarget{method-set_data}{}}}
+\if{html}{\out{<a id="method-Tensor-set_data"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-set_data}{}}}
 \subsection{Method \code{set_data()}}{
 set/replace data with given array
 \subsection{Usage}{
@@ -322,8 +322,8 @@ the data from all other places will change. So use it carefully.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-collapse"></a>}}
-\if{latex}{\out{\hypertarget{method-collapse}{}}}
+\if{html}{\out{<a id="method-Tensor-collapse"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-collapse}{}}}
 \subsection{Method \code{collapse()}}{
 apply mean, sum, or median to collapse data
 \subsection{Usage}{
@@ -344,8 +344,8 @@ the collapsed data
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-operate"></a>}}
-\if{latex}{\out{\hypertarget{method-operate}{}}}
+\if{html}{\out{<a id="method-Tensor-operate"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-operate}{}}}
 \subsection{Method \code{operate()}}{
 apply the tensor by anything along given dimension
 \subsection{Usage}{

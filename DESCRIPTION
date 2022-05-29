@@ -1,7 +1,7 @@
 Package: raveio
 Type: Package
 Title: File-System Toolbox for RAVE Project
-Version: 0.0.5.9012
+Version: 0.0.6
 Language: en-US
 Authors@R: c(
     person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre")),
@@ -24,14 +24,12 @@ BugReports: https://github.com/beauchamplab/raveio/issues
 URL: https://beauchamplab.github.io/raveio/
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 SystemRequirements: little-endian platform
 biocViews: Infrastructure, DataImport
-Depends: R (>= 3.6.0)
 Imports:
     utils,
     data.table,
-    parallel,
     edfReader (>= 1.2.1),
     dipsaus,
     filearray (>= 0.1.2.9000),

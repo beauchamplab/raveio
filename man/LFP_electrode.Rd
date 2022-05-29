@@ -89,30 +89,30 @@ with current electrode type}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-print}{\code{LFP_electrode$print()}}
-\item \href{#method-set_reference}{\code{LFP_electrode$set_reference()}}
-\item \href{#method-new}{\code{LFP_electrode$new()}}
-\item \href{#method-.load_noref_wavelet}{\code{LFP_electrode$.load_noref_wavelet()}}
-\item \href{#method-.load_noref_voltage}{\code{LFP_electrode$.load_noref_voltage()}}
-\item \href{#method-.load_wavelet}{\code{LFP_electrode$.load_wavelet()}}
-\item \href{#method-.load_voltage}{\code{LFP_electrode$.load_voltage()}}
-\item \href{#method-load_data}{\code{LFP_electrode$load_data()}}
-\item \href{#method-load_blocks}{\code{LFP_electrode$load_blocks()}}
-\item \href{#method-clear_cache}{\code{LFP_electrode$clear_cache()}}
-\item \href{#method-clear_memory}{\code{LFP_electrode$clear_memory()}}
-\item \href{#method-clone}{\code{LFP_electrode$clone()}}
+\item \href{#method-LFP_electrode-print}{\code{LFP_electrode$print()}}
+\item \href{#method-LFP_electrode-set_reference}{\code{LFP_electrode$set_reference()}}
+\item \href{#method-LFP_electrode-new}{\code{LFP_electrode$new()}}
+\item \href{#method-LFP_electrode-.load_noref_wavelet}{\code{LFP_electrode$.load_noref_wavelet()}}
+\item \href{#method-LFP_electrode-.load_noref_voltage}{\code{LFP_electrode$.load_noref_voltage()}}
+\item \href{#method-LFP_electrode-.load_wavelet}{\code{LFP_electrode$.load_wavelet()}}
+\item \href{#method-LFP_electrode-.load_voltage}{\code{LFP_electrode$.load_voltage()}}
+\item \href{#method-LFP_electrode-load_data}{\code{LFP_electrode$load_data()}}
+\item \href{#method-LFP_electrode-load_blocks}{\code{LFP_electrode$load_blocks()}}
+\item \href{#method-LFP_electrode-clear_cache}{\code{LFP_electrode$clear_cache()}}
+\item \href{#method-LFP_electrode-clear_memory}{\code{LFP_electrode$clear_memory()}}
+\item \href{#method-LFP_electrode-clone}{\code{LFP_electrode$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="raveio" data-topic="RAVEAbstarctElectrode" data-id="set_epoch">}\href{../../raveio/html/RAVEAbstarctElectrode.html#method-set_epoch}{\code{raveio::RAVEAbstarctElectrode$set_epoch()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVEAbstarctElectrode" data-id="set_epoch"><a href='../../raveio/html/RAVEAbstarctElectrode.html#method-RAVEAbstarctElectrode-set_epoch'><code>raveio::RAVEAbstarctElectrode$set_epoch()</code></a></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-print"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-print}{}}}
 \subsection{Method \code{print()}}{
 print electrode summary
 \subsection{Usage}{
@@ -121,8 +121,8 @@ print electrode summary
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_reference"></a>}}
-\if{latex}{\out{\hypertarget{method-set_reference}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-set_reference"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-set_reference}{}}}
 \subsection{Method \code{set_reference()}}{
 set reference for current electrode
 \subsection{Usage}{
@@ -138,8 +138,8 @@ set reference for current electrode
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-new"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -156,8 +156,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.load_noref_wavelet"></a>}}
-\if{latex}{\out{\hypertarget{method-.load_noref_wavelet}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-.load_noref_wavelet"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-.load_noref_wavelet}{}}}
 \subsection{Method \code{.load_noref_wavelet()}}{
 load non-referenced wavelet coefficients (internally used)
 \subsection{Usage}{
@@ -177,8 +177,8 @@ returns 0, otherwise returns a \code{\link[filearray]{FileArray-class}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.load_noref_voltage"></a>}}
-\if{latex}{\out{\hypertarget{method-.load_noref_voltage}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-.load_noref_voltage"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-.load_noref_voltage}{}}}
 \subsection{Method \code{.load_noref_voltage()}}{
 load non-referenced voltage (internally used)
 \subsection{Usage}{
@@ -196,8 +196,8 @@ load non-referenced voltage (internally used)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.load_wavelet"></a>}}
-\if{latex}{\out{\hypertarget{method-.load_wavelet}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-.load_wavelet"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-.load_wavelet}{}}}
 \subsection{Method \code{.load_wavelet()}}{
 load referenced wavelet coefficients (internally used)
 \subsection{Usage}{
@@ -215,8 +215,8 @@ load referenced wavelet coefficients (internally used)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.load_voltage"></a>}}
-\if{latex}{\out{\hypertarget{method-.load_voltage}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-.load_voltage"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-.load_voltage}{}}}
 \subsection{Method \code{.load_voltage()}}{
 load referenced voltage (internally used)
 \subsection{Usage}{
@@ -232,8 +232,8 @@ load referenced voltage (internally used)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-load_data"></a>}}
-\if{latex}{\out{\hypertarget{method-load_data}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-load_data"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-load_data}{}}}
 \subsection{Method \code{load_data()}}{
 method to load electrode data
 \subsection{Usage}{
@@ -254,8 +254,8 @@ transforms are required.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-load_blocks"></a>}}
-\if{latex}{\out{\hypertarget{method-load_blocks}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-load_blocks"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-load_blocks}{}}}
 \subsection{Method \code{load_blocks()}}{
 load electrode block-wise data (with no reference),
 useful when epoch is absent
@@ -289,8 +289,8 @@ are the blocks.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clear_cache"></a>}}
-\if{latex}{\out{\hypertarget{method-clear_cache}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-clear_cache"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-clear_cache}{}}}
 \subsection{Method \code{clear_cache()}}{
 method to clear cache on hard drive
 \subsection{Usage}{
@@ -306,8 +306,8 @@ method to clear cache on hard drive
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clear_memory"></a>}}
-\if{latex}{\out{\hypertarget{method-clear_memory}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-clear_memory"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-clear_memory}{}}}
 \subsection{Method \code{clear_memory()}}{
 method to clear memory
 \subsection{Usage}{
@@ -323,8 +323,8 @@ method to clear memory
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-LFP_electrode-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

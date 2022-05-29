@@ -72,7 +72,7 @@ PipelineResult <- R6::R6Class(
     #' @description get pipeline progress
     get_progress = function(){
       self$validate()
-      tbl <- raveio::pipeline_progress(pipe_dir = private$.path, method = "details")
+      tbl <- pipeline_progress(pipe_dir = private$.path, method = "details")
 
       self$variables
 
@@ -341,7 +341,7 @@ PipelineResult <- R6::R6Class(
       if(!length(names)){
         names <- self$variables
       }
-      raveio::pipeline_read(var_names = names, pipe_dir = private$.path, ...)
+      pipeline_read(var_names = names, pipe_dir = private$.path, ...)
     }
   ),
   active = list(
@@ -350,7 +350,7 @@ PipelineResult <- R6::R6Class(
     variables = function(){
       if(!is.data.frame(private$.vartable)){
         self$validate()
-        variables <- raveio::pipeline_target_names(pipe_dir = private$.path)
+        variables <- pipeline_target_names(pipe_dir = private$.path)
         tarnames_readable <- names(variables)
         nvars <- length(variables)
         nactual <- length(tarnames_readable)

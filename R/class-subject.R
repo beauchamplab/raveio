@@ -303,7 +303,7 @@ RAVESubject <- R6::R6Class(
             Label = "Nolabel",
             SignalType = self$electrode_types
           )
-          raveio::save_meta2(electrode_table, meta_type = "electrodes",
+          save_meta2(electrode_table, meta_type = "electrodes",
                              project_name = self$project_name,
                              subject_code = self$subject_code)
           electrode_table <- self$meta_data("electrodes")

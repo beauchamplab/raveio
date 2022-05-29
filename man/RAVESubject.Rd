@@ -68,23 +68,23 @@ no path exists, values will be \code{NA}}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-print}{\code{RAVESubject$print()}}
-\item \href{#method-new}{\code{RAVESubject$new()}}
-\item \href{#method-meta_data}{\code{RAVESubject$meta_data()}}
-\item \href{#method-valid_electrodes}{\code{RAVESubject$valid_electrodes()}}
-\item \href{#method-initialize_paths}{\code{RAVESubject$initialize_paths()}}
-\item \href{#method-set_default}{\code{RAVESubject$set_default()}}
-\item \href{#method-get_default}{\code{RAVESubject$get_default()}}
-\item \href{#method-get_epoch}{\code{RAVESubject$get_epoch()}}
-\item \href{#method-get_reference}{\code{RAVESubject$get_reference()}}
-\item \href{#method-get_electrode_table}{\code{RAVESubject$get_electrode_table()}}
-\item \href{#method-get_frequency}{\code{RAVESubject$get_frequency()}}
-\item \href{#method-clone}{\code{RAVESubject$clone()}}
+\item \href{#method-RAVESubject-print}{\code{RAVESubject$print()}}
+\item \href{#method-RAVESubject-new}{\code{RAVESubject$new()}}
+\item \href{#method-RAVESubject-meta_data}{\code{RAVESubject$meta_data()}}
+\item \href{#method-RAVESubject-valid_electrodes}{\code{RAVESubject$valid_electrodes()}}
+\item \href{#method-RAVESubject-initialize_paths}{\code{RAVESubject$initialize_paths()}}
+\item \href{#method-RAVESubject-set_default}{\code{RAVESubject$set_default()}}
+\item \href{#method-RAVESubject-get_default}{\code{RAVESubject$get_default()}}
+\item \href{#method-RAVESubject-get_epoch}{\code{RAVESubject$get_epoch()}}
+\item \href{#method-RAVESubject-get_reference}{\code{RAVESubject$get_reference()}}
+\item \href{#method-RAVESubject-get_electrode_table}{\code{RAVESubject$get_electrode_table()}}
+\item \href{#method-RAVESubject-get_frequency}{\code{RAVESubject$get_frequency()}}
+\item \href{#method-RAVESubject-clone}{\code{RAVESubject$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-RAVESubject-print"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-print}{}}}
 \subsection{Method \code{print()}}{
 override print method
 \subsection{Usage}{
@@ -100,8 +100,8 @@ override print method
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-RAVESubject-new"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -121,8 +121,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-meta_data"></a>}}
-\if{latex}{\out{\hypertarget{method-meta_data}{}}}
+\if{html}{\out{<a id="method-RAVESubject-meta_data"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-meta_data}{}}}
 \subsection{Method \code{meta_data()}}{
 get subject meta data located in \code{"meta/"} folder
 \subsection{Usage}{
@@ -149,8 +149,8 @@ data frame
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-valid_electrodes"></a>}}
-\if{latex}{\out{\hypertarget{method-valid_electrodes}{}}}
+\if{html}{\out{<a id="method-RAVESubject-valid_electrodes"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-valid_electrodes}{}}}
 \subsection{Method \code{valid_electrodes()}}{
 get valid electrode numbers
 \subsection{Usage}{
@@ -174,8 +174,8 @@ integer vector of valid electrodes
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-initialize_paths"></a>}}
-\if{latex}{\out{\hypertarget{method-initialize_paths}{}}}
+\if{html}{\out{<a id="method-RAVESubject-initialize_paths"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-initialize_paths}{}}}
 \subsection{Method \code{initialize_paths()}}{
 create subject's directories on hard disk
 \subsection{Usage}{
@@ -191,8 +191,8 @@ create subject's directories on hard disk
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_default"></a>}}
-\if{latex}{\out{\hypertarget{method-set_default}{}}}
+\if{html}{\out{<a id="method-RAVESubject-set_default"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-set_default}{}}}
 \subsection{Method \code{set_default()}}{
 set default key-value pair for the subject, used by 'RAVE'
 modules
@@ -216,8 +216,8 @@ The same as \code{value}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_default"></a>}}
-\if{latex}{\out{\hypertarget{method-get_default}{}}}
+\if{html}{\out{<a id="method-RAVESubject-get_default"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-get_default}{}}}
 \subsection{Method \code{get_default()}}{
 get default key-value pairs for the subject, used by 'RAVE'
 modules
@@ -250,8 +250,8 @@ A named list of key-value pairs, or if one key is specified and
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_epoch"></a>}}
-\if{latex}{\out{\hypertarget{method-get_epoch}{}}}
+\if{html}{\out{<a id="method-RAVESubject-get_epoch"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-get_epoch}{}}}
 \subsection{Method \code{get_epoch()}}{
 check and get subject's epoch information
 \subsection{Usage}{
@@ -278,8 +278,8 @@ raise errors when file is missing or the epoch is invalid.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_reference"></a>}}
-\if{latex}{\out{\hypertarget{method-get_reference}{}}}
+\if{html}{\out{<a id="method-RAVESubject-get_reference"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-get_reference}{}}}
 \subsection{Method \code{get_reference()}}{
 check and get subject's reference information
 \subsection{Usage}{
@@ -303,8 +303,8 @@ raise errors when file is missing or the reference is invalid.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_electrode_table"></a>}}
-\if{latex}{\out{\hypertarget{method-get_electrode_table}{}}}
+\if{html}{\out{<a id="method-RAVESubject-get_electrode_table"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-get_electrode_table}{}}}
 \subsection{Method \code{get_electrode_table()}}{
 check and get subject's electrode table with electrodes
 that are load-able
@@ -339,8 +339,8 @@ subset and only rows with electrodes to be loaded will be kept.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_frequency"></a>}}
-\if{latex}{\out{\hypertarget{method-get_frequency}{}}}
+\if{html}{\out{<a id="method-RAVESubject-get_frequency"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-get_frequency}{}}}
 \subsection{Method \code{get_frequency()}}{
 check and get subject's frequency table, time-frequency
 decomposition is needed.
@@ -361,8 +361,8 @@ otherwise returns a table.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-RAVESubject-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

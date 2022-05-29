@@ -100,19 +100,19 @@ intervals are missing}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{RAVEAbstarctElectrode$new()}}
-\item \href{#method-set_reference}{\code{RAVEAbstarctElectrode$set_reference()}}
-\item \href{#method-set_epoch}{\code{RAVEAbstarctElectrode$set_epoch()}}
-\item \href{#method-clear_cache}{\code{RAVEAbstarctElectrode$clear_cache()}}
-\item \href{#method-clear_memory}{\code{RAVEAbstarctElectrode$clear_memory()}}
-\item \href{#method-load_data}{\code{RAVEAbstarctElectrode$load_data()}}
-\item \href{#method-load_blocks}{\code{RAVEAbstarctElectrode$load_blocks()}}
-\item \href{#method-clone}{\code{RAVEAbstarctElectrode$clone()}}
+\item \href{#method-RAVEAbstarctElectrode-new}{\code{RAVEAbstarctElectrode$new()}}
+\item \href{#method-RAVEAbstarctElectrode-set_reference}{\code{RAVEAbstarctElectrode$set_reference()}}
+\item \href{#method-RAVEAbstarctElectrode-set_epoch}{\code{RAVEAbstarctElectrode$set_epoch()}}
+\item \href{#method-RAVEAbstarctElectrode-clear_cache}{\code{RAVEAbstarctElectrode$clear_cache()}}
+\item \href{#method-RAVEAbstarctElectrode-clear_memory}{\code{RAVEAbstarctElectrode$clear_memory()}}
+\item \href{#method-RAVEAbstarctElectrode-load_data}{\code{RAVEAbstarctElectrode$load_data()}}
+\item \href{#method-RAVEAbstarctElectrode-load_blocks}{\code{RAVEAbstarctElectrode$load_blocks()}}
+\item \href{#method-RAVEAbstarctElectrode-clone}{\code{RAVEAbstarctElectrode$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-new"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-new}{}}}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
@@ -130,8 +130,8 @@ constructor
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_reference"></a>}}
-\if{latex}{\out{\hypertarget{method-set_reference}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-set_reference"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-set_reference}{}}}
 \subsection{Method \code{set_reference()}}{
 set reference for instance
 \subsection{Usage}{
@@ -148,8 +148,8 @@ instance}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_epoch"></a>}}
-\if{latex}{\out{\hypertarget{method-set_epoch}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-set_epoch"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-set_epoch}{}}}
 \subsection{Method \code{set_epoch()}}{
 set epoch instance for the electrode
 \subsection{Usage}{
@@ -166,8 +166,8 @@ characters, make sure \code{"epoch_<name>.csv"} is in meta folder.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clear_cache"></a>}}
-\if{latex}{\out{\hypertarget{method-clear_cache}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-clear_cache"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-clear_cache}{}}}
 \subsection{Method \code{clear_cache()}}{
 method to clear cache on hard drive
 \subsection{Usage}{
@@ -183,8 +183,8 @@ method to clear cache on hard drive
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clear_memory"></a>}}
-\if{latex}{\out{\hypertarget{method-clear_memory}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-clear_memory"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-clear_memory}{}}}
 \subsection{Method \code{clear_memory()}}{
 method to clear memory
 \subsection{Usage}{
@@ -200,8 +200,8 @@ method to clear memory
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-load_data"></a>}}
-\if{latex}{\out{\hypertarget{method-load_data}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-load_data"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-load_data}{}}}
 \subsection{Method \code{load_data()}}{
 method to load electrode data
 \subsection{Usage}{
@@ -219,8 +219,8 @@ depending on child class implementations}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-load_blocks"></a>}}
-\if{latex}{\out{\hypertarget{method-load_blocks}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-load_blocks"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-load_blocks}{}}}
 \subsection{Method \code{load_blocks()}}{
 load electrode block-wise data (with reference),
 useful when epoch is absent
@@ -248,8 +248,8 @@ are the blocks.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-RAVEAbstarctElectrode-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEAbstarctElectrode-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
