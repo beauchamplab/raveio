@@ -50,11 +50,6 @@ jobs:
           ./inst/hdf5_installer.sh
           ls ${{ env.HDF5_DIR }}
 
-      - name: Install packages on Windows
-        if: runner.os == 'Windows'
-        run: |
-          pacman -S mingw-w64-x86_64-fftw
-
       - name: Install brew packages on OSX
         if: runner.os == 'macOS'
         run: |
@@ -89,7 +84,15 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
-      - name: Install dependencies
+      - name: Install dependencies - Windows & OSX
+        if: runner.os != 'Linux'
+        run: |
+          remotes::install_deps(dependencies = TRUE, repos = c(ropensci = 'https://beauchamplab.r-universe.dev', CRAN = 'https://cloud.r-project.org'))
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+
+      - name: Install dependencies - Linux
+        if: runner.os == 'Linux'
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
