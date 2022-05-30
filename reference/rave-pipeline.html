@@ -108,7 +108,7 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span class="fu">pipeline_progress</span><span class="op">(</span>
   pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
   method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"summary"</span>, <span class="st">"details"</span>, <span class="st">"custom"</span><span class="op">)</span>,
-  func <span class="op">=</span> <span class="fu">targets</span><span class="fu">::</span><span class="va"><a href="https://docs.ropensci.org/targets/reference/tar_progress_summary.html" class="external-link">tar_progress_summary</a></span>
+  func <span class="op">=</span> <span class="fu">targets</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/targets/man/tar_progress_summary.html" class="external-link">tar_progress_summary</a></span>
 <span class="op">)</span>
 
 <span class="fu">pipeline_fork</span><span class="op">(</span>
@@ -183,7 +183,7 @@ to use <code><a href="https://callr.r-lib.org/reference/r.html" class="external-
 sequentially in the main session.</p></dd>
 <dt>callr_function</dt>
 <dd><p>function that will be passed to
-<code><a href="https://docs.ropensci.org/targets/reference/tar_make.html" class="external-link">tar_make</a></code>; will be forced to be <code>NULL</code> if
+<code><a href="https://rdrr.io/pkg/targets/man/tar_make.html" class="external-link">tar_make</a></code>; will be forced to be <code>NULL</code> if
 <code>type='vanilla'</code>, or <code><a href="https://callr.r-lib.org/reference/r.html" class="external-link">r</a></code> if
 <code>type='callr'</code></p></dd>
 <dt>names</dt>
@@ -214,7 +214,7 @@ up-to-date; only used when <code>quick=TRUE</code>. If missing, then
 chosen, then <code>func</code> will be called</p></dd>
 <dt>func</dt>
 <dd><p>function to call when reading customized pipeline progress;
-default is <code><a href="https://docs.ropensci.org/targets/reference/tar_progress_summary.html" class="external-link">tar_progress_summary</a></code></p></dd>
+default is <code><a href="https://rdrr.io/pkg/targets/man/tar_progress_summary.html" class="external-link">tar_progress_summary</a></code></p></dd>
 <dt>src, dest</dt>
 <dd><p>pipeline folder to copy the pipeline script from and to</p></dd>
 <dt>filter_pattern</dt>
@@ -226,7 +226,7 @@ default is false</p></dd>
 <dt>var_names</dt>
 <dd><p>variable name to fetch or to check</p></dd>
 <dt>branches</dt>
-<dd><p>branch to read from; see <code><a href="https://docs.ropensci.org/targets/reference/tar_read.html" class="external-link">tar_read</a></code></p></dd>
+<dd><p>branch to read from; see <code><a href="https://rdrr.io/pkg/targets/man/tar_read.html" class="external-link">tar_read</a></code></p></dd>
 <dt>ifnotfound</dt>
 <dd><p>default values to return if variable is not found</p></dd>
 <dt>targets_only</dt>
