@@ -306,9 +306,9 @@ expression be evaluated</p></dd>
 <span class="r-in"><span class="co"># Save to local disk</span></span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="save_h5.html">save_h5</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">f</span>, name <span class="op">=</span> <span class="st">'x'</span>, chunk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span>, level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpTEBNB5/filed122c598256 =&gt; x (Dataset Created) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpTEBNB5/filed122c598256 =&gt; x (Dataset Removed) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpTEBNB5/filed122c598256 =&gt; x (Dataset Created) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpUuWwBo/file1075367f078e =&gt; x (Dataset Created) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpUuWwBo/file1075367f078e =&gt; x (Dataset Removed) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpUuWwBo/file1075367f078e =&gt; x (Dataset Created) </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Load via LazyFST</span></span>
 <span class="r-in"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">LazyH5</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>file_path <span class="op">=</span> <span class="va">f</span>, data_name <span class="op">=</span> <span class="st">'x'</span>, read_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -322,7 +322,7 @@ expression be evaluated</p></dd>
 <span class="r-in"><span class="co"># Read a slice of the data</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span>,<span class="fl">10</span>,<span class="op">]</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.241   0.004   0.245 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.234   0.003   0.244 </span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
