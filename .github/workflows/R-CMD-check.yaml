@@ -53,11 +53,7 @@ jobs:
       - name: Install packages on Windows
         if: runner.os == 'Windows'
         run: |
-          if exist C:\rtools42\usr\bin\pacman.exe (
-            C:\rtools42\usr\bin\pacman.exe -S mingw-w64-x86_64-fftw
-          ) else (
-            echo "Cannot install FFTW on Windows"
-          )
+          C:\rtools42\usr\bin\pacman.exe -S mingw-w64-x86_64-fftw
 
       - name: Install brew packages on OSX
         if: runner.os == 'macOS'
