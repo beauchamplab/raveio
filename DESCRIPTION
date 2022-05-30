@@ -45,8 +45,11 @@ Imports:
     targets (>= 0.8.0),
     callr (>= 3.7.0),
     remotes,
-    threeBrain (>= 0.2.4.9000)
+    promises (>= 1.2.0),
+    threeBrain (>= 0.2.4)
 Suggests:
+    rpymat,
+    visNetwork,
     testthat,
     reticulate,
     knitr,
@@ -55,18 +58,7 @@ Suggests:
     clustermq,
     shiny,
     shinybusy,
-    visNetwork,
     shinyWidgets,
     arrow,
-    promises (>= 1.2.0.1),
     ravetools,
-    rpymat,
     later (>= 1.3.0)
-Remotes: 
-    dipterix/filearray,
-    dipterix/dipsaus,
-    dipterix/threeBrain,
-    dipterix/shidashi
-Enhances: 
-    ravedash (>= 0.1.0),
-    shidashi (>= 0.1.0.9000)

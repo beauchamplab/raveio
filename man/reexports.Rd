@@ -4,6 +4,10 @@
 \name{reexports}
 \alias{reexports}
 \alias{glue}
+\alias{\%...>\%}
+\alias{\%...T>\%}
+\alias{\%...!\%}
+\alias{\%...T!\%}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -12,5 +16,7 @@ below to see their documentation.
 
 \describe{
   \item{glue}{\code{\link[glue]{glue}}}
+
+  \item{promises}{\code{\link[promises:pipes]{\%...!\%}}, \code{\link[promises:pipes]{\%...>\%}}, \code{\link[promises:pipes]{\%...T!\%}}, \code{\link[promises:pipes]{\%...T>\%}}}
 }}
 

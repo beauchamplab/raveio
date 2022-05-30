@@ -418,3 +418,8 @@ PipelineResult <- R6::R6Class(
 
   )
 )
+
+#' @export
+as.promise.PipelineResult <- function(x){
+  x$promise
+}

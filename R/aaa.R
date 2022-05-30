@@ -4,6 +4,11 @@
 #' @importFrom filearray filearray_load
 #' @importFrom filearray filearray_create
 #' @importFrom filearray fmap
+#' @importFrom promises as.promise
+#' @importFrom promises %...>%
+#' @importFrom promises %...T>%
+#' @importFrom promises %...!%
+#' @importFrom promises %...T!%
 NULL
 
 #' @name raveio-constants
@@ -42,6 +47,18 @@ RAVEIO_FILEARRAY_VERSION <- 1L
 
 #' @export
 glue::glue
+
+#' @export
+promises::`%...>%`
+
+#' @export
+promises::`%...T>%`
+
+#' @export
+promises::`%...!%`
+
+#' @export
+promises::`%...T!%`
 
 r6_reserved_fields <- c('.__enclos_env__', 'clone', 'print', 'initialize', 'private')
 

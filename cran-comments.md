@@ -1,3 +1,9 @@
+# `raveio` (0.0.6)
+
+Self checks indicated no error/warning/note. 
+
+* The platforms include `windows`, `ubuntu`, `fedora`, and `macOS`
+
 # `raveio` (0.0.5)
 
 Self checks indicated no error/warning. 
