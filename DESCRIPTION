@@ -44,9 +44,9 @@ Imports:
     yaml (>= 2.2.1),
     targets (>= 0.8.0),
     callr (>= 3.7.0),
-    remotes,
+    remotes (>= 2.1.2),
     promises (>= 1.2.0),
-    threeBrain (>= 0.2.4)
+    threeBrain (>= 0.2.5)
 Suggests:
     rpymat,
     visNetwork,

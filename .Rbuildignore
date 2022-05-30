@@ -12,3 +12,4 @@ inst/rave-pipelines/*/shared/*
 inst/rave-pipelines/*/shared/*
 inst/rave-pipelines/builtins/*
 ^inst/raveio-logo\.png$
+^CRAN-SUBMISSION$
