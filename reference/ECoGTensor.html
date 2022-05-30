@@ -19,7 +19,7 @@ Frequency, Time, and Electrode."><!-- mathjax --><script src="https://cdnjs.clou
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6</span>
       </span>
     </div>
 
@@ -71,19 +71,19 @@ Frequency, Time, and Electrode."><!-- mathjax --><script src="https://cdnjs.clou
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-flatten"><code>ECoGTensor$flatten()</code></a></p></li>
-<li><p><a href="#method-new"><code>ECoGTensor$new()</code></a></p></li>
-</ul></div><p><details><summary>Inherited methods</summary><ul><li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id=".use_multi_files"><a href="Tensor.html#method-.use_multi_files"><code>raveio::Tensor$.use_multi_files()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="collapse"><a href="Tensor.html#method-collapse"><code>raveio::Tensor$collapse()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="finalize"><a href="Tensor.html#method-finalize"><code>raveio::Tensor$finalize()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="get_data"><a href="Tensor.html#method-get_data"><code>raveio::Tensor$get_data()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="operate"><a href="Tensor.html#method-operate"><code>raveio::Tensor$operate()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="print"><a href="Tensor.html#method-print"><code>raveio::Tensor$print()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="set_data"><a href="Tensor.html#method-set_data"><code>raveio::Tensor$set_data()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="subset"><a href="Tensor.html#method-subset"><code>raveio::Tensor$subset()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap"><a href="Tensor.html#method-to_swap"><code>raveio::Tensor$to_swap()</code></a></span></p></li>
-<li><p><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap_now"><a href="Tensor.html#method-to_swap_now"><code>raveio::Tensor$to_swap_now()</code></a></span></p></li>
-</ul></details></p><hr><a id="method-flatten"></a><div class="section">
+<ul><li><p><a href="#method-ECoGTensor-flatten"><code>ECoGTensor$flatten()</code></a></p></li>
+<li><p><a href="#method-ECoGTensor-new"><code>ECoGTensor$new()</code></a></p></li>
+</ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id=".use_multi_files"><a href="Tensor.html#method-.use_multi_files"><code>raveio::Tensor$.use_multi_files()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="collapse"><a href="Tensor.html#method-collapse"><code>raveio::Tensor$collapse()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="finalize"><a href="Tensor.html#method-finalize"><code>raveio::Tensor$finalize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="get_data"><a href="Tensor.html#method-get_data"><code>raveio::Tensor$get_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="operate"><a href="Tensor.html#method-operate"><code>raveio::Tensor$operate()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="print"><a href="Tensor.html#method-print"><code>raveio::Tensor$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="set_data"><a href="Tensor.html#method-set_data"><code>raveio::Tensor$set_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="subset"><a href="Tensor.html#method-subset"><code>raveio::Tensor$subset()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap"><a href="Tensor.html#method-to_swap"><code>raveio::Tensor$to_swap()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap_now"><a href="Tensor.html#method-to_swap_now"><code>raveio::Tensor$to_swap_now()</code></a></span></li>
+</ul></details></p><hr><a id="method-ECoGTensor-flatten"></a><div class="section">
 <h3 id="method-flatten-">Method <code>flatten()</code><a class="anchor" aria-label="anchor" href="#method-flatten-"></a></h3>
 <p>converts tensor (array) to a table (data frame)</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -108,7 +108,7 @@ Frequency, Time, and Electrode."><!-- mathjax --><script src="https://cdnjs.clou
 <code>value_name</code> as value column</p>
 </div>
 
-</div><p></p><hr><a id="method-new"></a><div class="section">
+</div><p></p><hr><a id="method-ECoGTensor-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>

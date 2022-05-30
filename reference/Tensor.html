@@ -18,7 +18,7 @@ data in seconds"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6</span>
       </span>
     </div>
 
@@ -106,19 +106,19 @@ as multiple files</p></dd>
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-finalize"><code>Tensor$finalize()</code></a></p></li>
-<li><p><a href="#method-print"><code>Tensor$print()</code></a></p></li>
-<li><p><a href="#method-.use_multi_files"><code>Tensor$.use_multi_files()</code></a></p></li>
-<li><p><a href="#method-new"><code>Tensor$new()</code></a></p></li>
-<li><p><a href="#method-subset"><code>Tensor$subset()</code></a></p></li>
-<li><p><a href="#method-flatten"><code>Tensor$flatten()</code></a></p></li>
-<li><p><a href="#method-to_swap"><code>Tensor$to_swap()</code></a></p></li>
-<li><p><a href="#method-to_swap_now"><code>Tensor$to_swap_now()</code></a></p></li>
-<li><p><a href="#method-get_data"><code>Tensor$get_data()</code></a></p></li>
-<li><p><a href="#method-set_data"><code>Tensor$set_data()</code></a></p></li>
-<li><p><a href="#method-collapse"><code>Tensor$collapse()</code></a></p></li>
-<li><p><a href="#method-operate"><code>Tensor$operate()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-finalize"></a><div class="section">
+<ul><li><p><a href="#method-Tensor-finalize"><code>Tensor$finalize()</code></a></p></li>
+<li><p><a href="#method-Tensor-print"><code>Tensor$print()</code></a></p></li>
+<li><p><a href="#method-Tensor-.use_multi_files"><code>Tensor$.use_multi_files()</code></a></p></li>
+<li><p><a href="#method-Tensor-new"><code>Tensor$new()</code></a></p></li>
+<li><p><a href="#method-Tensor-subset"><code>Tensor$subset()</code></a></p></li>
+<li><p><a href="#method-Tensor-flatten"><code>Tensor$flatten()</code></a></p></li>
+<li><p><a href="#method-Tensor-to_swap"><code>Tensor$to_swap()</code></a></p></li>
+<li><p><a href="#method-Tensor-to_swap_now"><code>Tensor$to_swap_now()</code></a></p></li>
+<li><p><a href="#method-Tensor-get_data"><code>Tensor$get_data()</code></a></p></li>
+<li><p><a href="#method-Tensor-set_data"><code>Tensor$set_data()</code></a></p></li>
+<li><p><a href="#method-Tensor-collapse"><code>Tensor$collapse()</code></a></p></li>
+<li><p><a href="#method-Tensor-operate"><code>Tensor$operate()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-Tensor-finalize"></a><div class="section">
 <h3 id="method-finalize-">Method <code>finalize()</code><a class="anchor" aria-label="anchor" href="#method-finalize-"></a></h3>
 <p>release resource and remove files for temporary instances</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -126,7 +126,7 @@ as multiple files</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-print"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
 <p>print out the data dimensions and snapshot</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
@@ -146,7 +146,7 @@ as multiple files</p></dd>
 <p>self</p>
 </div>
 
-</div><p></p><hr><a id="method-.use_multi_files"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-.use_multi_files"></a><div class="section">
 <h3 id="method-use-multi-files-">Method <code>.use_multi_files()</code><a class="anchor" aria-label="anchor" href="#method-use-multi-files-"></a></h3>
 <p>Internally used, whether to use multiple files to cache
 data instead of one</p><div class="section">
@@ -163,7 +163,7 @@ data instead of one</p><div class="section">
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-new"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
@@ -223,7 +223,7 @@ files to save data by index; default stores in
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-subset"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-subset"></a><div class="section">
 <h3 id="method-subset-">Method <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code><a class="anchor" aria-label="anchor" href="#method-subset-"></a></h3>
 <p>subset tensor</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
@@ -256,7 +256,7 @@ files to save data by index; default stores in
 <p>the sliced data</p>
 </div>
 
-</div><p></p><hr><a id="method-flatten"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-flatten"></a><div class="section">
 <h3 id="method-flatten-">Method <code>flatten()</code><a class="anchor" aria-label="anchor" href="#method-flatten-"></a></h3>
 <p>converts tensor (array) to a table (data frame)</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
@@ -281,7 +281,7 @@ files to save data by index; default stores in
 <code>value_name</code> as value column</p>
 </div>
 
-</div><p></p><hr><a id="method-to_swap"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-to_swap"></a><div class="section">
 <h3 id="method-to-swap-">Method <code>to_swap()</code><a class="anchor" aria-label="anchor" href="#method-to-swap-"></a></h3>
 <p>Serialize tensor to a file and store it via
 <code><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">write_fst</a></code></p><div class="section">
@@ -305,7 +305,7 @@ greater than <code>delay</code> in seconds, then swap immediately.</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-to_swap_now"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-to_swap_now"></a><div class="section">
 <h3 id="method-to-swap-now-">Method <code>to_swap_now()</code><a class="anchor" aria-label="anchor" href="#method-to-swap-now-"></a></h3>
 <p>Serialize tensor to a file and store it via
 <code><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">write_fst</a></code> immediately</p><div class="section">
@@ -323,7 +323,7 @@ loading</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-get_data"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-get_data"></a><div class="section">
 <h3 id="method-get-data-">Method <code>get_data()</code><a class="anchor" aria-label="anchor" href="#method-get-data-"></a></h3>
 <p>restore data from hard drive to memory</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
@@ -347,7 +347,7 @@ loading</p></dd>
 <p>original array</p>
 </div>
 
-</div><p></p><hr><a id="method-set_data"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-set_data"></a><div class="section">
 <h3 id="method-set-data-">Method <code>set_data()</code><a class="anchor" aria-label="anchor" href="#method-set-data-"></a></h3>
 <p>set/replace data with given array</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
@@ -368,7 +368,7 @@ the data from all other places will change. So use it carefully.</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-collapse"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-collapse"></a><div class="section">
 <h3 id="method-collapse-">Method <code>collapse()</code><a class="anchor" aria-label="anchor" href="#method-collapse-"></a></h3>
 <p>apply mean, sum, or median to collapse data</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
@@ -392,7 +392,7 @@ the data from all other places will change. So use it carefully.</p></dd>
 <p>the collapsed data</p>
 </div>
 
-</div><p></p><hr><a id="method-operate"></a><div class="section">
+</div><p></p><hr><a id="method-Tensor-operate"></a><div class="section">
 <h3 id="method-operate-">Method <code>operate()</code><a class="anchor" aria-label="anchor" href="#method-operate-"></a></h3>
 <p>apply the tensor by anything along given dimension</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>

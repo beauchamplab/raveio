@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6</span>
       </span>
     </div>
 
@@ -166,19 +166,19 @@ no path exists, values will be <code>NA</code></p></dd>
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-print"><code>RAVESubject$print()</code></a></p></li>
-<li><p><a href="#method-new"><code>RAVESubject$new()</code></a></p></li>
-<li><p><a href="#method-meta_data"><code>RAVESubject$meta_data()</code></a></p></li>
-<li><p><a href="#method-valid_electrodes"><code>RAVESubject$valid_electrodes()</code></a></p></li>
-<li><p><a href="#method-initialize_paths"><code>RAVESubject$initialize_paths()</code></a></p></li>
-<li><p><a href="#method-set_default"><code>RAVESubject$set_default()</code></a></p></li>
-<li><p><a href="#method-get_default"><code>RAVESubject$get_default()</code></a></p></li>
-<li><p><a href="#method-get_epoch"><code>RAVESubject$get_epoch()</code></a></p></li>
-<li><p><a href="#method-get_reference"><code>RAVESubject$get_reference()</code></a></p></li>
-<li><p><a href="#method-get_electrode_table"><code>RAVESubject$get_electrode_table()</code></a></p></li>
-<li><p><a href="#method-get_frequency"><code>RAVESubject$get_frequency()</code></a></p></li>
-<li><p><a href="#method-clone"><code>RAVESubject$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-print"></a><div class="section">
+<ul><li><p><a href="#method-RAVESubject-print"><code>RAVESubject$print()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-new"><code>RAVESubject$new()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-meta_data"><code>RAVESubject$meta_data()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-valid_electrodes"><code>RAVESubject$valid_electrodes()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-initialize_paths"><code>RAVESubject$initialize_paths()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-set_default"><code>RAVESubject$set_default()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-get_default"><code>RAVESubject$get_default()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-get_epoch"><code>RAVESubject$get_epoch()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-get_reference"><code>RAVESubject$get_reference()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-get_electrode_table"><code>RAVESubject$get_electrode_table()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-get_frequency"><code>RAVESubject$get_frequency()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-clone"><code>RAVESubject$clone()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-RAVESubject-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
 <p>override print method</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -194,7 +194,7 @@ no path exists, values will be <code>NA</code></p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-new"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
@@ -218,7 +218,7 @@ no path exists, values will be <code>NA</code></p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-meta_data"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-meta_data"></a><div class="section">
 <h3 id="method-meta-data-">Method <code>meta_data()</code><a class="anchor" aria-label="anchor" href="#method-meta-data-"></a></h3>
 <p>get subject meta data located in <code>"meta/"</code> folder</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
@@ -248,7 +248,7 @@ read in <code>'reference_&lt;meta_name&gt;.csv'</code>.</p></dd>
 <p>data frame</p>
 </div>
 
-</div><p></p><hr><a id="method-valid_electrodes"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-valid_electrodes"></a><div class="section">
 <h3 id="method-valid-electrodes-">Method <code>valid_electrodes()</code><a class="anchor" aria-label="anchor" href="#method-valid-electrodes-"></a></h3>
 <p>get valid electrode numbers</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
@@ -275,7 +275,7 @@ default is false</p></dd>
 <p>integer vector of valid electrodes</p>
 </div>
 
-</div><p></p><hr><a id="method-initialize_paths"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-initialize_paths"></a><div class="section">
 <h3 id="method-initialize-paths-">Method <code>initialize_paths()</code><a class="anchor" aria-label="anchor" href="#method-initialize-paths-"></a></h3>
 <p>create subject's directories on hard disk</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
@@ -291,7 +291,7 @@ default is false</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-set_default"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-set_default"></a><div class="section">
 <h3 id="method-set-default-">Method <code>set_default()</code><a class="anchor" aria-label="anchor" href="#method-set-default-"></a></h3>
 <p>set default key-value pair for the subject, used by 'RAVE'
 modules</p><div class="section">
@@ -320,7 +320,7 @@ modules</p><div class="section">
 <p>The same as <code>value</code></p>
 </div>
 
-</div><p></p><hr><a id="method-get_default"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-get_default"></a><div class="section">
 <h3 id="method-get-default-">Method <code>get_default()</code><a class="anchor" aria-label="anchor" href="#method-get-default-"></a></h3>
 <p>get default key-value pairs for the subject, used by 'RAVE'
 modules</p><div class="section">
@@ -360,7 +360,7 @@ to fetch; default is <code>TRUE</code></p></dd>
 <code>simplify=TRUE</code>, then only the value will be returned.</p>
 </div>
 
-</div><p></p><hr><a id="method-get_epoch"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-get_epoch"></a><div class="section">
 <h3 id="method-get-epoch-">Method <code>get_epoch()</code><a class="anchor" aria-label="anchor" href="#method-get-epoch-"></a></h3>
 <p>check and get subject's epoch information</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
@@ -392,7 +392,7 @@ default is 0</p></dd>
 raise errors when file is missing or the epoch is invalid.</p>
 </div>
 
-</div><p></p><hr><a id="method-get_reference"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-get_reference"></a><div class="section">
 <h3 id="method-get-reference-">Method <code>get_reference()</code><a class="anchor" aria-label="anchor" href="#method-get-reference-"></a></h3>
 <p>check and get subject's reference information</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
@@ -419,7 +419,7 @@ electrode names, otherwise returns the whole table; will
 raise errors when file is missing or the reference is invalid.</p>
 </div>
 
-</div><p></p><hr><a id="method-get_electrode_table"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-get_electrode_table"></a><div class="section">
 <h3 id="method-get-electrode-table-">Method <code>get_electrode_table()</code><a class="anchor" aria-label="anchor" href="#method-get-electrode-table-"></a></h3>
 <p>check and get subject's electrode table with electrodes
 that are load-able</p><div class="section">
@@ -461,7 +461,7 @@ returns a table. If <code>subset</code> is true, then the table will be
 subset and only rows with electrodes to be loaded will be kept.</p>
 </div>
 
-</div><p></p><hr><a id="method-get_frequency"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-get_frequency"></a><div class="section">
 <h3 id="method-get-frequency-">Method <code>get_frequency()</code><a class="anchor" aria-label="anchor" href="#method-get-frequency-"></a></h3>
 <p>check and get subject's frequency table, time-frequency
 decomposition is needed.</p><div class="section">
@@ -483,7 +483,7 @@ decomposition is needed.</p><div class="section">
 otherwise returns a table.</p>
 </div>
 
-</div><p></p><hr><a id="method-clone"></a><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>

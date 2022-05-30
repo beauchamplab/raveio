@@ -18,7 +18,7 @@ Pipeline result object"><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6</span>
       </span>
     </div>
 
@@ -121,16 +121,16 @@ process has been finished.</p></dd>
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-validate"><code>PipelineResult$validate()</code></a></p></li>
-<li><p><a href="#method-invalidate"><code>PipelineResult$invalidate()</code></a></p></li>
-<li><p><a href="#method-get_progress"><code>PipelineResult$get_progress()</code></a></p></li>
-<li><p><a href="#method-new"><code>PipelineResult$new()</code></a></p></li>
-<li><p><a href="#method-run"><code>PipelineResult$run()</code></a></p></li>
-<li><p><a href="#method-await"><code>PipelineResult$await()</code></a></p></li>
-<li><p><a href="#method-print"><code>PipelineResult$print()</code></a></p></li>
-<li><p><a href="#method-get_values"><code>PipelineResult$get_values()</code></a></p></li>
-<li><p><a href="#method-clone"><code>PipelineResult$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-validate"></a><div class="section">
+<ul><li><p><a href="#method-PipelineResult-validate"><code>PipelineResult$validate()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-invalidate"><code>PipelineResult$invalidate()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-get_progress"><code>PipelineResult$get_progress()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-new"><code>PipelineResult$new()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-run"><code>PipelineResult$run()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-await"><code>PipelineResult$await()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-print"><code>PipelineResult$print()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-get_values"><code>PipelineResult$get_values()</code></a></p></li>
+<li><p><a href="#method-PipelineResult-clone"><code>PipelineResult$clone()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-PipelineResult-validate"></a><div class="section">
 <h3 id="method-validate-">Method <code>validate()</code><a class="anchor" aria-label="anchor" href="#method-validate-"></a></h3>
 <p>check if result is valid, raises errors when invalidated</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -138,7 +138,7 @@ process has been finished.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-invalidate"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-invalidate"></a><div class="section">
 <h3 id="method-invalidate-">Method <code>invalidate()</code><a class="anchor" aria-label="anchor" href="#method-invalidate-"></a></h3>
 <p>invalidate the pipeline result</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
@@ -146,7 +146,7 @@ process has been finished.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-get_progress"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-get_progress"></a><div class="section">
 <h3 id="method-get-progress-">Method <code>get_progress()</code><a class="anchor" aria-label="anchor" href="#method-get-progress-"></a></h3>
 <p>get pipeline progress</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
@@ -154,7 +154,7 @@ process has been finished.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-new"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor (internal)</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
@@ -174,7 +174,7 @@ process has been finished.</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-run"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-run"></a><div class="section">
 <h3 id="method-run-">Method <code>run()</code><a class="anchor" aria-label="anchor" href="#method-run-"></a></h3>
 <p>run pipeline (internal)</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
@@ -214,7 +214,7 @@ and will raise errors if cannot be found</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-await"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-await"></a><div class="section">
 <h3 id="method-await-">Method <code>await()</code><a class="anchor" aria-label="anchor" href="#method-await-"></a></h3>
 <p>wait until some targets get finished</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
@@ -240,7 +240,7 @@ wait for all targets that have been scheduled</p></dd>
 timeout is reached</p>
 </div>
 
-</div><p></p><hr><a id="method-print"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
 <p>print method</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
@@ -248,7 +248,7 @@ timeout is reached</p>
 </div>
 
 
-</div><p></p><hr><a id="method-get_values"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-get_values"></a><div class="section">
 <h3 id="method-get-values-">Method <code>get_values()</code><a class="anchor" aria-label="anchor" href="#method-get-values-"></a></h3>
 <p>get results</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
@@ -268,7 +268,7 @@ timeout is reached</p>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-clone"></a><div class="section">
+</div><p></p><hr><a id="method-PipelineResult-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>

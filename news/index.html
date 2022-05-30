@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6</span>
       </span>
     </div>
 
@@ -47,6 +47,50 @@
       <small>Source: <a href="https://github.com/beauchamplab/raveio/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.0.6" id="raveio-006">raveio 0.0.6<a class="anchor" aria-label="anchor" href="#raveio-006"></a></h2>
+<p>Major changes:</p>
+<ul><li>Added <code>read_mat2</code> to allow reading <code>Matlab</code> files stored in <code>HDF5</code> formats</li>
+<li>Allow subject instances to store and retrieve default key-value pairs via <code>set_default</code> and <code>get_default</code> methods</li>
+<li>Disable <code>multicore</code> by default, so users can use their own <code>plan</code> provided by the <code>future</code> package</li>
+<li>Added location and signal types to electrodes</li>
+<li>Added function to perform baseline via <code>power_baseline</code> directly from repository</li>
+<li>Added multiple repository types for <code>RAVE</code> subjects with identical key as signature</li>
+<li>Added <code>with_future_parallel</code> to enable <code>multicore</code> features in the expressions</li>
+<li>Added reference signal class</li>
+<li>Use <code>ravedash</code> log system provided if the package is installed</li>
+<li>Speed-up <code>raveio_getopt</code> and <code>raveio_setopt</code>
+</li>
+<li>Added <code>validate_time_window</code> to return intervals of time windows</li>
+<li>Added <code>save_json</code> and <code>load_json</code> to handle <code>JSON</code> format using <code>jsonlite</code> package</li>
+<li>Allow to set <code>threeBrain</code> template brain</li>
+<li>Added <code>import_electrode_table</code> to import electrode table with coordinates in <code>T1</code> or <code>MNI</code> space to <code>tkrRAS</code>
+</li>
+<li>Electrodes can load corresponding block data</li>
+<li>Added <code>normalize_commandline_path</code> and <code>cmd_*</code> functions to search for external system commands such as <code>FreeSurfer</code>, <code>FSL-FLIRT</code>, <code>dcm2niix</code>
+</li>
+<li>Added <code>backup_file</code> to back up existing files instead of overwriting</li>
+<li>Allow to download and install <code>rave-server</code> as services (currently only works on <code>OSX</code>)</li>
+</ul><p>Changes to pipeline framework:</p>
+<ul><li>Implemented and matured reproducible pipeline framework</li>
+<li>Added R-markdown template to build pipelines</li>
+<li>Allow pipelines to run in another process and can kill the process anytime</li>
+<li>Pipelines run in <code>async</code> mode works in <code>shiny</code> applications</li>
+<li>Created an <code>R6</code> class for pipeline results in <code>promises</code> way</li>
+<li>Allow to clear cache files at subject level</li>
+<li>
+<code>Async</code> pipelines can have callback functions at each check, useful for monitoring the progress</li>
+</ul><p>Enhancements:</p>
+<ul><li>
+<code>save_yaml</code> can write to connections</li>
+<li>
+<code>rave_imports</code> runs in parallel in <code>native2</code> format</li>
+<li>Added an option to disable fork-clusters (enabled by default on <code>OSX</code> and <code>Linux</code>)</li>
+<li>Allows <code>EDF</code> files to be partially read</li>
+<li>Added data format entry to the preprocess instance, allowing following modules to be aware of the raw data format</li>
+<li>
+<code>ravetools</code> respects <code>tensor_temp_path</code> as its temporary path</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.5" id="raveio-005">raveio 0.0.5<small>2021-10-13</small><a class="anchor" aria-label="anchor" href="#raveio-005"></a></h2>
 <p>Major changes:</p>
