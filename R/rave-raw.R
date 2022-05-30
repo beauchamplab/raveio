@@ -404,7 +404,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
     for(s in snapshots){
       if(inherits(s, "validate_failure")){
         reason <- attr(s, "reason")
-        reason$.add = TRUE
+        reason$.add <- TRUE
         do.call(validation_failure, reason)
       }
     }

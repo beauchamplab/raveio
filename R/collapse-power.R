@@ -169,12 +169,12 @@ collapse_power.FileArray <- function(x, analysis_index_cubes){
     lapply(seq_along(analysis_index_cubes), function(ii){
       cube <- analysis_index_cubes[[ii]]
       re <- dipsaus::fastmap2()
-      re$name = group_names[[ii]]
-      re$cube_index = cube
+      re$name <- group_names[[ii]]
+      re$cube_index <- cube
 
       for(nm in c("freq_time_elec", "time_trial_elec", "freq_trial_elec",
                   "freq_elec", "time_elec", "trial_elec")) {
-        re[[nm]] = simplify2array(
+        re[[nm]] <- simplify2array(
           dipsaus::drop_nulls(
             lapply(initial_collapse, '[[',
                    sprintf("%s_%s", nm, ii))
