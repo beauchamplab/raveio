@@ -403,7 +403,7 @@ pipeline_watch <- function(
 #' @export
 pipeline_create_template <- function(
   root_path, pipeline_name, overwrite = FALSE,
-  activate = TRUE, template_type = c("rmd", 'r')
+  activate = TRUE, template_type = c("rmd", 'r', 'rmd-bare')
 ) {
   template_type <- match.arg(template_type)
   pipeline_name <- tolower(pipeline_name)
@@ -560,7 +560,6 @@ pipeline_settings_set <- function(
             overwrite = TRUE, recursive = FALSE)
   settings
 }
-
 
 `%OF%` <- function(lhs, rhs){
   if(length(rhs)){ de <- rhs[[1]] } else { de <- rhs }

@@ -113,7 +113,7 @@ pipeline_create_template(
   pipeline_name,
   overwrite = FALSE,
   activate = TRUE,
-  template_type = c("rmd", "r")
+  template_type = c("rmd", "r", "rmd-bare")
 )
 
 pipeline_create_subject_pipeline(
