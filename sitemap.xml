@@ -31,6 +31,9 @@
     <loc>/reference/PipelineResult.html</loc>
   </url>
   <url>
+    <loc>/reference/PipelineTools.html</loc>
+  </url>
+  <url>
     <loc>/reference/RAVEAbstarctElectrode.html</loc>
   </url>
   <url>
@@ -131,6 +134,9 @@
   </url>
   <url>
     <loc>/reference/new_electrode.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pipeline.html</loc>
   </url>
   <url>
     <loc>/reference/pipeline_install.html</loc>
