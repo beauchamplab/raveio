@@ -53,7 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">import_electrode_table</span><span class="op">(</span><span class="va">path</span>, <span class="va">subject</span>, use_fs <span class="op">=</span> <span class="cn">NA</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">import_electrode_table</span><span class="op">(</span><span class="va">path</span>, <span class="va">subject</span>, use_fs <span class="op">=</span> <span class="cn">NA</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -65,6 +65,9 @@
 <dt>use_fs</dt>
 <dd><p>whether to use 'FreeSurfer' files to calculate other
 coordinates</p></dd>
+<dt>dry_run</dt>
+<dd><p>whether to dry-run the process; if true, then the table
+will be generated but not saved to subject's meta folder</p></dd>
 <dt>...</dt>
 <dd><p>passed to <code><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></code></p></dd>
 </dl></div>
