@@ -4,7 +4,7 @@
 \alias{import_electrode_table}
 \title{Import electrode table into subject meta folder}
 \usage{
-import_electrode_table(path, subject, use_fs = NA, ...)
+import_electrode_table(path, subject, use_fs = NA, dry_run = FALSE, ...)
 }
 \arguments{
 \item{path}{path of table file, must be a \code{'csv'} file}
@@ -13,6 +13,9 @@ import_electrode_table(path, subject, use_fs = NA, ...)
 
 \item{use_fs}{whether to use 'FreeSurfer' files to calculate other
 coordinates}
+
+\item{dry_run}{whether to dry-run the process; if true, then the table
+will be generated but not saved to subject's meta folder}
 
 \item{...}{passed to \code{\link[utils]{read.csv}}}
 }

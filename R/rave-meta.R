@@ -218,11 +218,14 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
 #' @param subject 'RAVE' subject ID or instance
 #' @param use_fs whether to use 'FreeSurfer' files to calculate other
 #' coordinates
+#' @param dry_run whether to dry-run the process; if true, then the table
+#' will be generated but not saved to subject's meta folder
 #' @param ... passed to \code{\link[utils]{read.csv}}
 #' @return Nothing, the electrode information will be written directly to the
 #' subject's meta directory
 #' @export
-import_electrode_table <- function (path, subject, use_fs = NA, ...) {
+import_electrode_table <- function (path, subject, use_fs = NA,
+                                    dry_run = FALSE, ...) {
 
   subject <- as_rave_subject(subject, strict = FALSE)
   electrodes <- subject$electrodes
@@ -371,8 +374,11 @@ import_electrode_table <- function (path, subject, use_fs = NA, ...) {
   nms1 <- nms1[nms1 %in% nms]
   nms2 <- nms[!nms %in% nms1]
   new_tbl2 <- new_tbl2[, c(nms1, nms2)]
+  if( dry_run ) {
+    return(new_tbl2)
+  }
   save_meta2(new_tbl2, meta_type = "electrodes",
              project_name = subject$project_name,
              subject_code = subject$subject_code)
-  invisible()
+  invisible(new_tbl2)
 }
