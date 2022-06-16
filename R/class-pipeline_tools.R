@@ -101,7 +101,8 @@ PipelineTools <- R6::R6Class(
         var_names <- pipeline_target_names(pipe_dir = private$.pipeline_path)
       } else {
         var_names_quoted <- substitute(var_names)
-        if(var_names_quoted[[1]] == "-") {
+        if(typeof(var_names_quoted) == "language" &&
+           identical(var_names_quoted[[1]], quote(`-`))) {
           all_names <- pipeline_target_names(pipe_dir = private$.pipeline_path)
           var_names <- all_names[!all_names %in% eval(var_names_quoted[[2]], envir = parent.frame())]
         }
