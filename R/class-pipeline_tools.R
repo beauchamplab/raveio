@@ -7,6 +7,7 @@ PipelineTools <- R6::R6Class(
 
   private = list(
     .pipeline_path = character(),
+    .pipeline_name = character(),
     .settings_file = character(),
     .settings = NULL
   ),
@@ -30,6 +31,7 @@ PipelineTools <- R6::R6Class(
 
       raveio::pipeline_root(paths)
       private$.pipeline_path <- raveio::pipeline_find(pipeline_name)
+      private$.pipeline_name <- attr(private$.pipeline_path, "target_name")
       private$.settings_file <- settings_file
 
       pipeline_settings_path <- file.path(
@@ -198,6 +200,16 @@ PipelineTools <- R6::R6Class(
     #' signatures of data and commands
     result_table = function() {
       pipeline_vartable(pipe_dir = private$.pipeline_path)
+    },
+
+    #' @field pipeline_path the absolute path of the pipeline
+    pipeline_path = function() {
+      private$.pipeline_path
+    },
+
+    #' @field pipeline_name the code name of the pipeline
+    pipeline_name = function() {
+      private$.pipeline_name
     }
 
   )

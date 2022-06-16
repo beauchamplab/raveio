@@ -20,6 +20,10 @@ Class definition for pipeline tools
 
 \item{\code{result_table}}{summary of the results, including
 signatures of data and commands}
+
+\item{\code{pipeline_path}}{the absolute path of the pipeline}
+
+\item{\code{pipeline_name}}{the code name of the pipeline}
 }
 \if{html}{\out{</div>}}
 }
