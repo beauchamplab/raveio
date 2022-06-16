@@ -109,36 +109,58 @@
 <dd><p>R array, <code><a href="http://dipterix.org/filearray/reference/filearray.html" class="external-link">filearray</a></code>,
 <code><a href="ECoGTensor.html">ECoGTensor</a></code>, or <code>'rave_prepare_power'</code> object created by
 <code><a href="rave-prepare.html">prepare_subject_power</a></code>.</p></dd>
+
+
 <dt>baseline_windows</dt>
 <dd><p>list of baseline window (intervals)</p></dd>
+
+
 <dt>method</dt>
 <dd><p>baseline method; choices are <code>'percentage'</code>,
 <code>'sqrt_percentage'</code>, <code>'decibel'</code>, <code>'zscore'</code>,
 <code>'sqrt_zscore'</code>; see 'Details' in <code><a href="https://rdrr.io/pkg/dipsaus/man/baseline_array.html" class="external-link">baseline_array</a></code></p></dd>
+
+
 <dt>units</dt>
 <dd><p>the unit of the baseline; see 'Details'</p></dd>
+
+
 <dt>...</dt>
 <dd><p>passed to other methods</p></dd>
+
+
 <dt>signal_types</dt>
 <dd><p>signal types to perform baseline corrections; applied
 to power repository object produced by <code><a href="rave-prepare.html">prepare_subject_power</a></code>;
 default is <code>'LFP'</code></p></dd>
+
+
 <dt>electrodes</dt>
 <dd><p>the electrodes to be included in baseline calculation;
 for power repository object produced by <code><a href="rave-prepare.html">prepare_subject_power</a></code>
 only; default is all available electrodes in each of <code>signal_types</code></p></dd>
+
+
 <dt>filebase</dt>
 <dd><p>where to store the output; default is <code>NULL</code> and is
 automatically determined</p></dd>
+
+
 <dt>hybrid</dt>
 <dd><p>whether the array will be</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Usually the same type as the input: for arrays,
+    
+
+<p>Usually the same type as the input: for arrays,
 <code><a href="http://dipterix.org/filearray/reference/filearray.html" class="external-link">filearray</a></code>,
 or <code><a href="ECoGTensor.html">ECoGTensor</a></code>, the outputs are
-also the same type with the same dimensions; for <code>'rave_prepare_power'</code>repositories, the results will be stored in its <code>'baselined'</code> element;
+also the same type with the same dimensions; for <code>'rave_prepare_power'</code></p>
+
+
+<p>repositories, the results will be stored in its <code>'baselined'</code> element;
 see 'Examples'.</p>
     </div>
     <div id="details">
@@ -209,7 +231,7 @@ be shared across electrodes (e.g. in some mini-electrodes), remove
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -72,37 +72,53 @@ very limited support on BIDS format.</p>
     <h2>Arguments</h2>
     <dl><dt>bids_root</dt>
 <dd><p>'BIDS' root directory</p></dd>
+
+
 <dt>project_name</dt>
 <dd><p>project folder name</p></dd>
+
+
 <dt>subject_code</dt>
 <dd><p>subject code, do not include <code>"sub-"</code> prefix</p></dd>
+
+
 <dt>folder</dt>
 <dd><p>folder name corresponding to 'iEEG' data. It's possible to
 analyze other folders. However, by default, the function is designed for
 <code>'ieeg'</code> folder.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list containing the information below:</p>
+    
+
+<p>A list containing the information below:</p>
 <dl><dt>subject_code</dt>
 <dd><p>character, removed leading <code>"sub-"</code></p></dd>
+
 <dt>project_name</dt>
 <dd><p>character, project name</p></dd>
+
 <dt>has_session</dt>
 <dd><p>whether session/block names are indicated
 by the file structure</p></dd>
+
 <dt>session_names</dt>
 <dd><p>session/block names indicated by file
 structure. If missing, then session name will be "default"</p></dd>
+
 <dt>paths</dt>
 <dd><p>a list containing path information</p></dd>
+
 <dt>stimuli_path</dt>
 <dd><p>stimuli path, not used for now</p></dd>
+
 <dt>sessions</dt>
 <dd><p>A named list containing meta information for each session/block. The
 names of the list is task name, and the items corresponding to the
 task contains events and channel information. Miscellaneous files
 are stored in "others" variable.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
@@ -148,7 +164,7 @@ are stored in "others" variable.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

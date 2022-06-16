@@ -82,39 +82,62 @@ structure and 'BIDS' (very limited) format. Please see
 <dd><p>project name, for 'rave' native structure, this can be
 any character; for 'BIDS' format, this must be consistent with 'BIDS'
 project name. For subjects with multiple tasks, see Section "'RAVE' Project"</p></dd>
+
+
 <dt>subject_code</dt>
 <dd><p>subject code in character. For 'rave' native structure,
 this is a folder name under raw directory. For 'BIDS', this is subject
 label without <code>"sub-"</code> prefix</p></dd>
+
+
 <dt>blocks</dt>
 <dd><p>characters, for 'rave' native format, this is the folder names
 subject directory; for 'BIDS', this is session name with <code>"ses-"</code>.
 Section "Block vs. Session" for different meaning of "blocks" in 'rave'
 and 'BIDS'</p></dd>
+
+
 <dt>electrodes</dt>
 <dd><p>integers electrode numbers</p></dd>
+
+
 <dt>format</dt>
 <dd><p>integer from 1 to 6, or character. For characters, you can get
 options by running <code>names(IMPORT_FORMATS)</code></p></dd>
+
+
 <dt>sample_rate</dt>
 <dd><p>sample frequency, must be positive</p></dd>
+
+
 <dt>conversion</dt>
 <dd><p>physical unit conversion, choices are <code>NA</code>,
 <code>V</code>, <code>mV</code>, <code>uV</code></p></dd>
+
+
 <dt>data_type</dt>
 <dd><p>electrode signal type; see <code><a href="raveio-constants.html">SIGNAL_TYPES</a></code></p></dd>
+
+
 <dt>task_runs</dt>
 <dd><p>for 'BIDS' formats only, see Section "Block vs. Session"</p></dd>
+
+
 <dt>add</dt>
 <dd><p>whether to add electrodes. If set to true, then only new
 electrodes are allowed to be imported, blocks will be ignored and trying to
 import electrodes that have been imported will still result in error.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>other parameters</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>None</p>
+    
+
+<p>None</p>
     </div>
     <div id="-rave-project">
     <h2>'RAVE' Project</h2>
@@ -210,7 +233,7 @@ run number.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

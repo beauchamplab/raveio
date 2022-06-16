@@ -75,34 +75,50 @@ imported into 'rave'</p>
     <h2>Arguments</h2>
     <dl><dt>subject_code</dt>
 <dd><p>subject code, direct folder under 'rave' raw data path</p></dd>
+
+
 <dt>blocks</dt>
 <dd><p>block character, direct folder under subject folder. For raw
 files following 'BIDS' convention, see details</p></dd>
+
+
 <dt>electrodes</dt>
 <dd><p>electrodes to verify</p></dd>
+
+
 <dt>format</dt>
 <dd><p>integer or character. For characters, run
 <code>names(IMPORT_FORMATS)</code></p></dd>
+
+
 <dt>data_type</dt>
 <dd><p>currently only support continuous type of signals</p></dd>
+
+
 <dt>...</dt>
 <dd><p>other parameters used if validating <code>'BIDS'</code> format; see
 details.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>logical true or false whether the directory is valid. Attributes
+    
+
+<p>logical true or false whether the directory is valid. Attributes
 containing error reasons or snapshot of the data. The attributes might be:</p>
 <dl><dt><code>snapshot</code></dt>
 <dd><p>description of data found if passing the
 validation</p></dd>
+
 <dt><code>valid_run_names</code></dt>
 <dd><p>For 'BIDS' format, valid
 <code>session+task+run</code> name if passing the validation</p></dd>
+
 <dt><code>reason</code></dt>
 <dd><p>named list where the names are the
 reason why validation fails and values are corresponding sessions
 or electrodes or both.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -181,7 +197,7 @@ the session/subject folder. <code>'ieeg'</code> folder should contain at least</
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

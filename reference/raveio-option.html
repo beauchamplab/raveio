@@ -66,25 +66,40 @@
     <h2>Arguments</h2>
     <dl><dt>key</dt>
 <dd><p>character, option name</p></dd>
+
+
 <dt>value</dt>
 <dd><p>character or logical of length 1, option value</p></dd>
+
+
 <dt>.save</dt>
 <dd><p>whether to save to local drive, internally used to temporary
 change option. Not recommended to use it directly.</p></dd>
+
+
 <dt>all</dt>
 <dd><p>whether to reset all non-default keys</p></dd>
+
+
 <dt>default</dt>
 <dd><p>is key not found, return default value</p></dd>
+
+
 <dt>temp</dt>
 <dd><p>when saving, whether the key-value pair should be considered
 temporary, a temporary settings will be ignored when saving; when getting
 options, setting <code>temp</code> to false will reveal the actual settings.</p></dd>
+
+
 <dt>cfile</dt>
 <dd><p>file name in configuration path</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>raveio_setopt</code> returns modified <code>value</code>;
+    
+
+<p><code>raveio_setopt</code> returns modified <code>value</code>;
 <code>raveio_resetopt</code> returns current settings as a list;
 <code>raveio_confpath</code> returns absolute path for the settings file;
 <code>raveio_getopt</code> returns the settings value to the given key, or
@@ -118,7 +133,7 @@ non-standard ones. However <code>"session_string"</code> will never reset.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

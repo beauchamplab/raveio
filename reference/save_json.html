@@ -69,24 +69,39 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>R object to save</p></dd>
+
+
 <dt>con</dt>
 <dd><p>file or connection</p></dd>
+
+
 <dt>...</dt>
 <dd><p>other parameters to pass into <code><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">toJSON</a></code> or
 <code><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">fromJSON</a></code></p></dd>
+
+
 <dt>digits</dt>
 <dd><p>number of digits to save</p></dd>
+
+
 <dt>pretty</dt>
 <dd><p>whether the output should be pretty</p></dd>
+
+
 <dt>serialize</dt>
 <dd><p>whether to save a serialized version of <code>x</code>;
 see 'Examples'.</p></dd>
+
+
 <dt>map</dt>
 <dd><p>a map to save the results</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>save_json</code> returns nothing; <code>load_json</code> returns an
+    
+
+<p><code>save_json</code> returns nothing; <code>load_json</code> returns an
 R object.</p>
     </div>
 
@@ -201,7 +216,7 @@ R object.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">load_json</span><span class="op">(</span><span class="va">f1</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x ~ y + 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x7fd77fb850b8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x7fd7fd7937e8&gt;</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -220,7 +235,7 @@ R object.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
