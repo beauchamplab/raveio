@@ -467,13 +467,33 @@ finalize_installation <- function(
   upgrade = c('ask', 'always', 'never'),
   async = TRUE){
 
-  # # ignore async
-  # upgrade <- match.arg(upgrade)
-  # if( upgrade == 'ask' ) {
-  #   ensure_rhdf5(prompt = TRUE)
-  # } else {
-  #   ensure_rhdf5(prompt = FALSE)
-  # }
+  upgrade <- match.arg(upgrade)
+
+  template_path <- file.path(R_user_dir('raveio', 'data'), "rave-pipelines")
+  if(dir.exists(template_path)) {
+    if(upgrade == "never") { return() }
+    if(upgrade == "ask") {
+      ans <- dipsaus::ask_yesno("Existing version of `rave-pipelines` is detected, upgrade?", end = "\n", error_if_canceled = FALSE, rs_title = "Upgrade module templates")
+      if(!isTRUE(ans)) { return() }
+    }
+  }
+
+  if(async) {
+    dipsaus::rs_exec({
+      ns <- asNamespace("raveio")
+      ns$pipeline_install_github(
+        repo = 'dipterix/rave-pipelines',
+        to = "default"
+      )
+    }, name = "Upgrade pipeline templates",
+    focus_on_console = TRUE)
+  } else {
+    pipeline_install_github(
+      repo = 'dipterix/rave-pipelines',
+      to = "default"
+    )
+  }
+
 }
 
 .onAttach <- function(libname, pkgname) {

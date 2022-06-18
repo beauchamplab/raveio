@@ -1,3 +1,11 @@
+raveio 0.0.7
+=======
+
+Major changes:
+
+* Added `PipelineTools` class and wrapped constructor `raveio::pipeline` to load common utility tools needed to run the pipeline
+* Allow `import_electrode_table` to import table without replacing existing electrode files with `dry_run` option
+
 raveio 0.0.6
 =======
 

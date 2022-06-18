@@ -65,7 +65,7 @@ pipeline_install_directory <- function(
         }
         module_info$label <- module_label
       }
-      module_info
+      catgl("Found interactive module: ", module_id, level = "DEFAULT")
       list(
         module_id = module_id,
         module_info = module_info,
@@ -94,6 +94,8 @@ pipeline_install_directory <- function(
 
       module_settings[[module$module_id]] <- module$module_info
 
+      catgl("Installed interactive module: ", module$module_id, level = "DEFAULT")
+
     }
 
     settings$modules <- module_settings
@@ -101,22 +103,26 @@ pipeline_install_directory <- function(
     save_yaml(settings, module_yaml)
   }
 
-  if( desc$Type == "rave-pipeline-collection" ){
+  if( identical(desc$Type, "rave-pipeline-collection") ){
     # install sub-versions if possible
     if(length(desc$SubPipelines)){
       sub_pipes <- strsplit(desc$SubPipelines, "[,\n]+")[[1]]
       for(pname in sub_pipes){
         pdir <- file.path(directory, pname)
-        pipeline_install_directory(pdir, dest, upgrade = FALSE, force = force, ...)
+
+        catgl("Adding pipeline {pname}", level = "DEFAULT")
+        pipeline_install_directory(pdir, dest, upgrade = upgrade, force = force, ...)
       }
     }
   } else {
+    catgl("Adding pipeline {desc$Package}", level = "DEFAULT")
     pipeline_root <- file.path(dest, desc$Package, desc$Version)
     if(dir.exists(pipeline_root)){
       # if(!force){
       #   stop("Pipeline ", desc$Package, " - version ", desc$Version,
       #        ' already exists. Please use `force=TRUE` to force install')
       # }
+      catgl("Removing previously installed {desc$Package}", level = "DEFAULT")
       unlink(pipeline_root, recursive = TRUE, force = TRUE)
     }
     dir_create2(pipeline_root)
@@ -185,6 +191,12 @@ pipeline_install_github <- function(
   repo, to = c("default", "custom", "workdir", "tempdir"),
   upgrade = FALSE, force = FALSE, ...
 ) {
+  # # DEBUG starts
+  # repo <- 'dipterix/rave-pipelines'
+  # to <- "default"
+  # upgrade <- FALSE
+  # force <- FALSE
+  # # DEBUG ends
   to <- match.arg(to)
   args <- list(...)
   remote_argnames <- c("ref", "subdir", "auth_token", "sha", "host")
@@ -212,6 +224,20 @@ pipeline_install_github <- function(
       }
     }
   }
+
+  if(identical(repo, "dipterix/rave-pipelines")) {
+    fs <- list.files(src, recursive = FALSE, full.names = TRUE, all.files = TRUE)
+    template_path <- file.path(R_user_dir('raveio', 'data'), "rave-pipelines")
+
+    if(dir.exists(template_path)) {
+      try({
+        unlink(template_path, recursive = TRUE)
+      })
+    }
+    dir_create2(template_path)
+    file.copy(from = fs, to = template_path, recursive = TRUE, copy.mode = FALSE, copy.date = TRUE, overwrite = TRUE)
+  }
+
 
   args <- args[!names(args) %in% remote_argnames]
   args$src <- src
