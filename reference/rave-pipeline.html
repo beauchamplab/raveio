@@ -20,7 +20,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
       </span>
     </div>
 
@@ -103,7 +103,14 @@ the future to facilitate the "self-expanding" aim. Please check the official
   <span class="va">skip_names</span>
 <span class="op">)</span>
 
-<span class="fu">pipeline_visualize</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span>
+<span class="fu">pipeline_visualize</span><span class="op">(</span>
+  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
+  glimpse <span class="op">=</span> <span class="cn">FALSE</span>,
+  targets_only <span class="op">=</span> <span class="cn">TRUE</span>,
+  shortcut <span class="op">=</span> <span class="cn">FALSE</span>,
+  zoom_speed <span class="op">=</span> <span class="fl">0.1</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
 
 <span class="fu">pipeline_progress</span><span class="op">(</span>
   pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
@@ -236,6 +243,23 @@ up-to-date; only used when <code>quick=TRUE</code>. If missing, then
 <code>skip_names</code> will be automatically determined</p></dd>
 
 
+<dt>glimpse</dt>
+<dd><p>whether to hide network status when visualizing the pipelines</p></dd>
+
+
+<dt>targets_only</dt>
+<dd><p>whether to return the variable table for targets only;
+default is true</p></dd>
+
+
+<dt>shortcut</dt>
+<dd><p>whether to display shortcut targets</p></dd>
+
+
+<dt>zoom_speed</dt>
+<dd><p>zoom speed when visualizing the pipeline dependence</p></dd>
+
+
 <dt>method</dt>
 <dd><p>how the progress should be presented; choices are
 <code>"summary"</code>, <code>"details"</code>, <code>"custom"</code>. If custom method is
@@ -271,11 +295,6 @@ default is false</p></dd>
 
 <dt>ifnotfound</dt>
 <dd><p>default values to return if variable is not found</p></dd>
-
-
-<dt>targets_only</dt>
-<dd><p>whether to return the variable table for targets only;
-default is true</p></dd>
 
 
 <dt>complete_only</dt>
