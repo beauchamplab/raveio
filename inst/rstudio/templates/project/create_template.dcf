@@ -1,0 +1,24 @@
+# This file provides the metadata necessary for RStudio to
+# use the 'module_dev_create()' function when initializing a project. See
+# the documentation online at:
+#
+#   https://rstudio.github.io/rstudio-extensions/rstudio_project_templates.html
+#
+# for more details.
+
+Binding: module_dev_create
+Title: RAVE 2.0 Pipeline Module (Beta)
+Subtitle: Setup development environment
+Caption: RAVE 2.0 Pipeline Module (Beta)
+OpenFiles: RAVE-CONFIG
+Icon: icon.jpg
+
+Parameter: module_id
+Widget: TextInput
+Label: Module ID (Letters or "_" only)
+Default: module_id
+
+Parameter: module_label
+Widget: TextInput
+Label: Friendly Label
+Default: Module Label

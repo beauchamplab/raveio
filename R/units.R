@@ -130,7 +130,8 @@ clear_cached_files <- function(subject_code, quiet = FALSE){
         recursive = TRUE,
         all.files = FALSE,
         include.dirs = TRUE,
-        full.names = TRUE
+        full.names = TRUE,
+        no.. = TRUE
       )
       rfiles <- rdirs[dir.exists(rdirs)]
       rdirs <- rdirs[dir.exists(rdirs)]

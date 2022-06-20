@@ -465,7 +465,7 @@ raveio_confpath <- function(cfile = 'settings.yaml'){
 
 finalize_installation <- function(
   upgrade = c('ask', 'always', 'never'),
-  async = TRUE){
+  async = TRUE, ...){
 
   upgrade <- match.arg(upgrade)
 
@@ -478,19 +478,28 @@ finalize_installation <- function(
     }
   }
 
+  if(upgrade == 'always') {
+    upgrade <- TRUE
+  } else {
+    upgrade <- FALSE
+  }
+
   if(async) {
-    dipsaus::rs_exec({
+    dipsaus::rs_exec(bquote({
       ns <- asNamespace("raveio")
       ns$pipeline_install_github(
         repo = 'dipterix/rave-pipelines',
-        to = "default"
+        to = "default",
+        upgrade = .(upgrade)
       )
-    }, name = "Upgrade pipeline templates",
+    }),
+    quoted = TRUE,
+    name = "Upgrade pipeline templates",
     focus_on_console = TRUE)
   } else {
     pipeline_install_github(
       repo = 'dipterix/rave-pipelines',
-      to = "default"
+      to = "default", upgrade = upgrade
     )
   }
 

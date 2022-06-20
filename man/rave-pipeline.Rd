@@ -69,7 +69,14 @@ pipeline_debug(
   skip_names
 )
 
-pipeline_visualize(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
+pipeline_visualize(
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  glimpse = FALSE,
+  targets_only = TRUE,
+  shortcut = FALSE,
+  zoom_speed = 0.1,
+  ...
+)
 
 pipeline_progress(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
@@ -172,6 +179,15 @@ see \code{\link[dipsaus]{progress2}}.}
 up-to-date; only used when \code{quick=TRUE}. If missing, then
 \code{skip_names} will be automatically determined}
 
+\item{glimpse}{whether to hide network status when visualizing the pipelines}
+
+\item{targets_only}{whether to return the variable table for targets only;
+default is true}
+
+\item{shortcut}{whether to display shortcut targets}
+
+\item{zoom_speed}{zoom speed when visualizing the pipeline dependence}
+
 \item{method}{how the progress should be presented; choices are
 \code{"summary"}, \code{"details"}, \code{"custom"}. If custom method is
 chosen, then \code{func} will be called}
@@ -192,9 +208,6 @@ default is false}
 \item{branches}{branch to read from; see \code{\link[targets]{tar_read}}}
 
 \item{ifnotfound}{default values to return if variable is not found}
-
-\item{targets_only}{whether to return the variable table for targets only;
-default is true}
 
 \item{complete_only}{whether only to show completed and up-to-date target
 variables; default is false}

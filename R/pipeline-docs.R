@@ -42,6 +42,9 @@
 #' @param ifnotfound default values to return if variable is not found
 #' @param targets_only whether to return the variable table for targets only;
 #' default is true
+#' @param shortcut whether to display shortcut targets
+#' @param glimpse whether to hide network status when visualizing the pipelines
+#' @param zoom_speed zoom speed when visualizing the pipeline dependence
 #' @param complete_only whether only to show completed and up-to-date target
 #' variables; default is false
 #' @param subject character indicating valid 'RAVE' subject ID, or

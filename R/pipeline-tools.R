@@ -258,10 +258,18 @@ pipeline_run_interactive <- function(
 #' @rdname rave-pipeline
 #' @export
 pipeline_visualize <- function(
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  glimpse = FALSE, targets_only = TRUE,
+  shortcut = FALSE, zoom_speed = 0.1, ...
 ){
   pipe_dir <- activate_pipeline(pipe_dir)
-  targets::tar_visnetwork(targets_only = TRUE, shortcut = FALSE)
+  if(glimpse) {
+    targets::tar_glimpse(targets_only = targets_only, shortcut = shortcut,
+                         zoom_speed = zoom_speed, ...)
+  } else {
+    targets::tar_visnetwork(targets_only = targets_only, shortcut = shortcut,
+                            zoom_speed = zoom_speed, ...)
+  }
 }
 
 
@@ -422,9 +430,25 @@ pipeline_create_template <- function(
 
   # create a skeleton template
   template_path <- system.file("rave-pipelines", sprintf("template-%s", template_type), package = 'raveio', mustWork = TRUE)
-  fs_src <- list.files(template_path)
+  fs_src <- list.files(template_path, recursive = FALSE,
+                       include.dirs = TRUE, no.. = TRUE,
+                       full.names = FALSE)
+
+  fs_src <- fs_src[!grepl("\\.Rproj$", fs_src, perl = TRUE)]
+
+  for(f in fs_src) {
+    f_src <- file.path(template_path, f)
+    if(dir.exists(f_src)) {
+      file.copy(f_src, pipe_path, overwrite = overwrite,
+                recursive = TRUE, copy.date = TRUE)
+    } else {
+      f_dst <- stringr::str_replace_all(f, "TEMPLATE", pipeline_name)
+      file.copy(f_src, file.path(pipe_path, f_dst),
+                overwrite = overwrite, copy.date = TRUE)
+    }
+  }
+  fs_src <- list.files(template_path, recursive = TRUE, include.dirs = FALSE)
   fs_dst <- stringr::str_replace_all(fs_src, "TEMPLATE", pipeline_name)
-  file.copy(file.path(template_path, fs_src), file.path(pipe_path, fs_dst), overwrite = overwrite, copy.date = TRUE)
   fs <- file.path(pipe_path, fs_dst)
   for(f in fs){
     s <- readLines(f)
@@ -434,12 +458,12 @@ pipeline_create_template <- function(
     s <- stringr::str_replace_all(s, "SUBJECT_CODE", "DemoSubject")
     writeLines(s, f)
   }
-  settings <- yaml::read_yaml(file.path(pipe_path, "settings.yaml"))
-  settings$epoch <- "default"
-  settings$electrodes <- dipsaus::deparse_svec(14L)
-  settings$reference <- "default"
+  # settings <- yaml::read_yaml(file.path(pipe_path, "settings.yaml"))
+  # settings$epoch <- "default"
+  # settings$electrodes <- dipsaus::deparse_svec(14L)
+  # settings$reference <- "default"
 
-  save_yaml(settings, file.path(pipe_path, "settings.yaml"))
+  # save_yaml(settings, file.path(pipe_path, "settings.yaml"))
 
   # build the pipeline
   pipeline_build(pipe_path)
