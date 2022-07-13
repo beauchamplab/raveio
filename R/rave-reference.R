@@ -118,8 +118,8 @@ generate_reference <- function(subject, electrodes) {
       warray <- filearray::filearray_create(filebase = warray_path, dimension = dim(coef), type = "complex")
       warray[] <- coef
       rm(coef)
-      warray$.mode <- "readonly"
       warray$set_header("staged", TRUE)
+      warray$.mode <- "readonly"
     } else {
       warray <- NULL
     }
@@ -170,6 +170,12 @@ generate_reference <- function(subject, electrodes) {
       rm(coef)
     }
   }
+
+  # Important: always clear subject's cached data
+  clear_cached_files(
+    subject_code = subject$subject_code,
+    quiet = TRUE
+  )
 
   new_reference(subject = subject, number = electrode_text)
 }

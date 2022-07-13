@@ -1,3 +1,15 @@
+raveio 0.0.8
+=======
+
+Major changes:
+
+* Added bundled validation functions to check data integrity: this function supports both `RAVE` 1.0 and 2.0 formats
+
+Bug fixes:
+
+* Fixed `generate_reference` set array to read-only mode before saving headers
+* Actively clear cache whenever a new reference is generated
+
 raveio 0.0.7
 =======
 
