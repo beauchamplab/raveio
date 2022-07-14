@@ -8,6 +8,12 @@ as_rave_subject <- function(subject_id, strict = TRUE){
   if(inherits(subject_id, 'RAVESubject')){
     return(subject_id)
   } else {
+    if(inherits(subject_id, "Subject")) {
+      # RAVE 1.0 subject instance
+      stopifnot2(is.character(subject_id$id),
+                 msg = "`as_rave_subject`: Cannot find subject ID from the given input")
+      subject_id <- subject_id$id
+    }
     RAVESubject$new(subject_id, strict = strict)
   }
 }
