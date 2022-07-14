@@ -18,7 +18,7 @@ data in seconds"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9001</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@ as multiple files</p></dd>
 <h3 id="method-finalize-">Method <code>finalize()</code><a class="anchor" aria-label="anchor" href="#method-finalize-"></a></h3>
 <p>release resource and remove files for temporary instances</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">finalize</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">finalize</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 
@@ -130,7 +130,7 @@ as multiple files</p></dd>
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
 <p>print out the data dimensions and snapshot</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -151,7 +151,7 @@ as multiple files</p></dd>
 <p>Internally used, whether to use multiple files to cache
 data instead of one</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">.use_multi_files</span><span class="op">(</span><span class="va">mult</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">.use_multi_files</span><span class="op">(</span><span class="va">mult</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -167,17 +167,17 @@ data instead of one</p><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/Tensor.html">Tensor</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">dim</span>,
-  <span class="va">dimnames</span>,
-  <span class="va">varnames</span>,
-  hybrid <span class="op">=</span> <span class="cn">FALSE</span>,
-  use_index <span class="op">=</span> <span class="cn">FALSE</span>,
-  swap_file <span class="op">=</span> <span class="fu">temp_tensor_file</span><span class="op">(</span><span class="op">)</span>,
-  temporary <span class="op">=</span> <span class="cn">TRUE</span>,
-  multi_files <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Tensor.html">Tensor</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">dim</span>,</span>
+<span>  <span class="va">dimnames</span>,</span>
+<span>  <span class="va">varnames</span>,</span>
+<span>  hybrid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_index <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  swap_file <span class="op">=</span> <span class="fu">temp_tensor_file</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  temporary <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  multi_files <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -227,7 +227,7 @@ files to save data by index; default stores in
 <h3 id="method-subset-">Method <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code><a class="anchor" aria-label="anchor" href="#method-subset-"></a></h3>
 <p>subset tensor</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">subset</span><span class="op">(</span><span class="va">...</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, data_only <span class="op">=</span> <span class="cn">FALSE</span>, .env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">subset</span><span class="op">(</span><span class="va">...</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, data_only <span class="op">=</span> <span class="cn">FALSE</span>, .env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -260,7 +260,7 @@ files to save data by index; default stores in
 <h3 id="method-flatten-">Method <code>flatten()</code><a class="anchor" aria-label="anchor" href="#method-flatten-"></a></h3>
 <p>converts tensor (array) to a table (data frame)</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">flatten</span><span class="op">(</span>include_index <span class="op">=</span> <span class="cn">FALSE</span>, value_name <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">flatten</span><span class="op">(</span>include_index <span class="op">=</span> <span class="cn">FALSE</span>, value_name <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -286,7 +286,7 @@ files to save data by index; default stores in
 <p>Serialize tensor to a file and store it via
 <code><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">write_fst</a></code></p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">to_swap</span><span class="op">(</span>use_index <span class="op">=</span> <span class="cn">FALSE</span>, delay <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">to_swap</span><span class="op">(</span>use_index <span class="op">=</span> <span class="cn">FALSE</span>, delay <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -310,7 +310,7 @@ greater than <code>delay</code> in seconds, then swap immediately.</p></dd>
 <p>Serialize tensor to a file and store it via
 <code><a href="http://www.fstpackage.org/reference/write_fst.html" class="external-link">write_fst</a></code> immediately</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">to_swap_now</span><span class="op">(</span>use_index <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">to_swap_now</span><span class="op">(</span>use_index <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -327,7 +327,7 @@ loading</p></dd>
 <h3 id="method-get-data-">Method <code>get_data()</code><a class="anchor" aria-label="anchor" href="#method-get-data-"></a></h3>
 <p>restore data from hard drive to memory</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span>drop <span class="op">=</span> <span class="cn">FALSE</span>, gc_delay <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span>drop <span class="op">=</span> <span class="cn">FALSE</span>, gc_delay <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -351,7 +351,7 @@ loading</p></dd>
 <h3 id="method-set-data-">Method <code>set_data()</code><a class="anchor" aria-label="anchor" href="#method-set-data-"></a></h3>
 <p>set/replace data with given array</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">set_data</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -372,7 +372,7 @@ the data from all other places will change. So use it carefully.</p></dd>
 <h3 id="method-collapse-">Method <code>collapse()</code><a class="anchor" aria-label="anchor" href="#method-collapse-"></a></h3>
 <p>apply mean, sum, or median to collapse data</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">collapse</span><span class="op">(</span><span class="va">keep</span>, method <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">collapse</span><span class="op">(</span><span class="va">keep</span>, method <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -396,13 +396,13 @@ the data from all other places will change. So use it carefully.</p></dd>
 <h3 id="method-operate-">Method <code>operate()</code><a class="anchor" aria-label="anchor" href="#method-operate-"></a></h3>
 <p>apply the tensor by anything along given dimension</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Tensor</span><span class="op">$</span><span class="fu">operate</span><span class="op">(</span>
-  <span class="va">by</span>,
-  fun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Primitive.html" class="external-link">.Primitive</a></span><span class="op">(</span><span class="st">"/"</span><span class="op">)</span>,
-  <span class="va">match_dim</span>,
-  mem_optimize <span class="op">=</span> <span class="cn">FALSE</span>,
-  same_dimension <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Tensor</span><span class="op">$</span><span class="fu">operate</span><span class="op">(</span></span>
+<span>  <span class="va">by</span>,</span>
+<span>  fun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Primitive.html" class="external-link">.Primitive</a></span><span class="op">(</span><span class="st">"/"</span><span class="op">)</span>,</span>
+<span>  <span class="va">match_dim</span>,</span>
+<span>  mem_optimize <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  same_dimension <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -437,45 +437,45 @@ the original instance</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>  <span class="co"># Avoid checkings from CRAN</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a tensor</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="va">Tensor</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">18000000</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3000</span>,<span class="fl">300</span>,<span class="fl">20</span><span class="op">)</span>,</span>
-<span class="r-in">  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3000</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">300</span>, C <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span>,</span>
-<span class="r-in">  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Size of tensor when in memory is usually large</span></span>
-<span class="r-in"><span class="co"># `lobstr::obj_size(ts)` -&gt; 8.02 MB</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Enable hybrid mode</span></span>
-<span class="r-in"><span class="va">ts</span><span class="op">$</span><span class="fu">to_swap_now</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Hybrid mode, usually less than 1 MB</span></span>
-<span class="r-in"><span class="co"># `lobstr::obj_size(ts)` -&gt; 814 kB</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Subset data</span></span>
-<span class="r-in"><span class="va">start1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">C</span> <span class="op">~</span> <span class="va">C</span> <span class="op">&lt;</span> <span class="fl">10</span> <span class="op">&amp;</span> <span class="va">C</span> <span class="op">&gt;</span> <span class="fl">5</span>, <span class="va">A</span> <span class="op">~</span> <span class="va">A</span> <span class="op">&lt;</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">#&gt; Dimension:  9 x 300 x 4</span></span>
-<span class="r-in"><span class="co">#&gt; - A: 1, 2, 3, 4, 5, 6,...</span></span>
-<span class="r-in"><span class="co">#&gt; - B: 1, 2, 3, 4, 5, 6,...</span></span>
-<span class="r-in"><span class="co">#&gt; - C: 6, 7, 8, 9</span></span>
-<span class="r-in"><span class="va">end1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>; <span class="va">end1</span> <span class="op">-</span> <span class="va">start1</span></span>
-<span class="r-in"><span class="co">#&gt; Time difference of 0.188035 secs</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Join tensors</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, <span class="kw">function</span><span class="op">(</span><span class="va">ii</span><span class="op">)</span><span class="op">{</span></span>
-<span class="r-in">  <span class="va">Tensor</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span class="r-in">    data <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">9000</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>,<span class="fl">300</span>,<span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">    dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">300</span>, C <span class="op">=</span> <span class="va">ii</span><span class="op">)</span>,</span>
-<span class="r-in">    varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span><span class="op">)</span>, use_index <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="join_tensors.html">join_tensors</a></span><span class="op">(</span><span class="va">ts</span>, temporary <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>  <span class="co"># Avoid checkings from CRAN</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a tensor</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="va">Tensor</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">18000000</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3000</span>,<span class="fl">300</span>,<span class="fl">20</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3000</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">300</span>, C <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Size of tensor when in memory is usually large</span></span></span>
+<span class="r-in"><span><span class="co"># `lobstr::obj_size(ts)` -&gt; 8.02 MB</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Enable hybrid mode</span></span></span>
+<span class="r-in"><span><span class="va">ts</span><span class="op">$</span><span class="fu">to_swap_now</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Hybrid mode, usually less than 1 MB</span></span></span>
+<span class="r-in"><span><span class="co"># `lobstr::obj_size(ts)` -&gt; 814 kB</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Subset data</span></span></span>
+<span class="r-in"><span><span class="va">start1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">C</span> <span class="op">~</span> <span class="va">C</span> <span class="op">&lt;</span> <span class="fl">10</span> <span class="op">&amp;</span> <span class="va">C</span> <span class="op">&gt;</span> <span class="fl">5</span>, <span class="va">A</span> <span class="op">~</span> <span class="va">A</span> <span class="op">&lt;</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#&gt; Dimension:  9 x 300 x 4</span></span></span>
+<span class="r-in"><span><span class="co">#&gt; - A: 1, 2, 3, 4, 5, 6,...</span></span></span>
+<span class="r-in"><span><span class="co">#&gt; - B: 1, 2, 3, 4, 5, 6,...</span></span></span>
+<span class="r-in"><span><span class="co">#&gt; - C: 6, 7, 8, 9</span></span></span>
+<span class="r-in"><span><span class="va">end1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>; <span class="va">end1</span> <span class="op">-</span> <span class="va">start1</span></span></span>
+<span class="r-in"><span><span class="co">#&gt; Time difference of 0.188035 secs</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Join tensors</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, <span class="kw">function</span><span class="op">(</span><span class="va">ii</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">Tensor</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    data <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">9000</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>,<span class="fl">300</span>,<span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, B <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">300</span>, C <span class="op">=</span> <span class="va">ii</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span><span class="op">)</span>, use_index <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="join_tensors.html">join_tensors</a></span><span class="op">(</span><span class="va">ts</span>, temporary <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -490,7 +490,7 @@ the original instance</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

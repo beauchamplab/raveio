@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9001</span>
       </span>
     </div>
 
@@ -53,16 +53,16 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">safe_read_csv</span><span class="op">(</span>
-  <span class="va">file</span>,
-  header <span class="op">=</span> <span class="cn">TRUE</span>,
-  sep <span class="op">=</span> <span class="st">","</span>,
-  colClasses <span class="op">=</span> <span class="cn">NA</span>,
-  skip <span class="op">=</span> <span class="fl">0</span>,
-  quote <span class="op">=</span> <span class="st">"\""</span>,
-  <span class="va">...</span>,
-  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">safe_read_csv</span><span class="op">(</span></span>
+<span>  <span class="va">file</span>,</span>
+<span>  header <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">","</span>,</span>
+<span>  colClasses <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  skip <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  quote <span class="op">=</span> <span class="st">"\""</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -97,54 +97,54 @@ consistent with R 4.0, if the function is called in R 3.x.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, c <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">11</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># ------------------ Auto-detect row names ------------------</span></span>
-<span class="r-in"><span class="co"># Write with rownames</span></span>
-<span class="r-in"><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">f</span>, row.names <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">11</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># read csv with base library utils</span></span>
-<span class="r-in"><span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">f</span>, colClasses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'character'</span>, <span class="st">'character'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># 4 columns including row names</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, c <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">11</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ------------------ Auto-detect row names ------------------</span></span></span>
+<span class="r-in"><span><span class="co"># Write with rownames</span></span></span>
+<span class="r-in"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">f</span>, row.names <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">11</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># read csv with base library utils</span></span></span>
+<span class="r-in"><span><span class="va">table1</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">f</span>, colClasses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'character'</span>, <span class="st">'character'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># 4 columns including row names</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">table1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	10 obs. of  4 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ X: chr  "B" "C" "D" "E" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ a: chr  "a" "b" "c" "d" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ b: chr  "1" "2" "3" "4" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ c: chr  "2" "3" "4" "5" ...</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># read csv via safe_read_csv</span></span>
-<span class="r-in"><span class="va">table2</span> <span class="op">&lt;-</span> <span class="fu">safe_read_csv</span><span class="op">(</span><span class="va">f</span>, colClasses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'character'</span>, <span class="st">'character'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># row names are automatically detected, hence 3 columns</span></span>
-<span class="r-in"><span class="co"># Only first columns are characters, the third column is auto</span></span>
-<span class="r-in"><span class="co"># detected as numeric</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">table2</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># read csv via safe_read_csv</span></span></span>
+<span class="r-in"><span><span class="va">table2</span> <span class="op">&lt;-</span> <span class="fu">safe_read_csv</span><span class="op">(</span><span class="va">f</span>, colClasses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'character'</span>, <span class="st">'character'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># row names are automatically detected, hence 3 columns</span></span></span>
+<span class="r-in"><span><span class="co"># Only first columns are characters, the third column is auto</span></span></span>
+<span class="r-in"><span><span class="co"># detected as numeric</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">table2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	10 obs. of  3 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ a: chr  "a" "b" "c" "d" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ b: chr  "1" "2" "3" "4" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ c: int  2 3 4 5 6 7 8 9 10 11</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># read table without row names</span></span>
-<span class="r-in"><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">f</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">table2</span> <span class="op">&lt;-</span> <span class="fu">safe_read_csv</span><span class="op">(</span><span class="va">f</span>, colClasses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'character'</span>, <span class="st">'character'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># still 3 columns, and row names are 1:nrow</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">table2</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># read table without row names</span></span></span>
+<span class="r-in"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">f</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">table2</span> <span class="op">&lt;-</span> <span class="fu">safe_read_csv</span><span class="op">(</span><span class="va">f</span>, colClasses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'character'</span>, <span class="st">'character'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># still 3 columns, and row names are 1:nrow</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">table2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	10 obs. of  3 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ a: chr  "a" "b" "c" "d" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ b: chr  "1" "2" "3" "4" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ c: int  2 3 4 5 6 7 8 9 10 11</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># --------------- Blank data frame when nrow too large ---------------</span></span>
-<span class="r-in"><span class="co"># instead of raising errors, return blank data frame</span></span>
-<span class="r-in"><span class="fu">safe_read_csv</span><span class="op">(</span><span class="va">f</span>, skip <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># --------------- Blank data frame when nrow too large ---------------</span></span></span>
+<span class="r-in"><span><span class="co"># instead of raising errors, return blank data frame</span></span></span>
+<span class="r-in"><span><span class="fu">safe_read_csv</span><span class="op">(</span><span class="va">f</span>, skip <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> data frame with 0 columns and 0 rows</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -159,7 +159,7 @@ consistent with R 4.0, if the function is called in R 3.x.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

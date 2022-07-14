@@ -178,6 +178,9 @@
     <loc>/reference/rave_import.html</loc>
   </url>
   <url>
+    <loc>/reference/rave_subject_format_conversion.html</loc>
+  </url>
+  <url>
     <loc>/reference/raveio-constants.html</loc>
   </url>
   <url>
@@ -227,6 +230,9 @@
   </url>
   <url>
     <loc>/reference/time_diff2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/validate_subject.html</loc>
   </url>
   <url>
     <loc>/reference/validate_time_window.html</loc>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9001</span>
       </span>
     </div>
 
@@ -182,7 +182,7 @@ no path exists, values will be <code>NA</code></p></dd>
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
 <p>override print method</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -198,7 +198,7 @@ no path exists, values will be <code>NA</code></p></dd>
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/RAVESubject.html">RAVESubject</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">project_name</span>, subject_code <span class="op">=</span> <span class="cn">NULL</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/RAVESubject.html">RAVESubject</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">project_name</span>, subject_code <span class="op">=</span> <span class="cn">NULL</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -222,10 +222,10 @@ no path exists, values will be <code>NA</code></p></dd>
 <h3 id="method-meta-data-">Method <code>meta_data()</code><a class="anchor" aria-label="anchor" href="#method-meta-data-"></a></h3>
 <p>get subject meta data located in <code>"meta/"</code> folder</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">meta_data</span><span class="op">(</span>
-  meta_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"electrodes"</span>, <span class="st">"frequencies"</span>, <span class="st">"time_points"</span>, <span class="st">"epoch"</span>, <span class="st">"references"</span><span class="op">)</span>,
-  meta_name <span class="op">=</span> <span class="st">"default"</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">meta_data</span><span class="op">(</span></span>
+<span>  meta_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"electrodes"</span>, <span class="st">"frequencies"</span>, <span class="st">"time_points"</span>, <span class="st">"epoch"</span>, <span class="st">"references"</span><span class="op">)</span>,</span>
+<span>  meta_name <span class="op">=</span> <span class="st">"default"</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -252,7 +252,7 @@ read in <code>'reference_&lt;meta_name&gt;.csv'</code>.</p></dd>
 <h3 id="method-valid-electrodes-">Method <code>valid_electrodes()</code><a class="anchor" aria-label="anchor" href="#method-valid-electrodes-"></a></h3>
 <p>get valid electrode numbers</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">valid_electrodes</span><span class="op">(</span><span class="va">reference_name</span>, refresh <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">valid_electrodes</span><span class="op">(</span><span class="va">reference_name</span>, refresh <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -279,7 +279,7 @@ default is false</p></dd>
 <h3 id="method-initialize-paths-">Method <code>initialize_paths()</code><a class="anchor" aria-label="anchor" href="#method-initialize-paths-"></a></h3>
 <p>create subject's directories on hard disk</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">initialize_paths</span><span class="op">(</span>include_freesurfer <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">initialize_paths</span><span class="op">(</span>include_freesurfer <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -296,7 +296,7 @@ default is false</p></dd>
 <p>set default key-value pair for the subject, used by 'RAVE'
 modules</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">set_default</span><span class="op">(</span><span class="va">key</span>, <span class="va">value</span>, namespace <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">set_default</span><span class="op">(</span><span class="va">key</span>, <span class="va">value</span>, namespace <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -325,12 +325,12 @@ modules</p><div class="section">
 <p>get default key-value pairs for the subject, used by 'RAVE'
 modules</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_default</span><span class="op">(</span>
-  <span class="va">...</span>,
-  default_if_missing <span class="op">=</span> <span class="cn">NULL</span>,
-  simplify <span class="op">=</span> <span class="cn">TRUE</span>,
-  namespace <span class="op">=</span> <span class="st">"default"</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_default</span><span class="op">(</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  default_if_missing <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  namespace <span class="op">=</span> <span class="st">"default"</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -364,7 +364,7 @@ to fetch; default is <code>TRUE</code></p></dd>
 <h3 id="method-get-epoch-">Method <code>get_epoch()</code><a class="anchor" aria-label="anchor" href="#method-get-epoch-"></a></h3>
 <p>check and get subject's epoch information</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_epoch</span><span class="op">(</span><span class="va">epoch_name</span>, as_table <span class="op">=</span> <span class="cn">FALSE</span>, trial_starts <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_epoch</span><span class="op">(</span><span class="va">epoch_name</span>, as_table <span class="op">=</span> <span class="cn">FALSE</span>, trial_starts <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -396,7 +396,7 @@ raise errors when file is missing or the epoch is invalid.</p>
 <h3 id="method-get-reference-">Method <code>get_reference()</code><a class="anchor" aria-label="anchor" href="#method-get-reference-"></a></h3>
 <p>check and get subject's reference information</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_reference</span><span class="op">(</span><span class="va">reference_name</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_reference</span><span class="op">(</span><span class="va">reference_name</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -424,12 +424,12 @@ raise errors when file is missing or the reference is invalid.</p>
 <p>check and get subject's electrode table with electrodes
 that are load-able</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_electrode_table</span><span class="op">(</span>
-  <span class="va">electrodes</span>,
-  <span class="va">reference_name</span>,
-  subset <span class="op">=</span> <span class="cn">FALSE</span>,
-  simplify <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_electrode_table</span><span class="op">(</span></span>
+<span>  <span class="va">electrodes</span>,</span>
+<span>  <span class="va">reference_name</span>,</span>
+<span>  subset <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -466,7 +466,7 @@ subset and only rows with electrodes to be loaded will be kept.</p>
 <p>check and get subject's frequency table, time-frequency
 decomposition is needed.</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_frequency</span><span class="op">(</span>simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">get_frequency</span><span class="op">(</span>simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -487,7 +487,7 @@ otherwise returns a table.</p>
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -515,7 +515,7 @@ otherwise returns a table.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

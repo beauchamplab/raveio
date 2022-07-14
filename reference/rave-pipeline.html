@@ -20,7 +20,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9001</span>
       </span>
     </div>
 
@@ -59,113 +59,113 @@ the future to facilitate the "self-expanding" aim. Please check the official
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pipeline_root</span><span class="op">(</span><span class="va">root_path</span><span class="op">)</span>
-
-<span class="fu">pipeline_list</span><span class="op">(</span>root_path <span class="op">=</span> <span class="fu">pipeline_root</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">pipeline_find</span><span class="op">(</span><span class="va">name</span>, root_path <span class="op">=</span> <span class="fu">pipeline_root</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">pipeline_attach</span><span class="op">(</span><span class="va">name</span>, root_path <span class="op">=</span> <span class="fu">pipeline_root</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">pipeline_run</span><span class="op">(</span>
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,
-  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  callr_function <span class="op">=</span> <span class="cn">NULL</span>,
-  names <span class="op">=</span> <span class="cn">NULL</span>,
-  async <span class="op">=</span> <span class="cn">FALSE</span>,
-  check_interval <span class="op">=</span> <span class="fl">0.5</span>,
-  progress_quiet <span class="op">=</span> <span class="op">!</span><span class="va">async</span>,
-  progress_max <span class="op">=</span> <span class="cn">NA</span>,
-  progress_title <span class="op">=</span> <span class="st">"Running pipeline"</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_run_bare</span><span class="op">(</span>
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,
-  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  callr_function <span class="op">=</span> <span class="cn">NULL</span>,
-  names <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">load_targets</span><span class="op">(</span><span class="va">...</span><span class="op">)</span>
-
-<span class="fu">pipeline_target_names</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">pipeline_debug</span><span class="op">(</span>
-  quick <span class="op">=</span> <span class="cn">TRUE</span>,
-  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  <span class="va">skip_names</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_visualize</span><span class="op">(</span>
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  glimpse <span class="op">=</span> <span class="cn">FALSE</span>,
-  targets_only <span class="op">=</span> <span class="cn">TRUE</span>,
-  shortcut <span class="op">=</span> <span class="cn">FALSE</span>,
-  zoom_speed <span class="op">=</span> <span class="fl">0.1</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_progress</span><span class="op">(</span>
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"summary"</span>, <span class="st">"details"</span>, <span class="st">"custom"</span><span class="op">)</span>,
-  func <span class="op">=</span> <span class="fu">targets</span><span class="fu">::</span><span class="va"><a href="https://docs.ropensci.org/targets/reference/tar_progress_summary.html" class="external-link">tar_progress_summary</a></span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_fork</span><span class="op">(</span>
-  src <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  dest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"rave_pipeline_"</span><span class="op">)</span>,
-  filter_pattern <span class="op">=</span> <span class="st">"\\.(R|yaml|txt|csv|fst|conf)$"</span>,
-  activate <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_build</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">pipeline_read</span><span class="op">(</span>
-  <span class="va">var_names</span>,
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  branches <span class="op">=</span> <span class="cn">NULL</span>,
-  ifnotfound <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_vartable</span><span class="op">(</span>
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  targets_only <span class="op">=</span> <span class="cn">TRUE</span>,
-  complete_only <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_hasname</span><span class="op">(</span><span class="va">var_names</span>, pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">pipeline_watch</span><span class="op">(</span>
-  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,
-  targets_only <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_create_template</span><span class="op">(</span>
-  <span class="va">root_path</span>,
-  <span class="va">pipeline_name</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  activate <span class="op">=</span> <span class="cn">TRUE</span>,
-  template_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rmd"</span>, <span class="st">"r"</span>, <span class="st">"rmd-bare"</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_create_subject_pipeline</span><span class="op">(</span>
-  <span class="va">subject</span>,
-  <span class="va">pipeline_name</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  activate <span class="op">=</span> <span class="cn">TRUE</span>,
-  template_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rmd"</span>, <span class="st">"r"</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">pipeline_description</span><span class="op">(</span><span class="va">file</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipeline_root</span><span class="op">(</span><span class="va">root_path</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_list</span><span class="op">(</span>root_path <span class="op">=</span> <span class="fu">pipeline_root</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_find</span><span class="op">(</span><span class="va">name</span>, root_path <span class="op">=</span> <span class="fu">pipeline_root</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_attach</span><span class="op">(</span><span class="va">name</span>, root_path <span class="op">=</span> <span class="fu">pipeline_root</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_run</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,</span>
+<span>  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  callr_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  async <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  check_interval <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  progress_quiet <span class="op">=</span> <span class="op">!</span><span class="va">async</span>,</span>
+<span>  progress_max <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  progress_title <span class="op">=</span> <span class="st">"Running pipeline"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_run_bare</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,</span>
+<span>  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  callr_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">load_targets</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_target_names</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_debug</span><span class="op">(</span></span>
+<span>  quick <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  <span class="va">skip_names</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_visualize</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  glimpse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  targets_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  shortcut <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  zoom_speed <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_progress</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"summary"</span>, <span class="st">"details"</span>, <span class="st">"custom"</span><span class="op">)</span>,</span>
+<span>  func <span class="op">=</span> <span class="fu">targets</span><span class="fu">::</span><span class="va"><a href="https://docs.ropensci.org/targets/reference/tar_progress_summary.html" class="external-link">tar_progress_summary</a></span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_fork</span><span class="op">(</span></span>
+<span>  src <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  dest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"rave_pipeline_"</span><span class="op">)</span>,</span>
+<span>  filter_pattern <span class="op">=</span> <span class="st">"\\.(R|yaml|txt|csv|fst|conf)$"</span>,</span>
+<span>  activate <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_build</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_read</span><span class="op">(</span></span>
+<span>  <span class="va">var_names</span>,</span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  branches <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ifnotfound <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_vartable</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  targets_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  complete_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_hasname</span><span class="op">(</span><span class="va">var_names</span>, pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_watch</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  targets_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_create_template</span><span class="op">(</span></span>
+<span>  <span class="va">root_path</span>,</span>
+<span>  <span class="va">pipeline_name</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  activate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  template_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rmd"</span>, <span class="st">"r"</span>, <span class="st">"rmd-bare"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_create_subject_pipeline</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  <span class="va">pipeline_name</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  activate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  template_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rmd"</span>, <span class="st">"r"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_description</span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -385,7 +385,7 @@ structures, dependencies, etc.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9001</span>
       </span>
     </div>
 
@@ -102,11 +102,11 @@ signatures of data and commands</p></dd>
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>construction function</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/PipelineTools.html">PipelineTools</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  <span class="va">pipeline_name</span>,
-  settings_file <span class="op">=</span> <span class="st">"settings.yaml"</span>,
-  paths <span class="op">=</span> <span class="fu"><a href="../reference/rave-pipeline.html">pipeline_root</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/PipelineTools.html">PipelineTools</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span>  <span class="va">pipeline_name</span>,</span>
+<span>  settings_file <span class="op">=</span> <span class="st">"settings.yaml"</span>,</span>
+<span>  paths <span class="op">=</span> <span class="fu"><a href="../reference/rave-pipeline.html">pipeline_root</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -133,7 +133,7 @@ of the pipeline; default is <code><a href="rave-pipeline.html">pipeline_root()</
 <h3 id="method-set-settings-">Method <code>set_settings()</code><a class="anchor" aria-label="anchor" href="#method-set-settings-"></a></h3>
 <p>set inputs</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">set_settings</span><span class="op">(</span><span class="va">...</span>, .list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">set_settings</span><span class="op">(</span><span class="va">...</span>, .list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -150,7 +150,7 @@ otherwise errors will be raised</p></dd>
 <h3 id="method-get-settings-">Method <code>get_settings()</code><a class="anchor" aria-label="anchor" href="#method-get-settings-"></a></h3>
 <p>get current inputs</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">get_settings</span><span class="op">(</span><span class="va">key</span>, default <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">constraint</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">get_settings</span><span class="op">(</span><span class="va">key</span>, default <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">constraint</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -181,7 +181,7 @@ will be returned.</p></dd>
 <h3 id="method-read-">Method <code>read()</code><a class="anchor" aria-label="anchor" href="#method-read-"></a></h3>
 <p>read intermediate variables</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">read</span><span class="op">(</span><span class="va">var_names</span>, ifnotfound <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">read</span><span class="op">(</span><span class="va">var_names</span>, ifnotfound <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -211,16 +211,16 @@ all the intermediate variables</p></dd>
 <h3 id="method-run-">Method <code>run()</code><a class="anchor" aria-label="anchor" href="#method-run-"></a></h3>
 <p>run the pipeline</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">run</span><span class="op">(</span>
-  names <span class="op">=</span> <span class="cn">NULL</span>,
-  async <span class="op">=</span> <span class="cn">FALSE</span>,
-  as_promise <span class="op">=</span> <span class="va">async</span>,
-  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,
-  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  callr_function <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">run</span><span class="op">(</span></span>
+<span>  names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  async <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  as_promise <span class="op">=</span> <span class="va">async</span>,</span>
+<span>  scheduler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"future"</span>, <span class="st">"clustermq"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smart"</span>, <span class="st">"callr"</span>, <span class="st">"vanilla"</span><span class="op">)</span>,</span>
+<span>  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  callr_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -257,7 +257,7 @@ or <code>async</code> is true; otherwise a list of values for input <code>names<
 <h3 id="method-progress-">Method <code>progress()</code><a class="anchor" aria-label="anchor" href="#method-progress-"></a></h3>
 <p>get progress of the pipeline</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">progress</span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"summary"</span>, <span class="st">"details"</span><span class="op">)</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">progress</span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"summary"</span>, <span class="st">"details"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -277,7 +277,7 @@ or <code>async</code> is true; otherwise a list of values for input <code>names<
 <h3 id="method-attach-">Method <code><a href="https://rdrr.io/r/base/attach.html" class="external-link">attach()</a></code><a class="anchor" aria-label="anchor" href="#method-attach-"></a></h3>
 <p>attach pipeline tool to environment (internally used)</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">PipelineTools</span><span class="op">$</span><span class="kw">attach</span><span class="op">(</span><span class="va">env</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="kw">attach</span><span class="op">(</span><span class="va">env</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -293,7 +293,7 @@ or <code>async</code> is true; otherwise a list of values for input <code>names<
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -321,7 +321,7 @@ or <code>async</code> is true; otherwise a list of values for input <code>names<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

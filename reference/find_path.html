@@ -18,7 +18,7 @@ if the original path is missing; see examples."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9001</span>
       </span>
     </div>
 
@@ -55,7 +55,7 @@ if the original path is missing; see examples.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">find_path</span><span class="op">(</span><span class="va">path</span>, <span class="va">root_dir</span>, all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">find_path</span><span class="op">(</span><span class="va">path</span>, <span class="va">root_dir</span>, all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -92,47 +92,47 @@ along the search path will be returned</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">root</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># ------ Case 1: basic use case -------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a path in root</span></span>
-<span class="r-in"><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'a'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># find path even it's missing. The search path will be</span></span>
-<span class="r-in"><span class="co"># root/ins/cd/a - missing</span></span>
-<span class="r-in"><span class="co"># root/cd/a     - missing</span></span>
-<span class="r-in"><span class="co"># root/a        - exists!</span></span>
-<span class="r-in"><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cd/a'</span>, <span class="va">root</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpl1H82p/a"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># ------ Case 2: priority -------</span></span>
-<span class="r-in"><span class="co"># Create two paths in root</span></span>
-<span class="r-in"><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'cc/a'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'a'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If two paths exist, return the first path found</span></span>
-<span class="r-in"><span class="co"># root/ins/cd/a - missing</span></span>
-<span class="r-in"><span class="co"># root/cd/a     - exists - returned</span></span>
-<span class="r-in"><span class="co"># root/a        - exists, but ignored</span></span>
-<span class="r-in"><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpl1H82p/cc/a"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># ------ Case 3: find all -------</span></span>
-<span class="r-in"><span class="co"># Create two paths in root</span></span>
-<span class="r-in"><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'cc/a'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'a'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If two paths exist, return the first path found</span></span>
-<span class="r-in"><span class="co"># root/ins/cd/a - missing</span></span>
-<span class="r-in"><span class="co"># root/cd/a     - exists - returned</span></span>
-<span class="r-in"><span class="co"># root/a        - exists - returned</span></span>
-<span class="r-in"><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpl1H82p/cc/a"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpl1H82p/a"   </span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">root</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ------ Case 1: basic use case -------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a path in root</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'a'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># find path even it's missing. The search path will be</span></span></span>
+<span class="r-in"><span><span class="co"># root/ins/cd/a - missing</span></span></span>
+<span class="r-in"><span><span class="co"># root/cd/a     - missing</span></span></span>
+<span class="r-in"><span><span class="co"># root/a        - exists!</span></span></span>
+<span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cd/a'</span>, <span class="va">root</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpf0e58z/a"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ------ Case 2: priority -------</span></span></span>
+<span class="r-in"><span><span class="co"># Create two paths in root</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'cc/a'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'a'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If two paths exist, return the first path found</span></span></span>
+<span class="r-in"><span><span class="co"># root/ins/cd/a - missing</span></span></span>
+<span class="r-in"><span><span class="co"># root/cd/a     - exists - returned</span></span></span>
+<span class="r-in"><span><span class="co"># root/a        - exists, but ignored</span></span></span>
+<span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpf0e58z/cc/a"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ------ Case 3: find all -------</span></span></span>
+<span class="r-in"><span><span class="co"># Create two paths in root</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'cc/a'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dir_create2.html">dir_create2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">root</span>, <span class="st">'a'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If two paths exist, return the first path found</span></span></span>
+<span class="r-in"><span><span class="co"># root/ins/cd/a - missing</span></span></span>
+<span class="r-in"><span><span class="co"># root/cd/a     - exists - returned</span></span></span>
+<span class="r-in"><span><span class="co"># root/a        - exists - returned</span></span></span>
+<span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpf0e58z/cc/a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpf0e58z/a"   </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -147,7 +147,7 @@ along the search path will be returned</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

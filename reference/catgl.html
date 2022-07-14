@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9001</span>
       </span>
     </div>
 
@@ -53,7 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">catgl</span><span class="op">(</span><span class="va">...</span>, .envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>, level <span class="op">=</span> <span class="st">"DEBUG"</span>, <span class="va">.pal</span>, .capture <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">catgl</span><span class="op">(</span><span class="va">...</span>, .envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>, level <span class="op">=</span> <span class="st">"DEBUG"</span>, <span class="va">.pal</span>, .capture <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -94,54 +94,54 @@ than the threshold will be muffled. See examples.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># ------------------ Basic Styles ---------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Temporarily change verbose level for example</span></span>
-<span class="r-in"><span class="fu"><a href="raveio-option.html">raveio_setopt</a></span><span class="op">(</span><span class="st">'verbose_level'</span>, <span class="st">'DEBUG'</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># debug</span></span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Debug message'</span>, level <span class="op">=</span> <span class="st">'DEBUG'</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ------------------ Basic Styles ---------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Temporarily change verbose level for example</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="raveio-option.html">raveio_setopt</a></span><span class="op">(</span><span class="st">'verbose_level'</span>, <span class="st">'DEBUG'</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># debug</span></span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Debug message'</span>, level <span class="op">=</span> <span class="st">'DEBUG'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Debug message </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># default</span></span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'DEFAULT'</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># default</span></span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'DEFAULT'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Default message </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># info</span></span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Info message'</span>, level <span class="op">=</span> <span class="st">'INFO'</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># info</span></span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Info message'</span>, level <span class="op">=</span> <span class="st">'INFO'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Info message </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># warning</span></span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Warning message'</span>, level <span class="op">=</span> <span class="st">'WARNING'</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># warning</span></span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Warning message'</span>, level <span class="op">=</span> <span class="st">'WARNING'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Warning message </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># error</span></span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Error message'</span>, level <span class="op">=</span> <span class="st">'ERROR'</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># error</span></span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Error message'</span>, level <span class="op">=</span> <span class="st">'ERROR'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error message </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="op">{</span></span>
-<span class="r-in">  <span class="co"># fatal, will call stop and raise error</span></span>
-<span class="r-in">  <span class="fu">catgl</span><span class="op">(</span><span class="st">'Error message'</span>, level <span class="op">=</span> <span class="st">'FATAL'</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="co"># fatal, will call stop and raise error</span></span></span>
+<span class="r-in"><span>  <span class="fu">catgl</span><span class="op">(</span><span class="st">'Error message'</span>, level <span class="op">=</span> <span class="st">'FATAL'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error message </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># ------------------ Muffle messages ---------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Temporarily change verbose level to 'WARNING'</span></span>
-<span class="r-in"><span class="fu"><a href="raveio-option.html">raveio_setopt</a></span><span class="op">(</span><span class="st">'verbose_level'</span>, <span class="st">'WARNING'</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># default, muffled</span></span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># message printed for level &gt;= Warning</span></span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'WARNING'</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ------------------ Muffle messages ---------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Temporarily change verbose level to 'WARNING'</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="raveio-option.html">raveio_setopt</a></span><span class="op">(</span><span class="st">'verbose_level'</span>, <span class="st">'WARNING'</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># default, muffled</span></span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># message printed for level &gt;= Warning</span></span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'WARNING'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Default message </span>
-<span class="r-in"><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'ERROR'</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'ERROR'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Default message </span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -156,7 +156,7 @@ than the threshold will be muffled. See examples.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
