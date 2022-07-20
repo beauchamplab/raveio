@@ -6,13 +6,14 @@
 \alias{cmd_dcm2niix}
 \alias{cmd_freesurfer_home}
 \alias{cmd_fsl_home}
+\alias{cmd_afni_home}
 \alias{cmd_homebrew}
 \alias{is_dry_run}
 \title{Find and execute external command-line tools}
 \usage{
 normalize_commandline_path(
   path,
-  type = c("dcm2niix", "freesurfer", "fsl", "others"),
+  type = c("dcm2niix", "freesurfer", "fsl", "afni", "others"),
   unset = NA
 )
 
@@ -21,6 +22,8 @@ cmd_dcm2niix(error_on_missing = TRUE, unset = NA)
 cmd_freesurfer_home(error_on_missing = TRUE, unset = NA)
 
 cmd_fsl_home(error_on_missing = TRUE, unset = NA)
+
+cmd_afni_home(error_on_missing = TRUE, unset = NA)
 
 cmd_homebrew(error_on_missing = TRUE, unset = NA)
 

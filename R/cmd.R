@@ -11,12 +11,12 @@
 #' missing.
 #' @export
 normalize_commandline_path <- function(
-  path, type = c("dcm2niix", "freesurfer", "fsl", "others"),
+  path, type = c("dcm2niix", "freesurfer", "fsl", "afni", "others"),
   unset = NA) {
 
   type <- match.arg(type)
 
-  if(length(path) != 1 || trimws(path) == "") {
+  if(length(path) != 1 || is.na(path) || trimws(path) %in% c("", "/")) {
     return(unset)
   }
   if(!file.exists(path)) {
@@ -58,6 +58,12 @@ normalize_commandline_path <- function(
     `fsl` = {
       flirt <- file.path(path, "bin", "flirt")
       if(file.exists(flirt)){
+        return(path)
+      }
+    },
+    `afni` = {
+      allineate <- file.path(path, "3dallineate")
+      if(file.exists(allineate)){
         return(path)
       }
     },
@@ -146,7 +152,13 @@ cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
   path <- normalize_commandline_path(
     raveio_getopt("fsl_path", default = Sys.which("FSLDIR")),
     type = "others",
-    unset = unset
+    unset = local({
+      fs <- c(
+        "/usr/local/fsl"
+      )
+      fs <- fs[dir.exists(fs)]
+      if(length(fs)) { fs[[1]] } else { unset }
+    })
   )
   if(error_on_missing && (
     length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
@@ -158,7 +170,36 @@ cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
          '  raveio::raveio_setopt("fsl_path", <path to FSL>)\n\n',
          "to set the path. Remember to replace and quote <path to FSL>")
   }
-  return(path)
+  return(normalizePath(path))
+
+}
+
+#' @rdname rave_command_line_path
+#' @export
+cmd_afni_home <- function(error_on_missing = TRUE, unset = NA) {
+
+  path <- normalize_commandline_path(
+    raveio_getopt("afni_path", default = Sys.which("AFNI_HOME")),
+    type = "afni",
+    unset = local({
+      fs <- c(
+        "~/abin/"
+      )
+      fs <- fs[dir.exists(fs)]
+      if(length(fs)) { fs[[1]] } else { unset }
+    })
+  )
+  if(error_on_missing && (
+    length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
+  )) {
+    stop("Cannot find AFNI command `3dallineate`. ",
+         "Please go to the following website to install it:\n\n",
+         "  https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html\n\n",
+         "If you have installed AFNI, please use\n\n",
+         '  raveio::raveio_setopt("afni_path", <path to AFNI>)\n\n',
+         "to set the path. Remember to replace and quote <path to AFNI>")
+  }
+  return(normalizePath(path))
 
 }
 
