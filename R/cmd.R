@@ -97,16 +97,33 @@ cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
 #' @export
 cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
   path <- raveio_getopt("freesurfer_path", default = {
-    Sys.getenv("FREESURFER_HOME", unset = local({
+    Sys.getenv("FREESURFER_HOME", unset = NA)
+  })
+  if(isTRUE(is.na(path))) {
+    path <- local({
+      if(file.exists("/Applications/freesurfer")) {
+        additional_fs <- c(
+          "/Applications/freesurfer",
+          list.dirs("/Applications/freesurfer", recursive = FALSE, full.names = TRUE)
+        )
+      } else {
+        additional_fs <- c("/Applications/freesurfer")
+      }
       fs <- c(
-        "/Applications/freesurfer",
+        additional_fs,
         "/usr/local/freesurfer"
       )
       fs <- fs[dir.exists(fs)]
-      if(length(fs)) { fs[[1]] } else { "" }
-    }))
-  })
-  path <- normalize_commandline_path(path, type = "freesurfer", unset = unset)
+      if(length(fs)) { fs } else { "" }
+    })
+  }
+  path <- sapply(path, normalize_commandline_path, type = "freesurfer", unset = NA)
+  path <- path[!is.na(path)]
+  if(length(path)) {
+    path <- path[[1]]
+  } else {
+    path <- unset
+  }
   if(error_on_missing && (
     length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
   )) {
