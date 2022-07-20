@@ -18,7 +18,9 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
       "electrodes", default_if_missing = subject$electrodes)
     message("No electrodes specified, loading all electrodes: ", dipsaus::deparse_svec(electrodes))
   }
-  electrodes <- sort(dipsaus::parse_svec(electrodes))
+  if(length(electrodes) == 1 && is.character(electrodes)) {
+    electrodes <- sort(dipsaus::parse_svec(electrodes))
+  }
 
 
   if(missing(reference_name)){
