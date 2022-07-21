@@ -85,15 +85,17 @@ cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
     type = "dcm2niix",
     unset = unset
   )
-  if(error_on_missing && (
-    length(path) != 1 || is.na(path) || !isTRUE(file.exists(path))
-  )) {
-    stop("Cannot find binary command `dcm2niix`. ",
-         "Please go to the following website to install it:\n\n",
-         "  https://github.com/rordenlab/dcm2niix#install\n\n",
-         "If you have installed `dcm2niix`, please use\n\n",
-         '  raveio::raveio_setopt("dcm2niix_path", <path to dcm2niix>)\n\n',
-         "to set the path. Remember to replace and quote <path to dcm2niix>")
+  if( length(path) != 1 || is.na(path) || !isTRUE(file.exists(path)) ) {
+    if( error_on_missing ) {
+      stop("Cannot find binary command `dcm2niix`. ",
+           "Please go to the following website to install it:\n\n",
+           "  https://github.com/rordenlab/dcm2niix#install\n\n",
+           "If you have installed `dcm2niix`, please use\n\n",
+           '  raveio::raveio_setopt("dcm2niix_path", <path to dcm2niix>)\n\n',
+           "to set the path. Remember to replace and quote <path to dcm2niix>")
+    }
+  } else {
+    path <- normalizePath(path, winslash = "/")
   }
   return(path)
 
@@ -130,16 +132,18 @@ cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
   } else {
     path <- unset
   }
-  if(error_on_missing && (
-    length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
-  )) {
-    stop("Cannot find FreeSurfer home directory. ",
-         "Please go to the following website to install it:\n\n",
-         "  https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall\n\n",
-         "If you have installed FreeSurfer, please use\n\n",
-         '  raveio::raveio_setopt("freesurfer_path", <path to FREESURFER_HOME>)\n\n',
-         "to set the FreeSurfer home directory. ",
-         "Remember to replace and quote <path to FREESURFER_HOME>")
+  if( length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path)) ) {
+    if( error_on_missing ) {
+      stop("Cannot find FreeSurfer home directory. ",
+           "Please go to the following website to install it:\n\n",
+           "  https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall\n\n",
+           "If you have installed FreeSurfer, please use\n\n",
+           '  raveio::raveio_setopt("freesurfer_path", <path to FREESURFER_HOME>)\n\n',
+           "to set the FreeSurfer home directory. ",
+           "Remember to replace and quote <path to FREESURFER_HOME>")
+    }
+  } else {
+    path <- normalizePath(path, winslash = "/")
   }
   return(path)
 }
@@ -160,18 +164,19 @@ cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
       if(length(fs)) { fs[[1]] } else { unset }
     })
   )
-  if(error_on_missing && (
-    length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
-  )) {
-    stop("Cannot find binary command `flirt`. ",
-         "Please go to the following website to install it:\n\n",
-         "  https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation\n\n",
-         "If you have installed FSL-FLIRT, please use\n\n",
-         '  raveio::raveio_setopt("fsl_path", <path to FSL>)\n\n',
-         "to set the path. Remember to replace and quote <path to FSL>")
+  if( length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path)) ) {
+    if( error_on_missing ) {
+      stop("Cannot find binary command `flirt`. ",
+           "Please go to the following website to install it:\n\n",
+           "  https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation\n\n",
+           "If you have installed FSL-FLIRT, please use\n\n",
+           '  raveio::raveio_setopt("fsl_path", <path to FSL>)\n\n',
+           "to set the path. Remember to replace and quote <path to FSL>")
+    }
+  } else {
+    path <- normalizePath(path, winslash = "/")
   }
-  return(normalizePath(path))
-
+  return(path)
 }
 
 #' @rdname rave_command_line_path
@@ -189,17 +194,19 @@ cmd_afni_home <- function(error_on_missing = TRUE, unset = NA) {
       if(length(fs)) { fs[[1]] } else { unset }
     })
   )
-  if(error_on_missing && (
-    length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path))
-  )) {
-    stop("Cannot find AFNI command `3dallineate`. ",
-         "Please go to the following website to install it:\n\n",
-         "  https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html\n\n",
-         "If you have installed AFNI, please use\n\n",
-         '  raveio::raveio_setopt("afni_path", <path to AFNI>)\n\n',
-         "to set the path. Remember to replace and quote <path to AFNI>")
+  if( length(path) != 1 || is.na(path) || !isTRUE(dir.exists(path)) ) {
+    if(error_on_missing) {
+      stop("Cannot find AFNI command `3dallineate`. ",
+           "Please go to the following website to install it:\n\n",
+           "  https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html\n\n",
+           "If you have installed AFNI, please use\n\n",
+           '  raveio::raveio_setopt("afni_path", <path to AFNI>)\n\n',
+           "to set the path. Remember to replace and quote <path to AFNI>")
+    }
+  } else {
+    path <- normalizePath(path, winslash = "/")
   }
-  return(normalizePath(path))
+  return(path)
 
 }
 
@@ -221,18 +228,19 @@ cmd_homebrew <- function(error_on_missing = TRUE, unset = NA) {
     }
 
   }
-  if(error_on_missing && (
-    length(path) != 1 || is.na(path) || !isTRUE(file.exists(path))
-  )) {
-    stop("Cannot find binary command `brew`. ",
-         "Please open terminal and run the following shell command:\n\n",
-         '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"\n\n',
-         "If you have installed brew, please use\n\n",
-         '  raveio::raveio_setopt("homebrew_path", <path to brew>)\n\n',
-         "to set the path. Remember to replace and quote <path to brew>")
+  if( length(path) != 1 || is.na(path) || !isTRUE(file.exists(path)) ) {
+    if( error_on_missing ) {
+      stop("Cannot find binary command `brew`. ",
+           "Please open terminal and run the following shell command:\n\n",
+           '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"\n\n',
+           "If you have installed brew, please use\n\n",
+           '  raveio::raveio_setopt("homebrew_path", <path to brew>)\n\n',
+           "to set the path. Remember to replace and quote <path to brew>")
+    }
+  } else {
+    path <- normalizePath(path, winslash = "/")
   }
   return(path)
-
 }
 
 
