@@ -1,3 +1,6 @@
+
+#' @rdname cmd-external
+#' @export
 cmd_run_recon_all <- function(subject, mri_path,
                               args = c(
                                 "-all", "-autorecon1", "-autorecon2", "-autorecon3",

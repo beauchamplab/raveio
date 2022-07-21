@@ -1,4 +1,6 @@
 
+#' @rdname cmd-external
+#' @export
 cmd_run_flirt <- function(
     subject, mri_path, ct_path,
     overwrite = FALSE, command_path = NULL,
@@ -28,7 +30,7 @@ cmd_run_flirt <- function(
     )
     if(length(fsl) != 1 || is.na(fsl) || !isTRUE(dir.exists(fsl))) {
       fsl <- NULL
-    } else if(!identical(default_fs_path, fsl)) {
+    } else if(!identical(default_fsl_path, fsl)) {
       raveio::raveio_setopt("fsl_path", fsl)
     }
     fsl

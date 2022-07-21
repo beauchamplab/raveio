@@ -1,39 +1,7 @@
 # Scripts to generate shell commands - dcm to nii
 
-cmd_execute <- function(script, script_path, command = "bash", ...) {
-
-  dir_create2(dirname(script_path))
-  writeLines(script, con = script_path)
-
-  # Back up the script
-  backup_dir <- file.path(dirname(script_path), "backups")
-  backup_path <- raveio::backup_file(script_path, remove = FALSE, quiet = TRUE)
-  if(!isFALSE(backup_path) && isTRUE(file.exists(backup_path))) {
-    backup_dir <- raveio::dir_create2(backup_dir)
-    to_path <- file.path(backup_dir, basename(backup_path))
-    if(file.exists(to_path)) {
-      unlink(backup_path)
-    } else {
-      file.rename(backup_path, backup_path)
-    }
-  }
-
-  system2(command = command, args = shQuote(script_path, type = "sh"), ...)
-}
-
-
-validate_nii <- function(path) {
-  if(missing(path) || length(path) != 1 || is.na(path) || !file.exists(path) ||
-     dir.exists(path)) {
-    stop("`validate_nii`: `path` is not a valid file path.")
-  }
-  path <- normalizePath(path, winslash = "/")
-  if(!grepl("\\.nii($|\\.gz$)", path, ignore.case = TRUE)) {
-    stop("`validate_nii`: `path` is not a valid NifTi file (.nii or .nii.gz)")
-  }
-  path
-}
-
+#' @rdname cmd-external
+#' @export
 cmd_run_dcm2niix <- function(subject, src_path, type = c("MRI", "CT"),
                              merge = c("Auto", "No", "Yes"),
                              float = c("Yes", "No"),
