@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Prepare log file
 log_file="{{ log_file }}"
 if [[ ! -z "$log_file" ]]; then
@@ -52,6 +54,5 @@ else
 fi
 
 echo "Done." | tee -a "$log_file"
-exit 0
 
 ## END OF RAVE Script: FreeSurfer recon-all with flags: {{ paste(c(args, ""), collapse = " ") }} ##

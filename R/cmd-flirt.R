@@ -5,8 +5,8 @@ cmd_run_flirt <- function(
     dry_run = FALSE, verbose = dry_run) {
   # # Debug:
   # subject <- as_rave_subject("devel/YCQ", strict = FALSE)
-  # mri_path <- "/Users/dipterix/rave_data/raw_dir/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii"
-  # ct_path <- "/Users/dipterix/rave_data/raw_dir/YCQ/rave-imaging/inputs/CT/YCQ_CT.nii"
+  # mri_path <- "/Volumes/PennRAID/Dropbox (PENN Neurotrauma)/BeauchampServe/rave_data/raw/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii"
+  # ct_path <- "/Volumes/PennRAID/Dropbox (PENN Neurotrauma)/BeauchampServe/rave_data/raw/YCQ/rave-imaging/inputs/CT/YCQ_CT.nii"
   # command_path = NULL
   # overwrite <- FALSE
 

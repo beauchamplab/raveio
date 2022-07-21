@@ -7,7 +7,7 @@ mri_path="{{ mri_path }}"
 ct_path="{{ ct_path }}"
 dest_path="{{ dest_path }}"
 
-if [ -z "$mri_path" || -z "$ct_path" ]; then
+if [[ -z "$mri_path" || -z "$ct_path" ]]; then
   echo "Cannot run FST-FLIRT: Invalid source path" >&2
   exit -1;
 fi
@@ -47,3 +47,5 @@ flirt -in "$ct_path" -ref "$mri_path" \
   -searchrx -180 180 -searchry -180 180 -searchrz -180 180 -v | tee -a "$log_file"
 
 echo "Done." | tee -a "$log_file"
+
+## END OF RAVE Script: FSL-flirt coregistration ##

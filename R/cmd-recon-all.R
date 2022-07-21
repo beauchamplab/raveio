@@ -103,7 +103,7 @@ cmd_run_recon_all <- function(subject, mri_path,
 
   return(invisible(re))
 
-  # raveio:::cmd_run_recon_all(subject = "devel/YDS", mri_path = "/Users/dipterix/rave_data/raw_dir/YDS/rave-imaging/inputs/MRI/MRI_3D_Ax_T1_FFE_SENSE_20210507130859_30101000.nii", args = "-autorecon1", verbose = TRUE)
+  # raveio:::cmd_run_recon_all(subject = "devel/YCQ", mri_path = "/Volumes/PennRAID/Dropbox (PENN Neurotrauma)/BeauchampServe/rave_data/raw/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii", args = "-autorecon1", verbose = TRUE)
 }
 
 

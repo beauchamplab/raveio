@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # This is your dcm2niix binary path
 cmd_dcm2niix="{{ dcm2niix }}"
 
@@ -56,4 +58,5 @@ else
   echo "Done. Please check printed messages."
 fi
 
-exit 0
+
+## END OF RAVE Script: dcm2niix DICOM to NifTi, or copy existing NifTi file ##
