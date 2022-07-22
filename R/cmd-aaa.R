@@ -2,7 +2,7 @@
 #' @title External shell commands for 'RAVE'
 #' @description These shell commands are for importing 'DICOM' images to
 #' 'Nifti' format, reconstructing cortical surfaces, and align' the CT' to
-#' 'MRI'. The commands are only tested on 'OSX' and 'Linux'. On 'Windows'
+#' 'MRI'. The commands are only tested on 'MacOS' and 'Linux'. On 'Windows'
 #' machines, please use the 'WSL2' system.
 #' @param subject characters or a \code{\link{RAVESubject}} instance
 #' @param src_path source of the 'DICOM' or 'Nifti' image (absolute path)
@@ -23,6 +23,14 @@
 #' @param args further arguments in the shell command, especially the
 #' 'FreeSurfer' reconstruction command
 #' @param work_path work path for 'FreeSurfer' command;
+#' @returns A list of data containing the script details:
+#' \describe{
+#' \item{\code{script}}{script details}
+#' \item{\code{script_path}}{where the script should/will be saved}
+#' \item{\code{dry_run}}{whether dry-run mode is turned on}
+#' \item{\code{log_file}}{path to the log file}
+#' \item{\code{execute}}{a function to execute the script}
+#' }
 NULL
 
 cmd_execute <- function(script, script_path, command = "bash", ...) {
