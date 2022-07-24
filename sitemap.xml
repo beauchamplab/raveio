@@ -109,6 +109,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/install_modules.html</loc>
+  </url>
+  <url>
     <loc>/reference/is.blank.html</loc>
   </url>
   <url>
@@ -137,6 +140,9 @@
   </url>
   <url>
     <loc>/reference/module_add.html</loc>
+  </url>
+  <url>
+    <loc>/reference/module_registry.html</loc>
   </url>
   <url>
     <loc>/reference/new_electrode.html</loc>
