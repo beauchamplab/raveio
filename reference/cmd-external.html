@@ -20,7 +20,7 @@ machines, please use the 'WSL2' system."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7.9005</span>
       </span>
     </div>
 
@@ -59,7 +59,16 @@ machines, please use the 'WSL2' system.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cmd_run_dcm2niix</span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cmd_execute</span><span class="op">(</span></span>
+<span>  <span class="va">script</span>,</span>
+<span>  <span class="va">script_path</span>,</span>
+<span>  command <span class="op">=</span> <span class="st">"bash"</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  backup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cmd_run_dcm2niix</span><span class="op">(</span></span>
 <span>  <span class="va">subject</span>,</span>
 <span>  <span class="va">src_path</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MRI"</span>, <span class="st">"CT"</span><span class="op">)</span>,</span>
@@ -97,7 +106,33 @@ machines, please use the 'WSL2' system.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>subject</dt>
+    <dl><dt>script</dt>
+<dd><p>the shell script</p></dd>
+
+
+<dt>script_path</dt>
+<dd><p>path to run the script</p></dd>
+
+
+<dt>command</dt>
+<dd><p>which command to invoke; default is <code>'bash'</code></p></dd>
+
+
+<dt>dry_run</dt>
+<dd><p>whether to run in dry-run mode; under such mode, the shell
+command will not execute. This is useful for debugging scripts; default is
+false</p></dd>
+
+
+<dt>backup</dt>
+<dd><p>whether to back up the script file immediately; default is true</p></dd>
+
+
+<dt>...</dt>
+<dd><p>passed to <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></code></p></dd>
+
+
+<dt>subject</dt>
 <dd><p>characters or a <code><a href="RAVESubject.html">RAVESubject</a></code> instance</p></dd>
 
 
@@ -122,12 +157,6 @@ the source is in 'Nifti' format</p></dd>
 <dt>command_path</dt>
 <dd><p>command line path if 'RAVE' cannot find the command
 binary files</p></dd>
-
-
-<dt>dry_run</dt>
-<dd><p>whether to run in dry-run mode; under such mode, the shell
-command will not execute. This is useful for debugging scripts; default is
-false</p></dd>
 
 
 <dt>verbose</dt>
