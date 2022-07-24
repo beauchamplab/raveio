@@ -1,0 +1,37 @@
+- title: A Collection of 'RAVE' Builtin Pipelines
+  url: https://github.com/dipterix/rave-pipelines
+  repo: dipterix/rave-pipelines
+  maintainer:
+    given: Zhengjia
+    family: Wang
+    middle: ~
+    email: dipterix.wang@gmail.com
+    role:
+    - aut
+    - cre
+    comment: ~
+  authors:
+  - given: Zhengjia
+    family: Wang
+    middle: ~
+    email: dipterix.wang@gmail.com
+    role:
+    - aut
+    - cre
+    comment: ~
+  modules:
+  - import_lfp_native
+  - notch_filter
+  - wavelet_module
+  - jupyterlab
+  - epoch_generator
+  - reference_module
+  - surface_reconstruction
+  - electrode_localization
+  - compatibility_rave1
+  - standalone_viewer
+  - import_lfp_native
+  - notch_filter
+  - wavelet_module
+  - reference_module
+  - surface_reconstruction
