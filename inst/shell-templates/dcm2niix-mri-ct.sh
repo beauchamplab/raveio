@@ -46,7 +46,7 @@ if [[ $is_nifti -eq 0 ]]; then
   # Convert MRI (DICOM => Nifti)
   echo "Converting DICOM to NifTi:"
   if [[ ! -z "$log_file" ]]; then
-    $cmd_dcm2niix{{ paste(c("", args), collapse = " ") }} -o "$dest_path" "$src_path" 2>&1 | tee "$log_dir/$log_file"
+    $cmd_dcm2niix{{ paste(c("", args), collapse = " ") }} -o "$dest_path" "$src_path" 2>&1 | tee -a "$log_dir/$log_file"
     echo "Done. Please check log file" | tee -a "$log_dir/$log_file"
   else
     $cmd_dcm2niix{{ paste(c("", args), collapse = " ") }} -o "$dest_path" "$src_path"

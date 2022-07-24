@@ -7,7 +7,7 @@ log_file="{{ log_file }}"
 if [[ ! -z "$log_file" ]]; then
   log_path="{{ log_path }}"
   log_file="{{ log_path }}/$log_file"
-  mkdir -p "$log_path" && touch "$log_file" && echo "Started: $(date -u)" > "$log_file"
+  mkdir -p "$log_path" && touch "$log_file" && echo "Started: $(date -u)" >> "$log_file"
   echo --------------------------------------------------------
   echo Log file: "$log_file"
   echo --------------------------------------------------------
@@ -38,8 +38,11 @@ ln -s "$wdir_actual/rave-imaging" "$wdir_fs"
 
 # Set FreeSurfer home directory & initialize
 SUBJECTS_DIR="$wdir_fs/rave-imaging"
-FREESURFER_HOME="{{ freesurfer_home }}"
-source "$FREESURFER_HOME/SetUpFreeSurfer.sh"
+{{
+  if(length(freesurfer_home) == 1 && !is.na(freesurfer_home) && file.exists(freesurfer_home)) {
+    'FREESURFER_HOME="{{ freesurfer_home }}"\nsource "$FREESURFER_HOME/SetUpFreeSurfer.sh"'
+  } else { "" }
+}}
 
 if [ -d "$SUBJECTS_DIR/fs/mri" ]; then
   # Use existing FreeSurfer directory to continue analysis

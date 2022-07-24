@@ -3,11 +3,21 @@
 %   R/cmd-recon-all.R
 \name{cmd-external}
 \alias{cmd-external}
+\alias{cmd_execute}
 \alias{cmd_run_dcm2niix}
 \alias{cmd_run_flirt}
 \alias{cmd_run_recon_all}
 \title{External shell commands for 'RAVE'}
 \usage{
+cmd_execute(
+  script,
+  script_path,
+  command = "bash",
+  dry_run = FALSE,
+  backup = TRUE,
+  ...
+)
+
 cmd_run_dcm2niix(
   subject,
   src_path,
@@ -44,6 +54,20 @@ cmd_run_recon_all(
 )
 }
 \arguments{
+\item{script}{the shell script}
+
+\item{script_path}{path to run the script}
+
+\item{command}{which command to invoke; default is \code{'bash'}}
+
+\item{dry_run}{whether to run in dry-run mode; under such mode, the shell
+command will not execute. This is useful for debugging scripts; default is
+false}
+
+\item{backup}{whether to back up the script file immediately; default is true}
+
+\item{...}{passed to \code{\link{system2}}}
+
 \item{subject}{characters or a \code{\link{RAVESubject}} instance}
 
 \item{src_path}{source of the 'DICOM' or 'Nifti' image (absolute path)}
@@ -58,10 +82,6 @@ the source is in 'Nifti' format}
 
 \item{command_path}{command line path if 'RAVE' cannot find the command
 binary files}
-
-\item{dry_run}{whether to run in dry-run mode; under such mode, the shell
-command will not execute. This is useful for debugging scripts; default is
-false}
 
 \item{verbose}{whether to print out the command script; default is true under
 dry-run mode, and false otherwise}

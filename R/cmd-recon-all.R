@@ -14,6 +14,9 @@ cmd_run_recon_all <- function(subject, mri_path,
   # mri_path <- "/Users/dipterix/rave_data/raw_dir/YDS/rave-imaging/inputs/MRI/MRI_3D_Ax_T1_FFE_SENSE_20210507130859_30101000.nii"
   # command_path = NULL
   # overwrite <- FALSE
+  # list2env(list(subject = "devel/YCQ", mri_path = "/Users/dipterix/rave_data/raw_dir/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii",
+  #               args = "-all", overwrite = FALSE, dry_run = TRUE, verbose = FALSE,
+  #               command_path = NULL), globalenv())
 
   all_args <- c(
     "-all", "-autorecon1", "-autorecon2", "-autorecon3",

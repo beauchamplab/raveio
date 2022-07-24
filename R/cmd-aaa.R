@@ -23,6 +23,11 @@
 #' @param args further arguments in the shell command, especially the
 #' 'FreeSurfer' reconstruction command
 #' @param work_path work path for 'FreeSurfer' command;
+#' @param script the shell script
+#' @param script_path path to run the script
+#' @param command which command to invoke; default is \code{'bash'}
+#' @param backup whether to back up the script file immediately; default is true
+#' @param ... passed to \code{\link{system2}}
 #' @returns A list of data containing the script details:
 #' \describe{
 #' \item{\code{script}}{script details}
@@ -33,25 +38,37 @@
 #' }
 NULL
 
-cmd_execute <- function(script, script_path, command = "bash", ...) {
+#' @rdname cmd-external
+#' @export
+cmd_execute <- function(script, script_path, command = "bash", dry_run = FALSE, backup = TRUE, ...) {
 
   dir_create2(dirname(script_path))
   writeLines(script, con = script_path)
 
   # Back up the script
-  backup_dir <- file.path(dirname(script_path), "backups")
-  backup_path <- backup_file(script_path, remove = FALSE, quiet = TRUE)
-  if(!isFALSE(backup_path) && isTRUE(file.exists(backup_path))) {
-    backup_dir <- dir_create2(backup_dir)
-    to_path <- file.path(backup_dir, basename(backup_path))
-    if(file.exists(to_path)) {
-      unlink(backup_path)
-    } else {
-      file.rename(backup_path, backup_path)
+  if(backup) {
+    backup_dir <- file.path(dirname(script_path), "backups")
+    backup_path <- backup_file(script_path, remove = FALSE, quiet = TRUE)
+    if(!isFALSE(backup_path) && isTRUE(file.exists(backup_path))) {
+      backup_dir <- dir_create2(backup_dir)
+      to_path <- file.path(backup_dir, basename(backup_path))
+      if(file.exists(to_path)) {
+        unlink(backup_path)
+      } else {
+        file.rename(backup_path, to_path)
+      }
     }
   }
 
-  system2(command = command, args = shQuote(script_path, type = "sh"), ...)
+  script_path <- normalizePath(script_path)
+
+  if( dry_run ) {
+    cmd <- sprintf("%s %s", command, shQuote(script_path, type = "sh"))
+    return(cmd)
+  } else {
+    system2(command = command, args = shQuote(script_path, type = "sh"), ...)
+  }
+
 }
 
 
