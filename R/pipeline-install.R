@@ -224,6 +224,26 @@ pipeline_install_github <- function(
       }
     }
   }
+  if(length(conf_path)) {
+    conf_path <- conf_path[[1]]
+    repo0 <- gsub("@.*$", "", repo)
+    reg <- module_registry2(repo0, conf_path)
+    # get current registry
+    all_regs <- get_modules_registries(update = FALSE)
+    for(item in all_regs) {
+      if(!identical(
+        reg$maintainer$email,
+        item$maintainer$email
+      )) {
+        dups <- item$modules[item$modules %in% reg$modules]
+        if(length(dups)) {
+          stop(sprintf("Cannot install modules from repository [%s]. The following module IDs have been registered by other repositories:\n  %s", repo, paste(dups, collapse = ", ")))
+        }
+      }
+
+    }
+    conf <- as.list(as.data.frame(read.dcf(conf_path)))
+  }
 
   if(identical(repo, "dipterix/rave-pipelines")) {
     fs <- list.files(src, recursive = FALSE, full.names = TRUE, all.files = TRUE)

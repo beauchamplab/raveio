@@ -29,8 +29,8 @@ PipelineTools <- R6::R6Class(
 
       paths <- c(paths[dir.exists(paths)], default_paths)
 
-      raveio::pipeline_root(paths)
-      private$.pipeline_path <- raveio::pipeline_find(pipeline_name)
+      pipeline_root(paths)
+      private$.pipeline_path <- pipeline_find(pipeline_name)
       private$.pipeline_name <- attr(private$.pipeline_path, "target_name")
       private$.settings_file <- settings_file
 

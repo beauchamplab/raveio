@@ -40,7 +40,7 @@ cmd_run_recon_all <- function(subject, mri_path,
 
   default_fs_path <- cmd_freesurfer_home(error_on_missing = FALSE)
   freesurfer_home <- tryCatch({
-    freesurfer <- raveio::normalize_commandline_path(
+    freesurfer <- normalize_commandline_path(
       path = command_path,
       unset = default_fs_path,
       type = "freesurfer"
@@ -48,7 +48,7 @@ cmd_run_recon_all <- function(subject, mri_path,
     if(length(freesurfer) != 1 || is.na(freesurfer) || !isTRUE(dir.exists(freesurfer))) {
       freesurfer <- NULL
     } else if(!identical(default_fs_path, freesurfer)) {
-      raveio::raveio_setopt("freesurfer_path", freesurfer)
+      raveio_setopt("freesurfer_path", freesurfer)
     }
     freesurfer
   }, error = function(e){ NULL })
@@ -106,7 +106,7 @@ cmd_run_recon_all <- function(subject, mri_path,
 
   return(invisible(re))
 
-  # raveio:::cmd_run_recon_all(subject = "devel/YCQ", mri_path = "/Volumes/PennRAID/Dropbox (PENN Neurotrauma)/BeauchampServe/rave_data/raw/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii", args = "-autorecon1", verbose = TRUE)
+  # cmd_run_recon_all(subject = "devel/YCQ", mri_path = "/Volumes/PennRAID/Dropbox (PENN Neurotrauma)/BeauchampServe/rave_data/raw/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii", args = "-autorecon1", verbose = TRUE)
 }
 
 

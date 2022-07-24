@@ -186,7 +186,7 @@ print.RAVEValidation <- function(x, use_logger = TRUE, ...) {
     } else {
       level <- "ERROR"
     }
-    raveio::catgl("{msg}\n", level = level)
+    catgl("{msg}\n", level = level)
   } else {
     cat(msg, "\n", sep = "")
   }
@@ -195,7 +195,7 @@ print.RAVEValidation <- function(x, use_logger = TRUE, ...) {
 
 validate_subject_paths <- function(subject, verbose = TRUE, other_checks = NULL) {
 
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
 
   # check paths
   path_names <- c("reference_path", "note_path", "pipeline_path", "cache_path",
@@ -254,7 +254,7 @@ validate_subject_paths <- function(subject, verbose = TRUE, other_checks = NULL)
 }
 
 validate_subject_preprocess <- function(subject, verbose = TRUE, other_checks = NULL) {
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
   preproc <- subject$preprocess_settings
 
   re <- dipsaus::fastmap2()
@@ -513,7 +513,7 @@ validate_subject_preprocess <- function(subject, verbose = TRUE, other_checks = 
 
 validate_subject_meta <- function(subject, verbose = TRUE, other_checks = NULL) {
 
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -552,7 +552,7 @@ validate_subject_meta <- function(subject, verbose = TRUE, other_checks = NULL) 
         subject$subject_id),
       expr = {
         electrode_path <- file.path(subject$meta_path, "electrodes.csv")
-        tbl <- raveio::safe_read_csv(electrode_path)
+        tbl <- safe_read_csv(electrode_path)
 
         cols <- c("Electrode", "Coord_x", "Coord_y", "Coord_z", "Label")
         cols <- cols[!cols %in% names(tbl)]
@@ -686,7 +686,7 @@ validate_subject_meta <- function(subject, verbose = TRUE, other_checks = NULL) 
           for(ref_name in ref_names) {
             ref_name <- trimws(ref_name)
             if(!ref_name %in% c("noref", "")) {
-              e <- raveio::new_reference(subject = subject, number = ref_name)
+              e <- new_reference(subject = subject, number = ref_name)
               if(!isTRUE(e$exists)) {
                 stop("Cannot find reference data file for ", ref_name)
               }
@@ -703,7 +703,7 @@ validate_subject_meta <- function(subject, verbose = TRUE, other_checks = NULL) 
 
 validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other_checks = NULL) {
 
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -751,7 +751,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
 
       # go into each channel files and check the length
 
-      signal_lengths <- raveio::with_future_parallel({
+      signal_lengths <- with_future_parallel({
         dipsaus::lapply_async2(seq_along(electrodes), function(ii){
           e <- electrodes[[ii]]
           pre_elec <- file.path(preprocess_path, 'voltage',
@@ -761,7 +761,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
           has_notch <- notch_filtered[[ii]]
 
           h5names <- tryCatch({
-            gsub("^/", "", raveio::h5_names(pre_elec))
+            gsub("^/", "", h5_names(pre_elec))
           }, error = function(e) {
             NULL
           })
@@ -774,7 +774,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
             raw_len <- tryCatch({
               name <- sprintf('raw/%s', b)
               stopifnot(name %in% h5names)
-              length(raveio::load_h5(pre_elec, name = name, ram = FALSE))
+              length(load_h5(pre_elec, name = name, ram = FALSE))
             }, error = function(e){-1})
 
             if( raw_len <= 0 ){
@@ -785,7 +785,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
               notch_len <- tryCatch({
                 name <- sprintf('notch/%s', b)
                 stopifnot(name %in% h5names)
-                length(raveio::load_h5(pre_elec, name = name, ram = FALSE))
+                length(load_h5(pre_elec, name = name, ram = FALSE))
               }, error = function(e){-1})
             }else{
               notch_len <- raw_len
@@ -858,7 +858,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
       }
 
       # check signal lengths
-      raveio::with_future_parallel({
+      with_future_parallel({
         length_valid <- dipsaus::lapply_async2(seq_len(nrow(preproc_tbl)), function(ii) {
           e <- preproc_tbl$Electrode[[ii]]
           f <- file.path(volt_path, sprintf('%d.h5', e))
@@ -868,7 +868,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
             return(c(FALSE, FALSE, FALSE))
           }
           h5names <- tryCatch({
-            gsub("^/", "", raveio::h5_names(f))
+            gsub("^/", "", h5_names(f))
           }, error = function(e) {
             NULL
           })
@@ -881,7 +881,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
             tryCatch({
               name <- sprintf('raw/voltage/%s', b)
               stopifnot(name %in% h5names)
-              raw <- raveio::load_h5(f, name, ram = FALSE)
+              raw <- load_h5(f, name, ram = FALSE)
               length(raw)
             }, error = function(e){
               0
@@ -892,7 +892,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
             tryCatch({
               name <- sprintf('ref/voltage/%s', b)
               stopifnot(name %in% h5names)
-              raw <- raveio::load_h5(f, name, ram = FALSE)
+              raw <- load_h5(f, name, ram = FALSE)
               length(raw)
             }, error = function(e){
               0
@@ -929,7 +929,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
 }
 
 validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, other_checks = NULL) {
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -1010,7 +1010,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
       stop(sprintf("Cannot find %s data for the following electrode channels under [data/%s] directory: %s", dtype, dtype, dipsaus::deparse_svec(miss_e)))
     }
 
-    dtype_checks <- raveio::with_future_parallel({
+    dtype_checks <- with_future_parallel({
       dtype_checks <- dipsaus::lapply_async2(which(sel), function(ii) {
         e <- tbl$Electrode[[ii]]
         f <- file.path(dpath, sprintf('%d.h5', e))
@@ -1021,7 +1021,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
           return(c(FALSE, FALSE, FALSE, FALSE, FALSE))
         }
         h5names <- tryCatch({
-          gsub("^/", "", raveio::h5_names(f))
+          gsub("^/", "", h5_names(f))
         }, error = function(e) {
           NULL
         })
@@ -1034,7 +1034,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
           tryCatch({
             name <- sprintf('raw/%s/%s', dtype, b)
             stopifnot(name %in% h5names)
-            raw <- raveio::load_h5(f, name, ram = FALSE)
+            raw <- load_h5(f, name, ram = FALSE)
             raw <- dim(raw)
             if(length(raw) != 2) { return(c(0, 0)) }
             raw
@@ -1046,7 +1046,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
           tryCatch({
             name <- sprintf('ref/%s/%s', dtype, b)
             stopifnot(name %in% h5names)
-            raw <- raveio::load_h5(f, name, ram = FALSE)
+            raw <- load_h5(f, name, ram = FALSE)
             raw <- dim(raw)
             if(length(raw) != 2) { return(c(0, 0)) }
             raw
@@ -1124,7 +1124,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
 
 # epoch length
 validate_subject_epoch <- function(subject, verbose = TRUE, other_checks = NULL) {
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -1216,7 +1216,7 @@ validate_subject_epoch <- function(subject, verbose = TRUE, other_checks = NULL)
 
 # reference
 validate_subject_reference <- function(subject, verbose = TRUE, other_checks = NULL) {
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -1257,7 +1257,7 @@ validate_subject_reference <- function(subject, verbose = TRUE, other_checks = N
       return()
     }
     lapply(ref_names, function(ref_name){
-      e <- raveio::new_reference(subject, ref_name)
+      e <- new_reference(subject, ref_name)
       if(!isTRUE(e$valid)) {
         stop("reference data [data/reference/", ref_name, ".h5] is missing")
       }
@@ -1268,7 +1268,7 @@ validate_subject_reference <- function(subject, verbose = TRUE, other_checks = N
       }
       # check HDF5 file
       ref_file <- e$voltage_file
-      h5names <- gsub("^/", "", raveio::h5_names(ref_file))
+      h5names <- gsub("^/", "", h5_names(ref_file))
       if(!length(h5names)) {
         stop("reference data [data/reference/", ref_name, ".h5] is corrupted")
       }
@@ -1287,7 +1287,7 @@ validate_subject_reference <- function(subject, verbose = TRUE, other_checks = N
 
       for(block in blocks) {
         explen <- signal_lengths[[block]]
-        actlen <- length(raveio::load_h5(
+        actlen <- length(load_h5(
           file = ref_file,
           name = sprintf("voltage/%s", block),
           read_only = TRUE,
@@ -1322,7 +1322,7 @@ validate_subject_reference <- function(subject, verbose = TRUE, other_checks = N
         signal_lengths <- signal_lengths[1, , drop = FALSE]
         for(block in blocks) {
           expdim <- c(n_freq, signal_lengths[[block]], 2)
-          actdim <- dim(raveio::load_h5(
+          actdim <- dim(load_h5(
             file = ref_file,
             name = sprintf("wavelet/coef/%s", block),
             read_only = TRUE,
@@ -1369,7 +1369,7 @@ validate_subject <- function(
 
   method <- match.arg(method)
 
-  subject <- raveio::as_rave_subject(subject, strict = FALSE)
+  subject <- as_rave_subject(subject, strict = FALSE)
   results <- dipsaus::fastmap2()
 
   validate_subject_paths(subject = subject, verbose = verbose, other_checks = results)

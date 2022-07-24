@@ -40,9 +40,9 @@ cmd_execute <- function(script, script_path, command = "bash", ...) {
 
   # Back up the script
   backup_dir <- file.path(dirname(script_path), "backups")
-  backup_path <- raveio::backup_file(script_path, remove = FALSE, quiet = TRUE)
+  backup_path <- backup_file(script_path, remove = FALSE, quiet = TRUE)
   if(!isFALSE(backup_path) && isTRUE(file.exists(backup_path))) {
-    backup_dir <- raveio::dir_create2(backup_dir)
+    backup_dir <- dir_create2(backup_dir)
     to_path <- file.path(backup_dir, basename(backup_path))
     if(file.exists(to_path)) {
       unlink(backup_path)

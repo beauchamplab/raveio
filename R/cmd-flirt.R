@@ -23,7 +23,7 @@ cmd_run_flirt <- function(
 
   default_fsl_path <- cmd_fsl_home(error_on_missing = FALSE)
   fsl_home <- tryCatch({
-    fsl <- raveio::normalize_commandline_path(
+    fsl <- normalize_commandline_path(
       path = command_path,
       unset = default_fsl_path,
       type = "fsl"
@@ -31,7 +31,7 @@ cmd_run_flirt <- function(
     if(length(fsl) != 1 || is.na(fsl) || !isTRUE(dir.exists(fsl))) {
       fsl <- NULL
     } else if(!identical(default_fsl_path, fsl)) {
-      raveio::raveio_setopt("fsl_path", fsl)
+      raveio_setopt("fsl_path", fsl)
     }
     fsl
   }, error = function(e){ NULL })
