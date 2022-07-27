@@ -54,6 +54,7 @@ cmd_run_flirt <- function(
     mustWork = FALSE, winslash = "/"
   )
   execute <- function(...) {
+    initialize_imaging_paths(subject)
     cmd_execute(script = cmd, script_path = script_path, command = "bash", ...)
   }
   re <- list(
