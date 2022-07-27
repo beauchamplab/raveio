@@ -40,7 +40,10 @@ ln -s "$wdir_actual/rave-imaging" "$wdir_fs"
 SUBJECTS_DIR="$wdir_fs/rave-imaging"
 {{
   if(length(freesurfer_home) == 1 && !is.na(freesurfer_home) && file.exists(freesurfer_home)) {
-    'FREESURFER_HOME="{{ freesurfer_home }}"\nsource "$FREESURFER_HOME/SetUpFreeSurfer.sh"'
+    sprintf(
+      'FREESURFER_HOME="%s"\nsource "$FREESURFER_HOME/SetUpFreeSurfer.sh"',
+      freesurfer_home
+    )
   } else { "" }
 }}
 
