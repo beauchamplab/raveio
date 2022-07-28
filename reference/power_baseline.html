@@ -67,7 +67,6 @@
 <span>  <span class="va">baseline_windows</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"percentage"</span>, <span class="st">"sqrt_percentage"</span>, <span class="st">"decibel"</span>, <span class="st">"zscore"</span>, <span class="st">"sqrt_zscore"</span><span class="op">)</span>,</span>
 <span>  units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Frequency"</span>, <span class="st">"Trial"</span>, <span class="st">"Electrode"</span><span class="op">)</span>,</span>
-<span>  signal_types <span class="op">=</span> <span class="st">"LFP"</span>,</span>
 <span>  <span class="va">electrodes</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -127,12 +126,6 @@
 
 <dt>...</dt>
 <dd><p>passed to other methods</p></dd>
-
-
-<dt>signal_types</dt>
-<dd><p>signal types to perform baseline corrections; applied
-to power repository object produced by <code><a href="rave-prepare.html">prepare_subject_power</a></code>;
-default is <code>'LFP'</code></p></dd>
 
 
 <dt>electrodes</dt>

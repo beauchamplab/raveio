@@ -53,7 +53,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prepare_subject_bare</span><span class="op">(</span><span class="va">subject</span>, <span class="va">electrodes</span>, <span class="va">reference_name</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prepare_subject_bare</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  <span class="va">electrodes</span>,</span>
+<span>  <span class="va">reference_name</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  repository_id <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">prepare_subject_with_epoch</span><span class="op">(</span></span>
 <span>  <span class="va">subject</span>,</span>
@@ -71,8 +77,9 @@
 <span>  <span class="va">reference_name</span>,</span>
 <span>  <span class="va">epoch_name</span>,</span>
 <span>  <span class="va">time_windows</span>,</span>
-<span>  signal_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span><span class="op">)</span>,</span>
+<span>  signal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span><span class="op">)</span>,</span>
 <span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -97,6 +104,10 @@ parsed by <code><a href="https://rdrr.io/pkg/dipsaus/man/parse_svec.html" class=
 <dd><p>ignored</p></dd>
 
 
+<dt>repository_id</dt>
+<dd><p>used internally</p></dd>
+
+
 <dt>epoch_name</dt>
 <dd><p>epoch name to be loaded, or a
 <code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance</p></dd>
@@ -111,11 +122,15 @@ time; need to pass the validation <code><a href="validate_time_window.html">vali
 <dd><p>environment to evaluate</p></dd>
 
 
-<dt>signal_types</dt>
-<dd><p>electrode signal types to be considered; default is
-'LFP'. This option rarely needs to change unless you really want to check
-the power data from other types. For other signal types, check
+<dt>signal_type</dt>
+<dd><p>electrode signal type (length of one) to be considered;
+default is 'LFP'. This option rarely needs to change unless you really want
+to check the power data from other types. For other signal types, check
 <code><a href="raveio-constants.html">SIGNAL_TYPES</a></code></p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>whether to show progress</p></dd>
 
 </dl></div>
     <div id="value">
