@@ -21,7 +21,6 @@ power_baseline(
   baseline_windows,
   method = c("percentage", "sqrt_percentage", "decibel", "zscore", "sqrt_zscore"),
   units = c("Frequency", "Trial", "Electrode"),
-  signal_types = "LFP",
   electrodes,
   ...
 )
@@ -67,10 +66,6 @@ power_baseline(
 \item{units}{the unit of the baseline; see 'Details'}
 
 \item{...}{passed to other methods}
-
-\item{signal_types}{signal types to perform baseline corrections; applied
-to power repository object produced by \code{\link{prepare_subject_power}};
-default is \code{'LFP'}}
 
 \item{electrodes}{the electrodes to be included in baseline calculation;
 for power repository object produced by \code{\link{prepare_subject_power}}

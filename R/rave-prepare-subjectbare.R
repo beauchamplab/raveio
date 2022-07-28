@@ -1,7 +1,8 @@
 
 #' @rdname rave-prepare
 #' @export
-prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
+prepare_subject_bare <- function(subject, electrodes, reference_name, ...,
+                                 repository_id = NULL) {
 
   # electrode_list, reference_name, reference_table, electrode_table, subject, references_list, electrode_signal_types, electrode_instances
   re <- dipsaus::fastmap2()
@@ -122,6 +123,10 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...) {
   )
   digest_string <- dipsaus::digest(digest_key)
   re$signature <- structure(digest_string, contents = names(digest_key))
+  if(!length(repository_id)) {
+    repository_id <- rand_string(4)
+  }
+  re$repository_id <- repository_id
 
   class(re) <- c("rave_prepare_subject", "rave_repository", "fastmap2", "list")
   re
@@ -212,9 +217,13 @@ prepare_subject_with_epoch <- function(subject, electrodes, reference_name, epoc
 
 #' @rdname rave-prepare
 #' @export
-prepare_subject_power <- function(subject, electrodes, reference_name, epoch_name, time_windows, signal_types = c("LFP"), env = parent.frame(), ...) {
+prepare_subject_power <- function(subject, electrodes, reference_name, epoch_name, time_windows, signal_type = c("LFP"), env = parent.frame(), verbose = TRUE, ...) {
   call <- match.call()
   call[[1]] <- as.call(list(quote(`::`), quote(raveio), quote(prepare_subject_with_epoch)))
+
+  if(length(signal_type) > 1) {
+    stop("`prepare_subject_power`: you can only load one signal type each time")
+  }
 
   re <- eval(call, envir = env)
 
@@ -222,7 +231,7 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
   frequency <- frequency_table$Frequency
   re$frequency <- frequency
 
-  match_signal_types <- re$electrode_signal_types %in% signal_types
+  match_signal_types <- re$electrode_signal_types %in% signal_type
   re$electrode_list <- re$electrode_list[match_signal_types]
   re$electrode_instances <- re$electrode_instances[match_signal_types]
   re$electrode_signal_types <- re$electrode_signal_types[match_signal_types]
@@ -233,26 +242,40 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
   ref_mat <- unique(sprintf("%s_%s", re$reference_table[re$reference_table$Electrode %in% re$electrode_list, "Reference"], electrode_signal_types))
 
   ref_instances <- dipsaus::drop_nulls(re$reference_instances[ref_mat])
-  refs <- dipsaus::lapply_async2(ref_instances, function(ref){
-    ref$load_data(type = "power")
-  }, callback = function(ref){
-    sprintf("Loading Electrode | %s", ref$number)
-  }, plan = FALSE)
+  if(verbose) {
+    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+      ref$load_data(type = "power")
+    }, callback = function(ref){
+      sprintf("Loading Electrode | %s", ref$number)
+    }, plan = FALSE)
+  } else {
+    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+      ref$load_data(type = "power")
+    }, callback = NULL, plan = FALSE)
+  }
+
 
   # load actual power, reference on the fly
-  power_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
-    el$load_data(type = "power")
-  }, callback = function(el){
-    sprintf("Loading Electrode | %s", el$number)
-  }, plan = FALSE)
-  re$power_list <- power_list
+  if(verbose) {
+    power_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+      el$load_data(type = "power")
+    }, callback = function(el){
+      sprintf("Loading Electrode | %s", el$number)
+    }, plan = FALSE)
+  } else {
+    power_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+      el$load_data(type = "power")
+    }, callback = NULL, plan = FALSE)
+  }
 
+
+  # re$power_list <- power_list
   power_dimnames <- dimnames(power_list[[1]])
   power_dimnames$Electrode <- re$electrode_list
-  re$power_dimnames <- power_dimnames
-  power_dim <- vapply(power_dimnames, length, 0L)
-  re$power_dim <- power_dim
   re$time_points <- power_dimnames$Time
+  # re$power_dimnames <- power_dimnames
+  power_dim <- vapply(power_dimnames, length, 0L)
+  # re$power_dim <- power_dim
 
   digest_key <- list(
     subject_id = re$subject$subject_id,
@@ -268,26 +291,15 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
   re$signature <- structure(digest_string, contents = names(digest_key))
 
   re$power <- dipsaus::fastmap2()
-  for(signal_type in signal_types){
-    # find electrodes
-    sel <- re$electrode_signal_types == signal_type
+  re$power$dimnames <- power_dimnames
+  re$power$dim <- power_dim
+  re$power$data_list <- power_list
+  re$power$signature <- dipsaus::digest(c(digest_string, re$electrode_list))
 
-    if(any(sel)){
-      elecs <- re$electrode_list[sel]
-      tmp_list <- power_list[sel]
-      arr_dnames <- power_dimnames
-      arr_dnames$Electrode <- elecs
-
-      re$power[[signal_type]] <- list(
-        electrodes = elecs,
-        data_list = tmp_list,
-        signature = dipsaus::digest(c(digest_string, elecs))
-      )
-    }
-
-  }
-
-  class(re) <- c("rave_prepare_power", class(re))
+  class(re) <- c(
+    sprintf("rave_prepare_power-%s", signal_type),
+    "rave_prepare_power", class(re)
+  )
   re
 
 }

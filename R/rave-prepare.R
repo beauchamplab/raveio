@@ -8,11 +8,13 @@
 #' @param reference_name reference name to be loaded
 #' @param time_windows a list of time windows that are relative to epoch onset
 #' time; need to pass the validation \code{\link{validate_time_window}}
-#' @param signal_types electrode signal types to be considered; default is
-#' 'LFP'. This option rarely needs to change unless you really want to check
-#' the power data from other types. For other signal types, check
+#' @param signal_type electrode signal type (length of one) to be considered;
+#' default is 'LFP'. This option rarely needs to change unless you really want
+#' to check the power data from other types. For other signal types, check
 #' \code{\link{SIGNAL_TYPES}}
 #' @param env environment to evaluate
+#' @param repository_id used internally
+#' @param verbose whether to show progress
 #' @param ... ignored
 #' @return A \code{\link[dipsaus]{fastmap2}} (basically a list) of objects.
 #' Depending on the functions called, the following items may exist in the list:

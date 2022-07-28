@@ -7,7 +7,13 @@
 \alias{rave-prepare}
 \title{Prepare 'RAVE' single-subject data}
 \usage{
-prepare_subject_bare(subject, electrodes, reference_name, ...)
+prepare_subject_bare(
+  subject,
+  electrodes,
+  reference_name,
+  ...,
+  repository_id = NULL
+)
 
 prepare_subject_with_epoch(
   subject,
@@ -25,8 +31,9 @@ prepare_subject_power(
   reference_name,
   epoch_name,
   time_windows,
-  signal_types = c("LFP"),
+  signal_type = c("LFP"),
   env = parent.frame(),
+  verbose = TRUE,
   ...
 )
 }
@@ -41,6 +48,8 @@ parsed by \code{\link[dipsaus]{parse_svec}}}
 
 \item{...}{ignored}
 
+\item{repository_id}{used internally}
+
 \item{epoch_name}{epoch name to be loaded, or a
 \code{\link{RAVEEpoch}} instance}
 
@@ -49,10 +58,12 @@ time; need to pass the validation \code{\link{validate_time_window}}}
 
 \item{env}{environment to evaluate}
 
-\item{signal_types}{electrode signal types to be considered; default is
-'LFP'. This option rarely needs to change unless you really want to check
-the power data from other types. For other signal types, check
+\item{signal_type}{electrode signal type (length of one) to be considered;
+default is 'LFP'. This option rarely needs to change unless you really want
+to check the power data from other types. For other signal types, check
 \code{\link{SIGNAL_TYPES}}}
+
+\item{verbose}{whether to show progress}
 }
 \value{
 A \code{\link[dipsaus]{fastmap2}} (basically a list) of objects.
