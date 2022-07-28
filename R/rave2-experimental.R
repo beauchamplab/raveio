@@ -332,9 +332,9 @@ power_baseline.rave_prepare_power <- function(
     stop("Baseline across electrode not supported")
 
   }
-#
-#   x$power$baselined <- res
-#   return(x)
+
+  x$power$baselined <- res
+  return(x)
 #
 #   if("Electrode" %in% units){
 #
