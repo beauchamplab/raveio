@@ -202,7 +202,7 @@ power_baseline.rave_prepare_power <- function(
     }
   }
 
-  signal_type <- x$electrode_signal_types[[1]]
+  signal_type <- x$signal_type
 
   # if(!inherits(x$baselined, "fastmap2")){
   #   x$baselined <- dipsaus::fastmap2()
@@ -221,13 +221,11 @@ power_baseline.rave_prepare_power <- function(
   sub_list <- x$power$data_list[sel]
   sub_elec <- x$electrode_list[sel]
 
-  dnames <- x$power$dimnames
-  dnames$Electrode <- sub_elec
-  dm <- dim(sub_list[[1]])
-  dm[[4]] <- length(sub_elec)
+  # dm <- dim(sub_list[[1]])
+  # dm[[4]] <- length(sub_elec)
 
   time_index <- unique(unlist(lapply(baseline_windows, function(w){
-    which(dnames$Time >= w[[1]] & dnames$Time <= w[[2]])
+    which(x$power$dimnames$Time >= w[[1]] & x$power$dimnames$Time <= w[[2]])
   })))
 
   # calculate signature
@@ -238,13 +236,12 @@ power_baseline.rave_prepare_power <- function(
     method = method,
     unit_dims = unit_dims,
     time_index = time_index,
-    dimension = dm
+    dimension = x$power$dim
   )
 
   signature <- dipsaus::digest(digest_key)
 
-  filebase <- file.path(cache_root(), "_baselined_arrays_", x$power$signature,
-                        x$repository_id)
+  filebase <- file.path(cache_root(), "_baselined_arrays_", x$power$signature)
   res <- tryCatch({
     res <- filearray::filearray_checkload(
       filebase, mode = "readwrite", symlink_ok = FALSE,
@@ -254,15 +251,18 @@ power_baseline.rave_prepare_power <- function(
       ready = TRUE,  # The rest procedure might go wrong, in case failure
       RAVEIO_FILEARRAY_VERSION = RAVEIO_FILEARRAY_VERSION
     )
-    # No need to baseline again, the settings haven't changed
-    x$power$baselined <- res
-    return(x)
-    # message("Using existing cache")
+    catgl("Using existing cache", level = "DEBUG")
+    res
   }, error = function(e){
     # message(e$message)
     if(dir.exists(filebase)){ unlink(filebase, recursive = TRUE, force = TRUE) }
     dir_create2(dirname(filebase))
-    res <- filearray::filearray_create(filebase, dm, type = "float", partition_size = 1)
+    res <- filearray::filearray_create(
+      filebase = filebase,
+      dimension = x$power$dim,
+      type = "float",
+      partition_size = 1
+    )
     res$.mode <- "readwrite"
     res$.header$rave_signature <- signature
     res$.header$signal_type <- signal_type
@@ -273,63 +273,96 @@ power_baseline.rave_prepare_power <- function(
     res$.header$baseline_windows <- baseline_windows
     res$.header$RAVEIO_FILEARRAY_VERSION <- RAVEIO_FILEARRAY_VERSION
     res$.header$ready <- FALSE
-    dimnames(res) <- dnames
+    dimnames(res) <- x$power$dimnames
       # # automatically run
       # res$.save_header()
     res
   })
 
   if("Electrode" %in% units){
-    input_list <- lapply(seq_along(sub_elec), function(ii){
-      list(
-        index = ii,
-        electrode = sub_elec[[ii]],
-        array = sub_list[[ii]]
-      )
-    })
+    # Check electrode with baselines
+    todo_elec <- sub_elec[!sub_elec %in% res$.header$electrodes]
 
-    dipsaus::lapply_async2(
-      input_list,
-      FUN = function(el) {
-        res[, , , el$index] <- dipsaus::baseline_array(
-          x = el$array[drop = FALSE],
-          along_dim = 2L,
-          baseline_indexpoints = time_index,
-          unit_dims = unit_dims,
-          method = method
+    if(length(todo_elec)) {
+
+      res$set_header("ready", FALSE)
+
+      input_list <- lapply(todo_elec, function(e){
+        idx <- which(x$electrode_list == e)
+        list(
+          index = idx,
+          electrode = e,
+          array = x$power$data_list[[idx]]
         )
-        NULL
-      },
-      plan = FALSE,
-      callback = function(el) {
-        sprintf("Baseline correction | %s (signal type: %s)",
-                el$electrode,
-                signal_type)
-      }
-    )
+      })
+
+      dipsaus::lapply_async2(
+        input_list,
+        FUN = function(el) {
+          res[, , , el$index] <- dipsaus::baseline_array(
+            x = el$array[drop = FALSE],
+            along_dim = 2L,
+            baseline_indexpoints = time_index,
+            unit_dims = unit_dims,
+            method = method
+          )
+          NULL
+        },
+        plan = FALSE,
+        callback = function(el) {
+          sprintf("Baseline correction | %s (signal type: %s)",
+                  el$electrode,
+                  signal_type)
+        }
+      )
+
+      res$.header$electrodes <- c(
+        res$.header$electrodes,
+        todo_elec
+      )
+
+      res$set_header("ready", TRUE)
+    }
+
+
+    res$.mode <- "readonly"
+
   } else {
-    bind_base <- file.path(cache_root(), "_binded_arrays_", sub$signature, "power")
-    dir_create2(dirname(bind_base))
-    bind_array <- filearray::filearray_bind(
-      .list = sub$data_list,
-      symlink = symlink_enabled(),
-      filebase = bind_base,
-      overwrite = TRUE, cache_ok = TRUE)
 
-    res[] <- dipsaus::baseline_array(
-      x = bind_array[,,, which(sel),drop=FALSE],
-      along_dim = 2L,
-      baseline_indexpoints = time_index,
-      unit_dims = unit_dims,
-      method = method
-    )
+    stop("Baseline across electrode not supported")
+
   }
-
-
-  res$set_header("ready", TRUE)
-  x$power$baselined <- res
-
-  return(x)
+#
+#   x$power$baselined <- res
+#   return(x)
+#
+#   if("Electrode" %in% units){
+#
+#
+#
+#   } else {
+#
+#     dir_create2(dirname(bind_base))
+#     bind_array <- filearray::filearray_bind(
+#       .list = sub$data_list,
+#       symlink = symlink_enabled(),
+#       filebase = bind_base,
+#       overwrite = TRUE, cache_ok = TRUE)
+#
+#     res[] <- dipsaus::baseline_array(
+#       x = bind_array[,,, which(sel),drop=FALSE],
+#       along_dim = 2L,
+#       baseline_indexpoints = time_index,
+#       unit_dims = unit_dims,
+#       method = method
+#     )
+#   }
+#
+#
+#   res$set_header("ready", TRUE)
+#   x$power$baselined <- res
+#
+#   return(x)
 }
 
 

@@ -227,6 +227,9 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
 
   re <- eval(call, envir = env)
 
+  re$signal_type <- signal_type
+
+
   frequency_table <- re$subject$get_frequency(simplify = FALSE)
   frequency <- frequency_table$Frequency
   re$frequency <- frequency
