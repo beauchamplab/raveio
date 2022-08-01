@@ -1,0 +1,350 @@
+description: Blackrock NEV 3.0 specification as yaml format
+version: '3.0'
+specification:
+  section1:
+    description:
+    - NEV 3.0 specification configuration.
+    - 'Section 1: Header Basic Information.'
+    dictionary:
+      file_type:
+        type: string
+        size: 8
+      file_spec:
+        type: uint8
+        'n': 2
+      additional_flags:
+        type: uint16
+      bytes_in_headers:
+        type: uint32
+      bytes_in_data_packet:
+        type: uint32
+      time_resolution_timestamp:
+        type: uint32
+      time_resolution_samples:
+        type: uint32
+      time_origin:
+        type: uint16
+        'n': 8.0
+        names:
+        - Year
+        - Month
+        - DayofWeek
+        - Day
+        - Hour
+        - Minute
+        - Second
+        - Millisecond
+      application_to_create_file:
+        type: string
+        size: 32
+      comment:
+        type: string
+        size: 256
+      number_of_extended_headers:
+        type: uint32
+  section2:
+    description:
+    - NEV 3.0 specification configuration.
+    - 'Section 2: Header Extended Information.'
+    key_rule:
+      description: The rule that determines the dictionary key
+      name: packet_id
+      type: string
+      start_byte: 0
+      size: 8
+    dictionary:
+      ARRAYNME:
+        type: packet
+        size: 32.0
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          electrode_array_name:
+            type: string
+            size: 24
+      ECOMMENT:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          extra_comment:
+            type: string
+            size: 24
+      CCOMMENT:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          continued_comment:
+            type: string
+            size: 24
+      MAPFILE:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          map_file:
+            type: string
+            size: 24
+      NEUEVWAV:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          electrode_id:
+            type: uint16
+          physical_connector:
+            type: uint8
+          connector_pin:
+            type: uint8
+          digitization_factor:
+            type: uint16
+          energy_threshold:
+            type: uint16
+          high_threshold:
+            type: int16
+          low_threshold:
+            type: int16
+          number_of_sorted_units:
+            type: uint8
+          bytes_per_waveform:
+            type: uint8
+          spike_width:
+            type: int16
+      NEUEVLBL:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          electrode_id:
+            type: uint16
+          label:
+            type: string
+            size: 16
+      NEUEVFLT:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          electrode_id:
+            type: uint16
+          high_freq_corner:
+            type: uint32
+          high_freq_order:
+            type: uint32
+          high_freq_type:
+            type: uint16
+          low_freq_corner:
+            type: uint32
+          low_freq_order:
+            type: uint32
+          low_freq_type:
+            type: uint16
+      DIGLABEL:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          label:
+            type: string
+            size: 16
+          mode:
+            type: uint8
+      VIDEOSYN:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          video_source_id:
+            type: uint16
+          video_source:
+            type: string
+            size: 16
+          frame_rate:
+            type: float
+      TRACKOBJ:
+        type: packet
+        size: 32
+        specs:
+          packet_id:
+            type: string
+            size: 8
+          trackable_type:
+            type: uint16
+          trackable_id:
+            type: uint16
+          point_count:
+            type: uint16
+          video_source:
+            type: string
+            size: 16
+  section3:
+    description:
+    - NEV 3.0 specification configuration.
+    - 'Section 3: Data Packets.'
+    key_rule:
+      description: The rule that determines the dictionary key from a number
+      name: packet_id
+      type: uint16
+      start_byte: 4
+      size: 2
+    dictionary:
+      '0':
+        event: digital_inputs
+        type: packet
+        size: 28
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          packet_insertion_reason:
+            type: bit
+            size: 1
+          reserved:
+            type: reserved
+            size: 1
+          digital_input:
+            type: uint16
+      1-32767:
+        event: spike
+        type: packet
+        size: 24
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          unit_classification_number:
+            type: uint8
+          reserved:
+            type: reserved
+            size: 1
+          waveform:
+            type: raw
+            size: 12
+      '65535':
+        event: comment
+        type: comment_packet
+        size: 32
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          char_set:
+            type: uint8
+          flag:
+            type: uint8
+          data:
+            type: uint32
+          comment:
+            type: string
+            size: 16
+      '65534':
+        event: video_sync
+        type: packet
+        size: 48
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          video_file_number:
+            type: uint16
+          video_frame_number:
+            type: uint32
+          video_elapsed_time:
+            type: uint32
+          video_source_id:
+            type: uint32
+      '65533':
+        event: tracking
+        type: packet
+        size: 36
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          parent_id:
+            type: uint16
+          node_id:
+            type: uint16
+          node_count:
+            type: uint16
+          parent_count:
+            type: uint16
+          tracking_point:
+            type: uint16
+            'n': 9
+      '65532':
+        event: button_trigger
+        type: packet
+        size: 24
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          trigger_type:
+            type: uint16
+      '65531':
+        event: log
+        type: comment_packet
+        size: 56
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          mode:
+            type: uint16
+          app_name:
+            type: string
+            size: 16
+          log_comment:
+            type: string
+            size: 28
+      '65530':
+        event: configuration
+        type: packet
+        size: 24
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          config_change_type:
+            type: uint16
+          config_changed:
+            type: string
+            size: 12
+      '65529':
+        event: recording
+        type: packet
+        size: 24
+        specs:
+          timestamp:
+            type: uint64
+          packet_id:
+            type: uint16
+          event_reason:
+            type: uint16

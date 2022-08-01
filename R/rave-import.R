@@ -152,7 +152,8 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
 
   dipsaus::lapply_async2(
     electrodes, function(e) {
-      regexp <- stringr::regex(sprintf('(^|[^0-9])%d\\.(mat|h5)$', e), ignore_case = TRUE)
+      # Allow both ch1.mat and ch001.mat to pass
+      regexp <- stringr::regex(sprintf('(^|[^0-9])[0]{0,}%d\\.(mat|h5)$', e), ignore_case = TRUE)
       cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
       for(b in blocks){
         info <- file_info[[b]]

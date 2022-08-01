@@ -79,6 +79,14 @@ str2lang <- function (s) {
 }
 
 
+byte_size_lut <- list(
+  "uint8" = 1, "int8" = 1,
+  "uint16" = 2, "int16" = 2,
+  "uint32" = 4, "int32" = 4,
+  "uint64" = 8, "int64" = 8,
+  "float" = 4, "double" = 8
+)
+
 #' @title Print colored messages
 #' @param ...,.envir passed to \code{\link[glue]{glue}}
 #' @param level passed to \code{\link[dipsaus]{cat2}}

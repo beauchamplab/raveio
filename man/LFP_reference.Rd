@@ -95,7 +95,7 @@ with current electrode type}
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVEAbstarctElectrode" data-id="set_epoch"><a href='../../raveio/html/RAVEAbstarctElectrode.html#method-RAVEAbstarctElectrode-set_epoch'><code>raveio::RAVEAbstarctElectrode$set_epoch()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVEAbstarctElectrode" data-id="set_epoch"><a href='../../raveio/html/RAVEAbstarctElectrode.html#method-RAVEAbstarctElectrode-set_epoch'><code>raveio::RAVEAbstarctElectrode$set_epoch()</code></a></span></li>
 </ul>
 </details>
 }}

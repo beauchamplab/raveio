@@ -24,16 +24,16 @@ Zhengjia Wang
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id=".use_multi_files"><a href='../../raveio/html/Tensor.html#method-Tensor-.use_multi_files'><code>raveio::Tensor$.use_multi_files()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="collapse"><a href='../../raveio/html/Tensor.html#method-Tensor-collapse'><code>raveio::Tensor$collapse()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="finalize"><a href='../../raveio/html/Tensor.html#method-Tensor-finalize'><code>raveio::Tensor$finalize()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="get_data"><a href='../../raveio/html/Tensor.html#method-Tensor-get_data'><code>raveio::Tensor$get_data()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="operate"><a href='../../raveio/html/Tensor.html#method-Tensor-operate'><code>raveio::Tensor$operate()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="print"><a href='../../raveio/html/Tensor.html#method-Tensor-print'><code>raveio::Tensor$print()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="set_data"><a href='../../raveio/html/Tensor.html#method-Tensor-set_data'><code>raveio::Tensor$set_data()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="subset"><a href='../../raveio/html/Tensor.html#method-Tensor-subset'><code>raveio::Tensor$subset()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap"><a href='../../raveio/html/Tensor.html#method-Tensor-to_swap'><code>raveio::Tensor$to_swap()</code></a></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap_now"><a href='../../raveio/html/Tensor.html#method-Tensor-to_swap_now'><code>raveio::Tensor$to_swap_now()</code></a></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id=".use_multi_files"><a href='../../raveio/html/Tensor.html#method-Tensor-.use_multi_files'><code>raveio::Tensor$.use_multi_files()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="collapse"><a href='../../raveio/html/Tensor.html#method-Tensor-collapse'><code>raveio::Tensor$collapse()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="finalize"><a href='../../raveio/html/Tensor.html#method-Tensor-finalize'><code>raveio::Tensor$finalize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="get_data"><a href='../../raveio/html/Tensor.html#method-Tensor-get_data'><code>raveio::Tensor$get_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="operate"><a href='../../raveio/html/Tensor.html#method-Tensor-operate'><code>raveio::Tensor$operate()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="print"><a href='../../raveio/html/Tensor.html#method-Tensor-print'><code>raveio::Tensor$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="set_data"><a href='../../raveio/html/Tensor.html#method-Tensor-set_data'><code>raveio::Tensor$set_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="subset"><a href='../../raveio/html/Tensor.html#method-Tensor-subset'><code>raveio::Tensor$subset()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap"><a href='../../raveio/html/Tensor.html#method-Tensor-to_swap'><code>raveio::Tensor$to_swap()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="to_swap_now"><a href='../../raveio/html/Tensor.html#method-Tensor-to_swap_now'><code>raveio::Tensor$to_swap_now()</code></a></span></li>
 </ul>
 </details>
 }}
