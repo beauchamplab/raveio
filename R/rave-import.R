@@ -108,7 +108,48 @@ rave_import_lfp <- function(
   }
 
   # Not imported, import
-  UseMethod('rave_import_lfp')
+  re <- UseMethod('rave_import_lfp')
+
+  subject <- RAVESubject$new(project_name = project_name,
+                             subject_code = subject_code,
+                             strict = FALSE)
+  electrodes <- dipsaus::parse_svec(electrodes)
+  tryCatch({
+    # Save to electrodes.csv
+    has_fs <- !is.null(rave_brain(subject))
+
+    # check if electrodes.csv exists
+    orig <- subject$get_electrode_table(reference_name = ".fake", simplify = FALSE)
+
+
+    if(!setequal(orig$Electrode, electrodes)) {
+      stop("Electrode set is wrong")
+    }
+
+    if(has_fs) {
+      # Try to import
+      raveio::import_electrode_table(
+        path = file.path(subject$meta_path, "electrodes.csv"),
+        subject = subject, use_fs = has_fs)
+    }
+
+  }, error = function(e){
+    catgl("Cannot import from existing electrodes.csv, creating a new one", level = "INFO")
+    tbl <- data.frame(
+      Electrode = subject$electrodes,
+      Coord_x = 0, Coord_y = 0, Coord_z = 0,
+      Label = "NoLabel",
+      SignalType = subject$electrode_types
+    )
+    raveio::save_meta2(
+      data = tbl,
+      meta_type = "electrodes",
+      project_name = project_name,
+      subject_code = subject_code
+    )
+  })
+
+  return(re)
 }
 
 rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
@@ -468,6 +509,100 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
   }
   pretools$data$format <- which(unname(IMPORT_FORMATS) == "native_brainvis")
   pretools$save()
+}
+
+rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
+                                          electrodes, sample_rate, add = FALSE,
+                                          conversion = NA, data_type = 'LFP', ...){
+
+  # list2env(list(project_name = 'devel', subject_code = "PAV004",
+  #               blocks = c("001", "002"),
+  #               electrodes = "1-230,254-257", sample_rate = 2000, add = FALSE,
+  #               conversion = NA, data_type = 'LFP'), envir=.GlobalEnv)
+
+  .fs_struct <- raveio_getopt('file_structure')
+  on.exit({
+    raveio_setopt('file_structure', .fs_struct, .save = TRUE)
+  }, add = TRUE)
+  raveio_setopt('file_structure', 'native', .save = FALSE)
+  # direct import data, no check (already checked)
+  pretools <- RAVEPreprocessSettings$new(subject = sprintf('%s/%s', project_name, subject_code))
+
+  if(!add){
+    pretools$set_blocks(blocks = blocks)
+  }
+  electrodes <- dipsaus::parse_svec(electrodes)
+  pretools$set_electrodes(electrodes, type = data_type, add = add)
+  pretools$set_sample_rates(sample_rate, type = data_type)
+  pretools$subject$initialize_paths(include_freesurfer = FALSE)
+  pretools$save()
+
+  # Now create instance, always check content as loading is cached
+  res <- validate_raw_file_lfp.native_blackrock(
+    subject_code = subject_code,
+    blocks = blocks,
+    electrodes = electrodes,
+    check_content = TRUE,
+    project_name = project_name
+  )
+
+  save_path <- file.path(pretools$subject$preprocess_path, 'voltage')
+  save_path <- dir_create2(save_path)
+
+  if(isTRUE(conversion %in% volc_units)){
+    unit <- volc_units
+  } else {
+    unit <- 'uV'
+  }
+  factor <- c(1e-6, 1e-3, 1)[c("V", "mV", "uV") == unit]
+
+  file_info <- attr(res, 'info')
+
+  blackrock_files <- sapply(blocks, function(b) {
+    brfile <- BlackrockFile$new(
+      path = file.path(file_info[[b]]$path, file_info[[b]]$files[[1]]),
+      block = b)
+    brfile$refresh_data(verbose = FALSE)
+    brfile
+  }, simplify = FALSE, USE.NAMES = TRUE)
+
+  dipsaus::lapply_async2(
+    electrodes, function(e) {
+      cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
+      for(b in blocks){
+        brfile <- blackrock_files[[b]]
+        s <- brfile$get_electrode(e) * factor
+        # save to HDF5
+        save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
+                chunk = 1024, replace = TRUE, quiet = TRUE)
+        save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
+                chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+      }
+      invisible()
+    }, callback = function(e) {
+      sprintf("Importing %s/%s | electrode %s", project_name, subject_code, e)
+    }, plan = FALSE
+  )
+
+
+  # Now set user conf
+  for(e in electrodes){
+    pretools$data[[e]]$data_imported <- TRUE
+  }
+  pretools$data$format <- which(unname(IMPORT_FORMATS) == "native_blackrock")
+  pretools$save()
+
+  # generate epoch files as well
+  epoch <- lapply(blackrock_files, function(brfile) {
+    brfile$get_epoch()
+  })
+  epoch <- do.call('rbind', unname(epoch))
+  # save epoch
+  path <- file.path(pretools$subject$meta_path, "epoch_nev_exports.csv")
+  safe_write_csv(x = epoch, file = path, row.names = FALSE)
+
+  invisible()
+
 }
 
 

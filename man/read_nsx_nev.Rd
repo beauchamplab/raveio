@@ -9,7 +9,8 @@ read_nsx_nev(
   nev_path = NULL,
   header_only = FALSE,
   verbose = TRUE,
-  ram = FALSE
+  ram = FALSE,
+  force_update = FALSE
 )
 }
 \arguments{

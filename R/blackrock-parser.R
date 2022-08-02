@@ -108,6 +108,9 @@ parse_packet <- function(x, item, ...) {
     re$value
   })
   names(packet) <- names
+  if(length(item$event)) {
+    packet$event <- item$event
+  }
   packet
 }
 parse_comment_packet <- function(x, item, ...) {
@@ -129,6 +132,7 @@ parse_comment_packet <- function(x, item, ...) {
     packet[[length(packet)]] <- paste0(packet[[length(packet)]], s)
   }
   names(packet) <- names
+  packet$event <- item$event
   packet
 }
 
@@ -363,7 +367,8 @@ parse__nev <- function(nev_path, specification) {
   re
 }
 
-parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = TRUE) {
+parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = TRUE,
+                       filebase = tempfile(), force_update = FALSE) {
   re <- dipsaus::fastmap2()
   conn <- file(nsx_path, "rb")
   on.exit({ close(conn) })
@@ -379,50 +384,110 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
 
   re$data_header <- data_header
 
+  # create signature
+  signature <- dipsaus::digest(list(
+    basic_header = basic_header,
+    ext_header = ext_header,
+    data_header = data_header
+  ))
+
+  re$header_signature <- signature
+
   if(!header_only) {
     # Read the rest of data
     data_specs <- specification[[4]]$dictionary$data_points
     n_timepoints <- data_header$data_header$value$number_of_data_points
     n_channels <- basic_header$channel_count$value
 
-    filebase <- tempfile()
-    if(file.exists(filebase)) {
-      unlink(filebase, recursive = TRUE)
-    }
-    arr <- filearray::filearray_create(
-      filebase = filebase,
-      dimension = c(n_timepoints, n_channels),
-      type = "integer", partition_size = 1
+
+    arr <- tryCatch(
+      expr = {
+        if(force_update) {
+          stop("Force updating NSX data file.")
+        }
+        filearray::filearray_checkload(
+          filebase = filebase, mode = "readwrite",
+          symlink_ok = FALSE, signature = signature,
+          rave_data_type = "Blackrock NSX data array",
+          units = "uV",
+          ready = TRUE
+        )
+      },
+      error = function(e) {
+        if(file.exists(filebase)) {
+          unlink(filebase, recursive = TRUE)
+        }
+        dir_create2(dirname(filebase))
+        arr <- filearray::filearray_create(
+          filebase = filebase,
+          dimension = c(n_timepoints, n_channels),
+          type = "float", partition_size = 1
+        )
+        arr$.mode <- "readwrite"
+        arr$.header$signature <- signature
+        arr$.header$rave_data_type <- "Blackrock NSX data array"
+        arr$.header$units <- "uV"
+        arr
+      }
     )
+    if(!isTRUE(arr$get_header(key = "ready", default = FALSE))) {
+
+      parition_size <- ceiling(2^21 / n_channels)
+      niters <- ceiling(n_timepoints / parition_size)
+      data_specs$name <- "data_partition"
+      data_specs$n <- parition_size * n_channels
+
+      data_specs <- do.call(validate_spec, data_specs)
+
+
+      # Calculate digital to analog transform
+      min_digit <- ext_header$CC$min_digital_value[seq_len(n_channels)]
+      min_analog <- ext_header$CC$min_analog_value[seq_len(n_channels)]
+      ratio <- (
+        ext_header$CC$max_analog_value - ext_header$CC$min_analog_value
+      ) / (
+        ext_header$CC$max_digital_value - ext_header$CC$min_digital_value
+      )
+      ratio <- ratio[seq_len(n_channels)]
+
+      units <- sapply(ext_header$CC$units, function(unit) {
+        switch (
+          unit,
+          "V" = { 1e6 },
+          "mV" = { 1e3 },
+          { 1 }
+        )
+      })[seq_len(n_channels)]
+      min_analog <- min_analog * units
+      ratio <- ratio * units
+
+      parser <- get(sprintf("parse_%s", data_specs$type),
+                    mode = "function", envir = asNamespace('raveio'),
+                    inherits = FALSE)
+
+      progress <- dipsaus::progress2("Loading NSX", max = niters,
+                                     shiny_auto_close = TRUE, quiet = !verbose)
+      lapply(seq_len(niters), function(ii) {
+        progress$inc(sprintf("Partition %d", ii))
+
+        data <- readBin(conn, what = "raw",
+                        n = data_specs$.bytes,
+                        size = 1L, endian = "little")
+
+        data <- parser(data)
+        ntp <- length(data) / n_channels
+        dim(data) <- c(n_channels, ntp)
+        data <- (data - min_digit) * ratio + min_analog
+        arr[seq_len(ntp) + parition_size * (ii - 1), ] <- t(data)
+
+        return()
+      })
+
+      arr$set_header(key = "ready", value = TRUE)
+
+    }
 
     re$data <- arr
-
-    parition_size <- ceiling(2^21 / n_channels)
-    niters <- ceiling(n_timepoints / parition_size)
-
-    data_specs$name <- "data_partition"
-    data_specs$n <- parition_size * n_channels
-    data_specs <- do.call(validate_spec, data_specs)
-    parser <- get(sprintf("parse_%s", data_specs$type),
-                  mode = "function", envir = asNamespace('raveio'),
-                  inherits = FALSE)
-
-    progress <- dipsaus::progress2("Importing NSX", max = niters,
-                                   shiny_auto_close = TRUE, quiet = !verbose)
-    lapply(seq_len(niters), function(ii) {
-      progress$inc(sprintf("Partition %d", ii))
-
-      data <- readBin(conn, what = "raw",
-                      n = data_specs$.bytes,
-                      size = 1L, endian = "little")
-
-      data <- parser(data)
-      ntp <- length(data) / n_channels
-      dim(data) <- c(n_channels, ntp)
-      arr[seq_len(ntp) + parition_size * (ii - 1), ] <- t(data)
-
-      return()
-    })
   }
 
 
@@ -483,7 +548,7 @@ blackrock_postprocess <- function(nsx, nev = NULL) {
 #'
 #' @export
 read_nsx_nev <- function(paths, nev_path = NULL, header_only = FALSE,
-                         verbose = TRUE, ram = FALSE) {
+                         verbose = TRUE, ram = FALSE, force_update = FALSE) {
   if(!all(file.exists(paths))) {
     stop("read_nsx_nev: at least one path cannot be found.")
   }
@@ -501,6 +566,8 @@ read_nsx_nev <- function(paths, nev_path = NULL, header_only = FALSE,
     nev <- NULL
   }
 
+  progress <- dipsaus::progress2(title = "Reading blackrock", max = length(paths), shiny_auto_close = TRUE, quiet = header_only || !verbose || !length(paths))
+
   nsx <- structure(
     lapply(paths, function(path) {
       info <- blackrock_specification(path)
@@ -508,9 +575,15 @@ read_nsx_nev <- function(paths, nev_path = NULL, header_only = FALSE,
       if(!identical(info$type, "nsx")) {
         stop("read_nsx_nev: path is not a valid nsx file (.ns1, .ns2, ..., .ns5): ", path)
       }
+
+      progress$inc(sprintf("Parsing %s", filenames(path)))
+
+      filebase <- paste0(path, ".filearray")
+
       re <- parse__nsx(path, info$config$specification,
                        header_only = header_only,
-                       verbose = verbose)
+                       verbose = verbose, filebase = filebase,
+                       force_update = force_update)
       # Post processing
       re <- blackrock_postprocess(nsx = re, nev = nev)
 

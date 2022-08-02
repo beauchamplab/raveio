@@ -167,7 +167,8 @@ IMPORT_FORMATS <- list(
   'Single EDF(+) file per block' = 'native_edf',
   'Single BrainVision file (.vhdr+.eeg, .vhdr+.dat) per block' = 'native_brainvis',
   'BIDS & EDF(+)' = 'bids_edf',
-  'BIDS & BrainVision (.vhdr+.eeg, .vhdr+.dat)' = 'bids_brainvis'
+  'BIDS & BrainVision (.vhdr+.eeg, .vhdr+.dat)' = 'bids_brainvis',
+  'Single BlackRock file (.nev+.nsx) per block' = 'native_blackrock'
 )
 
 validate_raw_file_lfp <- function(subject_code, blocks, electrodes, format, check_content = TRUE, ...){
@@ -641,6 +642,65 @@ validate_raw_file_lfp.native_brainvis <- function(
 
   return(structure(TRUE, info = finfo, snapshot = snapshot, class = 'validate_success'))
 }
+
+validate_raw_file_lfp.native_blackrock <- function(
+    subject_code, blocks, electrodes, check_content = TRUE, ...){
+
+  raw_root <- raveio_getopt('raw_data_dir')
+  block_paths <- file.path(raw_root, subject_code, blocks)
+  if(!all(dir.exists(block_paths))){
+    return(validation_failure(
+      'One or more block folder is missing.' = blocks[!dir.exists(block_paths)]
+    ))
+  }
+
+  if(missing(electrodes)){
+    electrodes <- NULL
+  }
+  snapshot <- NULL
+
+  finfo <- dipsaus::fastmap2()
+  validation_failure(.reset = TRUE)
+  sapply(blocks, function(b) {
+    bpath <- file.path(raw_root, subject_code, b)
+    nev_path <- list.files(bpath, pattern = "\\.nev$")
+    if(length(nev_path) != 1) {
+      validation_failure(
+        .add = TRUE,
+        'Each block must, and can only have one [.nev] file.' = b
+      )
+      return(NULL)
+    }
+    brfile <- BlackrockFile$new(path = file.path(bpath, nev_path), block = b)
+    if(check_content) {
+      brfile$refresh_data()
+    }
+
+    if(length(electrodes)) {
+      # check if requested electrodes are included
+      sel <- electrodes %in% brfile$electrode_table$Electrode
+      if(!all(sel)) {
+
+        validation_failure(
+          .add = TRUE,
+          "The following electrodes are missing:" = sprintf(
+            "Block [%s], electrode(s) [%s]",
+            b, dipsaus::deparse_svec(electrodes[!sel])
+          )
+        )
+      }
+    }
+
+    finfo[[b]] <- list( path = bpath, files = nev_path)
+  }, simplify = FALSE, USE.NAMES = TRUE)
+
+  # get validation failure messages
+  failed <- validation_failure(.add = TRUE)
+  if(length(attr(failed, 'reason'))){ return(failed) }
+
+  return(structure(TRUE, info = finfo, snapshot = snapshot, class = 'validate_success'))
+}
+
 
 
 validate_raw_file_lfp.bids <- function(

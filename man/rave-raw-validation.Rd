@@ -7,7 +7,7 @@
 \alias{IMPORT_FORMATS}
 \title{Validate raw files in 'rave' directory}
 \format{
-An object of class \code{list} of length 6.
+An object of class \code{list} of length 7.
 }
 \usage{
 validate_raw_file(
