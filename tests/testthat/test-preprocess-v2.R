@@ -14,7 +14,8 @@ test_that("RAVE preprocess pipeline 2.0", {
   raveio::raveio_setopt('file_structure', 'native', .save = FALSE)
   raveio::raveio_setopt('max_worker', 1L, .save = FALSE)
 
-  skip_if_not("demo" %in% get_projects())
+  skip_if_not(dir.exists(file.path(raveio::raveio_getopt("raw_data_dir"), "YAB")))
+  skip_if("demo" %in% get_projects())
 
   # Skip if cannot find subject
   self <- raveio:::RAVEPreprocessSettings$new(subject = 'demo/YAB', read_only = FALSE)
@@ -114,44 +115,67 @@ test_that("RAVE preprocess pipeline 2.0", {
 
 test_that("RAVE 2.0 LFP electrode classes", {
 
-  skip_if_not(
-    dipsaus::package_installed("rave") &&
-      "demo" %in% get_projects()
-  )
+  skip_if_not(dipsaus::package_installed("rave"))
+
+  rave <- asNamespace('rave')
+  rave$arrange_data_dir(reset = TRUE)
+
+  skip_if_not("demo" %in% get_projects())
+  project <- RAVEProject$new(project_name = "demo", strict = FALSE)
+  skip_if_not(project$has_subject('DemoSubject'))
 
   suppressWarnings({
     dipsaus::capture_expr({
-    dipsaus::capture_expr({
-      epoch_name <- "auditory_onset"
-      reference_name <- "default"
-      subject_id <- "demo/DemoSubject"
-      elec <- 14
-      rave <- asNamespace('rave')
-      env <- rave$rave_prepare(subject = subject_id, electrodes = elec, time_range = c(1,2), data_types = c("power", "voltage"), epoch = epoch_name, reference = reference_name, attach = FALSE)
+      dipsaus::capture_expr({
 
-      power <- env$module_tools$get_power(referenced = TRUE)
-      volt <- env$module_tools$get_voltage(referenced = TRUE)
-      expected_power <- aperm(power$get_data(), c(2, 3, 1, 4))
-      expected_volt <- aperm(volt$get_data(), c(2, 1, 3))
-      e <- new_electrode(subject = subject_id, number = elec)
-      ref_table <- e$subject$get_reference(reference_name = reference_name)
-      ref_name <- ref_table$Reference[ref_table$Electrode == elec]
-      ref <- new_reference(subject = subject_id, number = ref_name, signal_type = "LFP")
+        epoch_name <- "auditory_onset"
+        reference_name <- "default"
+        subject_id <- "demo/DemoSubject"
+        elec <- 14
+        env <- rave$rave_prepare(subject = subject_id, electrodes = elec, time_range = c(1,2), data_types = c("power", "voltage"), epoch = epoch_name, reference = reference_name, attach = FALSE)
 
-      e$set_reference(ref)
-      e$set_epoch(e$subject$get_epoch(epoch_name))
-      e$trial_intervals <- c(-1, 2)
+        suppressWarnings({
+          power <- env$module_tools$get_power(referenced = TRUE)
+          volt <- env$module_tools$get_voltage(referenced = TRUE)
+        })
+        expected_power <- aperm(power$get_data(), c(2, 3, 1, 4))
+        expected_volt <- aperm(volt$get_data(), c(2, 1, 3))
 
-      newpower <- e$load_data("power")
-      expect_true({
-        max(abs(range(newpower[drop = FALSE] / expected_power - 1))) < 1e-4
-      })
+        suppressWarnings({
+          power_noref <- env$module_tools$get_power(referenced = FALSE)
+          volt_noref <- env$module_tools$get_voltage(referenced = FALSE)
+        })
+        expected_power_noref <- aperm(power_noref$get_data(), c(2, 3, 1, 4))
+        expected_volt_noref <- aperm(volt_noref$get_data(), c(2, 1, 3))
 
-      newvolt <- e$load_data("voltage")
-      expect_true({
-        max(abs(range(newvolt[drop = FALSE] / expected_volt - 1))) < 1e-7
-      })
-    }, type = "message")
+        e <- new_electrode(subject = subject_id, number = elec)
+        ref_table <- e$subject$get_reference(reference_name = reference_name)
+        ref_name <- ref_table$Reference[ref_table$Electrode == elec]
+        ref <- new_reference(subject = subject_id, number = ref_name, signal_type = "LFP")
+
+        e$set_epoch(e$subject$get_epoch(epoch_name))
+        e$trial_intervals <- c(-1, 2)
+        e$set_reference("noref")
+        newpower <- e$load_data("power")
+        newvolt <- e$load_data("voltage")
+        expect_true({
+          max(abs(range(newpower[drop = FALSE] / expected_power_noref - 1))) < 1e-4
+        })
+        expect_true({
+          max(abs(range(newvolt[drop = FALSE] / expected_volt_noref - 1))) < 1e-7
+        })
+
+        e$set_reference(ref)
+        newpower <- e$load_data("power")
+        newvolt <- e$load_data("voltage")
+
+        expect_true({
+          max(abs(range(newpower[drop = FALSE] / expected_power - 1))) < 1e-4
+        })
+        expect_true({
+          max(abs(range(newvolt[drop = FALSE] / expected_volt - 1))) < 1e-7
+        })
+      }, type = "message")
     })
   })
 
