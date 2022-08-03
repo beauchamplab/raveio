@@ -1,3 +1,7 @@
+#' Class definition to load data from 'Blackrock' 'Microsystems' files
+#' @description Currently only supports minimum file specification version
+#' \code{2.3}. Please contact the package maintainer or 'RAVE' team
+#' if older specifications are needed
 #' @export
 BlackrockFile <- R6::R6Class(
   classname = "BlackrockFile",
@@ -139,49 +143,90 @@ BlackrockFile <- R6::R6Class(
 
   public = list(
 
+    #' @field block character, session block ID
     block = character(),
 
+    #' @description print user-friendly messages
+    print = function() {
+      has_nsx <- self$has_nsx
+      available_nsx <- names(has_nsx)[has_nsx]
+
+      etable <- self$electrode_table
+      sample_rates <- self$sample_rates
+      recording_duration <- self$recording_duration
+      epoch <- self$get_epoch()
+
+      nsx_info <- lapply(available_nsx, function(nm) {
+        sel <- etable$NSType == nm
+        elec <- etable$Electrode[sel]
+        sprintf(
+          "  - %s: sample rate [%.1f Hz], duration [%.2f sec], electrode [%s, n=%d]\n",
+          nm,
+          sample_rates[[nm]], recording_duration[[nm]],
+          dipsaus::deparse_svec(elec), length(elec)
+        )
+      })
+
+
+      cat(c(
+        "Blackrock Microsystems file: [", private$.filebase, ']\n',
+        "Directory: ", private$.path, "\n",
+        "Version: ", paste0(sprintf("%.0f", self$version), collapse = "."), "\n",
+        "Block: ", self$block, "\n",
+        "# of comments/trial: ", ifelse(is.data.frame(epoch), nrow(epoch), "N/A"), "\n",
+        "Available NSx: ", paste0("ns", seq_len(private$.NS_MAX)[self$has_nsx], collapse = ", "), "\n",
+        unlist(nsx_info)
+      ), sep = "")
+    },
+
+    #' @description constructor
+    #' @param path the path to 'Blackrock' file, can be with or without file
+    #' extensions
+    #' @param block session block ID; default is the file name
     initialize = function(path, block) {
+      if(missing(block)) {
+        block <- filenames(path)
+        block <- gsub("\\.(nev|ns[0-9]|ccf)$", "", block, ignore.case = TRUE)
+      }
       self$block <- block
       private$.initialize(path)
     },
 
+    #' @description get 'NEV' file path
+    #' @return absolute file path
     nev_path = function() {
       file.path(private$.path, private$.nev_file)
     },
 
+    #' @description get 'NSx' file paths
+    #' @param which which signal file to get, or \code{NULL} to return all
+    #' available paths, default is \code{NULL}; must be integers
+    #' @return absolute file paths
     nsx_paths = function(which = NULL) {
-      if(is.null(which)) {
+      which <- as.integer(which)
+      if(!length(which)) {
         which <- which(self$has_nsx)
+      } else if (any(is.na(which))) {
+        stop("$nsx_paths: parameter `which` must be an integer")
       }
-      sapply(sprintf("ns%.0f", which), function(nm) {
+      sapply(sprintf("ns%d", which), function(nm) {
         file.path(private$.path, private[[sprintf(".%s_file", nm)]])
       }, simplify = FALSE, USE.NAMES = TRUE)
     },
 
+    #' @description refresh and load 'NSx' data
+    #' @param force whether to force reload data even if the data has been
+    #' loaded and cached before
+    #' @param verbose whether to print out messages when loading
+    #' @return nothing
     refresh_data = function(force = FALSE, verbose = TRUE) {
       private$.initialize(self$base_path, header_only = FALSE,
                           force = force, verbose = verbose)
       invisible()
     },
 
-    load_nsx_data = function(which = NULL, force = FALSE, verbose = FALSE) {
-      nsx_paths <- self$nsx_paths(which)
-
-      for(nm in names(nsx_paths)) {
-        nsx_path <- nsx_paths[[nm]]
-        info <- blackrock_specification(nsx_path)
-        nsx <- parse__nsx(nsx_path, info$config$specification,
-                         header_only = FALSE,
-                         verbose = verbose)
-        # Post processing
-        nsx <- blackrock_postprocess(nsx = nsx, nev = private$.nev)
-        private[[sprintf(".%s_data", nm)]] <- nsx
-      }
-
-      .NotYetImplemented()
-    },
-
+    #' @description get epoch table from the 'NEV' comment data packet
+    #' @return a data frame
     get_epoch = function() {
 
       srate <- self$sample_rate_nev_timestamp
@@ -203,6 +248,8 @@ BlackrockFile <- R6::R6Class(
       re
     },
 
+    #' @description get 'waveform' of the spike data
+    #' @return a list of spike 'waveform' (without normalization)
     get_waveform = function() {
       srate_timestamp <- self$sample_rate_nev_timestamp
       wave_table <- private$.nev$extended_header$NEUEVWAV
@@ -234,6 +281,10 @@ BlackrockFile <- R6::R6Class(
       re
     },
 
+    #' @description get electrode data
+    #' @param electrode integer, must be a length of one
+    #' @return a normalized numeric vector (analog signals with \code{'uV'}
+    #' as the unit)
     get_electrode = function(electrode) {
 
       if(length(electrode) != 1) {
@@ -263,18 +314,23 @@ BlackrockFile <- R6::R6Class(
 
   active = list(
 
+    #' @field base_path absolute base path to the file
     base_path = function() {
       file.path(private$.path, private$.filebase)
     },
 
+    #' @field version 'NEV' specification version
     version = function() {
       private$.nev$basic_header$file_spec$value
     },
 
+    #' @field electrode_table electrode table
     electrode_table = function() {
       private$.electrode_ids()
     },
 
+    #' @field sample_rate_nev_timestamp sample rate of 'NEV' data packet
+    #' time-stamps
     sample_rate_nev_timestamp = function() {
       re <- private$.nev$basic_header$time_resolution_timestamp$value
       if(!length(re)) {
@@ -283,12 +339,18 @@ BlackrockFile <- R6::R6Class(
       re[[1]]
     },
 
+    #' @field has_nsx named vector of 'NSx' availability
     has_nsx = function() {
-      sapply(paste0("ns", seq_len(private$.NS_MAX)), function(nm) {
-        length(private[[sprintf(".%s_file", nm)]]) == 1
-      }, simplify = TRUE, USE.NAMES = TRUE)
+      nms <- paste0("ns", seq_len(private$.NS_MAX))
+      structure(
+        sapply(nms, function(nm) {
+          length(private[[sprintf(".%s_file", nm)]]) == 1
+        }, simplify = TRUE, USE.NAMES = TRUE),
+        names = nms
+      )
     },
 
+    #' @field recording_duration recording duration of each 'NSx'
     recording_duration = function() {
       has_nsx <- self$has_nsx
       nms <- names(has_nsx)[has_nsx]
@@ -301,6 +363,7 @@ BlackrockFile <- R6::R6Class(
       })
     },
 
+    #' @field sample_rates sampling frequencies of each 'NSx' file
     sample_rates = function() {
       has_nsx <- self$has_nsx
       nms <- names(has_nsx)[has_nsx]
@@ -313,3 +376,5 @@ BlackrockFile <- R6::R6Class(
 
   )
 )
+
+

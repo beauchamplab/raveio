@@ -10,7 +10,8 @@ read_nsx_nev(
   header_only = FALSE,
   verbose = TRUE,
   ram = FALSE,
-  force_update = FALSE
+  force_update = FALSE,
+  temp_path = file.path(tempdir(), "blackrock-temp")
 )
 }
 \arguments{
@@ -26,6 +27,11 @@ reading signal arrays}
 
 \item{ram}{whether to load signals into the memory rather than storing
 with \code{\link[filearray]{filearray}}; default is false}
+
+\item{force_update}{force updating the channel data even if the headers
+haven't changed}
+
+\item{temp_path}{temporary directory to store the channel data}
 }
 \description{
 Current implementation supports minimum 2.3 file

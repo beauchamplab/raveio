@@ -545,10 +545,13 @@ blackrock_postprocess <- function(nsx, nev = NULL) {
 #' @param verbose whether to print out progress when loading signal array
 #' @param ram whether to load signals into the memory rather than storing
 #' with \code{\link[filearray]{filearray}}; default is false
-#'
+#' @param force_update force updating the channel data even if the headers
+#' haven't changed
+#' @param temp_path temporary directory to store the channel data
 #' @export
 read_nsx_nev <- function(paths, nev_path = NULL, header_only = FALSE,
-                         verbose = TRUE, ram = FALSE, force_update = FALSE) {
+                         verbose = TRUE, ram = FALSE, force_update = FALSE,
+                         temp_path = file.path(tempdir(), "blackrock-temp")) {
   if(!all(file.exists(paths))) {
     stop("read_nsx_nev: at least one path cannot be found.")
   }
@@ -578,7 +581,7 @@ read_nsx_nev <- function(paths, nev_path = NULL, header_only = FALSE,
 
       progress$inc(sprintf("Parsing %s", filenames(path)))
 
-      filebase <- paste0(path, ".filearray")
+      filebase <- file.path(temp_path, paste0(filenames(path), ".filearray"))
 
       re <- parse__nsx(path, info$config$specification,
                        header_only = header_only,
