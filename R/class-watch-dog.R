@@ -124,7 +124,7 @@ RAVEWatchDog <- R6::R6Class(
       # Automatically set cache path, it can be changed
       self$cache_path <- file.path(cache_root(), "_automation_", job_name)
 
-
+      dir_create2(self$log_path)
     },
 
     load_registry = function(update = TRUE) {
@@ -603,6 +603,10 @@ RAVEWatchDog <- R6::R6Class(
         }
       }, add = TRUE, after = TRUE)
 
+      # make sure directories are there
+      dir_create2(self$log_path)
+      dir_create2(self$cache_path)
+
       while(TRUE) {
         self$scan()
         Sys.sleep(interval)
@@ -720,6 +724,7 @@ RAVEWatchDog <- R6::R6Class(
 #' default is false
 #' @return When \code{dry_run} is true, then the watcher's instance will be
 #' returned; otherwise nothing will be returned.
+#' @export
 auto_process_blackrock <- function(
     watch_path, project_name = "automated", task_name = "RAVEWatchDog",
     scan_interval = 10, time_threshold = Sys.time(), max_jobs = 1L,
