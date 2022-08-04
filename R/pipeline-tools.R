@@ -299,7 +299,7 @@ pipeline_progress <- function(
 pipeline_fork <- function(
   src = Sys.getenv("RAVE_PIPELINE", "."),
   dest = tempfile(pattern = "rave_pipeline_"),
-  filter_pattern = "\\.(R|yaml|txt|csv|fst|conf)$",
+  filter_pattern = "(^R|\\.R|\\.yaml|\\.txt|\\.csv|\\.fst|\\.conf)$",
   activate = FALSE
 ){
   if(!dir.exists(src)){
@@ -313,12 +313,12 @@ pipeline_fork <- function(
   }
 
 
-  fs <- list.files(src, include.dirs = FALSE, full.names = FALSE, pattern = filter_pattern)
+  fs <- list.files(src, include.dirs = TRUE, full.names = FALSE, pattern = filter_pattern)
 
   dir_create2(dest)
   dest <- normalizePath(dest, mustWork = TRUE)
   file.copy(from = file.path(src, fs), to = dest, overwrite = TRUE,
-            copy.date = TRUE)
+            recursive = TRUE, copy.date = TRUE)
 
   if( activate ){
     pipeline_build(dest)

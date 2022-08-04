@@ -87,7 +87,7 @@ pipeline_progress(
 pipeline_fork(
   src = Sys.getenv("RAVE_PIPELINE", "."),
   dest = tempfile(pattern = "rave_pipeline_"),
-  filter_pattern = "\\\\.(R|yaml|txt|csv|fst|conf)$",
+  filter_pattern = "(^R|\\\\.R|\\\\.yaml|\\\\.txt|\\\\.csv|\\\\.fst|\\\\.conf)$",
   activate = FALSE
 )
 

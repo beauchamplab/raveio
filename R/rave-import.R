@@ -597,9 +597,13 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
     brfile$get_epoch()
   })
   epoch <- do.call('rbind', unname(epoch))
-  # save epoch
-  path <- file.path(pretools$subject$meta_path, "epoch_nev_exports.csv")
-  safe_write_csv(x = epoch, file = path, row.names = FALSE)
+  if(nrow(epoch)) {
+    epoch$Trial <- seq_len(nrow(epoch))
+    # save epoch
+    path <- file.path(pretools$subject$meta_path, "epoch_nev_exports.csv")
+    safe_write_csv(x = epoch[, c("Block", "Time", "Trial", "Condition")],
+                   file = path, row.names = FALSE)
+  }
 
   invisible()
 
