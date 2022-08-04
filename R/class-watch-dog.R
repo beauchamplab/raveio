@@ -5,7 +5,8 @@ RAVEWatchDog <- R6::R6Class(
     pipeline_names = c(
       "import_lfp_native",
       "notch_filter",
-      "wavelet_module"
+      "wavelet_module",
+      'reference_module'
     ),
     .raw_path = character(0),
     .job_name = character(0),
@@ -309,8 +310,9 @@ RAVEWatchDog <- R6::R6Class(
           "import_blocks__format",
           "import_blocks__session_block",
           "project_name",
-          "subject_code"
-
+          "subject_code",
+          "electrode_group",
+          "changes"
         ))
         if(pname == "notch_filter") {
           settings$diagnostic_plot_params$path <- NULL
@@ -379,6 +381,11 @@ RAVEWatchDog <- R6::R6Class(
           settings$project_name <- self$project_name
           settings$subject_code <- subject_code
         },
+        "reference_module" = {
+          settings$project_name <- self$project_name
+          settings$subject_code <- subject_code
+          settings$reference_name <- "[new reference]"
+        },
         {}
       )
 
@@ -427,7 +434,11 @@ RAVEWatchDog <- R6::R6Class(
       fake_path <- file.path(private$.raw_path, sprintf("%s__%s", item$Subject, item$Block))
       fake_path <- dir_create2(fake_path)
       if(!file.exists(file.path(fake_path, item$Block))) {
-        file.symlink(block_path, to = fake_path)
+        if(dipsaus::get_os() == "windows") {
+          file.copy(block_path, to = fake_path, recursive = TRUE, copy.date = TRUE)
+        } else {
+          file.symlink(block_path, to = fake_path)
+        }
       }
 
       # set to running
@@ -458,6 +469,8 @@ RAVEWatchDog <- R6::R6Class(
             ravedash$set_logger_path(root_path = .(self$log_path), max_files = 10L)
             ravedash$logger_threshold("trace", type = 'file')
             ravedash$logger_threshold("trace", type = 'console')
+          } else {
+            ravedash <- NULL
           }
           blackrock_src <- .(file)
 
@@ -476,7 +489,7 @@ RAVEWatchDog <- R6::R6Class(
           pipeline_result_notch <- pipeline$run(
             names = c("subject", "diagnostic_plots"),
             async = TRUE,
-            scheduler = "none", type = "vanilla",
+            scheduler = "none", type = "callr",
             shortcut = TRUE
           )
 
@@ -486,7 +499,51 @@ RAVEWatchDog <- R6::R6Class(
           pipeline$run(async = FALSE, as_promise = FALSE,
                        scheduler = "none", type = "smart")
 
-          raveio$catgl("[{blackrock_src}]: Some programs are still running in the background. However, the subject data is ready to view in RAVE. Here are the awaiting programs: \n  - Notch filter diagnostic plots", level = "INFO")
+          subject <- pipeline$read("subject")
+
+          # generate reference if exists
+          pname <- "reference_module"
+          pipeline <- raveio$pipeline(pname, paths = file.path(workdir, "pipelines"))
+          raveio$catgl("[{blackrock_src}]: Running pipeline: [{pname}] (reference_table_initial) at [{pipeline$pipeline_path}]", level = "INFO")
+          # check subject's localization
+          elec_path <- .(file.path(private$.raw_path, item$Subject, "rave-imaging", "electrodes.csv"))
+          if(file.exists(elec_path)) {
+            tryCatch({
+
+              elec_table <- utils::read.csv(elec_path)
+              elec_table$Electrode <- as.integer(elec_table$Electrode)
+              if(length(elec_table$Electrode) == length(subject$electrodes)) {
+                o <- order(elec_table$Electrode)
+                elec_table <- elec_table[o, ]
+                elec_table$Electrode <- sort(subject$electrodes)
+              }
+
+              raveio$safe_write_csv(elec_table, file.path(subject$meta_path, "electrodes.csv"),
+                                    row.names = FALSE)
+
+            }, error = function(e) {
+              if(is.environment(ravedash)) {
+                ravedash$logger_error_condition(e, level = "warning")
+              } else {
+                warning(e)
+              }
+            })
+          }
+          pipeline$run(names = "reference_table_initial",
+                       async = FALSE, as_promise = FALSE,
+                       scheduler = "none", type = "smart")
+          unsaved_meta <- file.path(subject$meta_path, "reference__unsaved.csv")
+          target_meta <- file.path(subject$meta_path, "reference_auto_generated.csv")
+          if(file.exists(unsaved_meta) && !file.exists(target_meta)) {
+            file.copy(unsaved_meta, target_meta, overwrite = TRUE)
+          }
+
+          # make subject backward-compatible
+          raveio$catgl("[{blackrock_src}]: Making data format backward-compatible", level = "INFO")
+          raveio$rave_subject_format_conversion(subject$subject_id)
+
+
+          raveio$catgl("[{blackrock_src}]: Some programs might be still running in the background. However, the subject data is ready to view in RAVE. Here are the awaiting programs: \n  - Notch filter diagnostic plots", level = "INFO")
           pipeline_result_notch$await()
           raveio$catgl("[{blackrock_src}]: Done", evel = "INFO")
 
@@ -642,3 +699,99 @@ RAVEWatchDog <- R6::R6Class(
 
   )
 )
+
+
+#' Monitors 'Blackrock' output folder and automatically import data into 'RAVE'
+#' @description Automatically import 'Blackrock' files from designated folder
+#' and perform 'Notch' filters, 'Wavelet' transform; also generate epoch,
+#' reference files.
+#' @param watch_path the folder to watch
+#' @param project_name the project name to generate
+#' @param task_name the watcher's name
+#' @param scan_interval scan the directory every \code{scan_interval} seconds,
+#' cannot be lower than 1
+#' @param time_threshold time-threshold of files: all files with modified
+#' time prior to this threshold will be ignored; default is current time
+#' @param max_jobs maximum concurrent imports, default is 1
+#' @param as_job whether to run in 'RStudio' background job or to block the
+#' session when monitoring; default is auto-detected
+#' @param dry_run whether to dry-run the code (instead of executing the
+#' scripts, return the watcher's instance and open the settings file);
+#' default is false
+#' @return When \code{dry_run} is true, then the watcher's instance will be
+#' returned; otherwise nothing will be returned.
+auto_process_blackrock <- function(
+    watch_path, project_name = "automated", task_name = "RAVEWatchDog",
+    scan_interval = 10, time_threshold = Sys.time(), max_jobs = 1L,
+    as_job = NA, dry_run = FALSE
+) {
+
+  time_threshold <- as.POSIXlt(time_threshold)
+  time_threshold <- time_threshold[!is.na(time_threshold)]
+  if(!length(time_threshold)) {
+    time_threshold <- as.POSIXlt(Sys.time())
+  } else {
+    time_threshold <- time_threshold[[1]]
+  }
+
+  if(!isFALSE(as_job)) {
+    as_job <- dipsaus::rs_avail()
+  }
+
+  fun <- dipsaus::new_function2(body = bquote({
+
+    raveio <- asNamespace('raveio')
+    watcher <- raveio$RAVEWatchDog$new(
+      watch_path = .(watch_path),
+      job_name = .(task_name)
+    )
+    watcher$time_threshold <- .(time_threshold)
+    watcher$max_jobs <- .(max_jobs)
+    watcher$project_name <- .(project_name)
+
+    settings_path <- file.path(watcher$log_path, "settings.yaml")
+    if(!file.exists(settings_path)) {
+      watcher$create_settings_file()
+    }
+
+    return(watcher)
+
+  }), quote_type = "quote")
+
+  if( dry_run ) {
+    watcher <- fun()
+
+    settings_path <- file.path(watcher$log_path, "settings.yaml")
+    if(!file.exists(settings_path)) {
+      watcher$create_settings_file()
+    }
+
+    try({
+      dipsaus::rs_edit_file(settings_path)
+      catgl("Watcher's settings file has been opened. Please check the settings, and edit if necessary. All auto-discovered BlackRock files will be preprocessed using this settings file.", level = "INFO")
+    }, silent = TRUE)
+
+    return(watcher)
+  }
+
+
+
+  if(as_job) {
+    dipsaus::rs_exec(
+      bquote({
+        fun <- dipsaus::new_function2(body = .(body(fun)))
+        # return(fun)
+        watcher <- fun()
+        watcher$watch(interval = .(scan_interval))
+      }),
+      quoted = TRUE,
+      rs = TRUE,
+      name = task_name,
+      focus_on_console = TRUE
+    )
+  } else {
+    watcher <- fun()
+    watcher$watch(interval = scan_interval)
+  }
+
+}
