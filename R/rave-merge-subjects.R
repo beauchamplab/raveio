@@ -266,6 +266,7 @@ merge_rave_subject <- function(from_subjects, to_subject, ignore_duplicated_bloc
 
     epoch_tbl <- do.call("rbind", unname(epoch_tbl))
     if(nrow(epoch_tbl)) {
+      epoch_tbl$Trial <- seq_along(nrow(epoch_tbl))
       safe_write_csv(
         x = epoch_tbl,
         file = file.path(to_subject$meta_path, "epoch_nev_exports.csv"),
