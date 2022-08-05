@@ -125,7 +125,7 @@ RAVESubject <- R6::R6Class(
 
       if(include_freesurfer){
         if(is.na(self$freesurfer_path) || !dir.exists(self$freesurfer_path)){
-          path <- as.character(file.path(self$preprocess_settings$raw_path, 'rave-imaging', "fs"))
+          path <- as.character(file.path(self$preprocess_settings$raw_path, 'rave-imaging'))
           dir_create2(path)
         }
       }

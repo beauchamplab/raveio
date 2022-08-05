@@ -28,6 +28,10 @@ RAVEWatchDog <- R6::R6Class(
       if(length(sel) && any(sel)) {
         registry <- registry[!sel, ]
       }
+      # Directly binding two items will result in error (with NA)
+      item$LastModified <- as.POSIXlt(item$LastModified)
+      item$TaskStarted <- as.POSIXlt(item$TaskStarted)
+      item$TaskEnded <- as.POSIXlt(item$TaskEnded)
       registry <- rbind(item, registry)
       registry <- registry[order(registry$TaskStarted, na.last = TRUE, decreasing = TRUE), ]
       private$.registry_cache <- registry
@@ -486,13 +490,6 @@ RAVEWatchDog <- R6::R6Class(
           pipeline$run(names = "apply_notch", async = FALSE, as_promise = FALSE,
                        scheduler = "none", type = "smart")
 
-          pipeline_result_notch <- pipeline$run(
-            names = c("subject", "diagnostic_plots"),
-            async = TRUE,
-            scheduler = "none", type = "callr",
-            shortcut = TRUE
-          )
-
           pname <- "wavelet_module"
           pipeline <- raveio$pipeline(pname, paths = file.path(workdir, "pipelines"))
           raveio$catgl("[{blackrock_src}]: Running pipeline: [{pname}] at [{pipeline$pipeline_path}]", level = "INFO")
@@ -544,7 +541,14 @@ RAVEWatchDog <- R6::R6Class(
 
 
           raveio$catgl("[{blackrock_src}]: Some programs might be still running in the background. However, the subject data is ready to view in RAVE. Here are the awaiting programs: \n  - Notch filter diagnostic plots", level = "INFO")
-          pipeline_result_notch$await()
+          pname <- "notch_filter"
+          pipeline <- raveio$pipeline(pname, paths = file.path(workdir, "pipelines"))
+          pipeline$run(
+            names = c("subject", "diagnostic_plots"),
+            async = FALSE,
+            scheduler = "none", type = "vanilla",
+            shortcut = TRUE
+          )
           raveio$catgl("[{blackrock_src}]: Done", evel = "INFO")
 
         })
