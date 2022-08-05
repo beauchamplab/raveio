@@ -487,7 +487,7 @@ RAVEWatchDog <- R6::R6Class(
           pname <- "notch_filter"
           pipeline <- raveio$pipeline(pname, paths = file.path(workdir, "pipelines"))
           raveio$catgl("[{blackrock_src}]: Running pipeline: [{pname}] at [{pipeline$pipeline_path}]", level = "INFO")
-          pipeline$run(names = "apply_notch", async = FALSE, as_promise = FALSE,
+          pipeline$run(async = FALSE, as_promise = FALSE,
                        scheduler = "none", type = "smart")
 
           pname <- "wavelet_module"
@@ -538,17 +538,6 @@ RAVEWatchDog <- R6::R6Class(
           # make subject backward-compatible
           raveio$catgl("[{blackrock_src}]: Making data format backward-compatible", level = "INFO")
           raveio$rave_subject_format_conversion(subject$subject_id)
-
-
-          raveio$catgl("[{blackrock_src}]: Some programs might be still running in the background. However, the subject data is ready to view in RAVE. Here are the awaiting programs: \n  - Notch filter diagnostic plots", level = "INFO")
-          pname <- "notch_filter"
-          pipeline <- raveio$pipeline(pname, paths = file.path(workdir, "pipelines"))
-          pipeline$run(
-            names = c("subject", "diagnostic_plots"),
-            async = FALSE,
-            scheduler = "none", type = "vanilla",
-            shortcut = TRUE
-          )
           raveio$catgl("[{blackrock_src}]: Done", evel = "INFO")
 
         })

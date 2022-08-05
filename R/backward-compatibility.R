@@ -61,10 +61,10 @@ rave_subject_format_conversion <- function(
       # save_h5(s, file = h5path, name = sprintf("/ref/voltage/%s", block), chunk = 1024, quiet = TRUE)
       length(s)
     }, simplify = FALSE, USE.NAMES = TRUE)
-    save_h5("noref", file = h5path, name = "reference", ctype = "character", quiet = TRUE)
+    save_h5("invalid", file = h5path, name = "reference", ctype = "character", quiet = TRUE)
 
     h5path <- file.path(power_path, sprintf("%s.h5", e))
-    save_h5("noref", file = h5path, name = "reference", ctype = "character", quiet = TRUE)
+    save_h5("invalid", file = h5path, name = "reference", ctype = "character", quiet = TRUE)
     # if(etype %in% c("LFP")) {
     #   for(block in blocks) {
     #     s <- load_h5(h5path, name = sprintf("/raw/power/%s", block), ram = TRUE)
@@ -74,7 +74,7 @@ rave_subject_format_conversion <- function(
 
 
     h5path <- file.path(phase_path, sprintf("%s.h5", e))
-    save_h5("noref", file = h5path, name = "reference", ctype = "character", quiet = TRUE)
+    save_h5("invalid", file = h5path, name = "reference", ctype = "character", quiet = TRUE)
     # if(etype %in% c("LFP")) {
     #   for(block in blocks) {
     #     s <- load_h5(h5path, name = sprintf("/raw/phase/%s", block), ram = TRUE)
@@ -113,7 +113,7 @@ rave_subject_format_conversion <- function(
 
   utils::write.csv(data.frame(
     Electrode = electrodes,
-    Reference = "noref"
+    Reference = "invalid"
   ), file = file.path(cache_path, 'cached_reference.csv'))
 
   # 3. add keywords to rave.yaml

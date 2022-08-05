@@ -174,7 +174,7 @@ merge_rave_subject <- function(from_subjects, to_subject, ignore_duplicated_bloc
         s <- load_h5(file = src_path, name = src_h5name, ram = TRUE, quiet = TRUE)
         save_h5(x = s, file = dst_path, name = dst_h5name, quiet = TRUE)
 
-        save_h5(x = "noref", file = dst_path, name = 'reference', quiet = TRUE, ctype = 'character')
+        save_h5(x = "invalid", file = dst_path, name = 'reference', quiet = TRUE, ctype = 'character')
       }
     }
 
