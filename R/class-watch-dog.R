@@ -50,7 +50,8 @@ RAVEWatchDog <- R6::R6Class(
       mtime <- file.mtime(file.path(private$.watch_path, file))
 
       # get subject code, block ID
-      m <- gregexec(self$file_pattern, file, ignore.case = TRUE, useBytes = TRUE)[[1]]
+      fname <- filenames(file)
+      m <- gregexec(self$file_pattern, fname, ignore.case = TRUE, useBytes = TRUE)[[1]]
       ml <- attr(m, "match.length")
 
       error_item <- data.frame(
@@ -68,8 +69,8 @@ RAVEWatchDog <- R6::R6Class(
         return(error_item)
       }
 
-      subject_code <- substr(file, m[[2]], m[[2]] + ml[[2]] - 1)
-      block <- substr(file, m[[3]], m[[3]] + ml[[3]] - 1)
+      subject_code <- substr(fname, m[[2]], m[[2]] + ml[[2]] - 1)
+      block <- substr(fname, m[[3]], m[[3]] + ml[[3]] - 1)
       if(!nchar(subject_code) || !nchar(block)) {
         return(error_item)
       }
@@ -176,13 +177,12 @@ RAVEWatchDog <- R6::R6Class(
       # check the watch path
       fs <- list.files(
         private$.watch_path,
-        pattern = self$file_pattern,
         all.files = FALSE,
         full.names = FALSE,
         include.dirs = FALSE,
-        recursive = FALSE,
-        ignore.case = TRUE
+        recursive = TRUE
       )
+      fs <- fs[grepl(self$file_pattern, filenames(fs), ignore.case = TRUE)]
 
       if(!length(fs)) { return(character(0L)) }
 
@@ -483,7 +483,7 @@ RAVEWatchDog <- R6::R6Class(
           raveio$catgl("[{blackrock_src}]: Running pipeline: [{pname}] at [{pipeline$pipeline_path}]", level = "INFO")
           pipeline$run(async = FALSE, as_promise = FALSE,
                        scheduler = "none", type = "smart")
-
+          raveio$catgl("[{blackrock_src}]: [{pname}] finished", level = "INFO")
           pname <- "notch_filter"
           pipeline <- raveio$pipeline(pname, paths = file.path(workdir, "pipelines"))
           raveio$catgl("[{blackrock_src}]: Running pipeline: [{pname}] at [{pipeline$pipeline_path}]", level = "INFO")
@@ -601,7 +601,12 @@ RAVEWatchDog <- R6::R6Class(
       dir_create2(self$cache_path)
 
       while(TRUE) {
-        self$scan()
+        tryCatch({
+          self$scan()
+        }, error = function(e) {
+          catgl("Error raised while the master process rescans/schedules tasks. Reason: {paste(e$message, collapse = '\n')}\nWill try again later",
+                level = "ERROR")
+        })
         Sys.sleep(interval)
       }
     }

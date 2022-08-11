@@ -244,6 +244,14 @@ BlackrockFile <- R6::R6Class(
         )
       })
       re <- dipsaus::drop_nulls(re)
+      if(!length(re)) {
+        return(data.frame(
+          Block = character(0L),
+          Time = numeric(0L),
+          Condition = character(0L),
+          stringsAsFactors = FALSE
+        ))
+      }
       re <- do.call("rbind", re)
       re
     },
