@@ -12,6 +12,9 @@
 #' default is 'LFP'. This option rarely needs to change unless you really want
 #' to check the power data from other types. For other signal types, check
 #' \code{\link{SIGNAL_TYPES}}
+#' @param blocks one or more session blocks to load
+#' @param time_frequency whether to load time-frequency data when preparing
+#' block data
 #' @param env environment to evaluate
 #' @param repository_id used internally
 #' @param verbose whether to show progress
