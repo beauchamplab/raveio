@@ -594,10 +594,15 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
 
   # generate epoch files as well
   epoch <- lapply(blackrock_files, function(brfile) {
-    brfile$get_epoch()
+    tbl <- brfile$get_epoch()
+    if(is.data.frame(tbl) && nrow(tbl)) {
+      return(tbl)
+    } else {
+      return(NULL)
+    }
   })
   epoch <- do.call('rbind', unname(epoch))
-  if(nrow(epoch)) {
+  if(is.data.frame(epoch) && nrow(epoch)) {
     epoch$Trial <- seq_len(nrow(epoch))
     # save epoch
     path <- file.path(pretools$subject$meta_path, "epoch_nev_exports.csv")
