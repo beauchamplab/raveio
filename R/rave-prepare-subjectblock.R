@@ -109,7 +109,7 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
     simplify = FALSE)
   re$electrode_table <- merge(electrode_table, re$reference_table, by = "Electrode", suffixes = c("_x", ""), all.x = TRUE)
   re$electrode_table$Reference[is.na(re$electrode_table$Reference)] <- "noref"
-
+  re$electrode_table$isLoaded <- re$electrode_table$Electrode %in% electrodes
 
   # create reference instances
   ref_names <- unique(re$reference_table$Reference)
@@ -323,7 +323,7 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
   }
   re$repository_id <- repository_id
 
-  class(re) <- c("rave_prepare_subject", "rave_repository", "fastmap2", "list")
+  class(re) <- c("prepare_subject_with_blocks", "rave_prepare_subject", "rave_repository", "fastmap2", "list")
   re
 
 }

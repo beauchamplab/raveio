@@ -445,6 +445,23 @@ RAVEWatchDog <- R6::R6Class(
         }
       }
 
+      # Make sure the subject surface files can be loaded properly?
+      if(!file.exists(file.path(fake_path, 'rave-imaging'))) {
+        # check if original subject has the fs recon
+        imaging_path_orig <- file.path(private$.raw_path, item$Subject, 'rave-imaging')
+        if(file.exists(imaging_path_orig)) {
+          if(dipsaus::get_os() == "windows" || !dir.exists(imaging_path_orig)) {
+            # On windows, symlink does not work well so just copy
+            # On Unix, if rave-imaging is a symlink, then R (4.0) will treat
+            # the path as a file. Just copy over
+            file.copy(imaging_path_orig, to = fake_path,
+                      recursive = TRUE, copy.date = TRUE)
+          } else {
+            file.symlink(imaging_path_orig, to = fake_path)
+          }
+        }
+      }
+
       # set to running
       catgl("Start processing [{file}]", level = "INFO")
       item$Status <- "running"
