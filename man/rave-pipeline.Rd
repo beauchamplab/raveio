@@ -12,6 +12,7 @@
 \alias{load_targets}
 \alias{pipeline_target_names}
 \alias{pipeline_debug}
+\alias{pipeline_eval}
 \alias{pipeline_visualize}
 \alias{pipeline_progress}
 \alias{pipeline_fork}
@@ -67,6 +68,12 @@ pipeline_debug(
   env = parent.frame(),
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
   skip_names
+)
+
+pipeline_eval(
+  names,
+  env = new.env(parent = parent.frame()),
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
 )
 
 pipeline_visualize(

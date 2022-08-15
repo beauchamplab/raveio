@@ -164,6 +164,71 @@ pipeline_debug <- function(
   }
 }
 
+
+#' @rdname rave-pipeline
+#' @export
+pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
+                                pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
+  force(env)
+  pipe_dir <- activate_pipeline(pipe_dir)
+
+  # find targets that are not in the main
+  script <- attr(pipe_dir, "target_script")
+
+  main_targets <- load_target(script)
+  all_targets <- load_target("make-main.R")
+
+  nms <- names(all_targets)
+  tnames <- unname(unlist(lapply(all_targets, function(t){ t$settings$name })))
+  names <- names[names %in% tnames]
+
+  missing_names <- tnames[!tnames %in% c(names, attr(as.list(env), "names"))]
+  if(length(missing_names)) {
+    list2env(
+      pipeline_read(var_names = missing_names),
+      envir = env
+    )
+  }
+
+  w <- getOption("width", 80)
+
+  all_starts <- Sys.time()
+
+  lapply(names, function(name) {
+
+    ii <- which(tnames == name)
+    if(length(nms) < ii || nms[[ii]] == ""){
+      nm <- sprintf("[%s]", name)
+    } else {
+      nm <- strsplit(nms[[ii]], "_")[[1]]
+      nm[[1]] <- stringr::str_to_sentence(nm[[1]])
+      nm <- paste(nm, collapse = " ")
+      nm <- sprintf("[%s] (%s)", name, nm)
+    }
+
+    nm <- paste(c(
+      sprintf(" (%.2f s) ", dipsaus::time_delta(all_starts, Sys.time())),
+      rep("-", 2), " ", nm, "\n"), collapse = "")
+    catgl(nm, level = "INFO")
+
+    tar_obj <- all_targets[[ii]]
+    started <- Sys.time()
+    v <- eval(tar_obj$command$expr, new.env(parent = env))
+    assign(name, v, envir = env)
+    ended <- Sys.time()
+
+    msg <- sprintf(
+      "%s [%.2f sec, %s] - %s",
+      name, dipsaus::time_delta(started, ended, units = "secs"),
+      dipsaus::to_ram_size(utils::object.size(v)),
+      paste(class(v), collapse = ", ")
+    )
+    catgl(msg, .envir = emptyenv(), level = "DEFAULT")
+    NULL
+  })
+  env
+}
+
 # May be removed later if not really useful
 pipeline_run_interactive <- function(
   names, skip_names, env = parent.frame(),

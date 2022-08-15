@@ -35,6 +35,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-get_settings}{\code{PipelineTools$get_settings()}}
 \item \href{#method-PipelineTools-read}{\code{PipelineTools$read()}}
 \item \href{#method-PipelineTools-run}{\code{PipelineTools$run()}}
+\item \href{#method-PipelineTools-eval}{\code{PipelineTools$eval()}}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
 \item \href{#method-PipelineTools-clone}{\code{PipelineTools$clone()}}
@@ -177,6 +178,30 @@ these arguments will be passed to \code{pipeline_run_bare}}
 \subsection{Returns}{
 A \code{\link{PipelineResult}} instance if \code{as_promise}
 or \code{async} is true; otherwise a list of values for input \code{names}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-eval"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-eval}{}}}
+\subsection{Method \code{eval()}}{
+run the pipeline in order; unlike \code{$run()}, this method
+does not use the \code{targets} infrastructure, hence the pipeline
+results will not be stored, and the order of \code{names} will be
+respected.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$eval(names, env = parent.frame(), clean = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{names}}{pipeline variable names to calculate; must be specified}
+
+\item{\code{env}}{environment to evaluate and store the results}
+
+\item{\code{clean}}{whether to evaluate without polluting \code{env}}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
