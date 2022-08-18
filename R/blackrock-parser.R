@@ -516,7 +516,7 @@ blackrock_specification <- function(path) {
 
   if(!file.exists(spec_file)) {
     stop(sprintf(
-      "`read_nsx_nev`: Unable to find file specification file of [.%s] with version [%d.%d]. The version might be too old (<= 2.2) or too new. Please contact RAVE develop team to add file specification.",
+      "`read_nsx_nev`: Unable to find file specification file of [.%s] with version [%d.%d]. The version might be too old (<= 2.1) or too new. Please contact RAVE develop team to add file specification.",
       file_type, file_version[[1]], file_version[[2]]))
   }
   spec <- yaml::read_yaml(spec_file)

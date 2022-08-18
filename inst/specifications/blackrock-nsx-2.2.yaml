@@ -1,0 +1,115 @@
+description: Blackrock NSx 2.2 specification as yaml format
+version: '2.2'
+specification:
+  section1:
+    description:
+    - NSX 2.2 specification configuration.
+    - 'Section 1: Basic Header.'
+    dictionary:
+      file_type:
+        type: string
+        size: 8
+      file_spec:
+        type: uint8
+        'n': 2
+      bytes_in_headers:
+        type: uint32
+      label:
+        type: string
+        size: 16
+      comment:
+        type: string
+        size: 252
+      processor_timestamp:
+        type: uint32
+      period:
+        type: uint32
+      time_resolution_timestamp:
+        type: uint32
+      time_origin:
+        type: uint16
+        'n': 8
+        names:
+        - Year
+        - Month
+        - DayofWeek
+        - Day
+        - Hour
+        - Minute
+        - Second
+        - Millisecond
+      channel_count:
+        type: uint32
+  section2:
+    description:
+    - NSX 2.2 specification configuration.
+    - 'Section 2: Extended Headers.'
+    key_rule:
+      description: The rule that determines the dictionary key
+      name: type
+      type: string
+      start_byte: 0
+      size: 2
+    dictionary:
+      CC:
+        type: packet
+        size: 66
+        specs:
+          type:
+            type: string
+            size: 2
+          electrode_id:
+            type: uint16
+          electrode_label:
+            type: string
+            size: 16
+          physical_connector:
+            type: uint8
+          connector_pin:
+            type: uint8
+          min_digital_value:
+            type: int16
+          max_digital_value:
+            type: int16
+          min_analog_value:
+            type: int16
+          max_analog_value:
+            type: int16
+          units:
+            type: string
+            size: 16
+          high_freq_corner:
+            type: uint32
+          high_freq_order:
+            type: uint32
+          high_freq_type:
+            type: uint16
+          low_freq_corner:
+            type: uint32
+          low_freq_order:
+            type: uint32
+          low_freq_type:
+            type: uint16
+  section3_part1:
+    description:
+    - NSX 2.2 specification configuration.
+    - 'Section 3: Data Packets.'
+    dictionary:
+      data_header:
+        type: packet
+        size: 9
+        specs:
+          header:
+            type: uint8
+          timestamp:
+            type: uint32
+          number_of_data_points:
+            type: uint32
+  section3_part2:
+    description:
+    - NSX 2.2 specification configuration.
+    - 'Section 3 (continued): Variable data points.'
+    dictionary:
+      data_points:
+        type: int16
+        'n': .na
