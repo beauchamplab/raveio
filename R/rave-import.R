@@ -562,6 +562,15 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
     brfile <- BlackrockFile$new(
       path = file.path(file_info[[b]]$path, file_info[[b]]$files[[1]]),
       block = b)
+
+    # check sampling frequency
+    actual_srates <- brfile$electrode_table$SampleRate[brfile$electrode_table$Electrode %in% electrodes]
+    actual_srates <- unique(actual_srates)
+    if(any(actual_srates < sample_rate)) {
+      actual_srates <- actual_srates[actual_srates < sample_rate]
+      stop(sprintf("Cannot import the data: the requested sample rate is %.0f Hz. However, some electrode channels have less sampling frequencies: %s", sample_rate, paste(actual_srates, collapse = ", ")))
+    }
+
     brfile$refresh_data(verbose = FALSE)
     brfile
   }, simplify = FALSE, USE.NAMES = TRUE)
@@ -572,6 +581,19 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
       for(b in blocks){
         brfile <- blackrock_files[[b]]
         s <- brfile$get_electrode(e) * factor
+        asrate <- attr(s, "meta")$SampleRate
+        if(asrate > sample_rate) {
+          # decimate
+          decimate_rate <- asrate / sample_rate
+          if(decimate_rate - round(decimate_rate) == 0) {
+            s <- ravetools::decimate(s, decimate_rate)
+          } else {
+            # Cannot decimate...
+            catgl(sprintf("Cannot decimate channel %d from %.1fHz to %.1fHz. Using nearest interpolation. This is highly discouraged. Please consider changing the sampling frequency.", e, asrate, sample_rate), level = "WARNING")
+            tidx <- round(seq(1, length(s), by = decimate_rate))
+            s <- s[tidx]
+          }
+        }
         # save to HDF5
         save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
                 chunk = 1024, replace = TRUE, quiet = TRUE)

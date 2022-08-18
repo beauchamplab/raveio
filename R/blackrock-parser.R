@@ -79,6 +79,10 @@ parse_int64 <- function(x, ...) {
   # rawToInt64(x)
   ravetools::raw_to_int64(x)
 }
+parse_float <- function(x, ...) {
+  # rawToInt64(x)
+  ravetools::raw_to_float(x)
+}
 
 parse_string <- function(x, ...) {
   # rawToString(x)

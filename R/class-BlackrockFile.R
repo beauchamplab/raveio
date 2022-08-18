@@ -291,19 +291,26 @@ BlackrockFile <- R6::R6Class(
 
     #' @description get electrode data
     #' @param electrode integer, must be a length of one
+    #' @param nstype which signal bank, for example, \code{'ns3'}, \code{'ns5'}
     #' @return a normalized numeric vector (analog signals with \code{'uV'}
     #' as the unit)
-    get_electrode = function(electrode) {
+    get_electrode = function(electrode, nstype = NULL) {
 
       if(length(electrode) != 1) {
         stop("$get_electrode: electrode length must be one")
       }
       elec_table <- private$.electrode_ids()
-      sel <- which(elec_table$Electrode %in% electrode)
+      sel <- elec_table$Electrode %in% electrode
+      if(length(nstype)) {
+        sel <- sel & elec_table$NSType %in% nstype
+      }
+      sel <- which(sel)
 
       if(!length(sel)) {
         stop("$get_electrode: electrode cannot be found [", electrode, "]")
       }
+
+      sel <- sel[[1]]
 
       ns_type <- elec_table$NSType[[sel]]
       ns_order <- elec_table$NSOrder[[sel]]

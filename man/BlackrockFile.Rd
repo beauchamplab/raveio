@@ -168,13 +168,15 @@ a list of spike 'waveform' (without normalization)
 \subsection{Method \code{get_electrode()}}{
 get electrode data
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$get_electrode(electrode)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$get_electrode(electrode, nstype = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{electrode}}{integer, must be a length of one}
+
+\item{\code{nstype}}{which signal bank, for example, \code{'ns3'}, \code{'ns5'}}
 }
 \if{html}{\out{</div>}}
 }
