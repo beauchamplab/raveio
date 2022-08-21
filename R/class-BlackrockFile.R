@@ -1,4 +1,4 @@
-#' Class definition to load data from 'Blackrock' 'Microsystems' files
+#' Class definition to load data from 'BlackRock' 'Micro-systems' files
 #' @description Currently only supports minimum file specification version
 #' \code{2.3}. Please contact the package maintainer or 'RAVE' team
 #' if older specifications are needed
@@ -169,7 +169,7 @@ BlackrockFile <- R6::R6Class(
 
 
       cat(c(
-        "Blackrock Microsystems file: [", private$.filebase, ']\n',
+        "BlackRock Micro-systems file: [", private$.filebase, ']\n',
         "Directory: ", private$.path, "\n",
         "Version: ", paste0(sprintf("%.0f", self$version), collapse = "."), "\n",
         "Block: ", self$block, "\n",
@@ -180,7 +180,7 @@ BlackrockFile <- R6::R6Class(
     },
 
     #' @description constructor
-    #' @param path the path to 'Blackrock' file, can be with or without file
+    #' @param path the path to 'BlackRock' file, can be with or without file
     #' extensions
     #' @param block session block ID; default is the file name
     initialize = function(path, block) {

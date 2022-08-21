@@ -720,8 +720,8 @@ RAVEWatchDog <- R6::R6Class(
 )
 
 
-#' Monitors 'Blackrock' output folder and automatically import data into 'RAVE'
-#' @description Automatically import 'Blackrock' files from designated folder
+#' Monitors 'BlackRock' output folder and automatically import data into 'RAVE'
+#' @description Automatically import 'BlackRock' files from designated folder
 #' and perform 'Notch' filters, 'Wavelet' transform; also generate epoch,
 #' reference files.
 #' @param watch_path the folder to watch

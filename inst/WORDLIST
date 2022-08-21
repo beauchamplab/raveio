@@ -1,6 +1,7 @@
 AFNI
 BDF
 Beauchamp
+BlackRock
 BrainVision
 DICOM
 DOI
@@ -13,7 +14,9 @@ JSON
 LFP
 MacOS
 Magnotti
+NSx
 Nifti
+RStudio
 SUMA
 WSL
 cloneable

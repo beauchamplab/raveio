@@ -407,12 +407,12 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
     arr <- tryCatch(
       expr = {
         if(force_update) {
-          stop("Force updating NSX data file.")
+          stop("Force updating NSx data file.")
         }
         filearray::filearray_checkload(
           filebase = filebase, mode = "readwrite",
           symlink_ok = FALSE, signature = signature,
-          rave_data_type = "Blackrock NSX data array",
+          rave_data_type = "BlackRock NSx data array",
           units = "uV",
           ready = TRUE
         )
@@ -429,7 +429,7 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
         )
         arr$.mode <- "readwrite"
         arr$.header$signature <- signature
-        arr$.header$rave_data_type <- "Blackrock NSX data array"
+        arr$.header$rave_data_type <- "BlackRock NSx data array"
         arr$.header$units <- "uV"
         arr
       }
@@ -469,7 +469,7 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
                     mode = "function", envir = asNamespace('raveio'),
                     inherits = FALSE)
 
-      progress <- dipsaus::progress2("Loading NSX", max = niters,
+      progress <- dipsaus::progress2("Loading NSx", max = niters,
                                      shiny_auto_close = TRUE, quiet = !verbose)
       lapply(seq_len(niters), function(ii) {
         progress$inc(sprintf("Partition %d", ii))
@@ -541,7 +541,7 @@ blackrock_postprocess <- function(nsx, nev = NULL) {
 #' @description Current implementation supports minimum 2.3 file
 #' specification version. Please contact the package maintainer to add
 #' specification configurations if you want us to support older versions.
-#' @param paths 'NSX' signal files, usually with file extensions such as
+#' @param paths 'NSx' signal files, usually with file extensions such as
 #' \code{'.ns1'}, \code{'.ns2'}, \code{'.ns3'}, \code{'.ns4'}, \code{'.ns5'}.
 #' @param nev_path 'NEV' event files, with file extension \code{'.nev'}
 #' @param header_only whether to load header information only and avoid

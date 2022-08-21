@@ -4,6 +4,19 @@ raveio 0.0.8
 Major changes:
 
 * Added bundled validation functions to check data integrity: this function supports both `RAVE` 1.0 and 2.0 formats
+* Added backward support to convert 2.0 data format to 1.0
+* Added file support for `BlackRock` (`NEV`, `NSx`) formats with specification number `(>=2.2)`
+* Allowed pipelines to execute without `targets` to avoid serializing large objects
+* Added a repository type that requires no epoch information. This is useful when users want to analyze blocks of data
+* Added monitoring class `RAVEWatchDog` that can automatically monitor `NEV` and `NSx` files, import & process data
+* Added `merge_subjects` to merge multiple subjects from the same project but different blocks
+* Added support for `recon-all`, `dcm2niix`, `3dAllineate`, and `flirt` shell-commands (requires external programs to be installed)
+* Added finalizing installation function to allow installing built-in processing pipelines
+
+Minor changes:
+
+* Allow only one signal type to be loaded in each repository
+* Allowed electrodes to be text instead of vector of integers when creating repository
 
 Bug fixes:
 

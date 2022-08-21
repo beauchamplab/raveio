@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-watch-dog.R
 \name{auto_process_blackrock}
 \alias{auto_process_blackrock}
-\title{Monitors 'Blackrock' output folder and automatically import data into 'RAVE'}
+\title{Monitors 'BlackRock' output folder and automatically import data into 'RAVE'}
 \usage{
 auto_process_blackrock(
   watch_path,
@@ -42,7 +42,7 @@ When \code{dry_run} is true, then the watcher's instance will be
 returned; otherwise nothing will be returned.
 }
 \description{
-Automatically import 'Blackrock' files from designated folder
+Automatically import 'BlackRock' files from designated folder
 and perform 'Notch' filters, 'Wavelet' transform; also generate epoch,
 reference files.
 }

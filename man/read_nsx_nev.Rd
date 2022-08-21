@@ -15,7 +15,7 @@ read_nsx_nev(
 )
 }
 \arguments{
-\item{paths}{'NSX' signal files, usually with file extensions such as
+\item{paths}{'NSx' signal files, usually with file extensions such as
 \code{'.ns1'}, \code{'.ns2'}, \code{'.ns3'}, \code{'.ns4'}, \code{'.ns5'}.}
 
 \item{nev_path}{'NEV' event files, with file extension \code{'.nev'}}

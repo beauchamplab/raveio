@@ -2,7 +2,7 @@
 % Please edit documentation in R/class-BlackrockFile.R
 \name{BlackrockFile}
 \alias{BlackrockFile}
-\title{Class definition to load data from 'Blackrock' 'Microsystems' files}
+\title{Class definition to load data from 'BlackRock' 'Micro-systems' files}
 \description{
 Currently only supports minimum file specification version
 \code{2.3}. Please contact the package maintainer or 'RAVE' team
@@ -71,7 +71,7 @@ constructor
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{path}}{the path to 'Blackrock' file, can be with or without file
+\item{\code{path}}{the path to 'BlackRock' file, can be with or without file
 extensions}
 
 \item{\code{block}}{session block ID; default is the file name}
