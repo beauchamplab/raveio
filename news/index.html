@@ -50,7 +50,20 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.8" id="raveio-008">raveio 0.0.8<a class="anchor" aria-label="anchor" href="#raveio-008"></a></h2>
 <p>Major changes:</p>
-<ul><li>Added bundled validation functions to check data integrity: this function supports both <code>RAVE</code> 1.0 and 2.0 formats</li></ul><p>Bug fixes:</p>
+<ul><li>Added bundled validation functions to check data integrity: this function supports both <code>RAVE</code> 1.0 and 2.0 formats</li>
+<li>Added backward support to convert 2.0 data format to 1.0</li>
+<li>Added file support for <code>BlackRock</code> (<code>NEV</code>, <code>NSx</code>) formats with specification number <code>(&gt;=2.2)</code>
+</li>
+<li>Allowed pipelines to execute without <code>targets</code> to avoid serializing large objects</li>
+<li>Added a repository type that requires no epoch information. This is useful when users want to analyze blocks of data</li>
+<li>Added monitoring class <code>RAVEWatchDog</code> that can automatically monitor <code>NEV</code> and <code>NSx</code> files, import &amp; process data</li>
+<li>Added <code>merge_subjects</code> to merge multiple subjects from the same project but different blocks</li>
+<li>Added support for <code>recon-all</code>, <code>dcm2niix</code>, <code>3dAllineate</code>, and <code>flirt</code> shell-commands (requires external programs to be installed)</li>
+<li>Added finalizing installation function to allow installing built-in processing pipelines</li>
+</ul><p>Minor changes:</p>
+<ul><li>Allow only one signal type to be loaded in each repository</li>
+<li>Allowed electrodes to be text instead of vector of integers when creating repository</li>
+</ul><p>Bug fixes:</p>
 <ul><li>Fixed <code>generate_reference</code> set array to read-only mode before saving headers</li>
 <li>Actively clear cache whenever a new reference is generated</li>
 </ul></div>
