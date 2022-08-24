@@ -315,7 +315,7 @@ parse__nev <- function(nev_path, specification) {
   if(length(waveform_flag)) {
     waveform_flag <- as.integer(waveform_flag[[1]])
     if(waveform_flag == 1) {
-      waveform_dtype = "int16"
+      waveform_dtype <- "int16"
     }
   }
   electrode_ids <- ext_header$NEUEVWAV$electrode_id

@@ -283,7 +283,7 @@ LazyH5 <- R6::R6Class(
       })
 
       # step 2: get allocation size
-      sapply(seq_along(dims), function(ii){
+      alloc_dim <- sapply(seq_along(dims), function(ii){
         if(is.logical(args[[ii]])){
           return(sum(args[[ii]]))
         }else if(is.numeric(args[[ii]])){
@@ -292,11 +292,10 @@ LazyH5 <- R6::R6Class(
           # must be blank '', otherwise raise error
           return(dims[ii])
         }
-      }) ->
-        alloc_dim
+      })
 
       # step 3: get legit indices
-      lapply(seq_along(dims), function(ii){
+      legit_args <- lapply(seq_along(dims), function(ii){
         if(is.logical(args[[ii]])){
           return(args[[ii]])
         }else if(is.numeric(args[[ii]])){
@@ -306,11 +305,10 @@ LazyH5 <- R6::R6Class(
         }else{
           return(args[[ii]])
         }
-      }) ->
-        legit_args
+      })
 
       # step 4: get mapping
-      lapply(seq_along(dims), function(ii){
+      mapping <- lapply(seq_along(dims), function(ii){
         if(is.logical(args[[ii]])){
           return(
             rep(TRUE, sum(args[[ii]]))
@@ -320,8 +318,7 @@ LazyH5 <- R6::R6Class(
         }else{
           return(args[[ii]])
         }
-      }) ->
-        mapping
+      })
 
       # alloc space
       re <- array(NA, dim = alloc_dim)

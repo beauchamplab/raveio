@@ -141,14 +141,13 @@ Tensor <- R6::R6Class(
       cat('Dimension: ', paste(sprintf('%d', self$dim), collapse = ' x '), '\n')
 
       if(length(self$dimnames) > 0){
-        lapply(self$dimnames, function(x){
+        a <- lapply(self$dimnames, function(x){
           s <- paste(x, collapse = ', ')
           if(stringr::str_length(s) > 20){
             s <- paste0(stringr::str_sub(s, end = 17), '...')
           }
           s
-        }) ->
-          a
+        })
         for(x in seq_along(a)){
           cat('- ', names(a)[x], ': ', a[[x]], '\n', sep = '')
         }
@@ -404,7 +403,7 @@ Tensor <- R6::R6Class(
       # get class
       cls <- class(self)
 
-      sapply(cls, function(cln){
+      is_r6 <- sapply(cls, function(cln){
         tryCatch({
           cl <- get(cln, mode = 'environment')
           if(cl$classname == 'Tensor' && R6::is.R6Class(cl)){
@@ -418,8 +417,8 @@ Tensor <- R6::R6Class(
         error = function(e){
           return(FALSE)
         }, quiet = TRUE)
-      }) ->
-        is_r6
+      })
+
       cls <- cls[is_r6]
 
       if('Tensor' %in% cls){

@@ -182,7 +182,7 @@ module_registry2 <- function(repo, description) {
     }
   ))
   if(!is.list(authors[[1]])) {
-    authors = list(authors)
+    authors <- list(authors)
   }
 
   urls <- unlist(strsplit(desc$URL, "[ ]{0,1}http"))
