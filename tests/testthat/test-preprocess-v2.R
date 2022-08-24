@@ -165,6 +165,16 @@ test_that("RAVE 2.0 LFP electrode classes", {
           max(abs(range(newvolt[drop = FALSE] / expected_volt_noref - 1))) < 1e-7
         })
 
+        sub <- as_rave_subject(env$subject)
+        h5 <- file.path(sub$data_path, "power", sprintf("%d.h5", e$number))
+        skip_if_not(file.exists(h5), message = "Cannot find electrode power file")
+
+        expect_true("reference" %in% h5_names(h5))
+
+        expected_cached_refname <- load_h5(h5, "reference", ram = TRUE)
+        skip_if_not(expected_cached_refname == ref$number, message = "The cached reference is not the same as registered reference... Skipping")
+
+
         e$set_reference(ref)
         newpower <- e$load_data("power")
         newvolt <- e$load_data("voltage")
