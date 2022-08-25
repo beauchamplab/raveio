@@ -44,7 +44,7 @@ mkdir -p "$dest_path"
 flirt -in "$ct_path" -ref "$mri_path" \
   -out "$dest_path/ct_in_t1.nii" -omat "$dest_path/ct2t1.mat" \
   -interp trilinear -cost mutualinfo -dof 6 -searchcost mutualinfo \
-  -searchrx -180 180 -searchry -180 180 -searchrz -180 180 -v | tee -a "$log_file"
+  -searchrx -90 90 -searchry -90 90 -searchrz -90 90 -v | tee -a "$log_file"
 
 echo "Done." | tee -a "$log_file"
 
