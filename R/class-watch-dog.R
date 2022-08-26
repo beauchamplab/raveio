@@ -521,9 +521,24 @@ RAVEWatchDog <- R6::R6Class(
           raveio$catgl("[{blackrock_src}]: Running pipeline: [{pname}] (reference_table_initial) at [{pipeline$pipeline_path}]", level = "INFO")
           # check subject's localization
           elec_path <- .(file.path(private$.raw_path, item$Subject, "rave-imaging", "electrodes.csv"))
-          if(file.exists(elec_path)) {
-            tryCatch({
+          if(!file.exists(elec_path)) {
+            elec_path <- .(file.path(raveio_getopt("data_dir"), private$.project_name, item$Subject, "rave", "meta", "electrodes.csv"))
+          }
 
+          if(!file.exists(elec_path)) {
+            # list all projects, try to find
+            all_projects <- raveio$get_projects(refresh = TRUE)
+            elec_path <- file.path(raveio_getopt("data_dir"), all_projects,
+                                        .(item$Subject), "rave", "meta", "electrodes.csv")
+            elec_path <- elec_path[!is.na(elec_path) & file.exists(elec_path)]
+          }
+          if(length(elec_path)) {
+            elec_path <- elec_path[[1]]
+          }
+
+          if(length(elec_path) == 1 && !is.na(elec_path) && file.exists(elec_path)) {
+            tryCatch({
+              elec_path <- elec_path[[1]]
               elec_table <- utils::read.csv(elec_path)
               elec_table$Electrode <- as.integer(elec_table$Electrode)
               if(length(elec_table$Electrode) == length(subject$electrodes)) {
@@ -737,13 +752,15 @@ RAVEWatchDog <- R6::R6Class(
 #' @param dry_run whether to dry-run the code (instead of executing the
 #' scripts, return the watcher's instance and open the settings file);
 #' default is false
+#' @param config_open whether to open the pipeline configuration file; default
+#' is equal to \code{dry_run}
 #' @return When \code{dry_run} is true, then the watcher's instance will be
 #' returned; otherwise nothing will be returned.
 #' @export
 auto_process_blackrock <- function(
     watch_path, project_name = "automated", task_name = "RAVEWatchDog",
     scan_interval = 10, time_threshold = Sys.time(), max_jobs = 1L,
-    as_job = NA, dry_run = FALSE
+    as_job = NA, dry_run = FALSE, config_open = dry_run
 ) {
 
   time_threshold <- as.POSIXlt(time_threshold)
@@ -778,8 +795,8 @@ auto_process_blackrock <- function(
 
   }), quote_type = "quote")
 
-  if( dry_run ) {
-    watcher <- fun()
+  watcher <- fun()
+  if( config_open ) {
 
     settings_path <- file.path(watcher$log_path, "settings.yaml")
     if(!file.exists(settings_path)) {
@@ -791,6 +808,9 @@ auto_process_blackrock <- function(
       catgl("Watcher's settings file has been opened. Please check the settings, and edit if necessary. All auto-discovered BlackRock files will be preprocessed using this settings file.", level = "INFO")
     }, silent = TRUE)
 
+  }
+
+  if( dry_run ) {
     return(watcher)
   }
 
@@ -810,7 +830,6 @@ auto_process_blackrock <- function(
       focus_on_console = TRUE
     )
   } else {
-    watcher <- fun()
     watcher$watch(interval = scan_interval)
   }
 

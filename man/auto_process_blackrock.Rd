@@ -12,7 +12,8 @@ auto_process_blackrock(
   time_threshold = Sys.time(),
   max_jobs = 1L,
   as_job = NA,
-  dry_run = FALSE
+  dry_run = FALSE,
+  config_open = dry_run
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ session when monitoring; default is auto-detected}
 \item{dry_run}{whether to dry-run the code (instead of executing the
 scripts, return the watcher's instance and open the settings file);
 default is false}
+
+\item{config_open}{whether to open the pipeline configuration file; default
+is equal to \code{dry_run}}
 }
 \value{
 When \code{dry_run} is true, then the watcher's instance will be
