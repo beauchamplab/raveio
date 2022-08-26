@@ -19,7 +19,7 @@ reference files."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9001</span>
       </span>
     </div>
 
@@ -65,7 +65,8 @@ reference files.</p>
 <span>  time_threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  max_jobs <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  as_job <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  config_open <span class="op">=</span> <span class="va">dry_run</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +107,11 @@ session when monitoring; default is auto-detected</p></dd>
 <dd><p>whether to dry-run the code (instead of executing the
 scripts, return the watcher's instance and open the settings file);
 default is false</p></dd>
+
+
+<dt>config_open</dt>
+<dd><p>whether to open the pipeline configuration file; default
+is equal to <code>dry_run</code></p></dd>
 
 </dl></div>
     <div id="value">
