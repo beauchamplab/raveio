@@ -504,7 +504,7 @@ RAVEWatchDog <- R6::R6Class(
           pname <- "notch_filter"
           pipeline <- raveio$pipeline(pname, paths = file.path(workdir, "pipelines"))
           raveio$catgl("[{blackrock_src}]: Running pipeline: [{pname}] at [{pipeline$pipeline_path}]", level = "INFO")
-          pipeline$run(async = FALSE, as_promise = FALSE,
+          pipeline$run(names = "apply_notch", async = FALSE, as_promise = FALSE,
                        scheduler = "none", type = "smart")
 
           pname <- "wavelet_module"
