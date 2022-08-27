@@ -116,8 +116,8 @@ validate_settings <- function(s = dipsaus::fastmap2()){
   }
   tpath <- s[['tensor_temp_path']]
   # Set options so that ravetools can use this path
-  options("ravetools.tempdir" = tpath)
-  Sys.setenv("RAVETOOLS_TEMPDIR" = tpath)
+  # options("ravetools.tempdir" = tpath)
+  # Sys.setenv("RAVETOOLS_TEMPDIR" = tpath)
 
   # ------------- catgl verbose level --------------
   verbose <- s[['verbose_level']]

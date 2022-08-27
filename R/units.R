@@ -103,7 +103,8 @@ cache_root <- function(check = FALSE){
 #' @export
 clear_cached_files <- function(subject_code, quiet = FALSE){
 
-  if(missing(subject_code)) {
+  miss_subject <- missing(subject_code)
+  if(miss_subject) {
     clear_dir <- function(dir) {
       if(!dir.exists(dir)) { return() }
       if(!quiet){
@@ -156,22 +157,21 @@ clear_cached_files <- function(subject_code, quiet = FALSE){
   clear_dir(R_user_dir('raveio', "cache"))
   clear_dir(cache_root())
 
-  ravetools_path <- file.path(
-    getOption(
-      x = "ravetools.tempdir",
-      default = Sys.getenv(
-        x ="RAVETOOLS_TEMPDIR",
-        unset = tempdir(check = FALSE)
-      )
-    ),
-    "ravetools"
-  )
-
-  if(isTRUE(dir.exists(ravetools_path))) {
-    if(!quiet){ catgl("Clearing ", ravetools_path, level = "DEFAULT") }
-    unlink(ravetools_path, recursive = TRUE)
-  }
-
+  # ravetools_path <- file.path(
+  #   getOption(
+  #     x = "ravetools.tempdir",
+  #     default = Sys.getenv(
+  #       x ="RAVETOOLS_TEMPDIR",
+  #       unset = tempdir(check = FALSE)
+  #     )
+  #   ),
+  #   "ravetools"
+  # )
+  #
+  # if(isTRUE(dir.exists(ravetools_path))) {
+  #   if(!quiet){ catgl("Clearing ", ravetools_path, level = "DEFAULT") }
+  #   unlink(ravetools_path, recursive = TRUE)
+  # }
 
   if(!quiet){
     catgl("Done", level = "DEFAULT")
