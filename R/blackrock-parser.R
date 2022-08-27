@@ -403,6 +403,10 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
     n_timepoints <- data_header$data_header$value$number_of_data_points
     n_channels <- basic_header$channel_count$value
 
+    if(n_timepoints == 0) {
+      stop("Cannot read BlackRock NSx file. Cannot obtain a positive number of time-points from the NSx headers")
+    }
+
 
     arr <- tryCatch(
       expr = {

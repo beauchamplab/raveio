@@ -234,6 +234,7 @@ run_wavelet <- function(
   preproc <- RAVEPreprocessSettings$new(subject = subject$subject_id, read_only = TRUE)
 
   for(e in electrodes) {
+    preproc$data[[as.character(e)]]$notch_filtered <- TRUE
     preproc$data[[as.character(e)]]$has_wavelet <- TRUE
   }
 
