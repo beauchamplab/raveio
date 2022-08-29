@@ -191,6 +191,16 @@ PipelineTools <- R6::R6Class(
       env$pipeline_get <- self$get_settings
       env$pipeline_settings_path <- self$settings_path
       env$pipeline_path <- private$.pipeline_path
+    },
+
+
+    #' @description clean all or part of the data store
+    #' @param destroy,ask see \code{\link[targets]{tar_destroy}}
+    clean = function(destroy = c("all", "cloud", "local", "meta", "process",
+                                 "progress", "objects", "scratch", "workspaces"),
+                     ask = FALSE) {
+      destroy <- match.arg(destroy)
+      pipeline_clean(pipe_dir = private$.pipeline_path, ask = ask, destroy = destroy)
     }
 
 

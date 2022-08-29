@@ -165,6 +165,19 @@ pipeline_run <- function(
 
 #' @rdname rave-pipeline
 #' @export
+pipeline_clean <- function(
+    pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+    destroy = c("all", "cloud", "local", "meta", "process",
+                "progress", "objects", "scratch", "workspaces"),
+    ask = FALSE
+    ) {
+  destroy <- match.arg(destroy)
+  pipe_dir <- activate_pipeline(pipe_dir)
+  targets::tar_destroy(ask = ask, destroy = destroy)
+}
+
+#' @rdname rave-pipeline
+#' @export
 pipeline_run_bare <- function(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
   scheduler = c("none", "future", "clustermq"),

@@ -38,6 +38,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-eval}{\code{PipelineTools$eval()}}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
+\item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
 \item \href{#method-PipelineTools-clone}{\code{PipelineTools$clone()}}
 }
 }
@@ -237,6 +238,27 @@ attach pipeline tool to environment (internally used)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{env}}{an environment}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-clean"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-clean}{}}}
+\subsection{Method \code{clean()}}{
+clean all or part of the data store
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$clean(
+  destroy = c("all", "cloud", "local", "meta", "process", "progress", "objects",
+    "scratch", "workspaces"),
+  ask = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{destroy, ask}}{see \code{\link[targets]{tar_destroy}}}
 }
 \if{html}{\out{</div>}}
 }

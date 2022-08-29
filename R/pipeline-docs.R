@@ -64,6 +64,8 @@
 #' how often to check the pipeline
 #' @param progress_title,progress_max,progress_quiet control the progress,
 #' see \code{\link[dipsaus]{progress2}}.
+#' @param destroy what part of data repository needs to be cleaned
+#' @param ask whether to ask
 #' @param ... other parameters, targets, etc.
 #' @return \describe{
 #' \item{\code{pipeline_root}}{the root directories of the pipelines}

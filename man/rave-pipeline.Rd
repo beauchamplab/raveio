@@ -8,6 +8,7 @@
 \alias{pipeline_find}
 \alias{pipeline_attach}
 \alias{pipeline_run}
+\alias{pipeline_clean}
 \alias{pipeline_run_bare}
 \alias{load_targets}
 \alias{pipeline_target_names}
@@ -47,6 +48,13 @@ pipeline_run(
   progress_max = NA,
   progress_title = "Running pipeline",
   ...
+)
+
+pipeline_clean(
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  destroy = c("all", "cloud", "local", "meta", "process", "progress", "objects",
+    "scratch", "workspaces"),
+  ask = FALSE
 )
 
 pipeline_run_bare(
@@ -177,6 +185,10 @@ how often to check the pipeline}
 see \code{\link[dipsaus]{progress2}}.}
 
 \item{...}{other parameters, targets, etc.}
+
+\item{destroy}{what part of data repository needs to be cleaned}
+
+\item{ask}{whether to ask}
 
 \item{quick}{whether to skip finished targets to save time}
 
