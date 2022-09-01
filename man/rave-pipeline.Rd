@@ -25,6 +25,8 @@
 \alias{pipeline_create_template}
 \alias{pipeline_create_subject_pipeline}
 \alias{pipeline_description}
+\alias{pipeline_load_extdata}
+\alias{pipeline_save_extdata}
 \title{'RAVE' pipeline functions}
 \usage{
 pipeline_root(root_path)
@@ -147,6 +149,24 @@ pipeline_create_subject_pipeline(
 )
 
 pipeline_description(file)
+
+pipeline_load_extdata(
+  name,
+  format = c("auto", "json", "yaml", "csv", "fst", "rds"),
+  error_if_missing = TRUE,
+  default_if_missing = NULL,
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  ...
+)
+
+pipeline_save_extdata(
+  data,
+  name,
+  format = c("json", "yaml", "csv", "fst", "rds"),
+  overwrite = FALSE,
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  ...
+)
 }
 \arguments{
 \item{root_path}{the root directory for pipeline templates}
@@ -244,6 +264,14 @@ or \code{'rmd'}}
 \item{file}{path to the 'DESCRIPTION' file under the pipeline folder, or
 pipeline collection folder that contains the pipeline information,
 structures, dependencies, etc.}
+
+\item{format}{format of the extended data, default is \code{'json'}, other
+choices are \code{'yaml'}, \code{'fst'}, \code{'csv'}, \code{'rds'}}
+
+\item{error_if_missing, default_if_missing}{what to do if the extended data
+is not found}
+
+\item{data}{extended data to be saved}
 }
 \value{
 \describe{

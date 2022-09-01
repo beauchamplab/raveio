@@ -685,5 +685,90 @@ pipeline_settings_get <- function(
 }
 
 
+#' @rdname rave-pipeline
+#' @export
+pipeline_load_extdata <- function(
+  name, format = c("auto", "json", "yaml", "csv", "fst", "rds"),
+  error_if_missing = TRUE, default_if_missing = NULL,
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."), ...
+) {
+  pipe_dir <- activate_pipeline(pipe_dir)
+  path <- file.path(pipe_dir, "data")
+  format <- match.arg(format)
+  if(format == "auto") {
+    fs <- list.files(path, recursive = FALSE)
+    name2 <- sprintf("%s.%s", name, c("json", "yaml", "csv", "fst", "rds"))
+    fs <- fs[fs %in% name2]
+  } else {
+    fs <- sprintf("%s.%s", name, format)
+  }
+  if(!length(fs)) {
+    if( error_if_missing ) {
+      stop("Pipeline: data [", name, "] is missing")
+    } else {
+      return(default_if_missing)
+    }
+  }
+  fs <- fs[[1]]
+  file <- file.path(path, fs)
+  ext <- strsplit(file, "\\.")[[1]]
+  ext <- tolower(ext[[length(ext)]])
 
+  re <- switch(
+    ext,
+    "json" = { load_json(con = file, ...) },
+    "yaml" = { load_yaml(file = file, ...) },
+    "csv" = { utils::read.csv(file = file, ...) },
+    "fst" = { load_fst(path = file, ...) },
+    "rds" = { readRDS(file = file, ...) },
+    { stop("Unsupported file format") }
+  )
 
+  return(re)
+}
+
+#' @rdname rave-pipeline
+#' @export
+pipeline_save_extdata <- function(
+  data, name, format = c("json", "yaml", "csv", "fst", "rds"),
+  overwrite = FALSE, pipe_dir = Sys.getenv("RAVE_PIPELINE", "."), ...
+) {
+  format <- match.arg(format)
+
+  pipe_dir <- activate_pipeline(pipe_dir)
+  path <- file.path(pipe_dir, "data")
+  path <- dir_create2(path)
+  paths <- file.path(path,  sprintf("%s.%s", name, c("json", "yaml", "csv", "fst", "rds")))
+
+  if(any(file.exists(paths))) {
+    if( overwrite ) {
+      paths <- paths[file.exists(paths)]
+      for(f in paths) {
+        unlink(f)
+      }
+    } else {
+      stop("Pipeline: Cannot save data because the data name [", name, "] already exists.")
+    }
+  }
+  path <- file.path(path, sprintf("%s.%s", name, format))
+  switch(
+    format,
+    "json" = {
+      save_json(x = data, con = path, serialize = TRUE, ...)
+    },
+    "yaml" = {
+      save_yaml(x = data, file = path, ...)
+    },
+    "csv" = {
+      utils::write.csv(x = data, file = path, ...)
+    },
+    "fst" = {
+      save_fst(x = data, path = path, ...)
+    },
+    "rds" = {
+      saveRDS(object = data, file = path, ...)
+    },
+    { stop("Unsupported file format") }
+  )
+  invisible(path)
+}

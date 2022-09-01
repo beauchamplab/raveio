@@ -216,41 +216,9 @@ PipelineTools <- R6::R6Class(
     save_data = function(data, name, format = c("json", "yaml", "csv", "fst", "rds"),
                          overwrite = FALSE, ...) {
       format <- match.arg(format)
-      path <- file.path(self$pipeline_path, "data")
-      path <- dir_create2(path)
-      paths <- file.path(path,  sprintf("%s.%s", name, c("json", "yaml", "csv", "fst", "rds")))
-
-      if(any(file.exists(paths))) {
-        if( overwrite ) {
-          paths <- paths[file.exists(paths)]
-          for(f in paths) {
-            unlink(f)
-          }
-        } else {
-          stop("Pipeline: Cannot save data because the data name [", name, "] already exists.")
-        }
-      }
-      path <- file.path(path, sprintf("%s.%s", name, format))
-      switch(
-        format,
-        "json" = {
-          save_json(x = data, con = path, serialize = TRUE, ...)
-        },
-        "yaml" = {
-          save_yaml(x = data, file = path, ...)
-        },
-        "csv" = {
-          utils::write.csv(x = data, file = path, ...)
-        },
-        "fst" = {
-          save_fst(x = x, path = path, ...)
-        },
-        "rds" = {
-          saveRDS(object = data, file = path, ...)
-        },
-        { stop("Unsupported file format") }
-      )
-      invisible(path)
+      pipeline_save_extdata(
+        data = data, name = name, format = format,
+        overwrite = overwrite, pipe_dir = self$pipeline_path, ...)
     },
 
     #' @description load data from pipeline data folder
@@ -263,38 +231,12 @@ PipelineTools <- R6::R6Class(
     #' @return the data if file is found or a default value
     load_data = function(name, error_if_missing = TRUE, default_if_missing = NULL,
                          format = c("auto", "json", "yaml", "csv", "fst", "rds"), ...) {
-      path <- file.path(self$pipeline_path, "data")
+
       format <- match.arg(format)
-      if(format == "auto") {
-        fs <- list.files(path, recursive = FALSE)
-        name2 <- sprintf("%s.%s", name, c("json", "yaml", "csv", "fst", "rds"))
-        fs <- fs[fs %in% name2]
-      } else {
-        fs <- sprintf("%s.%s", name, format)
-      }
-      if(!length(fs)) {
-        if( error_if_missing ) {
-          stop("Pipeline: data [", name, "] is missing")
-        } else {
-          return(default_if_missing)
-        }
-      }
-      fs <- fs[[1]]
-      file <- file.path(path, fs)
-      ext <- strsplit(file, "\\.")[[1]]
-      ext <- tolower(ext[[length(ext)]])
-
-      re <- switch(
-        ext,
-        "json" = { load_json(con = file, ...) },
-        "yaml" = { load_yaml(file = file, ...) },
-        "csv" = { utils::read.csv(file = file, ...) },
-        "fst" = { load_fst(path = file, ...) },
-        "rds" = { readRDS(file = file, ...) },
-        { stop("Unsupported file format") }
-      )
-
-      return(re)
+      pipeline_load_extdata(name = name, format = format,
+                            error_if_missing = error_if_missing,
+                            default_if_missing = default_if_missing,
+                            pipe_dir = self$pipeline_path, ...)
     }
 
 
