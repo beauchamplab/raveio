@@ -178,7 +178,25 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  template_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rmd"</span>, <span class="st">"r"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pipeline_description</span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pipeline_description</span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_load_extdata</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"json"</span>, <span class="st">"yaml"</span>, <span class="st">"csv"</span>, <span class="st">"fst"</span>, <span class="st">"rds"</span><span class="op">)</span>,</span>
+<span>  error_if_missing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  default_if_missing <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_save_extdata</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">name</span>,</span>
+<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"json"</span>, <span class="st">"yaml"</span>, <span class="st">"csv"</span>, <span class="st">"fst"</span>, <span class="st">"rds"</span><span class="op">)</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -343,6 +361,20 @@ or <code>'rmd'</code></p></dd>
 <dd><p>path to the 'DESCRIPTION' file under the pipeline folder, or
 pipeline collection folder that contains the pipeline information,
 structures, dependencies, etc.</p></dd>
+
+
+<dt>format</dt>
+<dd><p>format of the extended data, default is <code>'json'</code>, other
+choices are <code>'yaml'</code>, <code>'fst'</code>, <code>'csv'</code>, <code>'rds'</code></p></dd>
+
+
+<dt>error_if_missing, default_if_missing</dt>
+<dd><p>what to do if the extended data
+is not found</p></dd>
+
+
+<dt>data</dt>
+<dd><p>extended data to be saved</p></dd>
 
 </dl></div>
     <div id="value">
