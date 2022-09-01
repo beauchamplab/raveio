@@ -39,6 +39,8 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
+\item \href{#method-PipelineTools-save_data}{\code{PipelineTools$save_data()}}
+\item \href{#method-PipelineTools-load_data}{\code{PipelineTools$load_data()}}
 \item \href{#method-PipelineTools-clone}{\code{PipelineTools$clone()}}
 }
 }
@@ -261,6 +263,78 @@ clean all or part of the data store
 \item{\code{destroy, ask}}{see \code{\link[targets]{tar_destroy}}}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-save_data"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-save_data}{}}}
+\subsection{Method \code{save_data()}}{
+save data to pipeline data folder
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$save_data(
+  data,
+  name,
+  format = c("json", "yaml", "csv", "fst", "rds"),
+  overwrite = FALSE,
+  ...
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{R object}
+
+\item{\code{name}}{the name of the data to save, must start with letters}
+
+\item{\code{format}}{serialize format, choices are \code{'json'},
+\code{'yaml'}, \code{'csv'}, \code{'fst'}, \code{'rds'}; default is
+\code{'json'}. To save arbitrary objects such as functions or
+environments, use \code{'rds'}}
+
+\item{\code{overwrite}}{whether to overwrite existing files; default is no}
+
+\item{\code{...}}{passed to saver functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+the saved file path
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-load_data"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-load_data}{}}}
+\subsection{Method \code{load_data()}}{
+load data from pipeline data folder
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$load_data(
+  name,
+  error_if_missing = TRUE,
+  default_if_missing = NULL,
+  format = c("auto", "json", "yaml", "csv", "fst", "rds"),
+  ...
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{the name of the data}
+
+\item{\code{error_if_missing}}{whether to raise errors if the name is missing}
+
+\item{\code{default_if_missing}}{default values to return if the name is missing}
+
+\item{\code{format}}{the format of the data, default is automatically obtained
+from the file extension}
+
+\item{\code{...}}{passed to loader functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+the data if file is found or a default value
 }
 }
 \if{html}{\out{<hr>}}
