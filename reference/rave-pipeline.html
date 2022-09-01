@@ -20,7 +20,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9005</span>
       </span>
     </div>
 
@@ -80,6 +80,13 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  progress_max <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  progress_title <span class="op">=</span> <span class="st">"Running pipeline"</span>,</span>
 <span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_clean</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  destroy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"cloud"</span>, <span class="st">"local"</span>, <span class="st">"meta"</span>, <span class="st">"process"</span>, <span class="st">"progress"</span>, <span class="st">"objects"</span>,</span>
+<span>    <span class="st">"scratch"</span>, <span class="st">"workspaces"</span><span class="op">)</span>,</span>
+<span>  ask <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pipeline_run_bare</span><span class="op">(</span></span>
@@ -233,6 +240,14 @@ see <code><a href="https://rdrr.io/pkg/dipsaus/man/progress2.html" class="extern
 
 <dt>...</dt>
 <dd><p>other parameters, targets, etc.</p></dd>
+
+
+<dt>destroy</dt>
+<dd><p>what part of data repository needs to be cleaned</p></dd>
+
+
+<dt>ask</dt>
+<dd><p>whether to ask</p></dd>
 
 
 <dt>quick</dt>

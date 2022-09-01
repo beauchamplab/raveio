@@ -18,7 +18,7 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9005</span>
       </span>
     </div>
 
@@ -98,6 +98,9 @@ signatures of data and commands</p></dd>
 <li><p><a href="#method-PipelineTools-eval"><code>PipelineTools$eval()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-progress"><code>PipelineTools$progress()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-attach"><code>PipelineTools$attach()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-clean"><code>PipelineTools$clean()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-save_data"><code>PipelineTools$save_data()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-load_data"><code>PipelineTools$load_data()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-clone"><code>PipelineTools$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-PipelineTools-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -317,15 +320,123 @@ respected.</p><div class="section">
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-PipelineTools-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-PipelineTools-clean"></a><div class="section">
+<h3 id="method-clean-">Method <code>clean()</code><a class="anchor" aria-label="anchor" href="#method-clean-"></a></h3>
+<p>clean all or part of the data store</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clean</span><span class="op">(</span></span>
+<span>  destroy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"cloud"</span>, <span class="st">"local"</span>, <span class="st">"meta"</span>, <span class="st">"process"</span>, <span class="st">"progress"</span>, <span class="st">"objects"</span>,</span>
+<span>    <span class="st">"scratch"</span>, <span class="st">"workspaces"</span><span class="op">)</span>,</span>
+<span>  ask <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>destroy, ask</code></dt>
+<dd><p>see <code><a href="https://docs.ropensci.org/targets/reference/tar_destroy.html" class="external-link">tar_destroy</a></code></p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-PipelineTools-save_data"></a><div class="section">
+<h3 id="method-save-data-">Method <code>save_data()</code><a class="anchor" aria-label="anchor" href="#method-save-data-"></a></h3>
+<p>save data to pipeline data folder</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">save_data</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">name</span>,</span>
+<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"json"</span>, <span class="st">"yaml"</span>, <span class="st">"csv"</span>, <span class="st">"fst"</span>, <span class="st">"rds"</span><span class="op">)</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>data</code></dt>
+<dd><p>R object</p></dd>
+
+
+<dt><code>name</code></dt>
+<dd><p>the name of the data to save, must start with letters</p></dd>
+
+
+<dt><code>format</code></dt>
+<dd><p>serialize format, choices are <code>'json'</code>,
+<code>'yaml'</code>, <code>'csv'</code>, <code>'fst'</code>, <code>'rds'</code>; default is
+<code>'json'</code>. To save arbitrary objects such as functions or
+environments, use <code>'rds'</code></p></dd>
+
+
+<dt><code>overwrite</code></dt>
+<dd><p>whether to overwrite existing files; default is no</p></dd>
+
+
+<dt><code>...</code></dt>
+<dd><p>passed to saver functions</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
+<p>the saved file path</p>
+</div>
+
+</div><p></p><hr><a id="method-PipelineTools-load_data"></a><div class="section">
+<h3 id="method-load-data-">Method <code>load_data()</code><a class="anchor" aria-label="anchor" href="#method-load-data-"></a></h3>
+<p>load data from pipeline data folder</p><div class="section">
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">load_data</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  error_if_missing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  default_if_missing <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"json"</span>, <span class="st">"yaml"</span>, <span class="st">"csv"</span>, <span class="st">"fst"</span>, <span class="st">"rds"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>name</code></dt>
+<dd><p>the name of the data</p></dd>
+
+
+<dt><code>error_if_missing</code></dt>
+<dd><p>whether to raise errors if the name is missing</p></dd>
+
+
+<dt><code>default_if_missing</code></dt>
+<dd><p>default values to return if the name is missing</p></dd>
+
+
+<dt><code>format</code></dt>
+<dd><p>the format of the data, default is automatically obtained
+from the file extension</p></dd>
+
+
+<dt><code>...</code></dt>
+<dd><p>passed to loader functions</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<p>the data if file is found or a default value</p>
+</div>
+
+</div><p></p><hr><a id="method-PipelineTools-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
