@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9006</span>
       </span>
     </div>
 
@@ -55,13 +55,16 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">SIGNAL_TYPES</span></span>
 <span></span>
-<span><span class="va">LOCATION_TYPES</span></span></code></pre></div>
+<span><span class="va">LOCATION_TYPES</span></span>
+<span></span>
+<span><span class="va">MNI305_to_MNI152</span></span></code></pre></div>
     </div>
 
     <div id="format">
     <h2>Format</h2>
     <p>An object of class <code>character</code> of length 6.</p>
 <p>An object of class <code>character</code> of length 5.</p>
+<p>An object of class <code>matrix</code> (inherits from <code>array</code>) with 4 rows and 4 columns.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -75,6 +78,13 @@ signal type is supported.</p>
 <code>'ECoG'</code> (surface), <code>'EEG'</code> (scalp),
 <code>'Others'</code>. See field <code>'location'</code> in
 <code><a href="RAVEAbstarctElectrode.html">RAVEAbstarctElectrode</a></code></p>
+<p><code>MNI305_to_MNI152</code> is a 4-by-4 matrix converting <code>'MNI305'</code>
+coordinates to <code>'MNI152'</code> space. The difference of these two
+spaces is: <code>'MNI305'</code> is an average of 305 human subjects,
+while <code>'MNI152'</code> is the average of 152 people. These two coordinates
+differs slightly. While most of the 'MNI' coordinates reported by
+'RAVE' and 'FreeSurfer' are in the <code>'MNI305'</code> space, many other
+programs are expecting <code>'MNI152'</code> coordinates.</p>
     </div>
 
   </div>
