@@ -5,16 +5,21 @@
 \alias{raveio-constants}
 \alias{SIGNAL_TYPES}
 \alias{LOCATION_TYPES}
+\alias{MNI305_to_MNI152}
 \title{The constant variables}
 \format{
 An object of class \code{character} of length 6.
 
 An object of class \code{character} of length 5.
+
+An object of class \code{matrix} (inherits from \code{array}) with 4 rows and 4 columns.
 }
 \usage{
 SIGNAL_TYPES
 
 LOCATION_TYPES
+
+MNI305_to_MNI152
 }
 \description{
 The constant variables
@@ -31,5 +36,13 @@ signal type is supported.
 \code{'ECoG'} (surface), \code{'EEG'} (scalp),
 \code{'Others'}. See field \code{'location'} in
 \code{\link{RAVEAbstarctElectrode}}
+
+\code{MNI305_to_MNI152} is a 4-by-4 matrix converting \code{'MNI305'}
+coordinates to \code{'MNI152'} space. The difference of these two
+spaces is: \code{'MNI305'} is an average of 305 human subjects,
+while \code{'MNI152'} is the average of 152 people. These two coordinates
+differs slightly. While most of the 'MNI' coordinates reported by
+'RAVE' and 'FreeSurfer' are in the \code{'MNI305'} space, many other
+programs are expecting \code{'MNI152'} coordinates.
 }
 \keyword{datasets}

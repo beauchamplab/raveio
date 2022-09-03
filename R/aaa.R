@@ -26,6 +26,14 @@ NULL
 #' \code{'Others'}. See field \code{'location'} in
 #' \code{\link{RAVEAbstarctElectrode}}
 #'
+#' \code{MNI305_to_MNI152} is a 4-by-4 matrix converting \code{'MNI305'}
+#' coordinates to \code{'MNI152'} space. The difference of these two
+#' spaces is: \code{'MNI305'} is an average of 305 human subjects,
+#' while \code{'MNI152'} is the average of 152 people. These two coordinates
+#' differs slightly. While most of the 'MNI' coordinates reported by
+#' 'RAVE' and 'FreeSurfer' are in the \code{'MNI305'} space, many other
+#' programs are expecting \code{'MNI152'} coordinates.
+#'
 #' @export
 SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Audio', 'Photodiode', 'Unknown')
 
@@ -33,6 +41,8 @@ SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Audio', 'Photodiode', 'Unknown')
 #' @export
 LOCATION_TYPES <- c('iEEG', 'sEEG', 'ECoG', 'EEG', 'Others')
 
+#' @rdname raveio-constants
+#' @export
 MNI305_to_MNI152 <- matrix(
   c(0.9975, 0.0146, -0.013, 0,
     -0.0073, 1.0009, -0.0093, 0,
