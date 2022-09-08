@@ -262,7 +262,7 @@ useful when epoch is absent
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_blocks(
   blocks,
-  type = c("power", "phase", "voltage", "wavelet-coefficient"),
+  type = c("power", "phase", "voltage", "wavelet-coefficient", "raw-voltage"),
   simplify = TRUE
 )}\if{html}{\out{</div>}}
 }
@@ -273,9 +273,11 @@ useful when epoch is absent
 \item{\code{blocks}}{session blocks}
 
 \item{\code{type}}{data type such as \code{"power"}, \code{"phase"},
-\code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
-is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
-transforms are required.}
+\code{"voltage"}, \code{"raw-voltage"} (with no filters applied, as-is
+from imported), \code{"wavelet-coefficient"}. Note that if type
+is \code{"raw-voltage"}, then the data only needs to be imported;
+for \code{"voltage"} data, 'Notch' filters must be applied; for
+all other types, 'Wavelet' transforms are required.}
 
 \item{\code{simplify}}{whether to simplify the result}
 }

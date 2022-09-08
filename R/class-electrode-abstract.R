@@ -200,7 +200,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
 
     #' @field preprocess_file path to preprocess 'HDF5' file
     preprocess_file = function(){
-      file.path(self$subject$preprocess_path, sprintf('electrode_%s.h5', self$number))
+      file.path(self$subject$preprocess_path, "voltage", sprintf('electrode_%s.h5', self$number))
     },
 
     #' @field power_file path to power 'HDF5' file

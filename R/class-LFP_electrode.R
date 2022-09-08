@@ -521,15 +521,18 @@ LFP_electrode <- R6::R6Class(
     #' useful when epoch is absent
     #' @param blocks session blocks
     #' @param type data type such as \code{"power"}, \code{"phase"},
-    #' \code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
-    #' is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
-    #' transforms are required.
+    #' \code{"voltage"}, \code{"raw-voltage"} (with no filters applied, as-is
+    #' from imported), \code{"wavelet-coefficient"}. Note that if type
+    #' is \code{"raw-voltage"}, then the data only needs to be imported;
+    #' for \code{"voltage"} data, 'Notch' filters must be applied; for
+    #' all other types, 'Wavelet' transforms are required.
     #' @param simplify whether to simplify the result
     #' @return If \code{simplify} is enabled, and only one block is loaded,
     #' then the result will be a vector (\code{type="voltage"}) or a matrix
     #' (others), otherwise the result will be a named list where the names
     #' are the blocks.
-    load_blocks = function(blocks, type = c("power", "phase", "voltage", "wavelet-coefficient"), simplify = TRUE) {
+    load_blocks = function(blocks, type = c("power", "phase", "voltage", "wavelet-coefficient", "raw-voltage"),
+                           simplify = TRUE) {
       type <- match.arg(type)
       if(!length(blocks)) {
         if(simplify){ return(NULL) }
@@ -538,8 +541,26 @@ LFP_electrode <- R6::R6Class(
       stopifnot2(all(blocks %in% self$subject$blocks),
                  msg = "Electrode `load_blocks`: all blocks must exist")
 
-      # check whether notch filtered
       sel <- self$subject$electrodes %in% self$number
+      imported <- self$subject$preprocess_settings$data_imported[sel]
+      if(!isTRUE(imported)) {
+        stop("load_blocks: please import electrode ", self$number, " first.")
+      }
+
+      if(type == "raw-voltage") {
+        dat <- structure(lapply(blocks, function(block){
+          load_h5(self$preprocess_file,
+                  name = sprintf("/raw/%s", block),
+                  ram = TRUE)
+        }), names = blocks)
+        if(simplify && length(blocks) == 1) {
+          dat <- dat[[1]]
+        }
+        return(dat)
+      }
+
+
+      # check whether notch filtered
       notch_filtered <- self$subject$notch_filtered[sel]
       has_wavelet <- self$subject$has_wavelet[sel]
 
