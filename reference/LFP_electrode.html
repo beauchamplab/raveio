@@ -264,7 +264,7 @@ useful when epoch is absent</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">load_blocks</span><span class="op">(</span></span>
 <span>  <span class="va">blocks</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"power"</span>, <span class="st">"phase"</span>, <span class="st">"voltage"</span>, <span class="st">"wavelet-coefficient"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"power"</span>, <span class="st">"phase"</span>, <span class="st">"voltage"</span>, <span class="st">"wavelet-coefficient"</span>, <span class="st">"raw-voltage"</span><span class="op">)</span>,</span>
 <span>  simplify <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -277,9 +277,11 @@ useful when epoch is absent</p><div class="section">
 
 <dt><code>type</code></dt>
 <dd><p>data type such as <code>"power"</code>, <code>"phase"</code>,
-<code>"voltage"</code>, <code>"wavelet-coefficient"</code>. Note that if type
-is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
-transforms are required.</p></dd>
+<code>"voltage"</code>, <code>"raw-voltage"</code> (with no filters applied, as-is
+from imported), <code>"wavelet-coefficient"</code>. Note that if type
+is <code>"raw-voltage"</code>, then the data only needs to be imported;
+for <code>"voltage"</code> data, 'Notch' filters must be applied; for
+all other types, 'Wavelet' transforms are required.</p></dd>
 
 
 <dt><code>simplify</code></dt>
