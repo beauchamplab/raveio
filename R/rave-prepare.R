@@ -18,6 +18,7 @@
 #' @param env environment to evaluate
 #' @param repository_id used internally
 #' @param verbose whether to show progress
+#' @param quiet whether to quietly load the data
 #' @param ... ignored
 #' @return A \code{\link[dipsaus]{fastmap2}} (basically a list) of objects.
 #' Depending on the functions called, the following items may exist in the list:

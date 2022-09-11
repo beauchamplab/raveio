@@ -88,9 +88,9 @@ LFP_reference <- R6::R6Class(
     },
 
     #' @description constructor
-    #' @param subject,number see constructor in
+    #' @param subject,number,quiet see constructor in
     #' \code{\link{RAVEAbstarctElectrode}}
-    initialize = function(subject, number){
+    initialize = function(subject, number, quiet = FALSE){
       super$initialize(subject, number)
 
       ref_electrodes <- gsub("[^0-9,\\ -]+", '', number)
@@ -106,7 +106,9 @@ LFP_reference <- R6::R6Class(
           self$number <- sprintf('ref_%s', dipsaus::deparse_svec(e))
           if(!file.exists(file.path(self$subject$reference_path,
                                     sprintf("%s.h5", self$number)))){
-            catgl("Reference file {self$number}.h5 is missing", level = "WARNING")
+            if(!quiet) {
+              catgl("Reference file {self$number}.h5 is missing", level = "WARNING")
+            }
           }
         }
       }

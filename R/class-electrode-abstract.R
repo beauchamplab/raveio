@@ -68,7 +68,8 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @description constructor
     #' @param subject character or \code{\link{RAVESubject}} instance
     #' @param number current electrode number or reference ID
-    initialize = function(subject, number){
+    #' @param quiet reserved, whether to suppress warning messages
+    initialize = function(subject, number, quiet = FALSE){
       self$subject <- as_rave_subject(subject)
       self$number <- number
       self$reference <- NULL
@@ -387,7 +388,7 @@ new_electrode <- function(subject, number, signal_type, ...){
   if(!inherits(generator, "R6ClassGenerator")){
     stop("Cannot find class definition for electrode with ", signal_type, " signal type.")
   }
-  generator$new(subject = subject, number, ...)
+  generator$new(subject = subject, number = number, ...)
 }
 
 #' @rdname new_electrode
@@ -415,5 +416,5 @@ new_reference <- function(subject, number, signal_type, ...){
   if(!inherits(generator, "R6ClassGenerator")){
     stop("Cannot find class definition for reference with ", signal_type, " signal type.")
   }
-  generator$new(subject = subject, number, ...)
+  generator$new(subject = subject, number = number, ...)
 }

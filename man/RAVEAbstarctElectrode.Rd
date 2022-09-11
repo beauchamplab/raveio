@@ -116,7 +116,7 @@ intervals are missing}
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$new(subject, number)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$new(subject, number, quiet = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -125,6 +125,8 @@ constructor
 \item{\code{subject}}{character or \code{\link{RAVESubject}} instance}
 
 \item{\code{number}}{current electrode number or reference ID}
+
+\item{\code{quiet}}{reserved, whether to suppress warning messages}
 }
 \if{html}{\out{</div>}}
 }

@@ -132,13 +132,13 @@ set reference for current electrode
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LFP_reference$new(subject, number)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LFP_reference$new(subject, number, quiet = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{subject, number}}{see constructor in
+\item{\code{subject, number, quiet}}{see constructor in
 \code{\link{RAVEAbstarctElectrode}}}
 }
 \if{html}{\out{</div>}}

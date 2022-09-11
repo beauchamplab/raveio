@@ -153,16 +153,18 @@ LFP_electrode <- R6::R6Class(
     },
 
     #' @description constructor
-    #' @param subject,number,is_reference see constructor in
+    #' @param subject,number,quiet see constructor in
     #' \code{\link{RAVEAbstarctElectrode}}
-    initialize = function(subject, number){
+    initialize = function(subject, number, quiet = FALSE){
       super$initialize(subject, number)
 
       has_power <- file.exists(self$power_file)
       has_phase <- file.exists(self$phase_file)
       has_volt <- file.exists(self$voltage_file)
       if(!all(has_power, has_phase, has_volt)){
-        catgl("Electrode {self$number} is missing {ifelse(has_power, '', 'power')}{ifelse(has_phase, '', ', phase')}{ifelse(has_volt, '', ', voltage')} data\n", level = "WARNING")
+        if(!quiet) {
+          catgl("Electrode {self$number} is missing {ifelse(has_power, '', 'power')}{ifelse(has_phase, '', ', phase')}{ifelse(has_volt, '', ', voltage')} data\n", level = "WARNING")
+        }
       }
     },
 
