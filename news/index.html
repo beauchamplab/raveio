@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9008</span>
       </span>
     </div>
 
@@ -47,6 +47,29 @@
       <small>Source: <a href="https://github.com/beauchamplab/raveio/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.0.9" id="raveio-009">raveio 0.0.9<a class="anchor" aria-label="anchor" href="#raveio-009"></a></h2>
+<p>Major changes:</p>
+<ul><li>Added <code>run_wavelet</code> to isolate wavelet kernels for each subject, requires to update <code>ravetools</code>
+</li>
+<li>Avoid override <code>ravetools</code> options when loading the package</li>
+<li>Added <code>clean</code> method to <code>pipeline</code> to clean the data objects</li>
+<li>Allowed <code>pipelines</code> to save and load customized data to avoid polluting the <code>settings.yaml</code>
+</li>
+<li>Allowed <code>pipelines</code> to <code>eval</code> instead of <code>run</code>
+</li>
+<li>Added new data type <code>raw-voltage</code> to method <code>load_blocks</code> (class <code>LFP_electrode</code>) to load the raw voltage data</li>
+<li>Added <code>prepare_subject_bare0</code> to load subject that with only voltage data imported (before <code>Notch</code> filters)</li>
+</ul><p>Minor changes:</p>
+<ul><li>Changed <code>FLIRT</code> script to perform less search to speed up</li>
+<li>Exported <code>MNI305_to_MNI152</code> matrix</li>
+<li>Added <code>quiet</code> option when loading electrodes to suppress warnings</li>
+</ul><p>Bug fixes:</p>
+<ul><li>Fixed <code>watchdog</code> when electrode table is unavailable</li>
+<li>Fixed <code>rand_string</code> not random when running with <code>multicore</code> future parallel</li>
+<li>Fixed <code>preprocess_file</code> path in class <code>LFP_electrode</code>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.8" id="raveio-008">raveio 0.0.8<small>2022-08-25</small><a class="anchor" aria-label="anchor" href="#raveio-008"></a></h2>
 <p>Major changes:</p>
