@@ -1,3 +1,28 @@
+raveio 0.0.9
+=======
+
+Major changes:
+
+* Added `run_wavelet` to isolate wavelet kernels for each subject, requires to update `ravetools`
+* Avoid override `ravetools` options when loading the package
+* Added `clean` method to `pipeline` to clean the data objects
+* Allowed `pipelines` to save and load customized data to avoid polluting the `settings.yaml`
+* Allowed `pipelines` to `eval` instead of `run`
+* Added new data type `raw-voltage` to method `load_blocks` (class `LFP_electrode`) to load the raw voltage data
+* Added `prepare_subject_bare0` to load subject that with only voltage data imported (before `Notch` filters)
+
+Minor changes:
+
+* Changed `FLIRT` script to perform less search to speed up
+* Exported `MNI305_to_MNI152` matrix
+* Added `quiet` option when loading electrodes to suppress warnings
+
+Bug fixes:
+
+* Fixed `watchdog` when electrode table is unavailable
+* Fixed `rand_string` not random when running with `multicore` future parallel
+* Fixed `preprocess_file` path in class `LFP_electrode`
+
 raveio 0.0.8
 =======
 

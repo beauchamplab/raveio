@@ -21,15 +21,14 @@ validate_spec <- function(name, type, size, n = 1, names = NULL, ...) {
     }
   }
 
-  list(
-    name = name,
-    type = type,
-    size = size_,
-    n = n,
-    names = names,
-    ...,
-    .bytes = n * size_
-  )
+  re <- list(...)
+  re$name <- name
+  re$type <- type
+  re$size <- size_
+  re$n <- n
+  re$names <- names
+  re$.bytes <- n * size_
+  return(re)
 }
 
 #' @export
@@ -443,10 +442,6 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
       parition_size <- ceiling(2^21 / n_channels)
       niters <- ceiling(n_timepoints / parition_size)
       data_specs$name <- "data_partition"
-      data_specs$n <- parition_size * n_channels
-
-      data_specs <- do.call(validate_spec, data_specs)
-
 
       # Calculate digital to analog transform
       min_digit <- ext_header$CC$min_digital_value[seq_len(n_channels)]
@@ -475,8 +470,20 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
 
       progress <- dipsaus::progress2("Loading NSx", max = niters,
                                      shiny_auto_close = TRUE, quiet = !verbose)
+
+
+      pts_total <- n_timepoints * n_channels
+      pts_read <- 0
       lapply(seq_len(niters), function(ii) {
         progress$inc(sprintf("Partition %d", ii))
+
+        data_specs$n <- parition_size * n_channels
+
+        if( data_specs$n > pts_total - pts_read ) {
+          data_specs$n <- pts_total - pts_read
+        }
+        pts_read <<- pts_read + data_specs$n
+        data_specs <- do.call(validate_spec, data_specs)
 
         data <- readBin(conn, what = "raw",
                         n = data_specs$.bytes,
@@ -486,6 +493,11 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
         ntp <- length(data) / n_channels
         dim(data) <- c(n_channels, ntp)
         data <- (data - min_digit) * ratio + min_analog
+
+
+        if( round(ntp) != ntp )
+
+
         arr[seq_len(ntp) + parition_size * (ii - 1), ] <- t(data)
 
         return()
