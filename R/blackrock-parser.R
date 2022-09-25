@@ -491,14 +491,21 @@ parse__nsx <- function(nsx_path, specification, header_only = FALSE, verbose = T
 
         data <- parser(data)
         ntp <- length(data) / n_channels
-        dim(data) <- c(n_channels, ntp)
-        data <- (data - min_digit) * ratio + min_analog
 
+        if( round(ntp) != ntp ) {
+          warning("Number of points is not integer. The data might be incomplete")
+          ntp <- floor(ntp)
+          if( ntp > 0 ) {
+            data <- data[seq_len(n_channels * ntp)]
+          }
+        }
 
-        if( round(ntp) != ntp )
+        if( ntp > 0 ) {
+          dim(data) <- c(n_channels, ntp)
+          data <- (data - min_digit) * ratio + min_analog
 
-
-        arr[seq_len(ntp) + parition_size * (ii - 1), ] <- t(data)
+          arr[seq_len(ntp) + parition_size * (ii - 1), ] <- t(data)
+        }
 
         return()
       })
