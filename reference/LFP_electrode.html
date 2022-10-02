@@ -19,7 +19,7 @@ of the electrode class LFP_electrode"><!-- mathjax --><script src="https://cdnjs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9010</span>
       </span>
     </div>
 
@@ -112,6 +112,7 @@ with current electrode type</p></dd>
 <li><p><a href="#method-LFP_electrode-.load_noref_voltage"><code>LFP_electrode$.load_noref_voltage()</code></a></p></li>
 <li><p><a href="#method-LFP_electrode-.load_wavelet"><code>LFP_electrode$.load_wavelet()</code></a></p></li>
 <li><p><a href="#method-LFP_electrode-.load_voltage"><code>LFP_electrode$.load_voltage()</code></a></p></li>
+<li><p><a href="#method-LFP_electrode-.load_raw_voltage"><code>LFP_electrode$.load_raw_voltage()</code></a></p></li>
 <li><p><a href="#method-LFP_electrode-load_data"><code>LFP_electrode$load_data()</code></a></p></li>
 <li><p><a href="#method-LFP_electrode-load_blocks"><code>LFP_electrode$load_blocks()</code></a></p></li>
 <li><p><a href="#method-LFP_electrode-clear_cache"><code>LFP_electrode$clear_cache()</code></a></p></li>
@@ -236,22 +237,42 @@ returns 0, otherwise returns a <code><a href="http://dipterix.org/filearray/refe
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-LFP_electrode-load_data"></a><div class="section">
-<h3 id="method-load-data-">Method <code>load_data()</code><a class="anchor" aria-label="anchor" href="#method-load-data-"></a></h3>
-<p>method to load electrode data</p><div class="section">
+</div><p></p><hr><a id="method-LFP_electrode-.load_raw_voltage"></a><div class="section">
+<h3 id="method-load-raw-voltage-">Method <code>.load_raw_voltage()</code><a class="anchor" aria-label="anchor" href="#method-load-raw-voltage-"></a></h3>
+<p>load raw voltage (no process)</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">load_data</span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"power"</span>, <span class="st">"phase"</span>, <span class="st">"voltage"</span>, <span class="st">"wavelet-coefficient"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">.load_raw_voltage</span><span class="op">(</span>reload <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>reload</code></dt>
+<dd><p>whether to reload cache</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-LFP_electrode-load_data"></a><div class="section">
+<h3 id="method-load-data-">Method <code>load_data()</code><a class="anchor" aria-label="anchor" href="#method-load-data-"></a></h3>
+<p>method to load electrode data</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">load_data</span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"power"</span>, <span class="st">"phase"</span>, <span class="st">"voltage"</span>, <span class="st">"wavelet-coefficient"</span>, <span class="st">"raw-voltage"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>type</code></dt>
 <dd><p>data type such as <code>"power"</code>, <code>"phase"</code>,
-<code>"voltage"</code>, <code>"wavelet-coefficient"</code>. Note that if type
-is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
-transforms are required.</p></dd>
+<code>"voltage"</code>, <code>"wavelet-coefficient"</code>, and
+<code>"raw-voltage"</code>. For <code>"power"</code>, <code>"phase"</code>,
+and <code>"wavelet-coefficient"</code>, 'Wavelet' transforms are required.
+For <code>"voltage"</code>, 'Notch' filters must be applied. All these
+types except for <code>"raw-voltage"</code> will be referenced.
+For <code>"raw-voltage"</code>, no reference will be performed since the data
+will be the "raw" signal (no processing).</p></dd>
 
 
 </dl><p></p></div>
@@ -261,7 +282,7 @@ transforms are required.</p></dd>
 <h3 id="method-load-blocks-">Method <code>load_blocks()</code><a class="anchor" aria-label="anchor" href="#method-load-blocks-"></a></h3>
 <p>load electrode block-wise data (with no reference),
 useful when epoch is absent</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">load_blocks</span><span class="op">(</span></span>
 <span>  <span class="va">blocks</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"power"</span>, <span class="st">"phase"</span>, <span class="st">"voltage"</span>, <span class="st">"wavelet-coefficient"</span>, <span class="st">"raw-voltage"</span><span class="op">)</span>,</span>
@@ -270,7 +291,7 @@ useful when epoch is absent</p><div class="section">
 </div>
 
 <div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>blocks</code></dt>
 <dd><p>session blocks</p></dd>
 
@@ -301,24 +322,8 @@ are the blocks.</p>
 </div><p></p><hr><a id="method-LFP_electrode-clear_cache"></a><div class="section">
 <h3 id="method-clear-cache-">Method <code>clear_cache()</code><a class="anchor" aria-label="anchor" href="#method-clear-cache-"></a></h3>
 <p>method to clear cache on hard drive</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">clear_cache</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>...</code></dt>
-<dd><p>ignored</p></dd>
-
-
-</dl><p></p></div>
-</div>
-
-</div><p></p><hr><a id="method-LFP_electrode-clear_memory"></a><div class="section">
-<h3 id="method-clear-memory-">Method <code>clear_memory()</code><a class="anchor" aria-label="anchor" href="#method-clear-memory-"></a></h3>
-<p>method to clear memory</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">clear_memory</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">clear_cache</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -330,15 +335,31 @@ are the blocks.</p>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-LFP_electrode-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-LFP_electrode-clear_memory"></a><div class="section">
+<h3 id="method-clear-memory-">Method <code>clear_memory()</code><a class="anchor" aria-label="anchor" href="#method-clear-memory-"></a></h3>
+<p>method to clear memory</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">clear_memory</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>...</code></dt>
+<dd><p>ignored</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-LFP_electrode-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LFP_electrode</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
