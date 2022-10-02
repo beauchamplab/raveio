@@ -498,24 +498,98 @@ LFP_electrode <- R6::R6Class(
       arr
     },
 
+    #' @description load raw voltage (no process)
+    #' @param reload whether to reload cache
+    .load_raw_voltage = function(reload = FALSE){
+
+      # subject <- raveio::as_rave_subject("devel/PAV007")
+      # self <- raveio::new_electrode(subject, 14)
+      # private <- self$.__enclos_env__$private
+      # self$trial_intervals <- c(-1, 2)
+      # self$epoch <- raveio:::RAVEEpoch$new(subject, "stimulation")
+
+      check_res <- private$check_dimensions(type = "voltage")
+
+      # get array dimensions
+      tidx <- as.integer(check_res$tidx)
+      srate <- check_res$srate
+      epoch_tbl <- check_res$epoch_tbl
+      blocks <- check_res$blocks
+      ntrial <- nrow(epoch_tbl)
+      ntime <- length(tidx)
+
+      arr_path <- file.path(self$cache_root, "noref", "raw-voltage")
+      if(reload && dir.exists(arr_path)) {
+        unlink(arr_path, recursive = TRUE)
+      }
+      arr <- filearray::filearray_load_or_create(
+        filebase = arr_path, type = "float", symlink_ok = FALSE,
+        partition_size = 1L, verbose = FALSE, mode = "readwrite",
+        sample_rate = srate, n_time_points = ntime,
+        tidx_start = tidx[[1]], blocks = blocks, n_trials = ntrial,
+        dimension = c(ntime, ntrial, 1),
+        on_missing = function(arr) {
+          dimnames(arr) <- list(
+            Time = tidx / srate,
+            Trial = sort(epoch_tbl$Trial),
+            Electrode = self$number
+          )
+        }
+      )
+      if(!isTRUE(arr$get_header("valid"))) {
+        for(b in blocks) {
+          sel <- epoch_tbl$Block == b
+          if(!any(sel)){ next }
+          trials <- epoch_tbl$Trial[sel]
+          onsets <- epoch_tbl$Time[sel]
+          tp <- sapply(onsets, function(o){
+            idx <- round(o * srate)
+            idx + tidx
+          })
+
+          h5_name <- sprintf('/raw/%s', b)
+          block_data <- load_h5(file = self$preprocess_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          voltage <- block_data[tp]
+          dim(voltage) <- dim(tp)
+          arr[,trials,1] <- voltage
+        }
+      }
+      arr$set_header("valid", TRUE)
+      arr$.mode <- "readonly"
+      arr
+    },
+
 
     #' @description method to load electrode data
     #' @param type data type such as \code{"power"}, \code{"phase"},
-    #' \code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
-    #' is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
-    #' transforms are required.
+    #' \code{"voltage"}, \code{"wavelet-coefficient"}, and
+    #' \code{"raw-voltage"}. For \code{"power"}, \code{"phase"},
+    #' and \code{"wavelet-coefficient"}, 'Wavelet' transforms are required.
+    #' For \code{"voltage"}, 'Notch' filters must be applied. All these
+    #' types except for \code{"raw-voltage"} will be referenced.
+    #' For \code{"raw-voltage"}, no reference will be performed since the data
+    #' will be the "raw" signal (no processing).
     load_data = function(type = c(
-      "power", "phase", "voltage", "wavelet-coefficient")){
+      "power", "phase", "voltage", "wavelet-coefficient",
+      "raw-voltage"
+    )){
 
       type <- match.arg(type)
-      if(type == "voltage"){
-        return(self$.load_voltage())
-      } else {
-        if(type == "wavelet-coefficient"){
-          type <- "coef"
+      switch(
+        type,
+        "raw-voltage" = {
+          self$.load_raw_voltage()
+        },
+        "voltage" = {
+          self$.load_voltage()
+        },
+        {
+          if(type == "wavelet-coefficient"){
+            type <- "coef"
+          }
+          self$.load_wavelet(type)
         }
-        return(self$.load_wavelet(type))
-      }
+      )
 
     },
 

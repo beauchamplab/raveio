@@ -1,4 +1,5 @@
 #' @importFrom dipsaus %?<-%
+#' @importFrom dipsaus %OF%
 #' @importFrom glue glue
 #' @importFrom R6 R6Class
 #' @importFrom filearray filearray_load

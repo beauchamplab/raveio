@@ -96,6 +96,7 @@ with current electrode type}
 \item \href{#method-LFP_electrode-.load_noref_voltage}{\code{LFP_electrode$.load_noref_voltage()}}
 \item \href{#method-LFP_electrode-.load_wavelet}{\code{LFP_electrode$.load_wavelet()}}
 \item \href{#method-LFP_electrode-.load_voltage}{\code{LFP_electrode$.load_voltage()}}
+\item \href{#method-LFP_electrode-.load_raw_voltage}{\code{LFP_electrode$.load_raw_voltage()}}
 \item \href{#method-LFP_electrode-load_data}{\code{LFP_electrode$load_data()}}
 \item \href{#method-LFP_electrode-load_blocks}{\code{LFP_electrode$load_blocks()}}
 \item \href{#method-LFP_electrode-clear_cache}{\code{LFP_electrode$clear_cache()}}
@@ -232,13 +233,30 @@ load referenced voltage (internally used)
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LFP_electrode-.load_raw_voltage"></a>}}
+\if{latex}{\out{\hypertarget{method-LFP_electrode-.load_raw_voltage}{}}}
+\subsection{Method \code{.load_raw_voltage()}}{
+load raw voltage (no process)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$.load_raw_voltage(reload = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{reload}}{whether to reload cache}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LFP_electrode-load_data"></a>}}
 \if{latex}{\out{\hypertarget{method-LFP_electrode-load_data}{}}}
 \subsection{Method \code{load_data()}}{
 method to load electrode data
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$load_data(
-  type = c("power", "phase", "voltage", "wavelet-coefficient")
+  type = c("power", "phase", "voltage", "wavelet-coefficient", "raw-voltage")
 )}\if{html}{\out{</div>}}
 }
 
@@ -246,9 +264,13 @@ method to load electrode data
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{type}}{data type such as \code{"power"}, \code{"phase"},
-\code{"voltage"}, \code{"wavelet-coefficient"}. Note that if type
-is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
-transforms are required.}
+\code{"voltage"}, \code{"wavelet-coefficient"}, and
+\code{"raw-voltage"}. For \code{"power"}, \code{"phase"},
+and \code{"wavelet-coefficient"}, 'Wavelet' transforms are required.
+For \code{"voltage"}, 'Notch' filters must be applied. All these
+types except for \code{"raw-voltage"} will be referenced.
+For \code{"raw-voltage"}, no reference will be performed since the data
+will be the "raw" signal (no processing).}
 }
 \if{html}{\out{</div>}}
 }

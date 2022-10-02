@@ -3,6 +3,7 @@
 %   R/rave-prepare-subjectblock.R, R/rave-prepare.R
 \name{prepare_subject_bare0}
 \alias{prepare_subject_bare0}
+\alias{prepare_subject_raw_voltage_with_epoch}
 \alias{prepare_subject_bare}
 \alias{prepare_subject_with_epoch}
 \alias{prepare_subject_power}
@@ -14,6 +15,16 @@ prepare_subject_bare0(
   subject,
   electrodes,
   reference_name,
+  ...,
+  quiet = TRUE,
+  repository_id = NULL
+)
+
+prepare_subject_raw_voltage_with_epoch(
+  subject,
+  electrodes,
+  epoch_name,
+  time_windows,
   ...,
   quiet = TRUE,
   repository_id = NULL
