@@ -14,3 +14,5 @@ inst/rave-pipelines/builtins/*
 ^inst/raveio-logo\.png$
 ^CRAN-SUBMISSION$
 ^tidyhtml$
+^_rs_job\.R$
+^ui\.R$

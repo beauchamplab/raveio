@@ -5,3 +5,5 @@
 .DS_Store
 adhoc
 tidyhtml
+_rs_job.R
+ui.R

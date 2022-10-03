@@ -282,6 +282,9 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
   return(x)
 }
 
+#' @rdname voltage_baseline
+#' @export
+voltage_baseline.rave_prepare_subject_voltage_with_epoch <- voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch
 
 
 #' @rdname voltage_baseline

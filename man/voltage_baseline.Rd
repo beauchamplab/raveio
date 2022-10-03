@@ -3,6 +3,7 @@
 \name{voltage_baseline}
 \alias{voltage_baseline}
 \alias{voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch}
+\alias{voltage_baseline.rave_prepare_subject_voltage_with_epoch}
 \alias{voltage_baseline.FileArray}
 \alias{voltage_baseline.array}
 \title{Calculate voltage baseline}
@@ -16,6 +17,17 @@ voltage_baseline(
 )
 
 \method{voltage_baseline}{rave_prepare_subject_raw_voltage_with_epoch}(
+  x,
+  baseline_windows,
+  method = c("percentage", "zscore"),
+  units = c("Trial", "Electrode"),
+  electrodes,
+  baseline_mean,
+  baseline_sd,
+  ...
+)
+
+\method{voltage_baseline}{rave_prepare_subject_voltage_with_epoch}(
   x,
   baseline_windows,
   method = c("percentage", "zscore"),
