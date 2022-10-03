@@ -346,12 +346,21 @@ LFP_electrode <- R6::R6Class(
           idx + tidx
         })
 
-        if( !is.numeric(self$number) ){
-          h5_name <- sprintf('/voltage/%s', b)
-          block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+        if( file.exists(self$voltage_file) ) {
+          if( !is.numeric(self$number) ){
+            h5_name <- sprintf('/voltage/%s', b)
+            block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          } else {
+            h5_name <- sprintf('/raw/voltage/%s', b)
+            block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          }
         } else {
-          h5_name <- sprintf('/raw/voltage/%s', b)
-          block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          if( !is.numeric(self$number) ){
+            stop("Cannot find the voltage signal for calculated reference signal: ", self$number, ". Please generate the reference first.")
+          } else {
+            h5_name <- sprintf('/notch/%s', b)
+            block_data <- load_h5(file = self$preprocess_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          }
         }
         voltage <- block_data[tp]
         dim(voltage) <- dim(tp)

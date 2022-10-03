@@ -93,7 +93,6 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
     electrodes, baseline_mean, baseline_sd, ...
 ){
   method <- match.arg(method)
-  force(baseline_windows)
 
   if(missing(electrodes)){
     electrodes <- x$electrode_list
@@ -107,26 +106,27 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
   baseline_provided <- !missing(baseline_mean)
   if(baseline_provided) {
     force(baseline_mean)
-    if(length(baseline_mean) != length(electrodes)) {
-      stop("`voltage_baseline`: the provided `baseline_mean` must have the same length as the number of electrodes.")
+    if(length(baseline_mean) != length(x$electrode_list)) {
+      stop("`voltage_baseline`: the provided `baseline_mean` must have the same length as the number of electrodes in the repository (whether baseline is requested or not).")
     }
     if( method == "zscore" ) {
       force(baseline_sd)
-      if(length(baseline_sd) != length(electrodes)) {
-        stop("`voltage_baseline`: the provided `baseline_sd` must have the same length as the number of electrodes.")
+      if(length(baseline_sd) != length(x$electrode_list)) {
+        stop("`voltage_baseline`: the provided `baseline_sd` must have the same length as the number of electrodes in the repository.")
       }
     } else {
       baseline_sd <- rep(1, length(electrodes))
     }
     baseline_mean <- as.double(baseline_mean)
     baseline_sd <- as.double(baseline_sd)
+    baseline_windows <- NULL
   } else {
     baseline_mean <- NULL
     baseline_sd <- NULL
+    baseline_windows <- validate_time_window(baseline_windows)
   }
 
   # Prepare global variables
-  baseline_windows <- validate_time_window(baseline_windows)
   units <- units[!units %in% "Time"]
   if(!length(units) || !all(units %in% c("Trial", "Electrode"))){
     stop('`units` must contain 1-2 of the followings: "Trial", "Electrode" (case-sensitive)')

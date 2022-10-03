@@ -319,13 +319,23 @@ LFP_reference <- R6::R6Class(
           idx + tidx
         })
 
-        if( !is.numeric(self$number) ){
-          h5_name <- sprintf('/voltage/%s', b)
-          block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+        if( file.exists(self$voltage_file) ) {
+          if( !is.numeric(self$number) ){
+            h5_name <- sprintf('/voltage/%s', b)
+            block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          } else {
+            h5_name <- sprintf('/raw/voltage/%s', b)
+            block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          }
         } else {
-          h5_name <- sprintf('/raw/voltage/%s', b)
-          block_data <- load_h5(file = self$voltage_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          if( !is.numeric(self$number) ){
+            stop("Cannot find the voltage signal for calculated reference signal: ", self$number, ". Please generate the reference first.")
+          } else {
+            h5_name <- sprintf('/notch/%s', b)
+            block_data <- load_h5(file = self$preprocess_file, name = h5_name, ram = HDF5_EAGERLOAD)
+          }
         }
+
         voltage <- block_data[tp]
         dim(voltage) <- dim(tp)
         arr[,trials,1] <- voltage
@@ -593,11 +603,23 @@ LFP_reference <- R6::R6Class(
 load_blocks_voltage_single <- function(self, blocks) {
   "This is internally used, no check is performed. Please check blocks, wavelet..."
   # load directly from HDF5 file
-  re <- structure(lapply(blocks, function(block){
-    load_h5(self$voltage_file,
-            name = sprintf("/raw/voltage/%s", block),
-            ram = TRUE)
-  }), names = blocks)
+
+  if(file.exists(self$voltage_file)) {
+    re <- structure(lapply(blocks, function(block){
+      load_h5(self$voltage_file,
+              name = sprintf("/raw/voltage/%s", block),
+              ram = TRUE)
+    }), names = blocks)
+  } else if(file.exists(self$preprocess_file)){
+    re <- structure(lapply(blocks, function(block){
+      load_h5(self$preprocess_file,
+              name = sprintf("/notch/%s", block),
+              ram = TRUE)
+    }), names = blocks)
+  } else {
+    stop("Voltage data file is missing or corrupted: [subject: ", self$subject$subject_id, ", electrode: ", self$number, "]")
+  }
+
   re
 }
 
@@ -653,9 +675,17 @@ load_blocks_voltage_multi <- function(self, blocks) {
       dir_create2(dirname(cache_path))
 
       # load from H5
-      ref <- load_h5(self$voltage_file,
-                             name = sprintf("/voltage/%s", block),
-                             ram = TRUE)
+      if(file.exists(self$voltage_file)) {
+        ref <- load_h5(self$voltage_file,
+                       name = sprintf("/voltage/%s", block),
+                       ram = TRUE)
+      } else {
+        stop("Cannot find calculated reference data of: ", self$number)
+        # ref <- load_h5(self$preprocess_file,
+        #                name = sprintf("/notch/%s", block),
+        #                ram = TRUE)
+      }
+
       arr <- filearray::filearray_create(
         filebase = cache_path, dimension = c(length(ref), 1L),
         type = "double", partition_size = 1L
