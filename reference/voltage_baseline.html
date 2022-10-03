@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9011</span>
       </span>
     </div>
 
@@ -122,6 +122,12 @@
 <dd><p>the electrodes to be included in baseline calculation;
 for power repository object produced by <code><a href="rave-prepare.html">prepare_subject_power</a></code>
 only; default is all available electrodes in each of <code>signal_types</code></p></dd>
+
+
+<dt>baseline_mean, baseline_sd</dt>
+<dd><p>internally used by 'RAVE' repository,
+provided baseline is not contained in the data. This is useful for
+calculating the baseline with data from other blocks.</p></dd>
 
 
 <dt>filebase</dt>
