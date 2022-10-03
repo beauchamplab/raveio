@@ -376,13 +376,14 @@ are the blocks.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Download subject demo/DemoSubject</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">subject</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_rave_subject.html">as_rave_subject</a></span><span class="op">(</span><span class="st">"demo/DemoSubject"</span>, strict <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="va">subject</span><span class="op">$</span><span class="va">path</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Electrode 14 in demo/DemoSubject</span></span></span>
-<span class="r-in"><span><span class="va">subject</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_rave_subject.html">as_rave_subject</a></span><span class="op">(</span><span class="st">"demo/DemoSubject"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_electrode.html">new_electrode</a></span><span class="op">(</span>subject <span class="op">=</span> <span class="va">subject</span>, number <span class="op">=</span> <span class="fl">14</span>, signal_type <span class="op">=</span> <span class="st">"LFP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load CAR reference "ref_13-16,24"</span></span></span>
