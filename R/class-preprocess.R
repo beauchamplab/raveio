@@ -21,6 +21,7 @@
 #' conf$data_locked   # Whether block, sample rates should be locked
 #'
 #' }
+#'
 #' @export
 RAVEPreprocessSettings <- R6::R6Class(
   classname = 'RAVEPreprocessSettings',

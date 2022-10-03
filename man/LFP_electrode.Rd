@@ -9,13 +9,14 @@ create instances. This documentation is to describe the member methods
 of the electrode class \code{LFP_electrode}
 }
 \examples{
-\dontrun{
 
 # Download subject demo/DemoSubject
 
+subject <- as_rave_subject("demo/DemoSubject", strict = FALSE)
+
+if(dir.exists(subject$path)) {
 
 # Electrode 14 in demo/DemoSubject
-subject <- as_rave_subject("demo/DemoSubject")
 e <- new_electrode(subject = subject, number = 14, signal_type = "LFP")
 
 # Load CAR reference "ref_13-16,24"

@@ -26,6 +26,7 @@ conf$data_imported # All 5 electrodes are imported
 conf$data_locked   # Whether block, sample rates should be locked
 
 }
+
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

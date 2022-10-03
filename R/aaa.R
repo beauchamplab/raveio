@@ -286,14 +286,17 @@ R_user_dir <- function (package, which = c("data", "config", "cache")) {
 #' When parallel computing is enabled, the number of parallel workers is
 #' specified by the option \code{raveio_getopt("max_worker", 1L)}.
 #' @examples
-#' \dontrun{
 #'
 #' library(raveio)
-#' with_future_parallel({
-#'   prepare_subject_power("demo/DemoSubject")
-#' })
 #'
+#' demo_subject <- as_rave_subject("demo/DemoSubject", strict = FALSE)
+#'
+#' if(dir.exists(demo_subject$path)) {
+#'   with_future_parallel({
+#'     prepare_subject_power("demo/DemoSubject")
+#'   })
 #' }
+#'
 #' @export
 with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
                                  on_failure = 'multisession', max_workers = NA,

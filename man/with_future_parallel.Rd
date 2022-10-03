@@ -54,12 +54,15 @@ When parallel computing is enabled, the number of parallel workers is
 specified by the option \code{raveio_getopt("max_worker", 1L)}.
 }
 \examples{
-\dontrun{
 
 library(raveio)
-with_future_parallel({
-  prepare_subject_power("demo/DemoSubject")
-})
 
+demo_subject <- as_rave_subject("demo/DemoSubject", strict = FALSE)
+
+if(dir.exists(demo_subject$path)) {
+  with_future_parallel({
+    prepare_subject_power("demo/DemoSubject")
+  })
 }
+
 }
