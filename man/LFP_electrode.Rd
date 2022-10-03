@@ -202,7 +202,10 @@ load non-referenced voltage (internally used)
 \subsection{Method \code{.load_wavelet()}}{
 load referenced wavelet coefficients (internally used)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$.load_wavelet(type = c("power", "phase", "coef"), reload = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LFP_electrode$.load_wavelet(
+  type = c("power", "phase", "wavelet-coefficient"),
+  reload = FALSE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

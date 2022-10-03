@@ -147,28 +147,30 @@ collapse2.array <- function(x, keep, method = c("mean", "sum"), ...){
 #' repo <- prepare_subject_power(
 #'   subject = "demo/DemoSubject",
 #'   time_windows = c(-1, 3),
-#'   electrodes = 14)
+#'   electrodes = c(14, 15))
 #'
-#' ##### Direct baseline on LFP data
-#' baselined <- power_baseline(
-#'   x = repo$power$LFP,
-#'   baseline_windows = list(c(-1, 0), c(2, 3)),
-#'   method = "decibel"
-#' )
-#'
-#' power_mean <- baselined$collapse(keep = c(2,1), method = "mean")
+#' ##### Direct baseline on the repository
+#' power_baseline(x = repo, method = "decibel",
+#'                baseline_windows = list(c(-1, 0), c(2, 3)))
+#' power_mean <- repo$power$baselined$collapse(
+#'   keep = c(2,1), method = "mean")
 #' image(power_mean, x = repo$time_points, y = repo$frequency,
 #'       xlab = "Time (s)", ylab = "Frequency (Hz)",
 #'       main = "Mean power over trial (Baseline: -1~0 & 2~3)")
 #' abline(v = 0, lty = 2, col = 'blue')
 #' text(x = 0, y = 20, "Aud-Onset", col = "blue", cex = 0.6)
 #'
-#' ##### Alternatively, baseline on `repo`
-#' power_baseline(x = repo,
-#'                baseline_windows = list(c(-1, 0), c(2, 3)),
-#'                method = "decibel")
+#' ##### Alternatively, baseline on electrode instances
+#' baselined <- lapply(repo$power$data_list, function(inst) {
+#'   re <- power_baseline(inst, method = "decibel",
+#'                        baseline_windows = list(c(-1, 0), c(2, 3)))
+#'   collapse2(re, keep = c(2,1), method = "mean")
+#' })
+#' power_mean2 <- (baselined[[1]] + baselined[[2]]) / 2
 #'
-#' identical(repo$baselined$LFP[], baselined[])
+#' # Same with precision difference
+#' max(abs(power_mean2 - power_mean)) < 1e-6
+#'
 #'
 #' }
 #'
@@ -397,13 +399,14 @@ power_baseline.FileArray <- function(
   signal_type <- x$get_header("signal_type")
   rave_data_type <- x$get_header("rave_data_type")
   digest_key <- list(
-    input_signature = x$get_header("rave_signature"),
+    input_signature = x$get_header("rave_signature", default = "power"),
     signal_type = signal_type,
     rave_data_type = rave_data_type,
     method = method,
     unit_dims = unit_dims,
     time_index = time_index,
-    dimension = dm
+    dimension = dm,
+    x_header = x$.header
   )
   signature <- dipsaus::digest(digest_key)
 

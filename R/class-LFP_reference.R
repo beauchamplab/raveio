@@ -144,7 +144,7 @@ LFP_reference <- R6::R6Class(
       ntime <- length(tidx)
 
       noref_cache_path <- file.path(self$cache_root, "noref")
-      arr_path <- file.path(noref_cache_path, "coef")
+      arr_path <- file.path(noref_cache_path, "wavelet-coefficient")
 
       if(file.exists(arr_path)){
         if(reload){
@@ -153,6 +153,7 @@ LFP_reference <- R6::R6Class(
           tryCatch({
             return(filearray::filearray_checkload(
               filebase = arr_path, mode = "readonly",
+              rave_data_type = "wavelet-coefficient",
               symlink_ok = FALSE, valid = TRUE
             ))
           }, error = function(e){
@@ -175,6 +176,7 @@ LFP_reference <- R6::R6Class(
         type = "complex",
         partition_size = 1
       )
+      arr$set_header("rave_data_type", "wavelet-coefficient", save = FALSE)
 
       dimnames(arr) <- list(
         Frequency = freq$Frequency,
@@ -260,6 +262,7 @@ LFP_reference <- R6::R6Class(
           tryCatch({
             return(filearray::filearray_checkload(
               filebase = arr_path, mode = "readonly",
+              rave_data_type = "voltage",
               symlink_ok = FALSE, valid = TRUE
             ))
           }, error = function(e){
@@ -295,6 +298,7 @@ LFP_reference <- R6::R6Class(
         type = "double",
         partition_size = 1
       )
+      arr$set_header("rave_data_type", "voltage", save = FALSE)
 
       dimnames(arr) <- list(
         Time = tidx / srate,
@@ -335,20 +339,20 @@ LFP_reference <- R6::R6Class(
     #' @description load referenced wavelet coefficients (internally used)
     #' @param type type of data to load
     #' @param reload whether to reload cache
-    .load_wavelet = function(type = c("power", "phase", "coef"),
+    .load_wavelet = function(type = c("power", "phase", "wavelet-coefficient"),
                              reload = FALSE){
       type <- match.arg(type)
 
       noref_e <- self$.load_noref_wavelet()
       if( is.numeric(noref_e) && noref_e == 0 ){ return(0) }
-      if( type == "coef" ){
+      if( type == "wavelet-coefficient" ){
         return(noref_e)
       }
 
       arr_path <- file.path(self$cache_root, self$reference_name, type)
 
       # noref_cache_path <- file.path(self$cache_root, "noref")
-      # arr_path <- file.path(noref_cache_path, "coef")
+      # arr_path <- file.path(noref_cache_path, "wavelet-coefficient")
 
       if(file.exists(arr_path)){
         if(reload){
@@ -357,6 +361,7 @@ LFP_reference <- R6::R6Class(
           tryCatch({
             return(filearray::filearray_checkload(
               filebase = arr_path, mode = "readonly",
+              rave_data_type = type,
               symlink_ok = FALSE, valid = TRUE
             ))
           }, error = function(e){
@@ -373,6 +378,7 @@ LFP_reference <- R6::R6Class(
         type = "float",
         partition_size = 1
       )
+      arr$set_header("rave_data_type", type, save = FALSE)
       dimnames(arr) <- dimnames(noref_e)
 
       # noref_e
@@ -415,9 +421,6 @@ LFP_reference <- R6::R6Class(
       if(type == "voltage"){
         return(self$.load_voltage())
       } else {
-        if(type == "wavelet-coefficient"){
-          type <- "coef"
-        }
         return(self$.load_wavelet(type))
       }
 
@@ -640,7 +643,7 @@ load_blocks_voltage_multi <- function(self, blocks) {
     tryCatch({
       arr <- filearray::filearray_checkload(
         filebase = cache_path, mode = "readonly",
-        staged = TRUE
+        staged = TRUE, rave_data_type = "block-voltage"
       )
       arr[]
     }, error = function(e){
@@ -658,6 +661,7 @@ load_blocks_voltage_multi <- function(self, blocks) {
         type = "double", partition_size = 1L
       )
       arr[] <- ref
+      arr$set_header("rave_data_type", "block-voltage", save = FALSE)
       arr$set_header("staged", TRUE)
       arr$.mode <- "readonly"
       ref
@@ -679,7 +683,7 @@ load_blocks_wavelet_multi <- function(self, blocks, type) {
     data <- tryCatch({
       arr <- filearray::filearray_checkload(
         filebase = cache_path, mode = "readonly",
-        staged = TRUE
+        staged = TRUE, rave_data_type = "block-wavelet-coefficient"
       )
       arr[]
     }, error = function(e){
@@ -699,6 +703,7 @@ load_blocks_wavelet_multi <- function(self, blocks, type) {
         type = "complex", partition_size = 1L
       )
       arr[] <- ref
+      arr$set_header("rave_data_type", "block-wavelet-coefficient", save = FALSE)
       arr$set_header("staged", TRUE)
       arr$.mode <- "readonly"
       ref

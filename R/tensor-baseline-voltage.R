@@ -13,6 +13,9 @@
 #' @param electrodes the electrodes to be included in baseline calculation;
 #' for power repository object produced by \code{\link{prepare_subject_power}}
 #' only; default is all available electrodes in each of \code{signal_types}
+#' @param baseline_mean,baseline_sd internally used by 'RAVE' repository,
+#' provided baseline is not contained in the data. This is useful for
+#' calculating the baseline with data from other blocks.
 #' @param ... passed to other methods
 #'
 #' @return The same type as the inputs
@@ -254,9 +257,7 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
         },
         plan = FALSE,
         callback = function(el) {
-          sprintf("Baseline correction | %s",
-                  el$electrode,
-                  signal_type)
+          sprintf("Baseline correction | %s", el$electrode)
         }
       )
 
@@ -312,15 +313,16 @@ voltage_baseline.FileArray <- function(
 
   # calculate signatures
   signal_type <- x$get_header("signal_type")
-  rave_data_type <- x$get_header("rave_data_type")
+  rave_data_type <- x$get_header("rave_data_type", default = "voltage")
   digest_key <- list(
-    input_signature = x$get_header("rave_signature", default = "voltage"),
+    input_signature = x$get_header("rave_signature"),
     signal_type = signal_type,
     rave_data_type = rave_data_type,
     method = method,
     unit_dims = unit_dims,
     time_index = time_index,
-    dimension = dm
+    dimension = dm,
+    x_header = x$.header
   )
   signature <- dipsaus::digest(digest_key)
 
@@ -334,7 +336,7 @@ voltage_baseline.FileArray <- function(
     filebase = filebase, mode = "readwrite", symlink_ok = FALSE,
     dimension = as.integer(dm), type = "float", partition_size = 1L,
     rave_signature = signature, signal_type = signal_type,
-    rave_data_type = "voltage-baselined", baseline_method = method,
+    rave_data_type = sprintf("%s-baselined", rave_data_type), baseline_method = method,
     unit_dims = unit_dims, time_index = time_index,
     baseline_windows = baseline_windows,
     RAVEIO_FILEARRAY_VERSION = RAVEIO_FILEARRAY_VERSION,

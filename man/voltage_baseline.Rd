@@ -61,6 +61,10 @@ voltage_baseline(
 for power repository object produced by \code{\link{prepare_subject_power}}
 only; default is all available electrodes in each of \code{signal_types}}
 
+\item{baseline_mean, baseline_sd}{internally used by 'RAVE' repository,
+provided baseline is not contained in the data. This is useful for
+calculating the baseline with data from other blocks.}
+
 \item{filebase}{where to store the output; default is \code{NULL} and is
 automatically determined}
 }

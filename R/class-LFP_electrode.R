@@ -65,7 +65,7 @@ LFP_electrode <- R6::R6Class(
     .location = 'iEEG',
     .is_reference = FALSE,
     .power_enabled = TRUE,
-    check_dimensions = function(type = c("voltage", "power", "phase", "coef")){
+    check_dimensions = function(type = c("voltage", "power", "phase", "wavelet-coefficient")){
       type <- match.arg(type)
       # Check time-points
       if(type == "voltage"){
@@ -174,9 +174,9 @@ LFP_electrode <- R6::R6Class(
     #' returns 0, otherwise returns a \code{\link[filearray]{FileArray-class}}
     .load_noref_wavelet = function(reload = FALSE){
 
-      check_res <- private$check_dimensions("coef")
+      check_res <- private$check_dimensions("wavelet-coefficient")
 
-      arr_path <- file.path(self$cache_root, "noref", "coef")
+      arr_path <- file.path(self$cache_root, "noref", "wavelet-coefficient")
       if(file.exists(arr_path)){
         if(reload){
           unlink(arr_path, recursive = TRUE, force = TRUE)
@@ -184,6 +184,7 @@ LFP_electrode <- R6::R6Class(
           tryCatch({
             return(filearray::filearray_checkload(
               filebase = arr_path, mode = "readonly",
+              rave_data_type = "wavelet-coefficient",
               symlink_ok = FALSE, valid = TRUE
             ))
           }, error = function(e){
@@ -216,6 +217,7 @@ LFP_electrode <- R6::R6Class(
         type = "complex",
         partition_size = 1
       )
+      arr$set_header("rave_data_type", "wavelet-coefficient", save = FALSE)
 
       dimnames(arr) <- list(
         Frequency = freq$Frequency,
@@ -297,6 +299,7 @@ LFP_electrode <- R6::R6Class(
           tryCatch({
             return(filearray::filearray_checkload(
               filebase = arr_path, mode = "readonly",
+              rave_data_type = "voltage",
               symlink_ok = FALSE, valid = TRUE
             ))
           }, error = function(e){
@@ -321,6 +324,7 @@ LFP_electrode <- R6::R6Class(
         type = "double",
         partition_size = 1
       )
+      arr$set_header("rave_data_type", "voltage", save = FALSE)
 
       dimnames(arr) <- list(
         Time = tidx / srate,
@@ -361,11 +365,11 @@ LFP_electrode <- R6::R6Class(
     #' @description load referenced wavelet coefficients (internally used)
     #' @param type type of data to load
     #' @param reload whether to reload cache
-    .load_wavelet = function(type = c("power", "phase", "coef"),
+    .load_wavelet = function(type = c("power", "phase", "wavelet-coefficient"),
                              reload = FALSE){
       type <- match.arg(type)
 
-      private$check_dimensions(type = "coef")
+      private$check_dimensions(type = "wavelet-coefficient")
       arr_path <- file.path(self$cache_root, self$reference_name, type)
       if(file.exists(arr_path)){
         if(reload){
@@ -374,6 +378,7 @@ LFP_electrode <- R6::R6Class(
           tryCatch({
             return(filearray::filearray_checkload(
               filebase = arr_path, mode = "readonly",
+              rave_data_type = type,
               symlink_ok = FALSE, valid = TRUE
             ))
           }, error = function(e){
@@ -387,7 +392,7 @@ LFP_electrode <- R6::R6Class(
       if(!inherits(self$reference, "LFP_reference") || self$reference_name == "noref"){
         ref_e <- 0
         no_reference <- TRUE
-        if( type == "coef" ){
+        if( type == "wavelet-coefficient" ){
           return(noref_e)
         }
       } else {
@@ -400,9 +405,10 @@ LFP_electrode <- R6::R6Class(
       arr <- filearray::filearray_create(
         filebase = arr_path,
         dimension = dim,
-        type = ifelse(type == "coef", "complex", "float"),
+        type = ifelse(type == "wavelet-coefficient", "complex", "float"),
         partition_size = 1
       )
+      arr$set_header("rave_data_type", type, save = FALSE)
       dimnames(arr) <- dimnames(noref_e)
 
       # noref_e
@@ -431,7 +437,7 @@ LFP_electrode <- R6::R6Class(
             }, .y = arr)
           }
         },
-        "coef" = {
+        "wavelet-coefficient" = {
           if(no_reference){
             return(noref_e)
           } else {
@@ -458,7 +464,8 @@ LFP_electrode <- R6::R6Class(
       arr_path <- file.path(self$cache_root, self$reference_name, "voltage")
       arr <- filearray_checkload_or_remove(
         filebase = arr_path, mode = "readonly",
-        symlink_ok = FALSE, valid = TRUE
+        symlink_ok = FALSE, valid = TRUE,
+        rave_data_type = "voltage"
       )
       if(inherits(arr, "FileArray")){
         return(arr)
@@ -478,7 +485,7 @@ LFP_electrode <- R6::R6Class(
       ntrial <- nrow(epoch_tbl)
       ntime <- length(tidx)
 
-      # when noref and type=="coef"
+      # when noref and type=="wavelet-coefficient"
       dim <- dim(noref_e)
       arr <- filearray_create2(
         filebase = arr_path,
@@ -487,6 +494,7 @@ LFP_electrode <- R6::R6Class(
         partition_size = 1,
         dimnames = dimnames(noref_e)
       )
+      arr$set_header(rave_data_type, "voltage", save = FALSE)
 
       filearray::fmap(list(noref_e, ref_e), function(input){
         input[[1]] - input[[2]]
@@ -528,6 +536,7 @@ LFP_electrode <- R6::R6Class(
         sample_rate = srate, n_time_points = ntime,
         tidx_start = tidx[[1]], blocks = blocks, n_trials = ntrial,
         dimension = c(ntime, ntrial, 1),
+        rave_data_type = "raw-voltage",
         on_missing = function(arr) {
           dimnames(arr) <- list(
             Time = tidx / srate,
@@ -584,9 +593,6 @@ LFP_electrode <- R6::R6Class(
           self$.load_voltage()
         },
         {
-          if(type == "wavelet-coefficient"){
-            type <- "coef"
-          }
           self$.load_wavelet(type)
         }
       )
