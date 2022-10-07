@@ -503,6 +503,18 @@ finalize_installation <- function(
     )
   }
 
+  # Backup ravedash sessions since they might be too old now
+  cache_path <- cache_root()
+  fs <- list.dirs(cache_path, full.names = FALSE, recursive = FALSE)
+  fs <- fs[grepl("^session-[0-9]{6}-[0-9]{6}-[a-zA-Z]+-[A-Z0-9]{4}$", fs)]
+
+  if(length(fs)) {
+    for(path in file.path(cache_path, fs)) {
+      raveio::backup_file(path, remove = TRUE, quiet = TRUE)
+    }
+  }
+  invisible()
+
 }
 
 #' @title Install 'RAVE' modules
