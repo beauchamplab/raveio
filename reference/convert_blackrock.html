@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.8.9016</span>
       </span>
     </div>
 
@@ -56,6 +56,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">convert_blackrock</span><span class="op">(</span></span>
 <span>  <span class="va">file</span>,</span>
 <span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  subject <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  to <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  comments <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mat"</span>, <span class="st">"hdf5"</span><span class="op">)</span></span>
@@ -72,8 +73,14 @@
 <dd><p>the block name, default is file name</p></dd>
 
 
+<dt>subject</dt>
+<dd><p>subject code to save the files; default is <code>NULL</code></p></dd>
+
+
 <dt>to</dt>
-<dd><p>save to path, must be a directory; default is under the file path</p></dd>
+<dd><p>save to path, must be a directory; default is under the file path.
+If <code>subject</code> is provided, then the default is <code>subject</code> raw
+directory path</p></dd>
 
 
 <dt>comments</dt>
@@ -88,8 +95,8 @@
     <h2>Value</h2>
     
 
-<p>The results will be stored in directory specified by <code>to</code>. The
-function itself returned nothing.</p>
+<p>The results will be stored in directory specified by <code>to</code>.
+Please read the output message carefully.</p>
     </div>
 
   </div>
