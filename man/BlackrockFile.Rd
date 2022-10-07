@@ -121,7 +121,7 @@ absolute file paths
 \subsection{Method \code{refresh_data()}}{
 refresh and load 'NSx' data
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$refresh_data(force = FALSE, verbose = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$refresh_data(force = FALSE, verbose = TRUE, nev_data = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -131,6 +131,8 @@ refresh and load 'NSx' data
 loaded and cached before}
 
 \item{\code{verbose}}{whether to print out messages when loading}
+
+\item{\code{nev_data}}{whether to refresh 'NEV' extended data; default is false}
 }
 \if{html}{\out{</div>}}
 }

@@ -82,7 +82,13 @@ BlackrockFile <- R6::R6Class(
                               nev_data = nev_data)
 
       # save nev data
-      private$.nev <- headers$nev
+      if(nev_data || !inherits(private$.nev, "fastmap2")) {
+        private$.nev <- headers$nev
+      } else {
+        private$.nev$data_packets <- headers$nev$data_packets
+        private$.nev$basic_header <- headers$nev$basic_header
+      }
+
 
       # save nsx data
       for(fname in names(headers$nsx)) {
@@ -220,10 +226,11 @@ BlackrockFile <- R6::R6Class(
     #' @param force whether to force reload data even if the data has been
     #' loaded and cached before
     #' @param verbose whether to print out messages when loading
+    #' @param nev_data whether to refresh 'NEV' extended data; default is false
     #' @return nothing
-    refresh_data = function(force = FALSE, verbose = TRUE) {
+    refresh_data = function(force = FALSE, verbose = TRUE, nev_data = FALSE) {
       private$.initialize(self$base_path, header_only = FALSE,
-                          force = force, verbose = verbose)
+                          force = force, verbose = verbose, nev_data = nev_data)
       invisible()
     },
 
@@ -395,3 +402,88 @@ BlackrockFile <- R6::R6Class(
 )
 
 
+#' Convert 'BlackRock' 'NEV/NSx' files
+#' @param file path to any 'NEV/NSx' file
+#' @param block the block name, default is file name
+#' @param to save to path, must be a directory; default is under the file path
+#' @param comments whether to extract comment section as epoch; default is true
+#' @param format output format, choices are \code{'mat'} or \code{'hdf5'}
+#' @return The results will be stored in directory specified by \code{to}. The
+#' function itself returned nothing.
+#' @export
+convert_blackrock <- function(
+    file, block = NULL, to = NULL, comments = TRUE, format = c("mat", "hdf5")) {
+
+  # DIPSAUS DEBUG START
+  # file <- '~/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/YDY/block058/EMU-058_subj-YDY_task-noisyAV_run-06_NSP-2.ns5'
+  # format <- "mat"
+  # block <- NULL
+  # to <- NULL
+  # comments <- FALSE
+
+  format <- match.arg(format)
+  nev_data <- isTRUE(as.logical(comments))
+
+  if(length(block) != 1 || !nzchar(block)) {
+    block <- filenames(file)
+    block <- gsub("\\.(ccf|nev|ns[1-6])", "", block, ignore.case = TRUE)
+  }
+  catgl("Loading NEV/NSx files...", level = "INFO")
+  brfile <- BlackrockFile$new(file, block = block, nev_data = nev_data)
+
+  electrodes <- as.integer(brfile$electrode_table$Electrode)
+  catgl("Found channels: ", dipsaus::deparse_svec(electrodes), level = "INFO")
+
+  # load blackrock file
+  brfile$refresh_data(nev_data = nev_data)
+
+
+  if(!length(to)) {
+    to <- file.path(dirname(file), block)
+  }
+  if(dir.exists(to)) {
+    backup_file(to, remove = TRUE)
+  }
+  to <- dir_create2(to)
+
+  save_signal <- function(s, e) {
+    # meta <- as.list(attr(s, "meta"))
+    s <- as.vector(s)
+    switch(
+      format,
+      "mat" = {
+        fname <- file.path(to, sprintf("channel_%s.mat", e))
+        R.matlab::writeMat(fname, data = s)
+      },
+      "h5" = {
+        fname <- file.path(to, sprintf("channel_%s.h5", e))
+        save_h5(s, file = fname, name = "data", quiet = TRUE, replace = TRUE)
+      },
+      {
+        stop("Unsupported format")
+      }
+    )
+  }
+
+  dipsaus::lapply_async2(electrodes, function(e) {
+    s <- brfile$get_electrode(e)
+    save_signal(s, e)
+    return()
+  }, plan = FALSE, callback = function(e) {
+    sprintf("Writing data|Electrode %s", e)
+  })
+
+  safe_write_csv(brfile$electrode_table, file = file.path(to, "channels.csv"),
+                 row.names = FALSE, quiet = TRUE)
+
+  if(nev_data) {
+    epoch_table <- brfile$get_epoch()
+    safe_write_csv(epoch_table, file.path(to, "epoch_nev_export.csv"),
+                   row.names = FALSE, quiet = TRUE)
+  }
+
+
+  catgl("Done. Please check the output path: [{to}]", level = "INFO")
+
+  return(invisible())
+}

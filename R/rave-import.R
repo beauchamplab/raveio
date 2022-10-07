@@ -155,6 +155,16 @@ rave_import_lfp <- function(
 rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
                                           electrodes, sample_rate, add = FALSE,
                                           conversion = NA, data_type = 'LFP', ...){
+  # DIPSAUS DEBUG START
+  # project_name <- "devel"
+  # subject_code <- "PAV005"
+  # blocks <- "PAV005_datafile_004"
+  # electrodes <- 1:2
+  # sample_rate <- 2000
+  # add = TRUE
+  # conversion = NA
+  # data_type = 'LFP'
+
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
     raveio_setopt('file_structure', .fs_struct, .save = TRUE)
@@ -201,7 +211,12 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
         sel <- stringr::str_detect(info$files, regexp)
         src <- file.path(info$path, info$files[sel][[1]])
         dat <- read_mat(src, ram = FALSE)
-        nm <- guess_raw_trace(dat, is_vector = TRUE)[[1]]
+        nm <- guess_raw_trace(dat, is_vector = TRUE)
+        if(length(nm)) {
+          nm <- nm[[1]]
+        } else {
+          stop("Cannot obtain the data name for electrode ", e)
+        }
         s <- as.numeric(dat[[nm]])
         s[is.na(s)] <- 0
         # save to HDF5
@@ -301,7 +316,12 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
     info <- file_info[[b]]
     progress$inc(paste('Reading block', b))
     dat <- read_mat(file.path(info$path, info$files))
-    nm <- guess_raw_trace(dat, electrodes = electrodes, is_vector = FALSE)[[1]]
+    nm <- guess_raw_trace(dat, electrodes = electrodes, is_vector = FALSE)
+    if(length(nm)) {
+      nm <- nm[[1]]
+    } else {
+      stop("Cannot obtain the data name for block ", b)
+    }
     dat <- dat[[nm]]
     if(which.min(dim(dat)) == 1){
       dat <- t(dat)
