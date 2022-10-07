@@ -7,6 +7,7 @@
 convert_blackrock(
   file,
   block = NULL,
+  subject = NULL,
   to = NULL,
   comments = TRUE,
   format = c("mat", "hdf5")
@@ -17,15 +18,19 @@ convert_blackrock(
 
 \item{block}{the block name, default is file name}
 
-\item{to}{save to path, must be a directory; default is under the file path}
+\item{subject}{subject code to save the files; default is \code{NULL}}
+
+\item{to}{save to path, must be a directory; default is under the file path.
+If \code{subject} is provided, then the default is \code{subject} raw
+directory path}
 
 \item{comments}{whether to extract comment section as epoch; default is true}
 
 \item{format}{output format, choices are \code{'mat'} or \code{'hdf5'}}
 }
 \value{
-The results will be stored in directory specified by \code{to}. The
-function itself returned nothing.
+The results will be stored in directory specified by \code{to}.
+Please read the output message carefully.
 }
 \description{
 Convert 'BlackRock' 'NEV/NSx' files

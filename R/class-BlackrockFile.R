@@ -405,14 +405,18 @@ BlackrockFile <- R6::R6Class(
 #' Convert 'BlackRock' 'NEV/NSx' files
 #' @param file path to any 'NEV/NSx' file
 #' @param block the block name, default is file name
-#' @param to save to path, must be a directory; default is under the file path
+#' @param subject subject code to save the files; default is \code{NULL}
+#' @param to save to path, must be a directory; default is under the file path.
+#' If \code{subject} is provided, then the default is \code{subject} raw
+#' directory path
 #' @param comments whether to extract comment section as epoch; default is true
 #' @param format output format, choices are \code{'mat'} or \code{'hdf5'}
-#' @return The results will be stored in directory specified by \code{to}. The
-#' function itself returned nothing.
+#' @return The results will be stored in directory specified by \code{to}.
+#' Please read the output message carefully.
 #' @export
 convert_blackrock <- function(
-    file, block = NULL, to = NULL, comments = TRUE, format = c("mat", "hdf5")) {
+    file, block = NULL, subject = NULL, to = NULL, comments = TRUE,
+    format = c("mat", "hdf5")) {
 
   # DIPSAUS DEBUG START
   # file <- '~/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/YDY/block058/EMU-058_subj-YDY_task-noisyAV_run-06_NSP-2.ns5'
@@ -439,7 +443,11 @@ convert_blackrock <- function(
 
 
   if(!length(to)) {
-    to <- file.path(dirname(file), block)
+    if(length(subject)) {
+      to <- file.path(raveio_getopt("raw_data_dir"), subject[[1]], block)
+    } else {
+      to <- file.path(dirname(file), block)
+    }
   }
   if(dir.exists(to)) {
     backup_file(to, remove = TRUE)
@@ -485,5 +493,5 @@ convert_blackrock <- function(
 
   catgl("Done. Please check the output path: [{to}]", level = "INFO")
 
-  return(invisible())
+  return(invisible(to))
 }
