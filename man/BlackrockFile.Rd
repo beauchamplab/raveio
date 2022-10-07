@@ -65,7 +65,7 @@ print user-friendly messages
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$new(path, block)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$new(path, block, nev_data = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -75,6 +75,8 @@ constructor
 extensions}
 
 \item{\code{block}}{session block ID; default is the file name}
+
+\item{\code{nev_data}}{whether to load comments and 'waveforms'}
 }
 \if{html}{\out{</div>}}
 }

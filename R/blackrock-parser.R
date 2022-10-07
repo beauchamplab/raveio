@@ -286,7 +286,7 @@ parse__with_numeric_key <- function(conn, section_specs, data_packet_sizes) {
   re
 }
 
-parse__nev <- function(nev_path, specification) {
+parse__nev <- function(nev_path, specification, nev_data = TRUE) {
   conn <- file(nev_path, "rb")
   on.exit({
     close(conn)
@@ -299,73 +299,74 @@ parse__nev <- function(nev_path, specification) {
   ext_header <- parse__with_string_key(
     conn, specification[[2]], n_items = n_ext_headers)
 
-  data_packets <- parse__with_numeric_key(
-    conn, specification[[3]],
-    data_packet_sizes = data_packet_sizes)
-
   re <- dipsaus::fastmap2()
+  re$basic_header <- basic_header
+  re$extended_header <- ext_header
 
   # TODO: Postprocessing
   data_packets2 <- dipsaus::fastqueue2()
 
-  # parse waveform
-  waveform_flag <- rawToBits(basic_header$additional_flags$raw)
-  waveform_dtype <- NA
-  if(length(waveform_flag)) {
-    waveform_flag <- as.integer(waveform_flag[[1]])
-    if(waveform_flag == 1) {
-      waveform_dtype <- "int16"
-    }
-  }
-  electrode_ids <- ext_header$NEUEVWAV$electrode_id
-  spike_widths <- ext_header$NEUEVWAV$spike_width
-  bytes_per_waveforms <- ext_header$NEUEVWAV$bytes_per_waveform
+  if( nev_data ) {
+    data_packets <- parse__with_numeric_key(
+      conn, specification[[3]],
+      data_packet_sizes = data_packet_sizes)
 
-  while(!is.null({packet <- data_packets$remove()})) {
-
-    if(length(packet$value$waveform) && is.raw(packet$value$waveform)) {
-
-      electrode_id <- packet$value$packet_id
-      sel <- electrode_ids == electrode_id
-      waveform <- packet$value$waveform
-      if(any(sel)) {
-        spike_width <- spike_widths[sel]
-        bytes_per_waveform <- bytes_per_waveforms[sel]
-        if(bytes_per_waveform == 0) {
-          bytes_per_waveform <- 1
-        }
-
-
-
-        # translate waveform
-        if(is.na(waveform_dtype)) {
-
-          bytes <- 2^ceiling(log2(bytes_per_waveform))
-          waveform <- matrix(waveform, nrow = bytes_per_waveform)
-          waveform_dtype <- sprintf("int%s", bytes * 8)
-          parser <- get(sprintf("parse_%s", waveform_dtype), envir = asNamespace("raveio"), mode = "function", inherits = FALSE)
-          waveform <- apply(waveform, 2, function(w) {
-            w <- c(w, rep(as.raw(0), bytes - bytes_per_waveform))
-            parser(w)
-          })
-        } else {
-          parser <- get(sprintf("parse_%s", waveform_dtype), envir = asNamespace("raveio"), mode = "function", inherits = FALSE)
-          waveform <- parser(waveform)
-        }
-
-        packet$value$waveform <- waveform
+    # parse waveform
+    waveform_flag <- rawToBits(basic_header$additional_flags$raw)
+    waveform_dtype <- NA
+    if(length(waveform_flag)) {
+      waveform_flag <- as.integer(waveform_flag[[1]])
+      if(waveform_flag == 1) {
+        waveform_dtype <- "int16"
       }
+    }
+    electrode_ids <- ext_header$NEUEVWAV$electrode_id
+    spike_widths <- ext_header$NEUEVWAV$spike_width
+    bytes_per_waveforms <- ext_header$NEUEVWAV$bytes_per_waveform
+
+    while(!is.null({packet <- data_packets$remove()})) {
+
+      if(length(packet$value$waveform) && is.raw(packet$value$waveform)) {
+
+        electrode_id <- packet$value$packet_id
+        sel <- electrode_ids == electrode_id
+        waveform <- packet$value$waveform
+        if(any(sel)) {
+          spike_width <- spike_widths[sel]
+          bytes_per_waveform <- bytes_per_waveforms[sel]
+          if(bytes_per_waveform == 0) {
+            bytes_per_waveform <- 1
+          }
+
+
+
+          # translate waveform
+          if(is.na(waveform_dtype)) {
+
+            bytes <- 2^ceiling(log2(bytes_per_waveform))
+            waveform <- matrix(waveform, nrow = bytes_per_waveform)
+            waveform_dtype <- sprintf("int%s", bytes * 8)
+            parser <- get(sprintf("parse_%s", waveform_dtype), envir = asNamespace("raveio"), mode = "function", inherits = FALSE)
+            waveform <- apply(waveform, 2, function(w) {
+              w <- c(w, rep(as.raw(0), bytes - bytes_per_waveform))
+              parser(w)
+            })
+          } else {
+            parser <- get(sprintf("parse_%s", waveform_dtype), envir = asNamespace("raveio"), mode = "function", inherits = FALSE)
+            waveform <- parser(waveform)
+          }
+
+          packet$value$waveform <- waveform
+        }
+
+      }
+      data_packets2$add(packet)
 
     }
-    data_packets2$add(packet)
 
+    class(data_packets2) <- class(data_packets)
   }
 
-  class(data_packets2) <- class(data_packets)
-
-
-  re$basic_header <- basic_header
-  re$extended_header <- ext_header
   re$data_packets <- data_packets2
   re
 }
@@ -569,6 +570,7 @@ blackrock_postprocess <- function(nsx, nev = NULL) {
 #' @param nev_path 'NEV' event files, with file extension \code{'.nev'}
 #' @param header_only whether to load header information only and avoid
 #' reading signal arrays
+#' @param nev_data whether to load \code{'.nev'} comments and 'waveforms'
 #' @param verbose whether to print out progress when loading signal array
 #' @param ram whether to load signals into the memory rather than storing
 #' with \code{\link[filearray]{filearray}}; default is false
@@ -576,7 +578,8 @@ blackrock_postprocess <- function(nsx, nev = NULL) {
 #' haven't changed
 #' @param temp_path temporary directory to store the channel data
 #' @export
-read_nsx_nev <- function(paths, nev_path = NULL, header_only = FALSE,
+read_nsx_nev <- function(paths, nev_path = NULL,
+                         header_only = FALSE, nev_data = TRUE,
                          verbose = TRUE, ram = FALSE, force_update = FALSE,
                          temp_path = file.path(tempdir(), "blackrock-temp")) {
   if(!all(file.exists(paths))) {
@@ -591,7 +594,7 @@ read_nsx_nev <- function(paths, nev_path = NULL, header_only = FALSE,
       stop("`read_nsx_nev`: the given `nev_path` is not a valid neural-event file (.nev): ",
            nev_path)
     }
-    nev <- parse__nev(nev_path, nev_info$config$specification)
+    nev <- parse__nev(nev_path, nev_info$config$specification, nev_data)
   } else {
     nev <- NULL
   }

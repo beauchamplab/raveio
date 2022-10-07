@@ -34,7 +34,7 @@ BlackrockFile <- R6::R6Class(
     .ns6_file = character(0L),
     .ns6_data = NULL,
 
-    .initialize = function(path, header_only = TRUE, force = FALSE, verbose = FALSE) {
+    .initialize = function(path, header_only = TRUE, force = FALSE, verbose = FALSE, nev_data = TRUE) {
 
       # Get parent directory and file prefix
       path <- gsub(sprintf("\\.(ccf|nev|ns[1-%d])$", private$.NS_MAX),
@@ -78,7 +78,8 @@ BlackrockFile <- R6::R6Class(
       # load nev
       headers <- read_nsx_nev(paths = nsx_files, nev_path = nev_path,
                               header_only = header_only, verbose = verbose,
-                              ram = FALSE, force_update = force)
+                              ram = FALSE, force_update = force,
+                              nev_data = nev_data)
 
       # save nev data
       private$.nev <- headers$nev
@@ -183,13 +184,14 @@ BlackrockFile <- R6::R6Class(
     #' @param path the path to 'BlackRock' file, can be with or without file
     #' extensions
     #' @param block session block ID; default is the file name
-    initialize = function(path, block) {
+    #' @param nev_data whether to load comments and 'waveforms'
+    initialize = function(path, block, nev_data = TRUE) {
       if(missing(block)) {
         block <- filenames(path)
         block <- gsub("\\.(nev|ns[0-9]|ccf)$", "", block, ignore.case = TRUE)
       }
       self$block <- block
-      private$.initialize(path)
+      private$.initialize(path, nev_data = nev_data)
     },
 
     #' @description get 'NEV' file path

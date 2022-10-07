@@ -671,10 +671,10 @@ validate_raw_file_lfp.native_blackrock <- function(
       )
       return(NULL)
     }
-    brfile <- BlackrockFile$new(path = file.path(bpath, nev_path), block = b)
-    if(check_content) {
-      brfile$refresh_data()
-    }
+    brfile <- BlackrockFile$new(path = file.path(bpath, nev_path), block = b, nev_data = FALSE)
+    # if(check_content) {
+    #   brfile$refresh_data()
+    # }
 
     if(length(electrodes)) {
       # check if requested electrodes are included

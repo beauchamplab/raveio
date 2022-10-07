@@ -8,6 +8,7 @@ read_nsx_nev(
   paths,
   nev_path = NULL,
   header_only = FALSE,
+  nev_data = TRUE,
   verbose = TRUE,
   ram = FALSE,
   force_update = FALSE,
@@ -22,6 +23,8 @@ read_nsx_nev(
 
 \item{header_only}{whether to load header information only and avoid
 reading signal arrays}
+
+\item{nev_data}{whether to load \code{'.nev'} comments and 'waveforms'}
 
 \item{verbose}{whether to print out progress when loading signal array}
 

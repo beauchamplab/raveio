@@ -11,7 +11,7 @@
 voltage_baseline(
   x,
   baseline_windows,
-  method = c("percentage", "zscore"),
+  method = c("percentage", "zscore", "subtract"),
   units = c("Trial", "Electrode"),
   ...
 )
@@ -19,7 +19,7 @@ voltage_baseline(
 \method{voltage_baseline}{rave_prepare_subject_raw_voltage_with_epoch}(
   x,
   baseline_windows,
-  method = c("percentage", "zscore"),
+  method = c("percentage", "zscore", "subtract"),
   units = c("Trial", "Electrode"),
   electrodes,
   baseline_mean,
@@ -30,7 +30,7 @@ voltage_baseline(
 \method{voltage_baseline}{rave_prepare_subject_voltage_with_epoch}(
   x,
   baseline_windows,
-  method = c("percentage", "zscore"),
+  method = c("percentage", "zscore", "subtract"),
   units = c("Trial", "Electrode"),
   electrodes,
   baseline_mean,
@@ -41,7 +41,7 @@ voltage_baseline(
 \method{voltage_baseline}{FileArray}(
   x,
   baseline_windows,
-  method = c("percentage", "zscore"),
+  method = c("percentage", "zscore", "subtract"),
   units = c("Trial", "Electrode"),
   filebase = NULL,
   ...
@@ -50,7 +50,7 @@ voltage_baseline(
 \method{voltage_baseline}{array}(
   x,
   baseline_windows,
-  method = c("percentage", "zscore"),
+  method = c("percentage", "zscore", "subtract"),
   units = c("Trial", "Electrode"),
   ...
 )

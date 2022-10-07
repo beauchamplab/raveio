@@ -77,7 +77,7 @@
 #' @export
 voltage_baseline <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore"),
+    method = c("percentage", "zscore", "subtract"),
     units = c("Trial", "Electrode"), ...
 ){
   UseMethod("voltage_baseline")
@@ -88,11 +88,13 @@ voltage_baseline <- function(
 #' @export
 voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore"),
+    method = c("percentage", "zscore", "subtract"),
     units = c("Trial", "Electrode"),
     electrodes, baseline_mean, baseline_sd, ...
 ){
   method <- match.arg(method)
+
+  use_raw <- inherits(x, "rave_prepare_subject_raw_voltage_with_epoch")
 
   if(missing(electrodes)){
     electrodes <- x$electrode_list
@@ -135,24 +137,34 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
 
   sel <- x$electrode_list %in% electrodes
 
-  sub_list <- x$raw_voltage$data_list[sel]
   sub_elec <- x$electrode_list[sel]
+  if( use_raw ) {
+    sub_list <- x$raw_voltage$data_list[sel]
+    dnames <- x$raw_voltage$dimnames
+    input_signature <- x$raw_voltage$signature
+    tdim <- x$raw_voltage$dim
+  } else {
+    sub_list <- x$voltage$data_list[sel]
+    dnames <- x$voltage$dimnames
+    input_signature <- x$voltage$signature
+    tdim <- x$voltage$dim
+  }
 
-  dnames <- x$raw_voltage$dimnames
   dnames$Time <- as.numeric(dnames$Time)
   time_index <- unique(unlist(lapply(baseline_windows, function(w){
     which(dnames$Time >= w[[1]] & dnames$Time <= w[[2]])
   })))
 
   # calculate signature
+
   digest_key <- list(
-    input_signature = x$raw_voltage$signature,
+    input_signature = input_signature,
     # signal_type = signal_type,
-    rave_data_type = "raw-voltage",
+    rave_data_type = ifelse(use_raw, "raw-voltage", "voltage"),
     method = method,
     unit_dims = unit_dims,
     time_index = dipsaus::deparse_svec(time_index),
-    dimension = x$raw_voltage$dim,
+    dimension = tdim,
     baseline_provided = baseline_provided,
     baseline_mean = baseline_mean,
     baseline_sd = baseline_sd
@@ -160,13 +172,13 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
 
   signature <- dipsaus::digest(digest_key)
 
-  filebase <- file.path(cache_root(), "_baselined_arrays_", x$raw_voltage$signature)
+  filebase <- file.path(cache_root(), "_baselined_arrays_", input_signature)
   res <- tryCatch({
     res <- filearray::filearray_checkload(
       filebase, mode = "readwrite", symlink_ok = FALSE,
       rave_signature = signature,
       # signal_type = signal_type,
-      rave_data_type = "raw-voltage-baselined",
+      rave_data_type = ifelse(use_raw, "raw-voltage-baselined", "voltage-baselined"),
       baseline_provided = baseline_provided,
       ready = TRUE,  # The rest procedure might go wrong, in case failure
       RAVEIO_FILEARRAY_VERSION = RAVEIO_FILEARRAY_VERSION
@@ -179,14 +191,14 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
     dir_create2(dirname(filebase))
     res <- filearray::filearray_create(
       filebase = filebase,
-      dimension = x$raw_voltage$dim,
+      dimension = tdim,
       type = "float",
       partition_size = 1
     )
     res$.mode <- "readwrite"
     res$.header$rave_signature <- signature
     # res$.header$signal_type <- signal_type
-    res$.header$rave_data_type <- "raw-voltage-baselined"
+    res$.header$rave_data_type <- ifelse(use_raw, "raw-voltage-baselined", "voltage-baselined")
     res$.header$baseline_method <- method
     res$.header$unit_dims <- unit_dims
     res$.header$time_index <- dipsaus::deparse_svec(time_index)
@@ -196,7 +208,7 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
     res$.header$baseline_provided <- baseline_provided
     res$.header$baseline_mean <- baseline_mean
     res$.header$baseline_sd <- baseline_sd
-    dimnames(res) <- x$raw_voltage$dimnames
+    dimnames(res) <- dnames
     # # automatically run
     # res$.save_header()
     res
@@ -212,17 +224,23 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
 
       input_list <- lapply(todo_elec, function(e){
         idx <- which(x$electrode_list == e)
+        if( use_raw ) {
+          data_list <- x$raw_voltage$data_list
+        } else {
+          data_list <- x$voltage$data_list
+        }
+
         if(baseline_provided) {
           mean <- baseline_mean[idx]
           sd <- baseline_sd[idx]
           return(list(
             index = idx, electrode = e, mean = mean, sd = sd,
-            array = x$raw_voltage$data_list[[idx]]
+            array = data_list[[idx]]
           ))
         } else {
           return(list(
             index = idx, electrode = e,
-            array = x$raw_voltage$data_list[[idx]]
+            array = data_list[[idx]]
           ))
         }
       })
@@ -239,6 +257,9 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
               },
               "zscore" = {
                 res[, , el$index] <- (input - el$mean) / el$sd
+              },
+              "subtract" = {
+                res[, , el$index] <- (input - el$mean)
               },
               {
                 stop("Unsupported voltage baseline method.")
@@ -278,7 +299,12 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
 
   }
 
-  x$raw_voltage$baselined <- res
+  if( use_raw ) {
+    x$raw_voltage$baselined <- res
+  } else {
+    x$voltage$baselined <- res
+  }
+
   return(x)
 }
 
@@ -291,7 +317,7 @@ voltage_baseline.rave_prepare_subject_voltage_with_epoch <- voltage_baseline.rav
 #' @export
 voltage_baseline.FileArray <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore"),
+    method = c("percentage", "zscore", "subtract"),
     units = c("Trial", "Electrode"),
     filebase = NULL, ...
 ){
@@ -389,7 +415,7 @@ voltage_baseline.FileArray <- function(
 #' @export
 voltage_baseline.array <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore"),
+    method = c("percentage", "zscore", "subtract"),
     units = c("Trial", "Electrode"), ...
 ){
   method <- match.arg(method)
