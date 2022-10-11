@@ -504,7 +504,7 @@ LFP_electrode <- R6::R6Class(
         partition_size = 1,
         dimnames = dimnames(noref_e)
       )
-      arr$set_header(rave_data_type, "voltage", save = FALSE)
+      arr$set_header("rave_data_type", "voltage", save = FALSE)
 
       filearray::fmap(list(noref_e, ref_e), function(input){
         input[[1]] - input[[2]]
