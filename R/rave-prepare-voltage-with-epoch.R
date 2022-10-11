@@ -209,6 +209,7 @@ prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, 
     }
   }
   re$reference_table <- reference_table
+  re$reference_name <- reference_name
 
   # ----- epoch -----
   if(missing(time_windows)){
