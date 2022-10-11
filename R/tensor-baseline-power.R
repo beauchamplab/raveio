@@ -41,7 +41,7 @@ collapse2.FileArray <- function(x, keep, method = c("mean", "sum"), ...){
     keep_alt <- keep[-lidx]
     re <- filearray::fmap2(list(x), fun = function(v){
       v <- array(v[[1]], dim = pdim)
-      dipsaus::collapse(v, keep_alt, average = is_mean)
+      collapse(v, keep_alt, average = is_mean)
     }, .input_size = prod(pdim), .simplify = TRUE)
     redim <- dim(re)
     rendim <- length(redim)
@@ -57,9 +57,9 @@ collapse2.FileArray <- function(x, keep, method = c("mean", "sum"), ...){
   } else {
     re <- filearray::fmap2(list(x), fun = function(v){
       v <- array(v[[1]], dim = pdim)
-      dipsaus::collapse(v, keep, average = is_mean)
+      collapse(v, keep, average = is_mean)
     }, .input_size = prod(pdim), .simplify = TRUE)
-    re <- dipsaus::collapse(re, seq_along(keep), average = is_mean)
+    re <- collapse(re, seq_along(keep), average = is_mean)
   }
 
   dnames <- dimnames(x)
@@ -92,7 +92,7 @@ collapse2.array <- function(x, keep, method = c("mean", "sum"), ...){
   if(setequal(keep, seq_len(ndims))){
     return(aperm(x, keep))
   }
-  dipsaus::collapse(x, keep, average = method == "mean")
+  collapse(x, keep, average = method == "mean")
 }
 
 #' @name power_baseline
@@ -300,7 +300,7 @@ power_baseline.rave_prepare_power <- function(
       dipsaus::lapply_async2(
         input_list,
         FUN = function(el) {
-          res[, , , el$index] <- dipsaus::baseline_array(
+          res[, , , el$index] <- baseline_array(
             x = el$array[drop = FALSE],
             along_dim = 2L,
             baseline_indexpoints = time_index,
@@ -350,7 +350,7 @@ power_baseline.rave_prepare_power <- function(
   #       filebase = bind_base,
   #       overwrite = TRUE, cache_ok = TRUE)
   #
-  #     res[] <- dipsaus::baseline_array(
+  #     res[] <- baseline_array(
   #       x = bind_array[,,, which(sel),drop=FALSE],
   #       along_dim = 2L,
   #       baseline_indexpoints = time_index,
@@ -454,15 +454,15 @@ power_baseline.FileArray <- function(
     #   output <- filearray::fmap(x = list(x), fun = function(v){
     #     data <- v[[1]]
     #     dim(data) <- partition_dim
-    #     dipsaus::baseline_array(data, along_dim = 2L, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
+    #     baseline_array(data, along_dim = 2L, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
     #   }, .input_size = prod(partition_dim))
     # })
 
 
     dipsaus::lapply_async2(seq_len(dm[[length(dm)]]), function(ii){
       res[, , , ii] <-
-        dipsaus::baseline_array(
-          x[, , , ii, drop = FALSE],
+        baseline_array(
+          x = x[, , , ii, drop = FALSE],
           along_dim = 2L,
           baseline_indexpoints = time_index,
           unit_dims = unit_dims,
@@ -473,11 +473,11 @@ power_baseline.FileArray <- function(
 
   } else {
 
-    output <- dipsaus::baseline_array(x[drop = FALSE],
-                                      along_dim = 2L,
-                                      baseline_indexpoints = time_index,
-                                      unit_dims = unit_dims,
-                                      method = method)
+    output <- baseline_array(x = x[drop = FALSE],
+                            along_dim = 2L,
+                            baseline_indexpoints = time_index,
+                            unit_dims = unit_dims,
+                            method = method)
     res[] <- output
 
   }
@@ -515,7 +515,7 @@ power_baseline.array <- function(
   }
   unit_dims <- which(dnn %in% units)
 
-  dipsaus::baseline_array(x, along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
+  baseline_array(x = x, along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
 
 }
 
@@ -569,7 +569,7 @@ power_baseline.ECoGTensor <- function(
       sel[[ii]] <- TRUE
       dnames$Electrode <- dnames$Electrode[[ii]]
       slice <- x$subset(Electrode ~ sel, drop = FALSE, data_only = TRUE)
-      slice <- dipsaus::baseline_array(slice, along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
+      slice <- baseline_array(slice, along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
 
       utils::capture.output({
         re <- ECoGTensor$new(data = slice, dim = dim(slice), varnames = x$varnames, swap_file = file.path(filebase, ii), temporary = FALSE, hybrid = FALSE, dimnames = dnames)
@@ -584,7 +584,7 @@ power_baseline.ECoGTensor <- function(
 
     baselined_data <- join_tensors(baselined_data, temporary = TRUE)
   } else {
-    re <- dipsaus::baseline_array(x$get_data(), along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
+    re <- baseline_array(x$get_data(), along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
     re <- ECoGTensor$new(data = re, dim = dim(x), varnames = x$varnames, swap_file = file.path(filebase, 0), temporary = TRUE, hybrid = hybrid, dimnames = dnames)
   }
 

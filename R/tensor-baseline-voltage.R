@@ -77,7 +77,7 @@
 #' @export
 voltage_baseline <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore", "subtract"),
+    method = c("percentage", "zscore", "subtract_mean"),
     units = c("Trial", "Electrode"), ...
 ){
   UseMethod("voltage_baseline")
@@ -88,7 +88,7 @@ voltage_baseline <- function(
 #' @export
 voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore", "subtract"),
+    method = c("percentage", "zscore", "subtract_mean"),
     units = c("Trial", "Electrode"),
     electrodes, baseline_mean, baseline_sd, ...
 ){
@@ -258,7 +258,7 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
               "zscore" = {
                 res[, , el$index] <- (input - el$mean) / el$sd
               },
-              "subtract" = {
+              "subtract_mean" = {
                 res[, , el$index] <- (input - el$mean)
               },
               {
@@ -266,7 +266,7 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
               }
             )
           } else {
-            res[, , el$index] <- dipsaus::baseline_array(
+            res[, , el$index] <- baseline_array(
               x = input,
               along_dim = 1L,
               baseline_indexpoints = time_index,
@@ -317,7 +317,7 @@ voltage_baseline.rave_prepare_subject_voltage_with_epoch <- voltage_baseline.rav
 #' @export
 voltage_baseline.FileArray <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore", "subtract"),
+    method = c("percentage", "zscore", "subtract_mean"),
     units = c("Trial", "Electrode"),
     filebase = NULL, ...
 ){
@@ -379,7 +379,7 @@ voltage_baseline.FileArray <- function(
       # Baseline per electrodes
       dipsaus::lapply_async2(seq_len(dm[[length(dm)]]), function(ii){
         res[, , ii] <-
-          dipsaus::baseline_array(
+          baseline_array(
             x[, , ii, drop = FALSE],
             along_dim = 1L,
             baseline_indexpoints = time_index,
@@ -391,7 +391,7 @@ voltage_baseline.FileArray <- function(
 
     } else {
 
-      output <- dipsaus::baseline_array(x[drop = FALSE],
+      output <- baseline_array(x[drop = FALSE],
                                         along_dim = 1L,
                                         baseline_indexpoints = time_index,
                                         unit_dims = unit_dims,
@@ -415,7 +415,7 @@ voltage_baseline.FileArray <- function(
 #' @export
 voltage_baseline.array <- function(
     x, baseline_windows,
-    method = c("percentage", "zscore", "subtract"),
+    method = c("percentage", "zscore", "subtract_mean"),
     units = c("Trial", "Electrode"), ...
 ){
   method <- match.arg(method)
@@ -438,7 +438,7 @@ voltage_baseline.array <- function(
   }
   unit_dims <- which(dnn %in% units)
 
-  dipsaus::baseline_array(x, along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
+  baseline_array(x, along_dim = time_margin, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
 
 }
 

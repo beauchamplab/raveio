@@ -258,6 +258,31 @@ R_user_dir <- function (package, which = c("data", "config", "cache")) {
   file.path(path, "R", package)
 }
 
+# These functions uses ravetools/dipsaus
+collapse <- function(x, keep, average = FALSE, ...) {
+  if(isTRUE(getOption("raveio.use.ravetools", FALSE))) {
+    return(ravetools::collapse(x = x, keep = keep, average = average, ...))
+  } else {
+    return(dipsaus::collapse(x = x, keep = keep, average = average))
+  }
+}
+
+baseline_array <- function(
+    x, along_dim, baseline_indexpoints = NULL, unit_dims = seq_along(dim(x))[-along_dim],
+    method = c("percentage", "sqrt_percentage", "decibel", "zscore", "sqrt_zscore", "subtract_mean"),
+    ...) {
+  method <- match.arg(method)
+  if(isTRUE(getOption("raveio.use.ravetools", FALSE))) {
+    return(ravetools::baseline_array(
+      x = x, along_dim = along_dim, unit_dims = unit_dims,
+      method = method, baseline_indexpoints = baseline_indexpoints, ...))
+  } else {
+    return(dipsaus::baseline_array(
+      x = x, along_dim = along_dim, unit_dims = unit_dims,
+      method = method, baseline_indexpoints = baseline_indexpoints))
+  }
+}
+
 #' Enable parallel computing provided by 'future' package within the context
 #' @param expr the expression to be evaluated
 #' @param env environment of the \code{expr}

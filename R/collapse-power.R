@@ -78,18 +78,18 @@ collapse_power.array <- function(x, analysis_index_cubes){
   lapply(analysis_index_cubes, function(cube){
     re <- dipsaus::fastmap2()
     cube_data <- x[cube$Frequency, cube$Time, cube$Trial, cube$Electrode, drop = FALSE]
-    # freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = TRUE)
-    time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3, 4), average = FALSE)
-    freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3, 4), average = FALSE)
+    # freq_time_elec <- collapse(cube_data, keep = c(1, 2), average = TRUE)
+    time_trial_elec <- collapse(cube_data, keep = c(2, 3, 4), average = FALSE)
+    freq_trial_elec <- collapse(cube_data, keep = c(1, 3, 4), average = FALSE)
 
 
-    re$freq_elec <- dipsaus::collapse(freq_trial_elec, keep = c(1, 3), average = FALSE) / prod(dm[c(2, 3)])
-    re$trial_elec <- dipsaus::collapse(freq_trial_elec, keep = c(2, 3), average = FALSE) / prod(dm[c(1, 2)])
-    re$time_elec <- dipsaus::collapse(time_trial_elec, keep = c(1, 3), average = FALSE) / prod(dm[c(1, 3)])
+    re$freq_elec <- collapse(freq_trial_elec, keep = c(1, 3), average = FALSE) / prod(dm[c(2, 3)])
+    re$trial_elec <- collapse(freq_trial_elec, keep = c(2, 3), average = FALSE) / prod(dm[c(1, 2)])
+    re$time_elec <- collapse(time_trial_elec, keep = c(1, 3), average = FALSE) / prod(dm[c(1, 3)])
 
-    re$freq_time <- dipsaus::collapse(cube_data, keep = c(1, 2), average = FALSE) / prod(dm[c(3, 4)])
-    re$freq_trial <- dipsaus::collapse(freq_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 4)])
-    re$time_trial <- dipsaus::collapse(time_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(1, 4)])
+    re$freq_time <- collapse(cube_data, keep = c(1, 2), average = FALSE) / prod(dm[c(3, 4)])
+    re$freq_trial <- collapse(freq_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 4)])
+    re$time_trial <- collapse(time_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(1, 4)])
     re$freq <- rowMeans(re$freq_time) / prod(dm[-1])
     re$time <- rowMeans(re$time_elec) / prod(dm[-2])
     re$trial <- rowMeans(re$trial_elec) / prod(dm[-3])
@@ -135,9 +135,9 @@ collapse_power.FileArray <- function(x, analysis_index_cubes){
         # print(cube)
         # print(dim(v))
         cube_data <- v[cube$Frequency, cube$Time, cube$Trial, drop = FALSE]
-        freq_time_elec <- dipsaus::collapse(cube_data, keep = c(1, 2), average = FALSE)
-        time_trial_elec <- dipsaus::collapse(cube_data, keep = c(2, 3), average = FALSE)
-        freq_trial_elec <- dipsaus::collapse(cube_data, keep = c(1, 3), average = FALSE)
+        freq_time_elec <- collapse(cube_data, keep = c(1, 2), average = FALSE)
+        time_trial_elec <- collapse(cube_data, keep = c(2, 3), average = FALSE)
+        freq_trial_elec <- collapse(cube_data, keep = c(1, 3), average = FALSE)
 
         re[[sprintf("freq_time_elec_%s", ii)]] <- freq_time_elec
         re[[sprintf("time_trial_elec_%s", ii)]] <- time_trial_elec
@@ -187,9 +187,9 @@ collapse_power.FileArray <- function(x, analysis_index_cubes){
       re$freq_elec <- re$freq_elec / prod(dm[c(2, 3)])
       re$time_elec <- re$time_elec / prod(dm[c(1, 3)])
       re$trial_elec <- re$trial_elec / prod(dm[c(1, 2)])
-      re$freq_time <- dipsaus::collapse(re$freq_time_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(3, 4)])
-      re$freq_trial <- dipsaus::collapse(re$freq_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 4)])
-      re$time_trial <- dipsaus::collapse(re$time_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 3)])
+      re$freq_time <- collapse(re$freq_time_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(3, 4)])
+      re$freq_trial <- collapse(re$freq_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 4)])
+      re$time_trial <- collapse(re$time_trial_elec, keep = c(1, 2), average = FALSE) / prod(dm[c(2, 3)])
       re$freq <- rowSums(re$freq_time) / prod(dm[-1])
       re$time <- rowSums(re$time_elec) / prod(dm[-2])
       re$trial <- rowSums(re$trial_elec) / prod(dm[-3])

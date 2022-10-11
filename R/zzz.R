@@ -610,6 +610,11 @@ install_modules <- function(modules, dependencies = FALSE) {
     }
   }, onexit = TRUE)
 
+  # check if ravetools is installed
+  if(isNamespaceLoaded("ravetools") || system.file(package = "ravetools") != "") {
+    options("raveio.use.ravetools" = TRUE)
+  }
+
 }
 
 .onUnload <- function(libpath){
