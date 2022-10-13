@@ -60,15 +60,24 @@
 </li>
 <li>Added new data type <code>raw-voltage</code> to method <code>load_blocks</code> (class <code>LFP_electrode</code>) to load the raw voltage data</li>
 <li>Added <code>prepare_subject_bare0</code> to load subject that with only voltage data imported (before <code>Notch</code> filters)</li>
+<li>Added repository type for voltage signals</li>
+<li>Added <code>.nev</code> converter to export <code>BlackRock</code> format to <code>Matlab</code> or <code>HDF5</code> formats</li>
+<li>Backup pipeline files when updating</li>
+<li>Added baseline method for voltage signals</li>
 </ul><p>Minor changes:</p>
 <ul><li>Changed <code>FLIRT</code> script to perform less search to speed up</li>
 <li>Exported <code>MNI305_to_MNI152</code> matrix</li>
 <li>Added <code>quiet</code> option when loading electrodes to suppress warnings</li>
+<li>Try to use <code>ravetools</code> whenever possible</li>
+<li>Added an option to avoid reading <code>BlackRock.nev</code> headers to shorten loading time</li>
+<li>Allow electrodes to be loaded without warnings</li>
 </ul><p>Bug fixes:</p>
 <ul><li>Fixed <code>watchdog</code> when electrode table is unavailable</li>
 <li>Fixed <code>rand_string</code> not random when running with <code>multicore</code> future parallel</li>
 <li>Fixed <code>preprocess_file</code> path in class <code>LFP_electrode</code>
 </li>
+<li>Baseline window is no longer needed when mean and standard deviation is provided</li>
+<li>Fixed <code>.nev</code> converter bugs causing index overflows in some cases</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.8" id="raveio-008">raveio 0.0.8<small>2022-08-25</small><a class="anchor" aria-label="anchor" href="#raveio-008"></a></h2>
