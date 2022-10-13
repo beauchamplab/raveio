@@ -62,7 +62,7 @@ run_wavelet <- function(
 
   # prepare kernels
   overall_progress$inc("Generating wavelet kernels")
-  sample_file = file.path(subject$preprocess_path, 'voltage',
+  sample_file <- file.path(subject$preprocess_path, 'voltage',
                           sprintf('electrode_%d.h5', electrodes[[1]]))
   if(!file.exists(sample_file) || !h5_valid(sample_file)){
     stop("Electrode file is missing (preprocess, electrode ", electrodes[[1]], ")")
