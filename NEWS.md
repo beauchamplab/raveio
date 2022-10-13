@@ -10,18 +10,27 @@ Major changes:
 * Allowed `pipelines` to `eval` instead of `run`
 * Added new data type `raw-voltage` to method `load_blocks` (class `LFP_electrode`) to load the raw voltage data
 * Added `prepare_subject_bare0` to load subject that with only voltage data imported (before `Notch` filters)
+* Added repository type for voltage signals
+* Added `.nev` converter to export `BlackRock` format to `Matlab` or `HDF5` formats 
+* Backup pipeline files when updating 
+* Added baseline method for voltage signals
 
 Minor changes:
 
 * Changed `FLIRT` script to perform less search to speed up
 * Exported `MNI305_to_MNI152` matrix
 * Added `quiet` option when loading electrodes to suppress warnings
+* Try to use `ravetools` whenever possible
+* Added an option to avoid reading `BlackRock.nev` headers to shorten loading time
+* Allow electrodes to be loaded without warnings
 
 Bug fixes:
 
 * Fixed `watchdog` when electrode table is unavailable
 * Fixed `rand_string` not random when running with `multicore` future parallel
 * Fixed `preprocess_file` path in class `LFP_electrode`
+* Baseline window is no longer needed when mean and standard deviation is provided
+* Fixed `.nev` converter bugs causing index overflows in some cases 
 
 raveio 0.0.8
 =======
