@@ -234,7 +234,10 @@ import_electrode_table <- function (path, subject, use_fs = NA,
   if (!"Electrode" %in% nms) {
     stop("`import_electrode_table` cannot find column `Electrode` (case-sensitive).")
   }
-  new_tbl <- new_tbl[new_tbl$Electrode %in% electrodes, ]
+  if(length(electrodes)) {
+    # subject has electrode channels set
+    new_tbl <- new_tbl[new_tbl$Electrode %in% electrodes, ]
+  }
   electrodes2 <- electrodes[!electrodes %in% new_tbl$Electrode]
   if (length(electrodes2)) {
     catgl("`import_electrode_table` has some issues with importing {path}",
