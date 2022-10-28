@@ -247,13 +247,15 @@ rave_knitr_build <- function(targets, make_file){
     "library(targets)",
     "library(raveio)",
     'source("common.R", local = TRUE, chdir = TRUE)',
+    '._._env_._. <- environment()',
     'lapply(sort(list.files(',
     '  "R/", ignore.case = TRUE,',
     '  pattern = "^shared-.*\\\\.R", ',
     '  full.names = TRUE',
     ')), function(f) {',
-    '  source(f, local = FALSE, chdir = TRUE)',
+    '  source(f, local = ._._env_._., chdir = TRUE)',
     '})',
+    'rm(._._env_._.)',
     deparse(call)
   ), con = make_file)
   invisible(call)
