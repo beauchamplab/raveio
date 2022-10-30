@@ -24,7 +24,7 @@ cmd_run_dcm2niix <- function(subject, src_path, type = c("MRI", "CT"),
   crop <- match.arg(crop)
   type <- match.arg(type)
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   # find MRI path
   dest_path <- normalizePath(

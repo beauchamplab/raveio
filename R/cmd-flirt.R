@@ -15,7 +15,7 @@ cmd_run_flirt <- function(
   mri_path <- validate_nii(mri_path)
   ct_path <- validate_nii(ct_path)
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
   dest_path <- normalizePath(
     file.path(subject$preprocess_settings$raw_path, "rave-imaging", "coregistration"),
     winslash = "/", mustWork = FALSE

@@ -227,7 +227,7 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
 import_electrode_table <- function (path, subject, use_fs = NA,
                                     dry_run = FALSE, ...) {
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
   electrodes <- subject$electrodes
   new_tbl <- utils::read.csv(path, stringsAsFactors = FALSE, ...)
   nms <- names(new_tbl)

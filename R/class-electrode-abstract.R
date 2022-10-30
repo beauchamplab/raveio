@@ -70,7 +70,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @param number current electrode number or reference ID
     #' @param quiet reserved, whether to suppress warning messages
     initialize = function(subject, number, quiet = FALSE){
-      self$subject <- as_rave_subject(subject)
+      self$subject <- restore_subject_instance(subject)
       self$number <- number
       self$reference <- NULL
       self$epoch <- NULL
@@ -369,7 +369,7 @@ new_electrode <- function(subject, number, signal_type, ...){
   number <- as.integer(number)
   stopifnot(length(number) && !is.na(number))
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
   signal_type_expected <- subject$electrode_types[subject$electrodes == number]
 
   if(missing(signal_type)){
@@ -396,7 +396,7 @@ new_electrode <- function(subject, number, signal_type, ...){
 new_reference <- function(subject, number, signal_type, ...){
   if(!length(number) || number == "noref"){ return(NULL) }
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   if(missing(signal_type)){
     elec <- dipsaus::parse_svec(gsub("[^0-9 ,-]", "", number))

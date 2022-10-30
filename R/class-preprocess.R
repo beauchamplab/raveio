@@ -65,7 +65,7 @@ RAVEPreprocessSettings <- R6::R6Class(
     #' @param subject character or \code{\link{RAVESubject}} instance
     #' @param read_only whether subject should be read-only (not yet implemented)
     initialize = function(subject, read_only = TRUE){
-      self$subject <- as_rave_subject(subject, strict = FALSE)
+      self$subject <- restore_subject_instance(subject, strict = FALSE)
       self$path <- file.path(self$subject$preprocess_path, 'rave.yaml')
       self$backup_path <- file.path(self$subject$rave_path, 'log.yaml')
       self$read_only <- isTRUE(read_only)

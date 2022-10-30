@@ -5,7 +5,7 @@ run_wavelet <- function(
     kernels_precision = "float", pre_downsample = 1,
     verbose = TRUE
 ) {
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   # clear subject's cached files
   clear_cached_files(

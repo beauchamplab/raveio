@@ -39,7 +39,7 @@ cmd_run_recon_all <- function(subject, mri_path,
     stop("`cmd_run_recon_all`: `mri_path` is not a valid NifTi file.")
   }
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   default_fs_path <- cmd_freesurfer_home(error_on_missing = FALSE)
   freesurfer_home <- tryCatch({

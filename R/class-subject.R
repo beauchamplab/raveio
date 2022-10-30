@@ -1,10 +1,30 @@
 #' Get \code{\link{RAVESubject}} instance from character
 #' @param subject_id character in format \code{"project/subject"}
 #' @param strict whether to check if subject directories exist or not
+#' @param reload whether to reload (update) subject information, default is true
 #' @return \code{\link{RAVESubject}} instance
 #' @seealso \code{\link{RAVESubject}}
 #' @export
-as_rave_subject <- function(subject_id, strict = TRUE){
+as_rave_subject <- function(subject_id, strict = TRUE, reload = TRUE){
+  if(inherits(subject_id, 'RAVESubject')){
+    if(reload) {
+      return(restore_subject_instance(subject_id$subject_id, strict = strict))
+    } else {
+      return(subject_id)
+    }
+  } else if(inherits(subject_id, 'RAVEPreprocessSettings')) {
+    if(reload) {
+      return(restore_subject_instance(subject_id$subject$subject_id, strict = strict))
+    } else {
+      return(subject_id$subject)
+    }
+  } else {
+    return(restore_subject_instance(subject_id, strict = strict))
+  }
+
+}
+
+restore_subject_instance <- function(subject_id, strict = FALSE) {
   if(inherits(subject_id, 'RAVESubject')){
     return(subject_id)
   } else {
@@ -508,7 +528,7 @@ RAVESubject <- R6::R6Class(
 
 initialize_imaging_paths <- function(subject) {
   # subject <- 'demo/DemoSubject'
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
   root_path <- file.path(subject$preprocess_settings$raw_path, "rave-imaging")
   dir_create2(file.path(root_path, "coregistration"))
   dir_create2(file.path(root_path, "log"))

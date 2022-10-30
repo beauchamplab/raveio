@@ -12,7 +12,7 @@
 rave_subject_format_conversion <- function(
     subject, verbose = TRUE, ...) {
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   if(!all(subject$electrode_types %in% "LFP")) {
     warning("RAVE 1.0 only support analyzing signals with time-frequency decomposition. Electrodes with non-LFP signals will be ignored.")

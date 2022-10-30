@@ -68,7 +68,7 @@ RAVEEpoch <- R6::R6Class(
       stopifnot2(stringr::str_detect(name, '^[a-zA-Z0-9_]'),
                  msg = 'epoch name can only contain letters[a-zA-Z] digits[0-9] and underscore[_]')
 
-      self$subject <- as_rave_subject(subject)
+      self$subject <- restore_subject_instance(subject)
       self$name <- name
 
       self$data <- dipsaus::fastmap2()

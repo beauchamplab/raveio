@@ -42,11 +42,7 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
                        recache = FALSE, clean_before_cache = FALSE,
                        compute_template = FALSE, usetemplateifmissing = FALSE){
 
-  if( is.character( subject ) ){
-    subject <- as_rave_subject(subject, strict = FALSE)
-  } else if (!inherits(subject, 'RAVESubject')){
-    subject <- as_rave_subject(subject$subject_id, strict = FALSE)
-  }
+  subject <- as_rave_subject(subject, strict = FALSE)
 
   fs_path <- subject$freesurfer_path
   electrode_table <- subject$meta_data(meta_type = "electrodes")

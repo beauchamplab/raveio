@@ -195,7 +195,7 @@ print.RAVEValidation <- function(x, use_logger = TRUE, ...) {
 
 validate_subject_paths <- function(subject, verbose = TRUE, other_checks = NULL) {
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   # check paths
   path_names <- c("reference_path", "note_path", "pipeline_path", "cache_path",
@@ -254,7 +254,7 @@ validate_subject_paths <- function(subject, verbose = TRUE, other_checks = NULL)
 }
 
 validate_subject_preprocess <- function(subject, verbose = TRUE, other_checks = NULL) {
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
   preproc <- subject$preprocess_settings
 
   re <- dipsaus::fastmap2()
@@ -513,7 +513,7 @@ validate_subject_preprocess <- function(subject, verbose = TRUE, other_checks = 
 
 validate_subject_meta <- function(subject, verbose = TRUE, other_checks = NULL) {
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -703,7 +703,7 @@ validate_subject_meta <- function(subject, verbose = TRUE, other_checks = NULL) 
 
 validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other_checks = NULL) {
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -929,7 +929,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
 }
 
 validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, other_checks = NULL) {
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -1124,7 +1124,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
 
 # epoch length
 validate_subject_epoch <- function(subject, verbose = TRUE, other_checks = NULL) {
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL
@@ -1216,7 +1216,7 @@ validate_subject_epoch <- function(subject, verbose = TRUE, other_checks = NULL)
 
 # reference
 validate_subject_reference <- function(subject, verbose = TRUE, other_checks = NULL) {
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   re <- dipsaus::fastmap2()
   valid_preproc <- NULL

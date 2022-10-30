@@ -19,7 +19,7 @@
 #' @export
 generate_reference <- function(subject, electrodes) {
 
-  subject <- as_rave_subject(subject, strict = FALSE)
+  subject <- restore_subject_instance(subject, strict = FALSE)
 
   electrodes <- dipsaus::parse_svec(electrodes)
 
@@ -55,7 +55,7 @@ generate_reference <- function(subject, electrodes) {
   ref_signals <- dipsaus::lapply_async2(blocks, function(block){
 
     ref_signal <- 0
-    subject_inst <- as_rave_subject(subject_id, strict = FALSE)
+    subject_inst <- restore_subject_instance(subject_id, strict = FALSE)
 
     for(e in electrodes) {
       inst <- LFP_electrode$new(subject = subject_inst, number = e)

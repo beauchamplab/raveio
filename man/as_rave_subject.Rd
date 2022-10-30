@@ -4,12 +4,14 @@
 \alias{as_rave_subject}
 \title{Get \code{\link{RAVESubject}} instance from character}
 \usage{
-as_rave_subject(subject_id, strict = TRUE)
+as_rave_subject(subject_id, strict = TRUE, reload = TRUE)
 }
 \arguments{
 \item{subject_id}{character in format \code{"project/subject"}}
 
 \item{strict}{whether to check if subject directories exist or not}
+
+\item{reload}{whether to reload (update) subject information, default is true}
 }
 \value{
 \code{\link{RAVESubject}} instance
