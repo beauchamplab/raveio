@@ -596,6 +596,10 @@ install_modules <- function(modules, dependencies = FALSE) {
   assign('.settings', s, envir = pkg)
   cenv <- environment(.subset2(s, 'reset'))
 
+  assign(".target_formats", fastmap::fastmap(), envir = pkg)
+
+  target_format_register_onload()
+
   # .onUnload is suppose to work, but in RStudio environment
   # when users force restart rsession, .onUnload is ignored
   # and hence it's possible to leave massive amount of temporary files.

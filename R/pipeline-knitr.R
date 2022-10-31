@@ -25,7 +25,21 @@ check_knit_packages <- function(languages = c("R", "python")){
 
 }
 
-rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", pattern = NULL, ..., target_names = NULL){
+resolve_pipeline_error <- function(name, condition) {
+  msg <- sprintf(
+    "Cannot resolve pipeline target [%s]. \nReason: %s",
+    name, paste(condition$message, collapse = "\n")
+  )
+  condition$rave_error <- list(
+    name = name,
+    message = msg
+  )
+  class(condition) <- c("rave_pipeline_error", "rave_error", class(condition))
+  stop(condition)
+}
+
+rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", pattern = NULL,
+                        format = NULL, ..., target_names = NULL){
   # code <- options$code
   code <- paste(c("{", code, "}"), collapse = "\n")
   expr <- parse(text = code)[[1]]
@@ -42,13 +56,33 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", pattern = N
   if(is.character(pattern)){
     pattern <- parse(text = pattern)
   }
+
+
+  # tryCatch({
+  #   .(expr)
+  #   return(.(str2lang(export)))
+  # }, error = function(e) {
+  #
+  #   e$rave_error <- list(
+  #     name = .(export),
+  #     message = sprintf("Cannot resolve pipeline target [%s]. \nReason: %s",
+  #                       .(export), paste(e$message, collapse = ""))
+  #   )
+  #   class(e) <- c("rave_pipeline_error", "rave_error", class(e))
+  #   stop(e)
+  # })
   bquote(
     targets::tar_target_raw(
       name = .(export),
       command = quote({
-        .(expr)
-        return(.(str2lang(export)))
+        tryCatch({
+          .(expr)
+          return(.(str2lang(export)))
+        }, error = function(e) {
+          asNamespace("raveio")$resolve_pipeline_error(.(export), e)
+        })
       }),
+      format = asNamespace("raveio")$target_format_dynamic(.(format)),
       deps = .(deps),
       cue = targets::tar_cue(.(cue)),
       pattern = .(pattern),
@@ -232,7 +266,7 @@ rave_knitr_build <- function(targets, make_file){
           targets::tar_target_raw(
             "settings",
             quote({
-              load_yaml(settings_path)
+              yaml::read_yaml(settings_path)
             }),
             deps = "settings_path",
             cue = targets::tar_cue("always")

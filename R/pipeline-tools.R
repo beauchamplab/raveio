@@ -418,16 +418,8 @@ pipeline_read <- function(
   if(length(var_names) > 1){
     re <- structure(lapply(var_names, function(vn){
       tryCatch({
-        item <- do.call(targets::tar_read,
+        do.call(targets::tar_read,
                 list(name = str2lang(vn), branches = branches))
-        if(inherits(item, "RAVESubject")) {
-          try({
-            item <- as_rave_subject(
-              item$subject_id, strict = FALSE
-            )
-          })
-        }
-        item
       }, error = function(e){
         ifnotfound
       })
@@ -439,13 +431,6 @@ pipeline_read <- function(
     }, error = function(e){
       ifnotfound
     })
-    if(inherits(re, "RAVESubject")) {
-      try({
-        re <- as_rave_subject(
-          re$subject_id, strict = FALSE
-        )
-      })
-    }
   }
   return(re)
 }
