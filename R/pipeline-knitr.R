@@ -25,16 +25,31 @@ check_knit_packages <- function(languages = c("R", "python")){
 
 }
 
-resolve_pipeline_error <- function(name, condition) {
-  msg <- sprintf(
-    "Cannot resolve pipeline target [%s]. \nReason: %s",
-    name, paste(condition$message, collapse = "\n")
-  )
-  condition$rave_error <- list(
-    name = name,
-    message = msg
-  )
-  class(condition) <- c("rave_pipeline_error", "rave_error", class(condition))
+resolve_pipeline_error <- function(name, condition, expr = NULL) {
+  if(interactive() || dipsaus::shiny_is_running()) {
+    expr <- substitute(expr)
+    if(!is.null(expr)) {
+      expr <- deparse1(expr, collapse = "\n")
+      catgl("Pipeline code: \n{expr}", level = "ERROR")
+    }
+  }
+
+  rlang::entrace(condition)
+  # condition <- rlang::cnd_entrace(condition)
+  # rlang::cnd_signal(condition)
+
+  # rlang::abort(
+  #   message = sprintf("Cannot resolve pipeline target [%s]", name),
+  #   parent = condition,
+  #   trace = condition$trace,
+  #   rave_error = list(
+  #     name = name,
+  #     message = condition$message,
+  #     expression = expr
+  #   )
+  # )
+
+  # in case
   stop(condition)
 }
 
@@ -79,7 +94,7 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", pattern = N
           .(expr)
           return(.(str2lang(export)))
         }, error = function(e) {
-          asNamespace("raveio")$resolve_pipeline_error(.(export), e)
+          asNamespace("raveio")$resolve_pipeline_error(.(export), e, quote(.(expr)))
         })
       }),
       format = asNamespace("raveio")$target_format_dynamic(.(format)),
