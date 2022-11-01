@@ -40,12 +40,21 @@
 #' @export
 rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
                        recache = FALSE, clean_before_cache = FALSE,
-                       compute_template = FALSE, usetemplateifmissing = FALSE){
+                       compute_template = FALSE, usetemplateifmissing = FALSE,
+                       include_electrodes = TRUE){
 
   subject <- as_rave_subject(subject, strict = FALSE)
 
   fs_path <- subject$freesurfer_path
-  electrode_table <- subject$meta_data(meta_type = "electrodes")
+
+  electrode_table <- NULL
+  if(include_electrodes) {
+    electrode_table <- subject$meta_data(meta_type = "electrodes")
+    if(!is.data.frame(electrode_table) || !nrow(electrode_table)) {
+      electrode_table <- NULL
+    }
+  }
+
 
   if(is.na(fs_path) || !isTRUE(dir.exists(fs_path))){
     if( !usetemplateifmissing ){
@@ -53,14 +62,17 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
     }
     brain <- threeBrain::merge_brain()
 
-    # try to use MNI305 position
-    if(all(paste0("MNI305_", c("x", "y", "z")) %in% names(electrode_table))){
-      electrode_table$Coord_x <- electrode_table$MNI305_x
-      electrode_table$Coord_y <- electrode_table$MNI305_y
-      electrode_table$Coord_z <- electrode_table$MNI305_z
+    if(is.data.frame(electrode_table)) {
+      # try to use MNI305 position
+      if(all(paste0("MNI305_", c("x", "y", "z")) %in% names(electrode_table))){
+        electrode_table$Coord_x <- electrode_table$MNI305_x
+        electrode_table$Coord_y <- electrode_table$MNI305_y
+        electrode_table$Coord_z <- electrode_table$MNI305_z
+      }
+
+      brain$set_electrodes(electrodes = electrode_table)
     }
 
-    brain$set_electrodes(electrodes = electrode_table)
   } else {
     if(recache){
       if( clean_before_cache ){
@@ -76,7 +88,9 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
       fs_subject_folder = fs_path, subject_name = subject$subject_code,
       surface_types = surfaces, use_141 = use_141)
 
-    brain$set_electrodes(electrodes = electrode_table)
+    if(is.data.frame(electrode_table)) {
+      brain$set_electrodes(electrodes = electrode_table)
+    }
 
     if( compute_template ){
       tf <- tempfile()
@@ -95,6 +109,13 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
     }
 
   }
+
+  brain$meta$constructor_params <- list(
+    project_name = subject$project_name,
+    subject_code = subject$subject_code,
+    use_141 = use_141,
+    usetemplateifmissing = usetemplateifmissing
+  )
 
   brain
 }

@@ -11,7 +11,8 @@ rave_brain(
   recache = FALSE,
   clean_before_cache = FALSE,
   compute_template = FALSE,
-  usetemplateifmissing = FALSE
+  usetemplateifmissing = FALSE,
+  include_electrodes = TRUE
 )
 }
 \arguments{
