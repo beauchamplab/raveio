@@ -83,7 +83,8 @@ pipeline_debug(
 pipeline_eval(
   names,
   env = new.env(parent = parent.frame()),
-  pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  settings_path = file.path(pipe_dir, "settings.yaml")
 )
 
 pipeline_visualize(

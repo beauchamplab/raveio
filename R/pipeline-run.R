@@ -74,6 +74,14 @@ pipeline_run <- function(
         "dipsaus.cluster.backup" = "multisession"
       )
     }
+
+    # Load shared functions into envir
+    shared_libs <- list.files(file.path(.(pipe_dir), "R"), pattern = "^shared-.*\\.R",
+                              full.names = TRUE, ignore.case = TRUE)
+    lapply(sort(shared_libs), function(f) {
+      source(file = f, local = args$envir, chdir = TRUE)
+    })
+
     if(.(type) == "smart"){
       local <- ns$with_future_parallel
     }
@@ -231,6 +239,13 @@ pipeline_run_bare <- function(
     callr_function = callr_function,
     ...
   )
+
+  # Load shared functions into envir
+  shared_libs <- list.files(file.path(pipe_dir, "R"), pattern = "^shared-.*\\.R",
+                            full.names = TRUE, ignore.case = TRUE)
+  lapply(sort(shared_libs), function(f) {
+    source(file = f, local = args$envir, chdir = TRUE)
+  })
 
   make <- function(fun, use_local = TRUE) {
     tryCatch({

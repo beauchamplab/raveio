@@ -164,16 +164,17 @@ PipelineTools <- R6::R6Class(
       } else {
         envir <- env
       }
-      shared_path <- file.path(private$.pipeline_path, "R")
-      shared_libs <- list.files(shared_path, pattern = "^shared-.*\\.R",
-                                full.names = TRUE, ignore.case = TRUE)
-      shared_libs <- sort(shared_libs)
-
-      lapply(shared_libs, function(f) {
-        source(file = f, local = envir, chdir = TRUE)
-      })
-      list2env(self$get_settings(), envir = envir)
-      pipeline_eval(names = names, env = envir, pipe_dir = private$.pipeline_path)
+      # shared_path <- file.path(private$.pipeline_path, "R")
+      # shared_libs <- list.files(shared_path, pattern = "^shared-.*\\.R",
+      #                           full.names = TRUE, ignore.case = TRUE)
+      # shared_libs <- sort(shared_libs)
+      #
+      # lapply(shared_libs, function(f) {
+      #   source(file = f, local = envir, chdir = TRUE)
+      # })
+      # list2env(self$get_settings(), envir = envir)
+      pipeline_eval(names = names, env = envir, pipe_dir = private$.pipeline_path,
+                    settings_path = self$settings_path)
     },
 
     #' @description get progress of the pipeline

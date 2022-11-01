@@ -168,7 +168,8 @@ pipeline_debug <- function(
 #' @rdname rave-pipeline
 #' @export
 pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
-                                pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
+                          pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+                          settings_path = file.path(pipe_dir, "settings.yaml")) {
   force(env)
   pipe_dir <- activate_pipeline(pipe_dir)
 
@@ -181,6 +182,24 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   nms <- names(all_targets)
   tnames <- unname(unlist(lapply(all_targets, function(t){ t$settings$name })))
   names <- names[names %in% tnames]
+
+  # Load shared functions into env
+  shared_libs <- list.files(file.path(pipe_dir, "R"), pattern = "^shared-.*\\.R",
+                            full.names = TRUE, ignore.case = TRUE)
+  shared_libs <- sort(shared_libs)
+
+  lapply(shared_libs, function(f) {
+    source(file = f, local = env, chdir = TRUE)
+  })
+
+  if(file.exists(settings_path)) {
+    input_settings <- yaml::read_yaml(settings_path)
+    input_settings <- input_settings[names(input_settings) %in% tnames]
+    if(length(input_settings)) {
+      list2env(input_settings, envir = env)
+    }
+  }
+  # print(ls(env))
 
   missing_names <- tnames[!tnames %in% c(names, attr(as.list(env), "names"))]
   if(length(missing_names)) {
