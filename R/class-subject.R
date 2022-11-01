@@ -326,7 +326,7 @@ RAVESubject <- R6::R6Class(
             Coord_x = 0,
             Coord_y = 0,
             Coord_z = 0,
-            Label = "Nolabel",
+            Label = "NoLabel",
             SignalType = self$electrode_types
           )
           save_meta2(electrode_table, meta_type = "electrodes",
