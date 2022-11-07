@@ -50,6 +50,7 @@
 #' @param subject character indicating valid 'RAVE' subject ID, or
 #' \code{\link{RAVESubject}} instance
 #' @param name,pipeline_name the pipeline name to create; usually also the folder
+#' @param settings_path path to settings file
 #' name within subject's pipeline path
 #' @param template_type which template type to create; choices are \code{'r'}
 #' or \code{'rmd'}

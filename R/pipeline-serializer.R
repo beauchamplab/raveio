@@ -3,8 +3,8 @@
 target_format <- function(name, serialize = TRUE) {
   if(length(name) != 1) { return(targets::tar_option_get("format")) }
   flist <- get(".target_formats")
-  if(flist$has(name)) {
-    re <- flist$get(name)
+  if(flist$`@has`(name)) {
+    re <- flist[[name]]
     if( serialize ) {
       re <- do.call(targets::tar_format, dipsaus::drop_nulls(re))
     }
@@ -74,14 +74,11 @@ target_format_dynamic <- function(name) {
 target_format_register <- function(name, read, write, marshal = NULL, unmarshal = NULL) {
   stopifnot(length(name) == 1 && nzchar(name))
   flist <- get(".target_formats")
-  flist$set(
-    key = name,
-    value = list(
-      read = read,
-      write = write,
-      marshal = marshal,
-      unmarshal = unmarshal
-    )
+  flist[[name]] <- list(
+    read = read,
+    write = write,
+    marshal = marshal,
+    unmarshal = unmarshal
   )
   return(invisible(NULL))
 }
@@ -89,8 +86,8 @@ target_format_register <- function(name, read, write, marshal = NULL, unmarshal 
 target_format_unregister <- function(name) {
   stopifnot(length(name) == 1 && nzchar(name))
   flist <- get(".target_formats")
-  if(flist$has(name)) {
-    flist$remove(name)
+  if(flist$`@has`(name)) {
+    flist$`@remove`(name)
   }
   return(invisible(NULL))
 }

@@ -173,8 +173,7 @@ pipeline_save_extdata(
 \arguments{
 \item{root_path}{the root directory for pipeline templates}
 
-\item{name, pipeline_name}{the pipeline name to create; usually also the folder
-name within subject's pipeline path}
+\item{name, pipeline_name}{the pipeline name to create; usually also the folder}
 
 \item{pipe_dir}{where the pipeline directory is; can be set via system
 environment \code{Sys.setenv("RAVE_PIPELINE"=...)}}
@@ -219,6 +218,9 @@ see \code{\link[dipsaus]{progress2}}.}
 \item{skip_names}{hint of target names to fast skip provided they are
 up-to-date; only used when \code{quick=TRUE}. If missing, then
 \code{skip_names} will be automatically determined}
+
+\item{settings_path}{path to settings file
+name within subject's pipeline path}
 
 \item{glimpse}{whether to hide network status when visualizing the pipelines}
 

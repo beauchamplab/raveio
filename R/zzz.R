@@ -596,7 +596,7 @@ install_modules <- function(modules, dependencies = FALSE) {
   assign('.settings', s, envir = pkg)
   cenv <- environment(.subset2(s, 'reset'))
 
-  assign(".target_formats", fastmap::fastmap(), envir = pkg)
+  assign(".target_formats", dipsaus::fastmap2(), envir = pkg)
 
   target_format_register_onload()
 

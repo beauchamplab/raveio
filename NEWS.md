@@ -1,3 +1,24 @@
+raveio 0.1.0
+=======
+
+Major changes:
+
+* Added pipeline target format interface; an example for `rave-subject` has been implemented
+* rewrote `as_rave_subject` such that the subject information will be updated when called
+* Revised error handlers in pipeline generating engine, so that when errors occur, the enclosing target expressions and back-trace will be printed
+* Supported brain viewer to be loaded without electrodes via `include_electrodes` argument
+
+Minor changes:
+
+* When importing electrodes from other formats, the subject used to be required. However, this is totally unnecessary; removed such requirement
+* Fixed a small typo that may cause inconsistent electrode labels (`Nolabel` to `NoLabel`)
+
+Bug fixes:
+
+* When executing pipeline shared script, it is possible to leak some variables to the global environment; fixed
+* Fixing a bug where shared scripts might not be loaded properly in `pipeline_run`
+
+
 raveio 0.0.9
 =======
 
