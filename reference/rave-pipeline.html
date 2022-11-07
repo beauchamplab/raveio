@@ -20,7 +20,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9001</span>
       </span>
     </div>
 
@@ -113,7 +113,8 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span><span class="fu">pipeline_eval</span><span class="op">(</span></span>
 <span>  <span class="va">names</span>,</span>
 <span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  settings_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pipe_dir</span>, <span class="st">"settings.yaml"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pipeline_visualize</span><span class="op">(</span></span>
@@ -207,8 +208,7 @@ the future to facilitate the "self-expanding" aim. Please check the official
 
 
 <dt>name, pipeline_name</dt>
-<dd><p>the pipeline name to create; usually also the folder
-name within subject's pipeline path</p></dd>
+<dd><p>the pipeline name to create; usually also the folder</p></dd>
 
 
 <dt>pipe_dir</dt>
@@ -281,6 +281,11 @@ see <code><a href="https://rdrr.io/pkg/dipsaus/man/progress2.html" class="extern
 <dd><p>hint of target names to fast skip provided they are
 up-to-date; only used when <code>quick=TRUE</code>. If missing, then
 <code>skip_names</code> will be automatically determined</p></dd>
+
+
+<dt>settings_path</dt>
+<dd><p>path to settings file
+name within subject's pipeline path</p></dd>
 
 
 <dt>glimpse</dt>

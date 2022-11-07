@@ -18,7 +18,7 @@ modern web browsers"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9001</span>
       </span>
     </div>
 
@@ -62,7 +62,8 @@ modern web browsers</p>
 <span>  recache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  clean_before_cache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  compute_template <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  usetemplateifmissing <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  usetemplateifmissing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_electrodes <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -107,6 +108,11 @@ brain files are missing. If set to true, then a template (usually 'N27')
 brain will be displayed as an alternative solution, and electrodes will be
 rendered according to their <code>'MNI305'</code> coordinates, or
 <code>'VertexNumber'</code> if given.</p></dd>
+
+
+<dt>include_electrodes</dt>
+<dd><p>whether to include electrode in the model; default
+is true</p></dd>
 
 </dl></div>
     <div id="value">

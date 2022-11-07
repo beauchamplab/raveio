@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9001</span>
       </span>
     </div>
 
@@ -47,6 +47,21 @@
       <small>Source: <a href="https://github.com/beauchamplab/raveio/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.0" id="raveio-010">raveio 0.1.0<a class="anchor" aria-label="anchor" href="#raveio-010"></a></h2>
+<p>Major changes:</p>
+<ul><li>Added pipeline target format interface; an example for <code>rave-subject</code> has been implemented</li>
+<li>rewrote <code>as_rave_subject</code> such that the subject information will be updated when called</li>
+<li>Revised error handlers in pipeline generating engine, so that when errors occur, the enclosing target expressions and back-trace will be printed</li>
+<li>Supported brain viewer to be loaded without electrodes via <code>include_electrodes</code> argument</li>
+</ul><p>Minor changes:</p>
+<ul><li>When importing electrodes from other formats, the subject used to be required. However, this is totally unnecessary; removed such requirement</li>
+<li>Fixed a small typo that may cause inconsistent electrode labels (<code>Nolabel</code> to <code>NoLabel</code>)</li>
+</ul><p>Bug fixes:</p>
+<ul><li>When executing pipeline shared script, it is possible to leak some variables to the global environment; fixed</li>
+<li>Fixing a bug where shared scripts might not be loaded properly in <code>pipeline_run</code>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.9" id="raveio-009">raveio 0.0.9<small>2022-10-14</small><a class="anchor" aria-label="anchor" href="#raveio-009"></a></h2>
 <p>Major changes:</p>
