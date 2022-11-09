@@ -61,7 +61,10 @@ BlackrockFile <- R6::R6Class(
       private$.path <- dir_path
       private$.filebase <- filebase
       private$.nev_file <- fs[is_nev][[1]]
-      private$.nev <- NULL
+      if(!inherits(private$.nev, "fastmap2")) {
+        private$.nev <- dipsaus::fastmap2()
+      }
+      # private$.nev <- NULL
 
       for(i in seq_len(private$.NS_MAX)) {
         private[[sprintf(".ns%d_file", i)]] <- character(0L)
@@ -85,8 +88,8 @@ BlackrockFile <- R6::R6Class(
       if(nev_data || !inherits(private$.nev, "fastmap2")) {
         private$.nev <- headers$nev
       } else {
-        private$.nev$data_packets <- headers$nev$data_packets
         private$.nev$basic_header <- headers$nev$basic_header
+        private$.nev$extended_header <- headers$nev$extended_header
       }
 
 
