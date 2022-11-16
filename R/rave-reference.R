@@ -79,35 +79,20 @@ generate_reference <- function(subject, electrodes) {
     if(is.list(wavelet_params)) {
 
       # wavelet
-      compress_rate <- srate / wavelet_params$downsample_to
-      s <- ref_signal
-      if(wavelet_params$pre_downsample > 1) {
-        s <- ravetools::decimate(s, wavelet_params$pre_downsample, ftype = "fir")
-        compress_rate <- compress_rate / wavelet_params$pre_downsample
+      coef <- 0
+      for(e in electrodes) {
+        inst <- LFP_electrode$new(subject = subject_inst, number = e)
+        power <- load_h5(inst$power_file, sprintf("raw/power/%s", block), ram = TRUE)
+        phase <- load_h5(inst$phase_file, sprintf("raw/phase/%s", block), ram = TRUE)
+        coef <- coef + sqrt(power) * exp(1i * phase)
       }
-      wavelet <- ravetools::morlet_wavelet(
-        data = s,
-        freqs = wavelet_params$frequencies,
-        srate = srate,
-        wave_num = wavelet_params$cycle,
-        precision = wavelet_params$precision
-      )
-
-      ind <- floor(seq(1, length(s), by = compress_rate))
-
-      if(wavelet_params$precision == 'double') {
-        coef <- wavelet$real[ind, ] + 1i * wavelet$imag[ind, ]
-        wavelet$real$.mode <- "readwrite"
-        wavelet$real$delete(force = TRUE)
-        wavelet$imag$.mode <- "readwrite"
-        wavelet$imag$delete(force = TRUE)
+      coef <- coef / nchans
+      if(!is.matrix(coef)) {
+        dim(coef) <- c(length(coef), 1L)
       } else {
-        coef <- wavelet[ind, ]
-        wavelet$.mode <- "readwrite"
-        wavelet$delete(force = TRUE)
+        coef <- t(coef)
       }
 
-      # write coef to reference path
       warray_path <- file.path(subject_inst$reference_path,
                                sprintf("ref_%s", electrode_text),
                                block, 'wavelet')
@@ -115,7 +100,10 @@ generate_reference <- function(subject, electrodes) {
         unlink(warray_path, recursive = TRUE)
       }
       dir_create2(dirname(warray_path))
-      warray <- filearray::filearray_create(filebase = warray_path, dimension = dim(coef), type = "complex")
+      warray <- filearray::filearray_create(filebase = warray_path,
+                                            dimension = dim(coef),
+                                            type = "complex")
+      # write coef to reference path
       warray[] <- coef
       rm(coef)
       warray$set_header("staged", TRUE)
