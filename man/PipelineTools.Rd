@@ -38,6 +38,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-eval}{\code{PipelineTools$eval()}}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
+\item \href{#method-PipelineTools-with_activated}{\code{PipelineTools$with_activated()}}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
 \item \href{#method-PipelineTools-save_data}{\code{PipelineTools$save_data()}}
 \item \href{#method-PipelineTools-load_data}{\code{PipelineTools$load_data()}}
@@ -240,6 +241,29 @@ attach pipeline tool to environment (internally used)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{env}}{an environment}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-with_activated"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-with_activated}{}}}
+\subsection{Method \code{with_activated()}}{
+run code with pipeline activated, some environment variables
+and function behaviors might change under such condition (for example,
+\code{targets} package functions)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$with_activated(expr, quoted = FALSE, env = parent.frame())}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{expr}}{expression to evaluate}
+
+\item{\code{quoted}}{whether \code{expr} is quoted; default is false}
+
+\item{\code{env}}{environment to run \code{expr}}
 }
 \if{html}{\out{</div>}}
 }

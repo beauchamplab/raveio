@@ -74,38 +74,27 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", pattern = N
     pattern <- parse(text = pattern)
   }
 
-
-  # tryCatch({
-  #   .(expr)
-  #   return(.(str2lang(export)))
-  # }, error = function(e) {
-  #
-  #   e$rave_error <- list(
+  generate_target(
+    expr = expr, export = export, format = format, deps = deps,
+    cue = cue, pattern = pattern, quoted = TRUE)
+  # bquote(
+  #   targets::tar_target_raw(
   #     name = .(export),
-  #     message = sprintf("Cannot resolve pipeline target [%s]. \nReason: %s",
-  #                       .(export), paste(e$message, collapse = ""))
+  #     command = quote({
+  #       tryCatch({
+  #         .(expr)
+  #         return(.(str2lang(export)))
+  #       }, error = function(e) {
+  #         asNamespace("raveio")$resolve_pipeline_error(.(export), e, quote(.(expr)))
+  #       })
+  #     }),
+  #     format = asNamespace("raveio")$target_format_dynamic(.(format), .(export)),
+  #     deps = .(deps),
+  #     cue = targets::tar_cue(.(cue)),
+  #     pattern = .(pattern),
+  #     iteration = "list"
   #   )
-  #   class(e) <- c("rave_pipeline_error", "rave_error", class(e))
-  #   stop(e)
-  # })
-  bquote(
-    targets::tar_target_raw(
-      name = .(export),
-      command = quote({
-        tryCatch({
-          .(expr)
-          return(.(str2lang(export)))
-        }, error = function(e) {
-          asNamespace("raveio")$resolve_pipeline_error(.(export), e, quote(.(expr)))
-        })
-      }),
-      format = asNamespace("raveio")$target_format_dynamic(.(format)),
-      deps = .(deps),
-      cue = targets::tar_cue(.(cue)),
-      pattern = .(pattern),
-      iteration = "list"
-    )
-  )
+  # )
 }
 
 rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", pattern = NULL, convert = FALSE, local = FALSE, ..., target_names = NULL){

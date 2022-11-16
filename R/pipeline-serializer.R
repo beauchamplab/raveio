@@ -1,38 +1,48 @@
 # pipeline target formats
 
-target_format <- function(name, serialize = TRUE) {
+target_user_path <- function(target_export = "", check = FALSE) {
+  user_dir <- file.path(targets::tar_config_get("store"), "user")
+  if(check && !dir.exists(user_dir)) {
+    dir.create(user_dir, showWarnings = FALSE, recursive = TRUE)
+  }
+  file.path(user_dir, target_export)
+}
+
+target_format <- function(name) {
   if(length(name) != 1) { return(targets::tar_option_get("format")) }
   flist <- get(".target_formats")
   if(flist$`@has`(name)) {
     re <- flist[[name]]
-    if( serialize ) {
-      re <- do.call(targets::tar_format, dipsaus::drop_nulls(re))
-    }
     return(re)
   } else {
     return(name)
   }
 }
 
-target_format_dynamic <- function(name) {
+target_format_dynamic <- function(
+    name, target_export = NULL,
+    target_expr = NULL, target_depends = NULL) {
 
-  backup_format <- target_format(name, serialize = FALSE)
+  backup_format <- target_format(name)
   if(is.character(backup_format)) { return(backup_format) }
 
   read <- dipsaus::new_function2(
     args = alist(path = ), quote_type = "quote", env = baseenv(),
     body = bquote({
       ns <- asNamespace("raveio")
-      ser <- ns$target_format(.(name), serialize = FALSE)
-      ser$read(path)
+      ser <- ns$target_format(.(name))
+      ser$read(path, target_export = .(target_export),
+               target_expr = quote(.(target_expr)),
+               target_depends = .(target_depends))
     })
   )
   write <- dipsaus::new_function2(
     args = alist(object =, path = ), quote_type = "quote", env = baseenv(),
     body = bquote({
       ns <- asNamespace("raveio")
-      ser <- ns$target_format(.(name), serialize = FALSE)
-      ser$write(object = object, path = path)
+      ser <- ns$target_format(.(name))
+      ser$write(object = object, path = path,
+                target_export = .(target_export))
     })
   )
 
@@ -40,7 +50,7 @@ target_format_dynamic <- function(name) {
     args = alist(object = ), quote_type = "quote", env = baseenv(),
     body = bquote({
       ns <- asNamespace("raveio")
-      ser <- ns$target_format(.(name), serialize = FALSE)
+      ser <- ns$target_format(.(name))
       if(is.function(ser$marshal)) {
         ser$marshal(object)
       } else {
@@ -53,7 +63,7 @@ target_format_dynamic <- function(name) {
     args = alist(object = ), quote_type = "quote", env = baseenv(),
     body = bquote({
       ns <- asNamespace("raveio")
-      ser <- ns$target_format(.(name), serialize = FALSE)
+      ser <- ns$target_format(.(name))
       if(is.function(ser$unmarshal)) {
         ser$unmarshal(object)
       } else {
@@ -92,10 +102,181 @@ target_format_unregister <- function(name) {
   return(invisible(NULL))
 }
 
-target_format_register_rave_subject <- function() {
+tfmtreg_filearray <- function() {
+  target_format_register(
+    "filearray",
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
+      target_expr <- substitute(target_expr)
+      data <- readRDS(path)
+      if(!is.list(data) || !isTRUE(
+        data$type %in% c("asis", "array", "filearray")
+      )) {
+        stop("Cannot restore filearray/array from the saved target file.")
+      }
+
+      if(data$type == "asis") {
+        return(data$data)
+      }
+      abspath <- c(
+        data$data$abspath,
+        file.path(dirname(path), data$data$basename),
+        target_user_path(paste0(target_export, ".FILEARRAY.DATA"))
+      )
+      abspath <- as.character(abspath[!is.na(abspath)])
+      abspath <- abspath[dir.exists(abspath)]
+
+      object <- tryCatch({
+        if(length(abspath)) {
+          abspath <- abspath[[1]]
+          object <- filearray::filearray_load(
+            filebase = abspath,
+            mode = ifelse(identical(data$data$mode, "readwrite"),
+                          "readwrite", "readonly")
+          )
+          if(data$type == "array" && !isTRUE(object$get_header("lazy_load"))) {
+            object <- object[drop = isTRUE(data$data$auto_drop)]
+          }
+        } else {
+          stop("Invalid filearray path")
+        }
+        object
+      }, error = function(e) {
+        message(sprintf("Cannot restore [%s]... Re-generate the target", target_export))
+        # failed to load filearray, retry
+        env <- new.env(parent = globalenv())
+        lapply(target_depends, function(name) {
+          delayedAssign(name, {
+            targets::tar_read_raw(name = name)
+          }, assign.env = env)
+          return()
+        })
+        eval(target_expr, envir = env)
+      })
+
+      return(object)
+    },
+    write = function(object, path, target_export = NULL) {
+      # object = NULL or zero length
+
+      filebase <- normalizePath(
+        target_user_path(paste0(target_export, ".FILEARRAY.DATA")),
+        mustWork = FALSE
+      )
+      if(!length(object)) {
+        data <- list(
+          type = "asis",
+          data = object
+        )
+        saveRDS(data, path)
+        return()
+      }
+      if (inherits(object, "FileArray")) {
+        # if(object$get_header("targets_nocopy", FALSE)) {
+        #   # the cache is handled by RAVE, do not copy
+        # }
+        filebase_orig <- normalizePath(object$.filebase, mustWork = FALSE)
+        if(filebase_orig != filebase) {
+          filebase_dir <- dirname(filebase)
+          if(!dir.exists(filebase_dir)) {
+            dir.create(filebase_dir, recursive = TRUE,
+                       showWarnings = FALSE)
+          }
+          if(file.exists(filebase)) {
+            unlink(filebase, recursive = TRUE)
+          }
+          file.copy(from = filebase_orig, to = filebase_dir,
+                    copy.date = TRUE, recursive = TRUE,
+                    overwrite = TRUE)
+          orig_name <- basename(filebase_orig)
+          file.rename(
+            file.path(filebase_dir, orig_name),
+            filebase
+          )
+        }
+        data <- list(
+          type = "filearray",
+          data = list(
+            abspath = filebase,
+            basename = basename(filebase),
+            mode = object$.mode
+          )
+        )
+        saveRDS(data, path)
+        return()
+      }
+
+      if(!is.array(object) && !is.matrix(object) &&
+         !is.vector(object)) {
+        stop("To save/load as `filearray`, the object must be zero length, a vector/matrix/array, or a `filearray`")
+      }
+
+      mode <- storage.mode(object)
+      if(!mode %in% c(
+        "integer", "double", "complex", "logical", "raw")) {
+        stop("To save/load as `filearray`, the object must be numeric/complex/logical/raw")
+      }
+
+
+      if(is.array(object) || is.matrix(object)) {
+        dm <- dim(object)
+        auto_drop <- FALSE
+      } else {
+        dm <- c(length(object), 1L)
+        auto_drop <- TRUE
+      }
+      headers <- attr(object, "filearray_headers")
+      headers2 <- NULL
+      if(is.list(headers)) {
+        nms <- names(headers)
+        if(length(nms)) {
+          headers2 <- headers[!nms %in% c(
+            "", "filebase", "mode", "dimension", "type",
+            "initialize", "symlink_ok")]
+        }
+      }
+      signature <- headers2$signature
+      if(!length(signature)) {
+        signature <- dipsaus::digest(object)
+        headers2$signature <- signature
+      }
+      if(!is.function(headers2$on_missing)) {
+        headers2$on_missing <- function(arr) {
+          arr[] <- object
+          dimnames(arr) <- dimnames(object)
+          arr
+        }
+      }
+      args <- c(list(
+        filebase = filebase, mode = "readwrite",
+        dimension = dm, type = mode,
+        initialize = FALSE, symlink_ok = FALSE
+      ), headers2)
+      do.call(filearray::filearray_load_or_create, args)
+
+      data <- list(
+        type = "array",
+        data = list(
+          abspath = filebase,
+          basename = basename(filebase),
+          auto_drop = auto_drop,
+          mode = "readonly"
+        )
+      )
+      saveRDS(data, path)
+    }
+  )
+}
+
+tfmtreg_rave_subject <- function() {
   target_format_register(
     "rave-subject",
-    read = function(path) {
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
       ns <- asNamespace("raveio")
       re <- ns$load_yaml(path)
       if(!isTRUE(re$instance_class %in% c("RAVESubject", "RAVEPreprocessSettings"))) {
@@ -107,7 +288,7 @@ target_format_register_rave_subject <- function() {
       }
       return(subject)
     },
-    write = function(object, path) {
+    write = function(object, path, target_export = NULL) {
       cls <- NULL
       subject_id <- NULL
       if(inherits(object, "RAVESubject")) {
@@ -127,13 +308,18 @@ target_format_register_rave_subject <- function() {
       ), file = path, sorted = TRUE)
     }
   )
+
+
 }
 
 
-target_format_register_rave_brain <- function() {
+tfmtreg_rave_brain <- function() {
   target_format_register(
     "rave-brain",
-    read = function(path) {
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
       indata <- readRDS(path)
       if(!is.list(indata) || !isTRUE(indata$class %in% c("rave-brain", "multi-rave-brain")) ||
          length(indata$params) == 0) {
@@ -232,7 +418,7 @@ target_format_register_rave_brain <- function() {
         brain
       }
     },
-    write = function(object, path) {
+    write = function(object, path, target_export = NULL) {
 
       if(!inherits(object, c("rave-brain", "multi-rave-brain"))) {
         warning("To save/load as `rave-brain`, the object class must be either `rave-brain` or `multi-rave-brain`")
@@ -282,8 +468,77 @@ target_format_register_rave_brain <- function() {
   )
 }
 
+tfmtreg_rave_repository <- function() {
+  target_format_register(
+    "rave-repository",
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
 
-# internally used at onload
+      backup_path <- target_user_path(paste0(target_export, ".RAVE.REPOSITORY"))
+      if(length(backup_path) == 1 && !is.na(backup_path) && file.exists(backup_path)) {
+        return(readRDS(backup_path))
+      }
+
+      data <- readRDS(path)
+      if(!is.list(data) || length(data$type) != 1 ||
+         !length(data$args) || !is.list(data$args) ) {
+        stop("Invalid `rave-repository` file.")
+      }
+      raveio <- asNamespace("raveio")
+      switch(
+        data$type,
+        "rave_prepare_subject_voltage_with_epoch" = {
+          return(do.call(
+            raveio$prepare_subject_voltage_with_epoch,
+            data$args
+          ))
+        },
+        {
+          stop(sprintf("Cannot restore from `rave-repository` file: unsupported format [%s]", paste(data$type, collapse = ", ")))
+        }
+      )
+    },
+    write = function(object, path, target_export = NULL) {
+      # object <- raveio::prepare_subject_voltage_with_epoch(
+      #   subject = "demo/DemoSubject",
+      #   electrodes = 14,
+      #   time_windows = c(-1,0),
+      #   quiet = TRUE
+      # )
+      if(!inherits(object, "rave_repository")) {
+        stop("To save/load as `rave-repository`, the class must contains either `rave_repository`")
+      }
+
+      backup_path <- target_user_path(
+        paste0(target_export, ".RAVE.REPOSITORY"),
+        check = TRUE
+      )
+
+      if(inherits(object, "rave_prepare_subject_voltage_with_epoch")) {
+        data <- list(
+          type = "rave_prepare_subject_voltage_with_epoch",
+          args = list(
+            subject = object$subject$subject_id,
+            electrodes = object$electrode_list,
+            time_windows = object$time_windows,
+            epoch_name = object$epoch_name,
+            reference_name = object$reference_name,
+            repository_id = object$repository_id,
+            quiet = TRUE
+          )
+        )
+        saveRDS(data, file = path)
+        saveRDS(object, file = backup_path)
+        return()
+      }
+      .NotYetImplemented()
+    }
+  )
+}
+
+# internally used at on load
 target_format_register_onload <- function(verbose = TRUE) {
 
   on_exception <- function(e) {
@@ -293,11 +548,19 @@ target_format_register_onload <- function(verbose = TRUE) {
   }
 
   tryCatch({
-    target_format_register_rave_subject()
+    tfmtreg_filearray()
   }, error = on_exception, warning = on_exception)
 
   tryCatch({
-    target_format_register_rave_brain()
+    tfmtreg_rave_subject()
+  }, error = on_exception, warning = on_exception)
+
+  tryCatch({
+    tfmtreg_rave_repository()
+  }, error = on_exception, warning = on_exception)
+
+  tryCatch({
+    tfmtreg_rave_brain()
   }, error = on_exception, warning = on_exception)
 
 }

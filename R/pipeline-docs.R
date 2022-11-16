@@ -90,3 +90,40 @@
 #' \item{\code{pipeline_description}}{the list of descriptions of the pipeline or pipeline collection}
 #' }
 NULL
+
+
+generate_target <- function(
+    expr, export, format, deps = NULL,
+    cue = "thorough", pattern = NULL, quoted = TRUE) {
+  if(!quoted) {
+    expr <- substitute(expr)
+  }
+  bquote(
+    targets::tar_target_raw(
+      name = .(export),
+      command = quote({
+        .__target_expr__. <- quote(.(expr))
+        tryCatch({
+          eval(.__target_expr__.)
+          return(.(str2lang(export)))
+        }, error = function(e) {
+          asNamespace("raveio")$resolve_pipeline_error(
+            name = .(export), condition = e, expr = .__target_expr__.)
+        })
+      }),
+      format = asNamespace("raveio")$target_format_dynamic(
+        name = .(format),
+        target_export = .(export),
+        target_expr = quote({
+          .(expr)
+          .(str2lang(export))
+        }),
+        target_depends = .(deps)
+      ),
+      deps = .(deps),
+      cue = targets::tar_cue(.(cue)),
+      pattern = .(pattern),
+      iteration = "list"
+    )
+  )
+}

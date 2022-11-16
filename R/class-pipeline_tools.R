@@ -194,6 +194,22 @@ PipelineTools <- R6::R6Class(
       env$pipeline_path <- private$.pipeline_path
     },
 
+    #' @description run code with pipeline activated, some environment variables
+    #' and function behaviors might change under such condition (for example,
+    #' \code{targets} package functions)
+    #' @param expr expression to evaluate
+    #' @param quoted whether \code{expr} is quoted; default is false
+    #' @param env environment to run \code{expr}
+    with_activated = function(expr, quoted = FALSE, env = parent.frame()) {
+      if(!quoted) {
+        expr <- substitute(expr)
+      }
+      activate_pipeline(pipe_dir = private$.pipeline_path)
+      # don't mess with self$eval
+      basens <- baseenv()
+      basens$eval(expr, envir = env)
+    },
+
 
     #' @description clean all or part of the data store
     #' @param destroy,ask see \code{\link[targets]{tar_destroy}}
