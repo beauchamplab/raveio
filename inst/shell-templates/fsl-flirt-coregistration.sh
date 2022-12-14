@@ -40,6 +40,18 @@ fi
 
 mkdir -p "$dest_path"
 
+# Copy the MRI and CT to the dest_path for localization in case
+if [[ "$ct_path" == *Z ]] || [[ "$ct_path" == *z ]]; then
+  cp -f "$ct_path" "$dest_path/CT_RAW.nii.gz"
+else
+  cp -f "$ct_path" "$dest_path/CT_RAW.nii"
+fi
+if [[ "$mri_path" == *Z ]] || [[ "$mri_path" == *z ]]; then
+  cp -f "$mri_path" "$dest_path/MRI_RAW.nii.gz"
+else
+  cp -f "$mri_path" "$dest_path/MRI_RAW.nii"
+fi
+
 # Run flirt
 flirt -in "$ct_path" -ref "$mri_path" \
   -out "$dest_path/ct_in_t1.nii" -omat "$dest_path/ct2t1.mat" \
