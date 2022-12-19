@@ -165,6 +165,8 @@ pipeline_debug <- function(
 }
 
 
+
+
 #' @rdname rave-pipeline
 #' @export
 pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
@@ -196,7 +198,9 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
     input_settings <- yaml::read_yaml(settings_path)
     input_settings <- input_settings[names(input_settings) %in% tnames]
     if(length(input_settings)) {
-      list2env(input_settings, envir = env)
+      lapply(names(input_settings), function(nm) {
+        env[[nm]] <- resolve_pipeline_settings_value( input_settings[[nm]], pipe_dir = pipe_dir )
+      })
     }
   }
   # print(ls(env))
@@ -646,6 +650,7 @@ pipeline_description <- function (file) {
 #' then result must be within the \code{constraint} values, otherwise the
 #' first element of \code{constraint} will be returned. This is useful to make
 #' sure the results stay within given options
+#' @param pipeline_path the root directory of the pipeline
 #' @param pipeline_settings_path the settings file of the pipeline, must be
 #' a 'yaml' file; default is \code{'settings.yaml'} in the current pipeline
 #' @return \code{pipeline_settings_set} returns a list of all the settings.
@@ -653,20 +658,54 @@ pipeline_description <- function (file) {
 #' @export
 pipeline_settings_set <- function(
   ...,
-  pipeline_settings_path = file.path(Sys.getenv("RAVE_PIPELINE", "."), "settings.yaml")
+  pipeline_path = Sys.getenv("RAVE_PIPELINE", "."),
+  pipeline_settings_path = file.path(pipeline_path, "settings.yaml")
 ){
   if(!file.exists(pipeline_settings_path)){
     stop("Cannot find settings file:\n  ", pipeline_settings_path)
   }
   settings <- load_yaml(pipeline_settings_path)
   args <- list(...)
-  dipsaus::list_to_fastmap2(args, map = settings)
+  if( !length(args) ) { return(settings) }
+
+  argnames <- names(args)
+  if(!length(argnames) || "" %in% argnames) {
+    stop("`pipeline_set`: all input lists must have names")
+  }
+
+
+  lapply(argnames, function(nm) {
+
+    opts <- resolve_pipeline_settings_opt(settings[[nm]], strict = FALSE)
+
+    if(!is.null(opts)) {
+      # external settings
+      # save external data
+      pipeline_save_extdata(
+        data = args[[nm]],
+        name = opts$name,
+        format = opts$format,
+        overwrite = TRUE,
+        pipe_dir = pipeline_path
+      )
+
+      settings[[nm]] <- return(sprintf("${EXTDATA-SETTINGS|%s|%s}",
+                                       opts$name, opts$format))
+      return()
+    }
+
+    # otherwise replace settings directly
+    settings[[nm]] <- args[[nm]]
+
+  })
+  # dipsaus::list_to_fastmap2(args, map = settings)
   tf <- tempfile()
   on.exit({ unlink(tf) })
   save_yaml(x = settings, file = tf)
   file.copy(from = tf, to = pipeline_settings_path,
             overwrite = TRUE, recursive = FALSE)
   settings
+
 }
 
 `%OF%` <- function(lhs, rhs){
@@ -678,22 +717,97 @@ pipeline_settings_set <- function(
   return(de)
 }
 
+resolve_pipeline_settings_opt <- function(value, strict = TRUE) {
+
+  if(isTRUE(is.character(value)) && length(value) == 1 && !is.na(value) &&
+     grepl("^\\$\\{EXTDATA\\-SETTINGS\\|(.*)\\}$", value)) {
+
+    # this value should be stored as external data
+    value <- gsub(pattern = "(^\\$\\{EXTDATA\\-SETTINGS\\||\\}$)", "", x = value, ignore.case = FALSE)
+    value <- strsplit(value, "\\|")[[1]]
+    data_name <- value[[1]]
+
+    if(nchar(data_name) && grepl("[a-zA-Z0-9]{1,}[a-zA-Z0-9_\\.-]{0,}", data_name)) {
+
+      data_format <- "rds"
+      if(length(value >= 2) && tolower(value[[2]]) %in% c("json", "yaml", "csv", "fst", "rds")) {
+        data_format <- tolower(value[[2]])
+      }
+      return(list(
+        name = data_name,
+        format = data_format
+      ))
+    } else {
+      if( strict ) {
+        stop("Cannot resolve the pipeline external settings: invalid data name: ", data_name)
+      }
+      return(NULL)
+    }
+  } else {
+    if( strict ) {
+      stop("Cannot resolve the pipeline external settings: invalid settings: ", value)
+    }
+    return(NULL)
+  }
+}
+
+resolve_pipeline_settings_value <- function(value, pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
+
+  opts <- resolve_pipeline_settings_opt(value, strict = FALSE)
+  if(is.null(opts) || !is.list(opts)) {
+    return( value )
+  }
+
+  opts$error_if_missing <- FALSE
+  opts$default_if_missing <- structure(list(), class = "key_missing")
+  opts$pipe_dir <- pipe_dir
+
+  value <- do.call(pipeline_load_extdata, opts)
+
+  if(!is.null(value)) {
+    cls <- class(value)
+    if( !"raveio-pipeline-extdata" %in% cls ) {
+      class(value) <- c("raveio-pipeline-extdata", cls)
+    }
+    attr(value, "raveio-pipeline-extdata-opts") <- opts[c("name", "format")]
+  }
+  return( value )
+}
+
 #' @rdname pipeline_settings_get_set
 #' @export
 pipeline_settings_get <- function(
   key, default = NULL, constraint = NULL,
-  pipeline_settings_path = file.path(Sys.getenv("RAVE_PIPELINE", "."), "settings.yaml")) {
+  pipeline_path = Sys.getenv("RAVE_PIPELINE", "."),
+  pipeline_settings_path = file.path(pipeline_path, "settings.yaml")) {
   if(!file.exists(pipeline_settings_path)){
     stop("Cannot find settings file:\n  ", pipeline_settings_path)
   }
 
   settings <- load_yaml(pipeline_settings_path)
 
-  if(missing(key)){ return(settings) }
+  if(missing(key)) {
+    nms <- names(settings)
+  } else {
+    nms <- key
+  }
+
+
+  if(missing(key)){
+    lapply(names(settings), function(nm) {
+      if(nm != "") {
+        settings[[nm]] <- resolve_pipeline_settings_value( settings[[nm]], pipe_dir = pipeline_path )
+      }
+    })
+    return( settings )
+  }
   if(!settings$`@has`(key)){
     re <- default
   } else {
-    re <- settings[[key]]
+    re <- resolve_pipeline_settings_value( settings[[key]], pipe_dir = pipeline_path )
+    if(inherits(re, "key_missing")) {
+      re <- default
+    }
   }
 
   if(length(constraint)){
@@ -711,7 +825,6 @@ pipeline_load_extdata <- function(
   error_if_missing = TRUE, default_if_missing = NULL,
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."), ...
 ) {
-  pipe_dir <- activate_pipeline(pipe_dir)
   path <- file.path(pipe_dir, "data")
   format <- match.arg(format)
   if(format == "auto") {
@@ -730,18 +843,35 @@ pipeline_load_extdata <- function(
   }
   fs <- fs[[1]]
   file <- file.path(path, fs)
+
+  if(!file.exists(file)) {
+    if( error_if_missing ) {
+      stop("Pipeline: data [", name, "] is missing")
+    } else {
+      return(default_if_missing)
+    }
+  }
+
   ext <- strsplit(file, "\\.")[[1]]
   ext <- tolower(ext[[length(ext)]])
 
-  re <- switch(
-    ext,
-    "json" = { load_json(con = file, ...) },
-    "yaml" = { load_yaml(file = file, ...) },
-    "csv" = { utils::read.csv(file = file, ...) },
-    "fst" = { load_fst(path = file, ...) },
-    "rds" = { readRDS(file = file, ...) },
-    { stop("Unsupported file format") }
-  )
+  re <- tryCatch({
+    switch(
+      ext,
+      "json" = { load_json(con = file, ...) },
+      "yaml" = { load_yaml(file = file, ...) },
+      "csv" = { utils::read.csv(file = file, ...) },
+      "fst" = { load_fst(path = file, ...) },
+      "rds" = { readRDS(file = file, ...) },
+      { stop("Unsupported file format") }
+    )
+  }, error = function(e) {
+    if( error_if_missing ) {
+      stop("Pipeline: cannot load data [", name, "] with given format [", ext, "]. The file format is inconsistent or file is corrupted.")
+    } else {
+      return(default_if_missing)
+    }
+  })
 
   return(re)
 }
@@ -754,7 +884,7 @@ pipeline_save_extdata <- function(
 ) {
   format <- match.arg(format)
 
-  pipe_dir <- activate_pipeline(pipe_dir)
+  # pipe_dir <- activate_pipeline(pipe_dir)
   path <- file.path(pipe_dir, "data")
   path <- dir_create2(path)
   paths <- file.path(path,  sprintf("%s.%s", name, c("json", "yaml", "csv", "fst", "rds")))

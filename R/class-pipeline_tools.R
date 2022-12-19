@@ -39,7 +39,13 @@ PipelineTools <- R6::R6Class(
         private$.settings_file
       )
 
-      private$.settings <- load_yaml(pipeline_settings_path)
+      settings <- load_yaml(pipeline_settings_path)
+      lapply(names(settings), function(nm) {
+        if(nm != "") {
+          settings[[nm]] <- resolve_pipeline_settings_value( settings[[nm]], pipe_dir = private$.pipeline_path )
+        }
+      })
+      private$.settings <- settings
 
     },
 
@@ -54,14 +60,82 @@ PipelineTools <- R6::R6Class(
           stop("`pipeline_set`: all input lists must have names")
         }
 
-        dipsaus::list_to_fastmap2(args, map = private$.settings)
+        lapply(argnames, function(nm) {
+          new_val <- args[[nm]]
+
+          if(inherits(private$.settings[[nm]], "raveio-pipeline-extdata")) {
+            opts <- attr(private$.settings[[nm]], "raveio-pipeline-extdata-opts")
+            opts$name %?<-% nm
+            opts$format %?<-% "rds"
+            if(!isTRUE(opts$format %in% c("json", "yaml", "csv", "fst", "rds"))) {
+              opts$format <- "rds"
+            }
+
+            if(is.null(new_val)) {
+              new_val <- structure(list(), class = "key_missing")
+            }
+            pipeline_save_extdata(
+              data = new_val,
+              name = opts$name,
+              format = opts$format,
+              overwrite = TRUE,
+              pipe_dir = private$.pipeline_path
+            )
+            cls <- class(new_val)
+            if( !"raveio-pipeline-extdata" %in% cls ) {
+              cls <- c("raveio-pipeline-extdata", cls)
+            }
+            private$.settings[[nm]] <- structure(
+              new_val, class = cls,
+              `raveio-pipeline-extdata-opts` = opts
+            )
+            return(sprintf("${EXTDATA-SETTINGS|%s|%s}", opts$name, opts$format))
+          } else {
+            private$.settings[[nm]] <- new_val
+            return(NULL)
+          }
+        })
       }
 
       pipeline_settings_path <- file.path(
         private$.pipeline_path,
         private$.settings_file
       )
-      save_yaml(x = private$.settings, file = pipeline_settings_path, sorted = TRUE)
+
+      # get external data
+      settings_names <- sort(names( private$.settings ))
+      external_paths <- vapply(settings_names, function(nm) {
+
+        if( inherits(private$.settings[[nm]], "raveio-pipeline-extdata") ) {
+          opts <- attr(private$.settings[[nm]], "raveio-pipeline-extdata-opts")
+          opts$name %?<-% nm
+          opts$format %?<-% "rds"
+          if(!isTRUE(opts$format %in% c("json", "yaml", "csv", "fst", "rds"))) {
+            opts$format <- "rds"
+          }
+          return(sprintf("${EXTDATA-SETTINGS|%s|%s}", opts$name, opts$format))
+        } else {
+          return("")
+        }
+
+      }, "")
+      is_external <- !external_paths %in% ""
+
+      externals <- list()
+      if(length(is_external) && any(is_external)) {
+        externals <- structure(as.list(external_paths[is_external]), names = settings_names[is_external])
+      }
+
+      other_names <- settings_names[!is_external]
+
+      # save_yaml(x = private$.settings, file = pipeline_settings_path, sorted = TRUE)
+      save_yaml(
+        x = c(
+          as.list(private$.settings[other_names]),
+          externals
+        ),
+        file = pipeline_settings_path
+      )
 
       return(invisible(as.list(private$.settings)))
     },

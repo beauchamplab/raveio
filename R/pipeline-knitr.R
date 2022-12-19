@@ -248,17 +248,99 @@ rave_knitr_build <- function(targets, make_file){
     settings_path <- NULL
     nms <- names(settings)
 
-    extras <- structure(lapply(nms, function(nm){
-      bquote(
-        targets::tar_target_raw(
-          .(nm),
-          quote({
-            settings[[.(nm)]]
-          }),
-          deps = "settings"
+    extras <- list()
+    for(nm in nms) {
+
+      opts <- resolve_pipeline_settings_opt(settings[[nm]], strict = FALSE)
+
+      if(is.null(opts)) {
+
+        # ordinary settings
+        extras[[paste0("input_", nm)]] <- bquote(
+          targets::tar_target_raw(
+            .(nm),
+            quote({
+              settings[[.(nm)]]
+            }),
+            deps = "settings"
+          )
         )
-      )
-    }), names = paste0("input_", nms))
+
+      } else {
+
+        extras[[paste0("__extern_path_", nm)]] <- bquote(
+          targets::tar_target_raw(
+            .(sprintf("settings_path._%s_", nm)),
+            .(sprintf("./data/%s.%s", opts$name, opts$format)),
+            format = "file"
+          )
+        )
+
+        extras[[paste0("input_", nm)]] <- bquote(
+          targets::tar_target_raw(
+            .(nm),
+            quote({
+              # settings[[.(nm)]]
+              # asNamespace("raveio")$resolve_pipeline_settings_value( settings[[.(nm)]], "." )
+              asNamespace("raveio")$pipeline_load_extdata(
+                name = .(opts$name),
+                format = .(opts$format),
+                error_if_missing = FALSE,
+                default_if_missing = structure(list(), class = "key_missing"),
+                pipe_dir = "."
+              )
+            }),
+            deps = .(sprintf("settings_path._%s_", nm))
+          )
+        )
+
+      }
+
+    }
+
+    # extras <- structure(lapply(nms, function(nm){
+    #
+    #
+    #   if(is.null(opts)) {
+    #
+    #
+    #     return(bquote(
+    #       targets::tar_target_raw(
+    #         .(nm),
+    #         quote({
+    #           settings[[.(nm)]]
+    #         }),
+    #         deps = "settings"
+    #       )
+    #     ))
+    #
+    #   }
+    #   sample_value <- settings[[nm]]
+    #   if(isTRUE(is.character(sample_value)) && length(sample_value) == 1 &&
+    #      grepl("^\\$\\{EXTDATA\\-SETTINGS\\|(.*)\\}$", sample_value)) {
+    #     bquote(
+    #       targets::tar_target_raw(
+    #         .(nm),
+    #         quote({
+    #           asNamespace("raveio")$resolve_pipeline_settings_value( settings[[.(nm)]], "." )
+    #         }),
+    #         deps = "settings",
+    #         cue = targets::tar_cue("always")
+    #       )
+    #     )
+    #   } else {
+    #     bquote(
+    #       targets::tar_target_raw(
+    #         .(nm),
+    #         quote({
+    #           settings[[.(nm)]]
+    #         }),
+    #         deps = "settings"
+    #       )
+    #     )
+    #   }
+    #
+    # }), names = paste0("input_", nms))
     exprs <- c(
       list(
         "__Check_settings_file" = quote(
@@ -301,12 +383,20 @@ rave_knitr_build <- function(targets, make_file){
   invisible(call)
 }
 
-#' Configure \code{'rmarkdown'} files to build 'RAVE' pipelines
+#' @name pipeline-knitr-markdown
+#' @title Configure \code{'rmarkdown'} files to build 'RAVE' pipelines
 #' @description Allows building 'RAVE' pipelines from \code{'rmarkdown'} files.
 #' Please use it in \code{'rmarkdown'} scripts only. Use
 #' \code{\link{pipeline_create_template}} to create an example.
 #' @param languages one or more programming languages to support; options are
 #' \code{'R'} and \code{'python'}
+#' @param module_id the module ID, usually the name of direct parent folder
+#' containing the pipeline file
+#' @param env environment to set up the pipeline translator
+#' @param project_path the project path containing all the pipeline folders,
+#' usually the active project folder
+#' @param collapse,comment passed to \code{set} method of
+#' \code{\link[knitr]{opts_chunk}}
 #' @return A function that is supposed to be called later that builds the
 #' pipeline scripts
 #' @export
@@ -317,7 +407,11 @@ configure_knitr <- function(languages = c("R", "python")){
   }
   if(file.exists("settings.yaml")){
     settings <- as.list(load_yaml("settings.yaml"))
-    list2env(settings, envir = knitr::knit_global())
+    env <- knitr::knit_global()
+    for(nm in names(settings)) {
+      env[[nm]] <- resolve_pipeline_settings_value(settings[[nm]], pipe_dir = ".")
+    }
+    # list2env(settings, envir = knitr::knit_global())
   }
 
   check_knit_packages(languages)
@@ -329,4 +423,41 @@ configure_knitr <- function(languages = c("R", "python")){
   function(make_file){
     rave_knitr_build(targets, make_file)
   }
+}
+
+
+#' @rdname pipeline-knitr-markdown
+#' @export
+pipeline_setup_rmd <- function(
+    module_id, env = parent.frame(),
+    collapse = TRUE, comment = "#>", languages = c("R", "python"),
+    project_path = dipsaus::rs_active_project(child_ok = TRUE, shiny_ok = TRUE)) {
+
+  knitr::opts_chunk$set(collapse = collapse, comment = comment)
+  env$build_pipeline <- configure_knitr(languages = languages)
+  env$.module_id <- module_id
+
+  shared_scripts <- list.files(
+    file.path(project_path, "modules", module_id, "R"),
+    pattern = "^shared-.*\\.R$",
+    ignore.case = TRUE,
+    full.names = TRUE
+  )
+
+  lapply(shared_scripts, function(f) {
+    source(f, local = env, chdir = TRUE)
+    return()
+  })
+
+  settings <- load_yaml(file.path( project_path, "modules",
+                                   module_id, "settings.yaml"))
+
+  pipe_dir <- file.path(project_path, "modules", module_id)
+  lapply(names(settings), function(nm) {
+    settings[[nm]] <- resolve_pipeline_settings_value(value = settings[[nm]],pipe_dir = pipe_dir)
+  })
+
+  env$.settings <- settings
+  list2env(as.list(settings), envir = env)
+  invisible(settings)
 }
