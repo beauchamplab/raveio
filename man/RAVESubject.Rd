@@ -75,6 +75,7 @@ no path exists, values will be \code{NA}}
 \item \href{#method-RAVESubject-initialize_paths}{\code{RAVESubject$initialize_paths()}}
 \item \href{#method-RAVESubject-set_default}{\code{RAVESubject$set_default()}}
 \item \href{#method-RAVESubject-get_default}{\code{RAVESubject$get_default()}}
+\item \href{#method-RAVESubject-get_note_summary}{\code{RAVESubject$get_note_summary()}}
 \item \href{#method-RAVESubject-get_epoch}{\code{RAVESubject$get_epoch()}}
 \item \href{#method-RAVESubject-get_reference}{\code{RAVESubject$get_reference()}}
 \item \href{#method-RAVESubject-get_electrode_table}{\code{RAVESubject$get_electrode_table()}}
@@ -247,6 +248,38 @@ to fetch; default is \code{TRUE}}
 \subsection{Returns}{
 A named list of key-value pairs, or if one key is specified and
 \code{simplify=TRUE}, then only the value will be returned.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RAVESubject-get_note_summary"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-get_note_summary}{}}}
+\subsection{Method \code{get_note_summary()}}{
+get summary table of all the key-value pairs used by 'RAVE'
+modules for the subject
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$get_note_summary(namespaces, include_history = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{namespaces}}{namespaces for the entries; see method
+\code{get_default} or \code{set_default}. Default is all possible
+namespaces}
+
+\item{\code{include_history}}{whether to include history entries; default is
+false}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame with four columns: \code{'namespace'} for the group
+name of the entry (entries within the same namespace usually share same
+module), \code{'timestamp'} for when the entry was registered.
+\code{'entry_name'} is the name of the entry. If \code{include_history}
+is true, then multiple entries with the same \code{'entry_name'} might
+appear since the obsolete entries are included. \code{'entry_value'}
+is the value of the corresponding entry.
 }
 }
 \if{html}{\out{<hr>}}
