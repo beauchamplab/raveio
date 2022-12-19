@@ -8,17 +8,21 @@
 \usage{
 pipeline_settings_set(
   ...,
-  pipeline_settings_path = file.path(Sys.getenv("RAVE_PIPELINE", "."), "settings.yaml")
+  pipeline_path = Sys.getenv("RAVE_PIPELINE", "."),
+  pipeline_settings_path = file.path(pipeline_path, "settings.yaml")
 )
 
 pipeline_settings_get(
   key,
   default = NULL,
   constraint = NULL,
-  pipeline_settings_path = file.path(Sys.getenv("RAVE_PIPELINE", "."), "settings.yaml")
+  pipeline_path = Sys.getenv("RAVE_PIPELINE", "."),
+  pipeline_settings_path = file.path(pipeline_path, "settings.yaml")
 )
 }
 \arguments{
+\item{pipeline_path}{the root directory of the pipeline}
+
 \item{pipeline_settings_path}{the settings file of the pipeline, must be
 a 'yaml' file; default is \code{'settings.yaml'} in the current pipeline}
 

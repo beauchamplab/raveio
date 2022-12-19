@@ -8,30 +8,7 @@ output:
 ```{r setup, include = FALSE}
 # This code block sets up the engine environment
 # Please do not remove me
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-build_pipeline <- raveio::configure_knitr()
-
-# For debug use, try to mimic the environment of pipeline
-# Load R scripts starting with `shared-` in R/ folder
-.project_path <- rstudioapi::getActiveProject()
-.module_id <- "TEMPLATE"
-lapply(
-  list.files(
-    file.path(.project_path, "modules", .module_id, "R"),
-    pattern = "^shared-.*\\.R$",
-    ignore.case = TRUE,
-    full.names = TRUE
-  ), 
-  function(f){
-    source(f, local = FALSE, chdir = TRUE)
-    invisible()
-  })
-
-# Load variables in `settings.yaml` and expose them to the current environment
-.settings <- raveio::load_yaml(file.path(
-  .project_path, "modules", 
-  .module_id, "settings.yaml"))
-list2env(as.list(.settings), envir = environment())
+raveio::pipeline_setup_rmd("TEMPLATE")
 ```
 
 ## Introduction

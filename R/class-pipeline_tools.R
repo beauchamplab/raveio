@@ -9,7 +9,8 @@ PipelineTools <- R6::R6Class(
     .pipeline_path = character(),
     .pipeline_name = character(),
     .settings_file = character(),
-    .settings = NULL
+    .settings = NULL,
+    .settings_external_inputs = list()
   ),
 
   public = list(
@@ -39,7 +40,17 @@ PipelineTools <- R6::R6Class(
         private$.settings_file
       )
 
-      private$.settings <- load_yaml(pipeline_settings_path)
+      settings <- load_yaml(pipeline_settings_path)
+      lapply(names(settings), function(nm) {
+        if(nm == "") { return() }
+        opts <- resolve_pipeline_settings_opt(settings[[nm]], strict = FALSE)
+        if(is.null(opts) || !is.list(opts)) { return() }
+
+        opts$raw_input <- settings[[nm]]
+        private$.settings_external_inputs[[nm]] <- opts
+        settings[[nm]] <- resolve_pipeline_settings_value( settings[[nm]], pipe_dir = private$.pipeline_path )
+      })
+      private$.settings <- settings
 
     },
 
@@ -49,19 +60,58 @@ PipelineTools <- R6::R6Class(
     set_settings = function(..., .list = NULL) {
       args <- c(list(...), as.list(.list))
       argnames <- names(args)
+
       if(length(args)) {
         if(!length(argnames) || "" %in% argnames) {
           stop("`pipeline_set`: all input lists must have names")
         }
 
-        dipsaus::list_to_fastmap2(args, map = private$.settings)
-      }
+        external_inputs <- names(private$.settings_external_inputs)
+        external_args <- argnames[argnames %in% external_inputs]
+        internal_args <- argnames[!argnames %in% external_inputs]
+        lapply(external_args, function(nm) {
+          new_val <- args[[nm]]
+          opts <- private$.settings_external_inputs[[nm]]
 
-      pipeline_settings_path <- file.path(
-        private$.pipeline_path,
-        private$.settings_file
-      )
-      save_yaml(x = private$.settings, file = pipeline_settings_path, sorted = TRUE)
+          pipeline_save_extdata(
+            data = new_val,
+            name = opts$name,
+            format = opts$format,
+            overwrite = TRUE,
+            pipe_dir = private$.pipeline_path
+          )
+          cls <- class(new_val)
+          if( !"raveio-pipeline-extdata" %in% cls ) {
+            cls <- c("raveio-pipeline-extdata", cls)
+          }
+          private$.settings[[nm]] <- structure(
+            new_val, class = cls,
+            `raveio-pipeline-extdata-opts` = opts
+          )
+          return()
+        })
+        lapply(internal_args, function(nm) {
+          private$.settings[[nm]] <- args[[nm]]
+          return()
+        })
+
+        # TODO: check whether this should be put outside, i.e. save settings
+        # no matter the settings have been changed or not
+        pipeline_settings_path <- file.path(
+          private$.pipeline_path,
+          private$.settings_file
+        )
+
+        settings_copy <- as.list(private$.settings)
+        if(length(external_inputs)) {
+          settings_copy[external_inputs] <- lapply(private$.settings_external_inputs, "[[", "raw_input")
+        }
+        save_yaml(
+          x = settings_copy,
+          file = pipeline_settings_path,
+          sorted = TRUE
+        )
+      }
 
       return(invisible(as.list(private$.settings)))
     },

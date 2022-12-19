@@ -4,7 +4,7 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/raveio)](https://CRAN.R-project.org/package=raveio)
-[![R-check](https://github.com/beauchamplab/raveio/workflows/R-CMD-check/badge.svg)](https://github.com/beauchamplab/raveio/actions)
+[![R-CMD-check](https://github.com/beauchamplab/raveio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/beauchamplab/raveio/actions/workflows/R-CMD-check.yaml)
 [![DOI](https://raw.githubusercontent.com/dipterix/threeBrain/master/inst/doi.svg)](https://doi.org/10.1016/j.neuroimage.2020.117341)
 <!-- badges: end -->
 
