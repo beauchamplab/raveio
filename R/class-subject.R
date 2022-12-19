@@ -169,18 +169,48 @@ RAVESubject <- R6::R6Class(
       if(!dir.exists(self$note_path)){
         dir_create2(self$note_path)
       }
-      default_path <- file.path(self$note_path, sprintf("%s.yaml", namespace))
+      default_path <- file.path(self$note_path, sprintf("%s.json", namespace))
+      default_path_backup <- file.path(self$note_path, sprintf("%s.yaml", namespace))
       defaults <- dipsaus::fastmap2()
       if(file.exists(default_path)){
-        load_yaml(default_path, map = defaults)
+        load_json(default_path, map = defaults)
+      } else if (file.exists(default_path_backup)) {
+        load_yaml(default_path_backup, map = defaults)
       }
-      defaults[[key]] <- value
+
+      old_val <- defaults[[key]]
+      if(is.null(old_val)) {
+        defaults[[key]] <- structure(
+          list(), entry_value = value, timestamp = Sys.time(),
+          class = "raveio-subject-entry"
+        )
+      } else if( !identical(attr(old_val, "entry_value"), value) ){
+        defaults[[key]] <- structure(
+          list(), entry_value = value, timestamp = Sys.time(),
+          previous_value = old_val, class = "raveio-subject-entry"
+        )
+      }
+
+      # defaults[[key]] <- value
       tmpfile <- tempfile()
-      on.exit({
-        unlink(tmpfile)
-      })
-      save_yaml(x = defaults, file = tmpfile)
+      on.exit({ unlink(tmpfile) })
+      save_json(x = as.list(defaults), con = tmpfile, serialize = TRUE)
       file.copy(tmpfile, default_path, overwrite = TRUE, recursive = FALSE)
+
+      # get backup yaml format
+      entry_names <- sort(names(defaults))
+      entries <- structure(
+        lapply(entry_names, function(nm) {
+          val <- defaults[[nm]]
+          if(inherits(val, "raveio-subject-entry")) {
+            return(attr(val, "entry_value"))
+          }
+          return(val)
+        }),
+        names = entry_names
+      )
+      save_yaml(x = entries, file = tmpfile)
+      file.copy(tmpfile, default_path_backup, overwrite = TRUE, recursive = FALSE)
       invisible(value)
     },
 
@@ -197,16 +227,132 @@ RAVESubject <- R6::R6Class(
                            namespace = "default"){
       stopifnot2(is.character(namespace) && length(namespace) == 1, msg = "`namespace` must be a character of length 1")
       stopifnot2(!grepl("[^A-Za-z0-9_-]", namespace), msg = "`namespace` can only contain letters, digits, dash (-), and/or underscore (_)")
-      default_path <- file.path(self$note_path, sprintf("%s.yaml", namespace))
+      default_path <- file.path(self$note_path, sprintf("%s.json", namespace))
+      default_path_backup <- file.path(self$note_path, sprintf("%s.yaml", namespace))
+
       defaults <- dipsaus::fastmap2(missing_default = default_if_missing)
+
       if(file.exists(default_path)){
-        load_yaml(default_path, map = defaults)
+        load_json(con = default_path, map = defaults)
+      } else if (file.exists(default_path_backup)) {
+        load_yaml(default_path_backup, map = defaults)
       }
+
       re <- defaults[...]
+      re <- structure(lapply(re, function(val) {
+        if(inherits(val, "raveio-subject-entry")) {
+          return(attr(val, "entry_value"))
+        } else {
+          return(val)
+        }
+      }), names = names(re))
+
       if(simplify && length(re) == 1){
         re <- re[[1]]
       }
       re
+    },
+
+    #' @description get summary table of all the key-value pairs used by 'RAVE'
+    #' modules for the subject
+    #' @param namespaces namespaces for the entries; see method
+    #' \code{get_default} or \code{set_default}. Default is all possible
+    #' namespaces
+    #' @param include_history whether to include history entries; default is
+    #' false
+    #' @return A data frame with four columns: \code{'namespace'} for the group
+    #' name of the entry (entries within the same namespace usually share same
+    #' module), \code{'timestamp'} for when the entry was registered.
+    #' \code{'entry_name'} is the name of the entry. If \code{include_history}
+    #' is true, then multiple entries with the same \code{'entry_name'} might
+    #' appear since the obsolete entries are included. \code{'entry_value'}
+    #' is the value of the corresponding entry.
+    get_note_summary = function(namespaces, include_history = FALSE) {
+
+      if(missing(namespaces)) {
+        # get all possible namespaces
+        namespaces <- list.files(
+          path = self$note_path,
+          pattern = "\\.(json|yaml)$",
+          all.files = TRUE,
+          recursive = FALSE,
+          full.names = FALSE,
+          ignore.case = TRUE,
+          include.dirs = FALSE,
+          no.. = TRUE
+        )
+        namespaces <- unique(gsub(pattern = "\\.(json|yaml)$", replacement = "",
+                                  x = namespaces, ignore.case = TRUE))
+        if("default" %in% namespaces) {
+          namespaces <- unique(c("default", namespaces))
+        }
+      }
+
+      entries <- dipsaus::fastqueue2()
+      extract_entries <- function(entry, name, namespace, is_root = FALSE) {
+        if(inherits(entry, "raveio-subject-entry")) {
+          timestamp <- attr(entry, "timestamp")
+          if(!inherits(timestamp, "POSIXct")) {
+            timestamp <- NA
+          }
+          item <- list(
+            namespace = namespace,
+            name = name,
+            timestamp = timestamp,
+            value = attr(entry, "entry_value"),
+            status = ifelse(is_root, "current", "obsolete")
+          )
+        } else {
+          item <- list(
+            namespace = namespace,
+            name = name,
+            timestamp = NA,
+            value = entry,
+            status = ifelse(is_root, "current", "obsolete")
+          )
+        }
+
+        entries$add(item)
+
+        # add previous record
+        if( include_history ) {
+          previous_entry <- attr(entry, "previous_value")
+          if(!is.null(previous_entry)) {
+            Recall(entry = previous_entry, name = name, namespace = namespace, is_root = FALSE)
+          }
+        }
+      }
+
+      lapply(namespaces, function(namespace) {
+        default_path <- file.path(self$note_path, sprintf("%s.json", namespace))
+        default_path_backup <- file.path(self$note_path, sprintf("%s.yaml", namespace))
+
+        defaults <- dipsaus::fastmap2(missing_default = default_if_missing)
+
+        if(file.exists(default_path)){
+          try({ load_json(con = default_path, map = defaults) })
+        } else if (file.exists(default_path_backup)) {
+          try({ load_yaml(default_path_backup, map = defaults) })
+        } else { return(NULL) }
+
+        for(nm in names(defaults)) {
+          if(nm != "") {
+            try({ extract_entries(defaults[[nm]], name = nm, namespace = namespace, is_root = TRUE) })
+          }
+        }
+        return()
+      })
+      notes <- entries$as_list()
+
+      notes_df <- data.frame(
+        timestamp = as.POSIXct(sapply(notes, "[[", "timestamp"), origin = "1960-01-01"),
+        namespace = vapply(notes, "[[", "namespace", FUN.VALUE = ""),
+        entry_name = vapply(notes, "[[", "name", FUN.VALUE = "")
+      )
+      notes_df$entry_value <- lapply(notes, "[[", "value")
+      notes_df$status <- vapply(notes, "[[", "status", FUN.VALUE = "")
+
+      notes_df
     },
 
 
