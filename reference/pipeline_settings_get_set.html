@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9007</span>
       </span>
     </div>
 
@@ -55,20 +55,26 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipeline_settings_set</span><span class="op">(</span></span>
 <span>  <span class="va">...</span>,</span>
-<span>  pipeline_settings_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>, <span class="st">"settings.yaml"</span><span class="op">)</span></span>
+<span>  pipeline_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  pipeline_settings_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pipeline_path</span>, <span class="st">"settings.yaml"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pipeline_settings_get</span><span class="op">(</span></span>
 <span>  <span class="va">key</span>,</span>
 <span>  default <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  constraint <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  pipeline_settings_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>, <span class="st">"settings.yaml"</span><span class="op">)</span></span>
+<span>  pipeline_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  pipeline_settings_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pipeline_path</span>, <span class="st">"settings.yaml"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>pipeline_settings_path</dt>
+    <dl><dt>pipeline_path</dt>
+<dd><p>the root directory of the pipeline</p></dd>
+
+
+<dt>pipeline_settings_path</dt>
 <dd><p>the settings file of the pipeline, must be
 a 'yaml' file; default is <code>'settings.yaml'</code> in the current pipeline</p></dd>
 
@@ -108,7 +114,7 @@ sure the results stay within given options</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

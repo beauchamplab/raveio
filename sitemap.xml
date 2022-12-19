@@ -85,9 +85,6 @@
     <loc>/reference/collapse_power.html</loc>
   </url>
   <url>
-    <loc>/reference/configure_knitr.html</loc>
-  </url>
-  <url>
     <loc>/reference/convert_blackrock.html</loc>
   </url>
   <url>
@@ -155,6 +152,9 @@
   </url>
   <url>
     <loc>/reference/new_electrode.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pipeline-knitr-markdown.html</loc>
   </url>
   <url>
     <loc>/reference/pipeline.html</loc>
