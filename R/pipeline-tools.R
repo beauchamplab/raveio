@@ -611,7 +611,7 @@ pipeline_create_subject_pipeline <- function(
     settings$reference <- "default"
   }
 
-  save_yaml(settings, file.path(pipe_path, "settings.yaml"))
+  save_yaml(settings, file.path(pipe_path, "settings.yaml"), sorted = TRUE)
 
   # build the pipeline
   pipeline_build(pipe_path)
@@ -688,9 +688,6 @@ pipeline_settings_set <- function(
         overwrite = TRUE,
         pipe_dir = pipeline_path
       )
-
-      settings[[nm]] <- return(sprintf("${EXTDATA-SETTINGS|%s|%s}",
-                                       opts$name, opts$format))
       return()
     }
 
@@ -701,7 +698,7 @@ pipeline_settings_set <- function(
   # dipsaus::list_to_fastmap2(args, map = settings)
   tf <- tempfile()
   on.exit({ unlink(tf) })
-  save_yaml(x = settings, file = tf)
+  save_yaml(x = settings, file = tf, sorted = TRUE)
   file.copy(from = tf, to = pipeline_settings_path,
             overwrite = TRUE, recursive = FALSE)
   settings
@@ -906,7 +903,7 @@ pipeline_save_extdata <- function(
       save_json(x = data, con = path, serialize = TRUE, ...)
     },
     "yaml" = {
-      save_yaml(x = data, file = path, ...)
+      save_yaml(x = data, file = path, sorted = TRUE, ...)
     },
     "csv" = {
       utils::write.csv(x = data, file = path, ...)

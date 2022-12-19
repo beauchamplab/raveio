@@ -79,7 +79,7 @@ module_add <- function(
   )
   item <- item[!names(item) %in% ""]
   yaml_settings$modules[[module_id]] <- item
-  save_yaml(yaml_settings, yaml)
+  save_yaml(yaml_settings, yaml, sorted = TRUE)
 
   invisible()
 }

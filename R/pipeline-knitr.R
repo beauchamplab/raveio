@@ -298,49 +298,6 @@ rave_knitr_build <- function(targets, make_file){
 
     }
 
-    # extras <- structure(lapply(nms, function(nm){
-    #
-    #
-    #   if(is.null(opts)) {
-    #
-    #
-    #     return(bquote(
-    #       targets::tar_target_raw(
-    #         .(nm),
-    #         quote({
-    #           settings[[.(nm)]]
-    #         }),
-    #         deps = "settings"
-    #       )
-    #     ))
-    #
-    #   }
-    #   sample_value <- settings[[nm]]
-    #   if(isTRUE(is.character(sample_value)) && length(sample_value) == 1 &&
-    #      grepl("^\\$\\{EXTDATA\\-SETTINGS\\|(.*)\\}$", sample_value)) {
-    #     bquote(
-    #       targets::tar_target_raw(
-    #         .(nm),
-    #         quote({
-    #           asNamespace("raveio")$resolve_pipeline_settings_value( settings[[.(nm)]], "." )
-    #         }),
-    #         deps = "settings",
-    #         cue = targets::tar_cue("always")
-    #       )
-    #     )
-    #   } else {
-    #     bquote(
-    #       targets::tar_target_raw(
-    #         .(nm),
-    #         quote({
-    #           settings[[.(nm)]]
-    #         }),
-    #         deps = "settings"
-    #       )
-    #     )
-    #   }
-    #
-    # }), names = paste0("input_", nms))
     exprs <- c(
       list(
         "__Check_settings_file" = quote(
