@@ -50,6 +50,30 @@ save_meta2 <- function(data, meta_type, project_name, subject_code){
 
 }
 
+load_electrodes_csv <- function(file) {
+  tbl <- safe_read_csv(file)
+  if(!'Label' %in% names(tbl)){
+    tbl$Label <- NA
+  }
+  na_labels <- is.na(tbl$Label)
+  if(any(na_labels)){
+    tbl$Label[na_labels] <- paste0('Unlabeled', seq_len(sum(na_labels)))
+  }
+
+  if(!'LocationType' %in% names(tbl)){
+    tbl$LocationType <- "iEEG"
+  }
+  if(any(!tbl$LocationType %in% c(LOCATION_TYPES, ""))){
+    usp <- unique(tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES])
+    warning("Unsupported electrode location type(s) found: ", paste(usp, collapse = ", "),
+            ". Alter these electrode types to `iEEG`. If you see this warning, it is most likely the `LocationType` column in `electrodes.csv` (subject meta folder) contains invalid elements. I have corrected for you, however, please double-check the file as my correction might be wrong.")
+    tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES] <- "iEEG"
+  }
+  tbl$LocationType[is.na(tbl$LocationType) | tbl$LocationType == ""] <- "iEEG"
+
+  return(tbl)
+}
+
 #' Load 'RAVE' subject meta data
 #' @param meta_type electrodes, epochs, time_points, frequencies, references ...
 #' @param project_name project name
@@ -66,38 +90,37 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
     subject_code <- tmp[[2]]
   }
   subject_code <- stringr::str_remove(subject_code, '^sub-')
+
+  if( meta_type == 'electrodes' ) {
+
+    if(!missing(project_name)) {
+      dirs <- rave_directories(subject_code = subject_code, project_name = project_name)
+      meta_dir <- dirs$meta_path
+
+      if(dir.exists(meta_dir)){
+        file <- file.path(meta_dir, 'electrodes.csv')
+        if(file.exists(file)){
+          return(load_electrodes_csv(file))
+        }
+      }
+    }
+
+    # [project/subject] has no electrodes.csv
+    # check raw_dir
+    root_raw <- normalizePath(raveio_getopt('raw_data_dir'), mustWork = FALSE)
+    file <- file.path(root_raw, subject_code, "rave-imaging", "meta", "electrodes.csv")
+    if(file.exists(file)){
+      return(load_electrodes_csv(file))
+    }
+    return()
+  }
+
+
   dirs <- rave_directories(subject_code = subject_code, project_name = project_name)
   meta_dir <- dirs$meta_path
 
   if(dir.exists(meta_dir)){
-    if(meta_type == 'electrodes'){
-      file <- file.path(meta_dir, 'electrodes.csv')
-      if(file.exists(file)){
-
-        tbl <- safe_read_csv(file)
-        if(!'Label' %in% names(tbl)){
-          tbl$Label <- NA
-        }
-        na_labels <- is.na(tbl$Label)
-        if(any(na_labels)){
-          tbl$Label[na_labels] <- paste0('Unlabeled', seq_len(sum(na_labels)))
-        }
-
-        if(!'LocationType' %in% names(tbl)){
-          tbl$LocationType <- "iEEG"
-        }
-        if(any(!tbl$LocationType %in% c(LOCATION_TYPES, ""))){
-          usp <- unique(tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES])
-          warning("Unsupported electrode location type(s) found: ", paste(usp, collapse = ", "),
-                  ". Alter these electrode types to `iEEG`. If you see this warning, it is most likely the `LocationType` column in `electrodes.csv` (subject meta folder) contains invalid elements. I have corrected for you, however, please double-check the file as my correction might be wrong.")
-          tbl$LocationType[!tbl$LocationType %in% LOCATION_TYPES] <- "iEEG"
-        }
-        tbl$LocationType[is.na(tbl$LocationType) | tbl$LocationType == ""] <- "iEEG"
-
-        return(tbl)
-      }
-    }
-    else if(meta_type == 'time_points'){
+    if(meta_type == 'time_points'){
       file <- file.path(meta_dir, 'time_points.csv')
       if(file.exists(file)){
         tbl <- safe_read_csv(file, colClasses = c(Block = 'character'))
