@@ -1,0 +1,57 @@
+## Coordinate systems:
+
+* IJK: Voxel integer index (also called column, row, slice) of the volume image. [IJK] always refer to a specific image volume
+
+* RAS: Anatomical coordinate (Right, Anterior, Superior)
+  - mri_RAS:  Native RAS in the MR scanner space
+  - ct_RAS:   Native RAS in the CT scanner space
+  - tkr_RAS:  Native RAS in the surface space (mostly used by FreeSurfer and RAVE 3D viewer)
+  - MNI305_RAS: MNI305 template space
+  - MNI152_RAS: MNI305 template space
+
+* FSL: The coordinate system used by FSL software. We normally don't use this system. It's essentially a rescaled+re-oriented IJK coordinate system such that
+  1. the measurement unit is always 1mm
+  2. if q/sform has positive determinant, then the first index is flipped.
+
+
+## Affine transform matrix:
+
+An affine transform matrix maps one coordinate to another with rotation, translation (shifting), scaling. The transform always occurs in 4D space, with the first 3 dimensions to be coordinates (such as IJK or RAS), and last dimension to be constant 1.
+
+[
+  R11 R12 R13 T1
+  R21 R22 R23 T2
+  R31 R32 R33 T3
+  0   0   0   1
+]
+
+The top-left 3x3 sub-matrix [R] defines the rotation & scaling in the 3D space. [T1 T2 T3] defines the translation
+
+### Matrices used by RAVE
+
+* Norig: From [IJK] in `T1.mgz` (FreeSurfer normalized T1) to [mri_RAS] in scanner space
+  - [R A S 1]' = Norig * [I J K 1]'
+
+* Torig: From [IJK] in `T1.mgz` (FreeSurfer normalized T1) to [tkr_RAS] in surface space
+  - [tkrR tkrA tkrS 1]' = Torig * [I J K 1]'
+  - [tkrR tkrA tkrS 1]' = Torig * (Norig)^(-1) * [R A S 1]'
+
+* xfm: From [mri_RAS] in scanner space to MNI305 space [MNI305_RAS]
+  - [MNI305_R MNI305_A MNI305_S 1]' = xfm * [R A S 1]'
+
+* qform/sform: Used by nifti, refering to a 4x4 transform matrix from [IJK] of the enclosing volume image to an [RAS] coordinate. The space of [RAS] is determined by `qform_code/sform_code`
+  - q/sform_code=0 : RAS is arbitrary coordinate
+  - q/sform_code=1 : RAS is in scanner-based anatomical coordinate (e.g. `Norig` is q/sform of `T1.mgz` with q/sform_code=1)
+  - q/sform_code=2 : RAS coordinate is aligned to another file, or to anatomical "truth"
+  - q/sform_code=3 : Coordinates aligned to Talairach-Tournoux Atlas; (0,0,0)=AC, etc.
+  - q/sform_code=4 : RAS is in MNI 152 normalized coordinate space.
+
+* IJK2FSL: From [IJK] in (CT_RAW.nii) to [FSL]
+  - ct_IJK2FSL: Both [IJK] and [FSL] refer to the original CT image CT_RAW.nii
+  - mri_IJK2FSL: Both [IJK] and [FSL] refer to the reference MRI. Be very careful about the selection of the reference file.
+
+* ct2t1: FROM [FSL] in the CT imaging volume to the [FSL] coordinate in the reference MRI volume
+  - [mri_FSL 1]' = ct2t1 * [ct_FSL 1]'
+  - [mri_IJK 1]' = (mri_IJK2FSL)^(-1) * ct2t1 * ct_IJK2FSL * [ct_IJK 1]'
+  - [tkr_RAS 1]' = Torig * (Norig)^(-1) * qsform * (mri_IJK2FSL)^(-1) * ct2t1 * ct_IJK2FSL * [ct_IJK 1]'
+    In this example, if we choose `T1.mgz` (FreeSurfer normalized T1 MRI) as the reference image when using `flirt` command, then the `qsform` of `T1.mgz` is identical to `Norig`

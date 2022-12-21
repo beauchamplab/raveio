@@ -26,6 +26,8 @@
 #' @param script the shell script
 #' @param script_path path to run the script
 #' @param command which command to invoke; default is \code{'bash'}
+#' @param dof,cost,search,searchcost parameters used by 'FSL' \code{'flirt'}
+#' command; see their documentation for details
 #' @param backup whether to back up the script file immediately; default is true
 #' @param ... passed to \code{\link{system2}}
 #' @returns A list of data containing the script details:
