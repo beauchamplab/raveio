@@ -3,6 +3,16 @@
 #' @export
 cmd_run_flirt <- function(
     subject, mri_path, ct_path,
+    dof = 6,
+    cost = c(
+      "mutualinfo", "leastsq", "normcorr",
+      "corratio", "normmi", "labeldiff", "bbr"
+    ),
+    search = 90,
+    searchcost = c(
+      "mutualinfo", "leastsq", "normcorr",
+      "corratio", "normmi", "labeldiff", "bbr"
+    ),
     overwrite = FALSE, command_path = NULL,
     dry_run = FALSE, verbose = dry_run) {
   # # Debug:
@@ -12,12 +22,28 @@ cmd_run_flirt <- function(
   # command_path = NULL
   # overwrite <- FALSE
 
+  dof <- as.integer(dof)
+  if( !isTRUE(dof %in% c(6, 7, 9, 12)) ) {
+    stop("`cmd_run_flirt`: dof must be 6 (rigid body), 7 (global rescale), 9 (traditional), or 12 (affine)")
+  }
+  cost <- match.arg(cost)
+  searchcost <- match.arg(searchcost)
+  search <- abs(as.integer(search))
+
   mri_path <- validate_nii(mri_path)
   ct_path <- validate_nii(ct_path)
 
   subject <- restore_subject_instance(subject, strict = FALSE)
+  work_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging"),
+    winslash = "/", mustWork = FALSE
+  )
   dest_path <- normalizePath(
     file.path(subject$preprocess_settings$raw_path, "rave-imaging", "coregistration"),
+    winslash = "/", mustWork = FALSE
+  )
+  derivative_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "derivative"),
     winslash = "/", mustWork = FALSE
   )
 

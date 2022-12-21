@@ -1,14 +1,15 @@
 
 #' @rdname cmd-external
 #' @export
-cmd_run_recon_all <- function(subject, mri_path,
-                              args = c(
-                                "-all", "-autorecon1", "-autorecon2", "-autorecon3",
-                                "-autorecon2-cp", "-autorecon2-wm", "-autorecon2-pial"
-                              ),
-                              work_path = NULL,
-                              overwrite = FALSE, command_path = NULL,
-                              dry_run = FALSE, verbose = dry_run) {
+cmd_run_recon_all <- function(
+    subject, mri_path,
+    args = c(
+      "-all", "-autorecon1", "-autorecon2", "-autorecon3",
+      "-autorecon2-cp", "-autorecon2-wm", "-autorecon2-pial"
+    ),
+    work_path = NULL,
+    overwrite = FALSE, command_path = NULL,
+    dry_run = FALSE, verbose = dry_run) {
   # # Debug:
   # subject <- as_rave_subject("devel/YDS", strict = FALSE)
   # mri_path <- "/Users/dipterix/rave_data/raw_dir/YDS/rave-imaging/inputs/MRI/MRI_3D_Ax_T1_FFE_SENSE_20210507130859_30101000.nii"
@@ -73,7 +74,7 @@ cmd_run_recon_all <- function(subject, mri_path,
     work_path_symlink <- file.path(R_user_dir("raveio", which = "cache"), "FreeSurfer",
                                    subject$subject_code, fsep = "/")
   } else {
-    work_path_symlink <- file.path(work_path, subject$subject_code)
+    work_path_symlink <- file.path(work_path, subject$subject_code, fsep = "/")
   }
 
   work_path_actual <- subject$preprocess_settings$raw_path

@@ -46,6 +46,11 @@ cmd_run_flirt(
   subject,
   mri_path,
   ct_path,
+  dof = 6,
+  cost = c("mutualinfo", "leastsq", "normcorr", "corratio", "normmi", "labeldiff", "bbr"),
+  search = 90,
+  searchcost = c("mutualinfo", "leastsq", "normcorr", "corratio", "normmi", "labeldiff",
+    "bbr"),
   overwrite = FALSE,
   command_path = NULL,
   dry_run = FALSE,
@@ -100,6 +105,9 @@ and \code{'CT'}}
 
 \item{merge, float, crop}{\code{'dcm2niix'} conversion arguments; ignored when
 the source is in 'Nifti' format}
+
+\item{dof, cost, search, searchcost}{parameters used by 'FSL' \code{'flirt'}
+command; see their documentation for details}
 
 \item{args}{further arguments in the shell command, especially the
 'FreeSurfer' reconstruction command}
