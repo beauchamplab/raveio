@@ -20,7 +20,7 @@ machines, please use the 'WSL2' system."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9008</span>
       </span>
     </div>
 
@@ -95,6 +95,11 @@ machines, please use the 'WSL2' system.</p>
 <span>  <span class="va">subject</span>,</span>
 <span>  <span class="va">mri_path</span>,</span>
 <span>  <span class="va">ct_path</span>,</span>
+<span>  dof <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  cost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mutualinfo"</span>, <span class="st">"leastsq"</span>, <span class="st">"normcorr"</span>, <span class="st">"corratio"</span>, <span class="st">"normmi"</span>, <span class="st">"labeldiff"</span>, <span class="st">"bbr"</span><span class="op">)</span>,</span>
+<span>  search <span class="op">=</span> <span class="fl">90</span>,</span>
+<span>  searchcost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mutualinfo"</span>, <span class="st">"leastsq"</span>, <span class="st">"normcorr"</span>, <span class="st">"corratio"</span>, <span class="st">"normmi"</span>, <span class="st">"labeldiff"</span>,</span>
+<span>    <span class="st">"bbr"</span><span class="op">)</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  command_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -180,6 +185,11 @@ and <code>'CT'</code></p></dd>
 <dt>merge, float, crop</dt>
 <dd><p><code>'dcm2niix'</code> conversion arguments; ignored when
 the source is in 'Nifti' format</p></dd>
+
+
+<dt>dof, cost, search, searchcost</dt>
+<dd><p>parameters used by 'FSL' <code>'flirt'</code>
+command; see their documentation for details</p></dd>
 
 
 <dt>args</dt>
