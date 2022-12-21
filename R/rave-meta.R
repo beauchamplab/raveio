@@ -108,7 +108,7 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
     # [project/subject] has no electrodes.csv
     # check raw_dir
     root_raw <- normalizePath(raveio_getopt('raw_data_dir'), mustWork = FALSE)
-    file <- file.path(root_raw, subject_code, "rave-imaging", "meta", "electrodes.csv")
+    file <- file.path(root_raw, subject_code, "rave-imaging", "derivative", "electrodes.csv")
     if(file.exists(file)){
       return(load_electrodes_csv(file))
     }
