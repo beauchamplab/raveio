@@ -7,10 +7,12 @@ CMD
 DICOM
 DOI
 ECoG
+FSL
 FST
 FreeSurfer
 Github
 HDF
+IJK
 JSON
 LFP
 MNI
