@@ -2,6 +2,7 @@
 % Please edit documentation in R/py-nipy-coreg.R
 \name{py_nipy_coreg}
 \alias{py_nipy_coreg}
+\alias{cmd_run_nipy_coreg}
 \title{Register 'CT' to 'MR' images via \code{'nipy'} script}
 \usage{
 py_nipy_coreg(
@@ -17,6 +18,21 @@ py_nipy_coreg(
   optimizer = c("powell", "steepest", "cg", "bfgs", "simplex"),
   tol = 1e-04,
   dry_run = FALSE
+)
+
+cmd_run_nipy_coreg(
+  subject,
+  ct_path,
+  mri_path,
+  clean_source = TRUE,
+  inverse_target = TRUE,
+  precenter_source = TRUE,
+  reg_type = c("rigid", "affine"),
+  interp = c("pv", "tri"),
+  similarity = c("crl1", "cc", "cr", "mi", "nmi", "slr"),
+  optimizer = c("powell", "steepest", "cg", "bfgs", "simplex"),
+  dry_run = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -48,12 +64,16 @@ cases, though many tutorials suggest \code{'nmi'}.}
 
 \item{dry_run}{whether to dry-run the script and to print out the command
 instead of executing the code; default is false}
+
+\item{subject}{'RAVE' subject}
+
+\item{verbose}{whether to verbose command; default is false}
 }
 \value{
 Nothing is returned from the function. However, several files will
 be generated at the 'CT' path:
 \describe{
-\item{\code{'CT_coreg_resampled.nii'}}{aligned 'CT' image; the image is
+\item{\code{'ct_in_t1.nii'}}{aligned 'CT' image; the image is
 also re-sampled into 'MRI' space}
 \item{\code{'CT_IJK_to_MR_RAS.txt'}}{transform matrix from volume 'IJK'
 space in the original 'CT' to the 'RAS' anatomical coordinate in 'MR'

@@ -42,7 +42,7 @@ NULL
 
 #' @rdname cmd-external
 #' @export
-cmd_execute <- function(script, script_path, command = "bash", dry_run = FALSE, backup = TRUE, ...) {
+cmd_execute <- function(script, script_path, command = "bash", dry_run = FALSE, backup = TRUE, args = NULL, ...) {
 
   dir_create2(dirname(script_path))
   writeLines(script, con = script_path)
@@ -65,10 +65,14 @@ cmd_execute <- function(script, script_path, command = "bash", dry_run = FALSE, 
   script_path <- normalizePath(script_path)
 
   if( dry_run ) {
-    cmd <- sprintf("%s %s", command, shQuote(script_path, type = "sh"))
+    args <- paste(args, collapse = " ")
+    if(nzchar(args)) {
+      args <- sprintf("%s ", args)
+    }
+    cmd <- sprintf("%s %s%s", command, args, shQuote(script_path, type = "sh"))
     return(cmd)
   } else {
-    system2(command = command, args = shQuote(script_path, type = "sh"), ...)
+    system2(command = command, args = c(args, shQuote(script_path, type = "sh")), ...)
   }
 
 }

@@ -26,6 +26,7 @@ cmd_execute(
   command = "bash",
   dry_run = FALSE,
   backup = TRUE,
+  args = NULL,
   ...
 )
 
@@ -96,6 +97,9 @@ dry-run mode, and false otherwise}
 
 \item{backup}{whether to back up the script file immediately; default is true}
 
+\item{args}{further arguments in the shell command, especially the
+'FreeSurfer' reconstruction command}
+
 \item{...}{passed to \code{\link{system2}}}
 
 \item{src_path}{source of the 'DICOM' or 'Nifti' image (absolute path)}
@@ -108,9 +112,6 @@ the source is in 'Nifti' format}
 
 \item{dof, cost, search, searchcost}{parameters used by 'FSL' \code{'flirt'}
 command; see their documentation for details}
-
-\item{args}{further arguments in the shell command, especially the
-'FreeSurfer' reconstruction command}
 
 \item{work_path}{work path for 'FreeSurfer' command;}
 }

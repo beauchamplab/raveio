@@ -109,8 +109,8 @@ def coregistrate_image(
   ct_to_mri = AffineTransform(ct_cmap.function_range, mr_cmap.function_range, aff2)  
   reg_CT = nipy.algorithms.resample.resample(ctimg, mr_cmap, ct_to_mri.inverse(), mrimg.shape)    
   
-  outfile = os.path.join(source_directory, 'CT_coreg_resampled.nii')
-  print("Saving registration as CT_coreg_resampled.nii")
+  outfile = os.path.join(source_directory, 'ct_in_t1.nii')
+  print("Saving registration as ct_in_t1.nii")
   nipy.save_image(reg_CT, outfile, dtype_from="data")
   
   return outfile

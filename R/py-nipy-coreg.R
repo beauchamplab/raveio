@@ -22,10 +22,12 @@
 #' cases, though many tutorials suggest \code{'nmi'}.
 #' @param dry_run whether to dry-run the script and to print out the command
 #' instead of executing the code; default is false
+#' @param subject 'RAVE' subject
+#' @param verbose whether to verbose command; default is false
 #' @return Nothing is returned from the function. However, several files will
 #' be generated at the 'CT' path:
 #' \describe{
-#' \item{\code{'CT_coreg_resampled.nii'}}{aligned 'CT' image; the image is
+#' \item{\code{'ct_in_t1.nii'}}{aligned 'CT' image; the image is
 #' also re-sampled into 'MRI' space}
 #' \item{\code{'CT_IJK_to_MR_RAS.txt'}}{transform matrix from volume 'IJK'
 #' space in the original 'CT' to the 'RAS' anatomical coordinate in 'MR'
@@ -63,9 +65,87 @@ py_nipy_coreg <- function(
   cmd <- glue(paste(template, collapse = "\n"), .sep = "\n",
               .open = '{{', .close = '}}', .trim = FALSE, .null = "")
 
-  tmpf <- tempfile(fileext = ".py", pattern = "nipy-coregistration-")
+  work_dir <- dirname(ct_path)
+  tmpf <- tempfile(fileext = ".py", pattern = "nipy-coregistration-", tmpdir = work_dir)
   writeLines(cmd, tmpf)
+  on.exit({
+    unlink(tmpf, recursive = TRUE)
+  })
 
-  rpymat::run_script(tmpf, work_dir = tempdir(), local = FALSE, convert = FALSE)
+  rpymat::run_script(tmpf, work_dir = work_dir, local = FALSE, convert = FALSE)
   return(invisible())
+}
+
+#' @rdname py_nipy_coreg
+#' @export
+cmd_run_nipy_coreg <- function(
+    subject, ct_path, mri_path, clean_source = TRUE, inverse_target = TRUE,
+    precenter_source = TRUE, reg_type = c("rigid", "affine"),
+    interp = c("pv", "tri"), similarity = c('crl1', 'cc', 'cr', 'mi', 'nmi', 'slr'),
+    optimizer = c('powell', 'steepest', 'cg', 'bfgs', 'simplex'),
+    dry_run = FALSE, verbose = FALSE) {
+
+  subject <- restore_subject_instance(subject, strict = FALSE)
+  work_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging"),
+    winslash = "/", mustWork = FALSE
+  )
+  ct_path <- normalizePath(ct_path, winslash = "/", mustWork = TRUE)
+  mri_path <- normalizePath(mri_path, winslash = "/", mustWork = TRUE)
+
+  reg_type <- match.arg(reg_type)
+  interp <- match.arg(interp)
+  similarity <- match.arg(similarity)
+  optimizer <- match.arg(optimizer)
+  force(clean_source)
+  force(inverse_target)
+  force(precenter_source)
+  force(dry_run)
+
+  log_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "log"),
+    mustWork = FALSE, winslash = "/"
+  )
+  log_file <- strftime(Sys.time(), "log-rave-nipy-%y%m%d-%H%M%S.log")
+
+  template <- readLines(system.file("shell-templates/rave-nipy-coregistration.R", package = "raveio"))
+
+  cmd <- glue(paste(template, collapse = "\n"), .sep = "\n", .open = "{{", .close = "}}", .trim = FALSE, .null = "")
+
+  script_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "scripts", "cmd-rave-nipy-coregistration.R"),
+    mustWork = FALSE, winslash = "/"
+  )
+
+  execute <- function(...) {
+    initialize_imaging_paths(subject)
+
+    log_abspath <- normalizePath(file.path(log_path, log_file),
+                                 winslash = "/", mustWork = FALSE)
+    cmd_execute(script = cmd, script_path = script_path,
+                args = c("--no-save", "--no-restore"),
+                command = Sys.which("Rscript"),
+                stdout = log_abspath, stderr = log_abspath, ...)
+  }
+  re <- list(
+    script = cmd,
+    script_path = script_path,
+    dry_run = dry_run,
+    rscript_bin = Sys.which("Rscript"),
+    log_file = file.path(log_path, log_file, fsep = "/"),
+    mri_path = mri_path,
+    ct_path = ct_path,
+    execute = execute
+  )
+  if( verbose ) {
+    message(cmd)
+  }
+  if(dry_run) {
+    return(invisible(re))
+  }
+
+  execute()
+
+  return(invisible(re))
+
 }
