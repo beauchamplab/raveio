@@ -131,11 +131,11 @@ cmd_run_nipy_coreg <- function(
     script = cmd,
     script_path = script_path,
     dry_run = dry_run,
-    rscript_bin = Sys.which("Rscript"),
     log_file = file.path(log_path, log_file, fsep = "/"),
     mri_path = mri_path,
     ct_path = ct_path,
-    execute = execute
+    execute = execute,
+    command = Sys.which("Rscript")
   )
   if( verbose ) {
     message(cmd)
