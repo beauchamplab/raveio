@@ -87,7 +87,8 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
     }
 
     brain <- tryCatch({
-      threeBrain::threeBrain(
+      threeBrain <- asNamespace('threeBrain')
+      threeBrain$threeBrain(
         path = fs_path, subject_code = subject$subject_code,
         surface_types = surfaces
       )
