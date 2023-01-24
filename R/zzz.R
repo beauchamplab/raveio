@@ -484,11 +484,16 @@ finalize_installation <- function(
     upgrade <- FALSE
   }
 
+  repo_name <- 'dipterix/rave-pipelines'
+  if( getOption("ravemanager.nightly", FALSE) ) {
+    repo_name <- 'dipterix/rave-pipelines@nightly-dev'
+  }
+
   if(async) {
     dipsaus::rs_exec(bquote({
       ns <- asNamespace("raveio")
       ns$pipeline_install_github(
-        repo = 'dipterix/rave-pipelines',
+        repo = repo_name,
         to = "default",
         upgrade = .(upgrade)
       )
@@ -498,7 +503,7 @@ finalize_installation <- function(
     focus_on_console = TRUE)
   } else {
     pipeline_install_github(
-      repo = 'dipterix/rave-pipelines',
+      repo = repo_name,
       to = "default", upgrade = upgrade
     )
   }

@@ -92,7 +92,8 @@ cmd_run_flirt <- function(
     mri_path = mri_path,
     ct_path = ct_path,
     dest_path = dest_path,
-    execute = execute
+    execute = execute,
+    command = "bash"
   )
   if( verbose ) {
     message(cmd)

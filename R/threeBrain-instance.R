@@ -86,9 +86,18 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
       threeBrain::import_from_freesurfer(fs_path, subject_name = subject$subject_code)
     }
 
-    brain <- threeBrain::freesurfer_brain2(
-      fs_subject_folder = fs_path, subject_name = subject$subject_code,
-      surface_types = surfaces, use_141 = use_141)
+    brain <- tryCatch({
+      threeBrain <- asNamespace('threeBrain')
+      threeBrain$threeBrain(
+        path = fs_path, subject_code = subject$subject_code,
+        surface_types = surfaces
+      )
+    }, error = function(e) {
+      threeBrain::freesurfer_brain2(
+        fs_subject_folder = fs_path, subject_name = subject$subject_code,
+        surface_types = surfaces, use_141 = use_141)
+    })
+
 
     if(is.data.frame(electrode_table)) {
       brain$set_electrodes(electrodes = electrode_table)

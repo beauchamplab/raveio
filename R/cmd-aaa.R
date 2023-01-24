@@ -69,10 +69,13 @@ cmd_execute <- function(script, script_path, command = "bash", dry_run = FALSE, 
     if(nzchar(args)) {
       args <- sprintf("%s ", args)
     }
-    cmd <- sprintf("%s %s%s", command, args, shQuote(script_path, type = "sh"))
+    if( .Platform$OS.type == "windows" ) {
+      command <- gsub("/", "\\", command)
+    }
+    cmd <- sprintf("%s %s%s", shQuote(command), args, shQuote(script_path))
     return(cmd)
   } else {
-    system2(command = command, args = c(args, shQuote(script_path, type = "sh")), ...)
+    system2(command = command, args = c(args, shQuote(script_path)), ...)
   }
 
 }
@@ -91,3 +94,37 @@ validate_nii <- function(path) {
 }
 
 
+rscript_path <- function(winslash = "\\") {
+  binary_path <- R.home("bin")
+  rscript_path <- list.files(binary_path, pattern = "^rscript",
+                             full.names = TRUE, ignore.case = TRUE,
+                             all.files = FALSE, recursive = FALSE,
+                             include.dirs = FALSE)
+  if(length(rscript_path)) {
+    return(normalizePath(rscript_path[[1]], winslash = winslash))
+  }
+
+  rscript_path <- list.files(
+    R.home(), pattern = "^rscript($|\\.exe$)",
+    full.names = TRUE, ignore.case = TRUE,
+    all.files = FALSE, recursive = TRUE,
+    include.dirs = FALSE)
+
+  if(length(rscript_path)) {
+    # x64
+    i386 <- grepl("i386", rscript_path)
+    if(any(!i386)) {
+      rscript_path <- rscript_path[!i386]
+    }
+    return(normalizePath(rscript_path[[1]], winslash = winslash))
+  }
+
+  # usually we won't reach to this step
+  rscript_path <- Sys.which("Rscript")
+  if(rscript_path != "") { return(normalizePath(rscript_path, winslash = winslash)) }
+
+  rscript_path <- Sys.which("Rscript.exe")
+  if(rscript_path != "") { return(normalizePath(rscript_path, winslash = winslash)) }
+
+  return("Rscript")
+}

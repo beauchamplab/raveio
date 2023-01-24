@@ -98,7 +98,8 @@ cmd_run_recon_all <- function(
     log_file = file.path(log_path, log_file, fsep = "/"),
     src_path = mri_path,
     dest_path = file.path(work_path_actual, "rave-imaging", "fs", fsep = "/"),
-    execute = execute
+    execute = execute,
+    command = "bash"
   )
   if( verbose ) {
     message(cmd)
