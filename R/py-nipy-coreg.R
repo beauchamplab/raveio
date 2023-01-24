@@ -124,7 +124,7 @@ cmd_run_nipy_coreg <- function(
                                  winslash = "/", mustWork = FALSE)
     cmd_execute(script = cmd, script_path = script_path,
                 args = c("--no-save", "--no-restore"),
-                command = Sys.which("Rscript"),
+                command = rscript_path(),
                 stdout = log_abspath, stderr = log_abspath, ...)
   }
   re <- list(
@@ -135,7 +135,7 @@ cmd_run_nipy_coreg <- function(
     mri_path = mri_path,
     ct_path = ct_path,
     execute = execute,
-    command = Sys.which("Rscript")
+    command = rscript_path()
   )
   if( verbose ) {
     message(cmd)

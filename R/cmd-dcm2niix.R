@@ -94,8 +94,7 @@ cat(sep = "",
 
     log_abspath <- file.path(log_path, log_file)
 
-    command <- Sys.which("Rscript")
-
+    command <- rscript_path()
 
     re <- list(
       script = cmd,
