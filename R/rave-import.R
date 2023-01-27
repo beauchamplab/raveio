@@ -217,7 +217,7 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
         } else {
           stop("Cannot obtain the data name for electrode ", e)
         }
-        s <- as.numeric(dat[[nm]])
+        s <- as.numeric(dat[[nm]][])
         s[is.na(s)] <- 0
         # save to HDF5
         save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
@@ -322,7 +322,7 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
     } else {
       stop("Cannot obtain the data name for block ", b)
     }
-    dat <- dat[[nm]]
+    dat <- dat[[nm]][drop = FALSE]
     if(which.min(dim(dat)) == 1){
       dat <- t(dat)
     }
