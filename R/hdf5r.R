@@ -358,6 +358,24 @@ LazyH5 <- R6::R6Class(
         self$close(all = !private$read_only)
       }
       re
+    },
+
+    #' @description get data type
+    #' @param stay_open whether to leave the connection opened
+    #' @return data type, currently only character, integer, raw,
+    #' double, and complex are available, all other types will yield "unknown"
+    get_type = function(stay_open = TRUE) {
+      self$open()
+      type <- private$data_ptr$get_type()
+      if(!stay_open){
+        self$close(all = !private$read_only)
+      }
+      if(inherits(type, "H5T_STRING")) { return("character") }
+      if(inherits(type, "H5T_INTEGER")) { return("integer") }
+      if(inherits(type, "H5T_BITFIELD")) { return("raw") }
+      if(inherits(type, "H5T_FLOAT")) { return("double") }
+      if(inherits(type, "H5T_COMPLEX")) { return("complex") }
+      return("unknown")
     }
   )
 )
@@ -399,6 +417,7 @@ dim.LazyH5 <- function(x){
   }
   dim_info
 }
+
 
 #' @export
 length.LazyH5 <- function(x){

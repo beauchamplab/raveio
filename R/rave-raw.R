@@ -5,7 +5,13 @@ guess_raw_trace <- function(dat, electrodes = NULL, is_vector = TRUE){
   nms <- names(dat)
   for(nm in nms){
     x <- dat[[nm]]
-    if(!is.numeric(x) || mode(x) != "numeric"){ next }
+    if( inherits(x, "LazyH5") ) {
+      type <- tryCatch({
+        x$get_type(stay_open = FALSE)
+      }, error = function(e){ "unknown" })
+      if(!type %in% c("integer", "double")) { next }
+    } else if(!is.numeric(x) || mode(x) != "numeric"){ next }
+
 
     if(is_vector){
       # should be vector
@@ -236,7 +242,7 @@ validate_raw_file_lfp.native_matlab <- function(
       info <- finfo[[b]]
       files <- info$files
       number <- stringr::str_match(files, '([0-9]+)\\.(mat|h5)$')[,2]
-      sel <- number %in% as.character(electrodes)
+      sel <- as.integer(number) %in% as.character(electrodes)
       elec_bak <- as.integer(number[sel])
       files <- files[sel]
       abspaths <- file.path(info$path, files)

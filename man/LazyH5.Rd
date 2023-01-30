@@ -47,6 +47,7 @@ Zhengjia Wang
 \item \href{#method-LazyH5-close}{\code{LazyH5$close()}}
 \item \href{#method-LazyH5-subset}{\code{LazyH5$subset()}}
 \item \href{#method-LazyH5-get_dims}{\code{LazyH5$get_dims()}}
+\item \href{#method-LazyH5-get_type}{\code{LazyH5$get_type()}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -235,6 +236,27 @@ get data dimension
 }
 \subsection{Returns}{
 dimension of the array
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LazyH5-get_type"></a>}}
+\if{latex}{\out{\hypertarget{method-LazyH5-get_type}{}}}
+\subsection{Method \code{get_type()}}{
+get data type
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LazyH5$get_type(stay_open = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{stay_open}}{whether to leave the connection opened}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+data type, currently only character, integer, raw,
+double, and complex are available, all other types will yield "unknown"
 }
 }
 }
