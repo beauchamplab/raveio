@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9016</span>
       </span>
     </div>
 
@@ -79,6 +79,7 @@
 <li><p><a href="#method-LazyH5-close"><code>LazyH5$close()</code></a></p></li>
 <li><p><a href="#method-LazyH5-subset"><code>LazyH5$subset()</code></a></p></li>
 <li><p><a href="#method-LazyH5-get_dims"><code>LazyH5$get_dims()</code></a></p></li>
+<li><p><a href="#method-LazyH5-get_type"><code>LazyH5$get_type()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-LazyH5-finalize"></a><div class="section">
 <h3 id="method-finalize-">Method <code>finalize()</code><a class="anchor" aria-label="anchor" href="#method-finalize-"></a></h3>
 <p>garbage collection method</p><div class="section">
@@ -294,6 +295,27 @@ expression be evaluated</p></dd>
 <p>dimension of the array</p>
 </div>
 
+</div><p></p><hr><a id="method-LazyH5-get_type"></a><div class="section">
+<h3 id="method-get-type-">Method <code>get_type()</code><a class="anchor" aria-label="anchor" href="#method-get-type-"></a></h3>
+<p>get data type</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LazyH5</span><span class="op">$</span><span class="fu">get_type</span><span class="op">(</span>stay_open <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>stay_open</code></dt>
+<dd><p>whether to leave the connection opened</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<p>data type, currently only character, integer, raw,
+double, and complex are available, all other types will yield "unknown"</p>
+</div>
+
 </div>
 
     </div>
@@ -306,9 +328,9 @@ expression be evaluated</p></dd>
 <span class="r-in"><span><span class="co"># Save to local disk</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="save_h5.html">save_h5</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">f</span>, name <span class="op">=</span> <span class="st">'x'</span>, chunk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span>, level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpZPh03u/file6c62289a2ef =&gt; x (Dataset Created) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpZPh03u/file6c62289a2ef =&gt; x (Dataset Removed) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpZPh03u/file6c62289a2ef =&gt; x (Dataset Created) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp3IUZis/file109223990029 =&gt; x (Dataset Created) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp3IUZis/file109223990029 =&gt; x (Dataset Removed) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp3IUZis/file109223990029 =&gt; x (Dataset Created) </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load via LazyFST</span></span></span>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">LazyH5</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>file_path <span class="op">=</span> <span class="va">f</span>, data_name <span class="op">=</span> <span class="st">'x'</span>, read_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -322,7 +344,7 @@ expression be evaluated</p></dd>
 <span class="r-in"><span><span class="co"># Read a slice of the data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span>,<span class="fl">10</span>,<span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.248   0.003   0.309 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.247   0.002   0.250 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

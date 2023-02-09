@@ -85,6 +85,9 @@
     <loc>/reference/collapse_power.html</loc>
   </url>
   <url>
+    <loc>/reference/convert-fst.html</loc>
+  </url>
+  <url>
     <loc>/reference/convert_blackrock.html</loc>
   </url>
   <url>
@@ -185,6 +188,9 @@
   </url>
   <url>
     <loc>/reference/rave-server.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rave-snippet.html</loc>
   </url>
   <url>
     <loc>/reference/rave_brain.html</loc>
