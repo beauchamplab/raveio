@@ -492,6 +492,7 @@ finalize_installation <- function(
   if(async) {
     dipsaus::rs_exec(bquote({
       ns <- asNamespace("raveio")
+      ns$update_local_snippet(force = TRUE)
       ns$pipeline_install_github(
         repo = repo_name,
         to = "default",
@@ -502,6 +503,7 @@ finalize_installation <- function(
     name = "Upgrade pipeline templates",
     focus_on_console = TRUE)
   } else {
+    update_local_snippet(force = TRUE)
     pipeline_install_github(
       repo = repo_name,
       to = "default", upgrade = upgrade
