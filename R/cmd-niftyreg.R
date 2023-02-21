@@ -24,7 +24,7 @@
 #' space in the original 'CT' to 'RAS' in 'MR' scanner space}
 #' }
 #' @export
-nifty_coreg <- function(
+niftyreg_coreg <- function(
     ct_path, mri_path, coreg_path = NULL,
     reg_type = c("rigid", "affine", "nonlinear"),
     interp = c("trilinear", "cubic", "nearest"),
@@ -99,9 +99,9 @@ nifty_coreg <- function(
   return(invisible())
 }
 
-#' @rdname nifty_coreg
+#' @rdname niftyreg_coreg
 #' @export
-cmd_nifty_coreg <- function(
+cmd_run_niftyreg_coreg <- function(
     subject, ct_path, mri_path,
     reg_type = c("rigid", "affine", "nonlinear"),
     interp = c("trilinear", "cubic", "nearest"),

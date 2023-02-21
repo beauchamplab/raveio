@@ -5,7 +5,7 @@ ct_path0 <- normalizePath("{{ ct_path }}", mustWork = TRUE, winslash = "/")
 mri_path0 <- normalizePath("{{ mri_path }}", mustWork = TRUE, winslash = "/")
 reg_type <- "{{ reg_type }}"
 interp <- "{{ interp }}"
-verbose <- as.logical("{{ get0('verbose', ifnotfound = TRUE) }}")
+verbose <- TRUE
 
 # DIPSAUS DEBUG START
 # work_path <- "/Users/dipterix/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/PAV006/rave-imaging"
@@ -88,7 +88,7 @@ raveio::save_yaml(
     timestamp = strftime(Sys.time(), "%a %b %d %H:%M:%S %Z %Y", tz = "UTC"),
     command = list(
       comment = "This is R function call",
-      execute = "raveio::nifty_coreg",
+      execute = "raveio::niftyreg_coreg",
       arguments = list(
         reg_type = reg_type,
         interp = interp
@@ -116,7 +116,7 @@ raveio::save_yaml(
 )
 
 
-raveio::nifty_coreg(
+raveio::niftyreg_coreg(
   ct_path = ct_path0,
   mri_path = mri_path0,
   coreg_path = coreg_path,
