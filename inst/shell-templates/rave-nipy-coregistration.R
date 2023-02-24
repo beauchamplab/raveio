@@ -76,7 +76,7 @@ raveio::save_yaml(
       type = "nifti",
       path = mri_path0,
       backup = c(
-        sprintf("./coregistrationMRI_reference%s", mri_ext)
+        sprintf("./coregistration/MRI_reference%s", mri_ext)
       ),
       comment = "Reference MR image file, the CT is aligned to this reference image"
     ),
