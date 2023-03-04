@@ -46,7 +46,8 @@ Imports:
     callr (>= 3.7.0),
     remotes (>= 2.1.2),
     promises (>= 1.2.0),
-    threeBrain (>= 0.2.5)
+    threeBrain (>= 0.2.5),
+    ravetools
 Suggests:
     rpymat,
     visNetwork,
@@ -60,5 +61,5 @@ Suggests:
     shinybusy,
     shinyWidgets,
     arrow,
-    ravetools,
+    rpyANTs,
     later (>= 1.3.0)

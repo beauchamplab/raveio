@@ -29,6 +29,9 @@ niftyreg_coreg <- function(
     reg_type = c("rigid", "affine", "nonlinear"),
     interp = c("trilinear", "cubic", "nearest"),
     verbose = TRUE, ...) {
+
+  require_package("ravetools")
+
   # DIPSAUS DEBUG START
   # work_path <- "/Users/dipterix/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/PAV006/rave-imaging"
   # ct_path = "/Users/dipterix/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/PAV006/rave-imaging/derivative/CT_RAW.nii.gz"
@@ -106,6 +109,8 @@ cmd_run_niftyreg_coreg <- function(
     reg_type = c("rigid", "affine", "nonlinear"),
     interp = c("trilinear", "cubic", "nearest"),
     verbose = TRUE, dry_run = FALSE, ...) {
+
+  require_package("ravetools")
 
   # DIPSAUS DEBUG START
   # work_path <- "/Users/dipterix/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/PAV006/rave-imaging"
