@@ -496,22 +496,23 @@ finalize_installation <- function(
   if(async) {
     dipsaus::rs_exec(bquote({
       ns <- asNamespace("raveio")
-      ns$update_local_snippet(force = TRUE)
       ns$pipeline_install_github(
         repo = repo_name,
         to = "default",
         upgrade = .(upgrade)
       )
+      ns$update_local_snippet(force = TRUE)
+      message("Done.")
     }),
     quoted = TRUE,
     name = "Upgrade pipeline templates",
     focus_on_console = TRUE)
   } else {
-    update_local_snippet(force = TRUE)
     pipeline_install_github(
       repo = repo_name,
       to = "default", upgrade = upgrade
     )
+    update_local_snippet(force = TRUE)
   }
 
   # Backup ravedash sessions since they might be too old now
