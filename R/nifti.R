@@ -64,7 +64,8 @@ mgh_to_nii <- function(from, to) {
   mgh <- freesurferformats::read.fs.mgh(from, with_header = TRUE, drop_empty_dims = FALSE)
 
   # generate nii1 header
-  header <- freesurferformats:::ni1header.for.data(mgh$data)
+  freesurferformats <- asNamespace("freesurferformats")
+  header <- freesurferformats$ni1header.for.data(mgh$data)
   header$dim <- c(3L, dim(mgh$data)[1:3], 1L, 1L, 1L, 1L)
   header$intent_p1 <- 0
   header$intent_p2 <- 0
