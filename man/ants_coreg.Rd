@@ -3,7 +3,9 @@
 \name{ants_coreg}
 \alias{ants_coreg}
 \alias{cmd_run_ants_coreg}
-\title{Register 'CT' to 'MR' images via \code{'ANTs'}}
+\alias{ants_mri_to_template}
+\alias{ants_morph_electrode}
+\title{Register 'CT' or 'MR' images via \code{'ANTs'}}
 \usage{
 ants_coreg(
   ct_path,
@@ -26,6 +28,15 @@ cmd_run_ants_coreg(
   verbose = TRUE,
   dry_run = FALSE
 )
+
+ants_mri_to_template(
+  subject,
+  template_subject = getOption("threeBrain.template_subject", "N27"),
+  preview = FALSE,
+  verbose = TRUE
+)
+
+ants_morph_electrode(subject, preview = FALSE)
 }
 \arguments{
 \item{ct_path, mri_path}{absolute paths to 'CT' and 'MR' image files}
@@ -50,6 +61,10 @@ the parent folder of \code{ct_path}}
 
 \item{dry_run}{whether to dry-run the script and to print out the command
 instead of executing the code; default is false}
+
+\item{template_subject}{template to map 'MR' images}
+
+\item{preview}{whether to preview results; default is false}
 }
 \value{
 Aligned 'CT' will be generated at the \code{coreg_path} path:
@@ -66,5 +81,6 @@ transforms only}
 }
 }
 \description{
-Register 'CT' to 'MR' images via \code{'ANTs'}
+\code{ants_coreg} aligns 'CT' to 'MR' images; \code{ants_mri_to_template}
+aligns native 'MR' images to group templates
 }
