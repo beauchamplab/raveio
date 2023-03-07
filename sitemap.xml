@@ -55,6 +55,9 @@
     <loc>/reference/Tensor.html</loc>
   </url>
   <url>
+    <loc>/reference/ants_coreg.html</loc>
+  </url>
+  <url>
     <loc>/reference/as_rave_project.html</loc>
   </url>
   <url>
@@ -146,6 +149,9 @@
   </url>
   <url>
     <loc>/reference/load_yaml.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mgh_to_nii.html</loc>
   </url>
   <url>
     <loc>/reference/module_add.html</loc>
