@@ -47,7 +47,11 @@ safe_system2 <- function(cmd, args, ..., stdout = TRUE, stderr = FALSE, onFound 
   ret
 }
 
-
+require_package <- function(package) {
+  if(system.file(package = package) == "") {
+    stop(sprintf("Package [%s] is needed to run the script. Please install it first via\n  install.packages('%s')", package, package), call. = NULL)
+  }
+}
 
 
 default_settings <- local({

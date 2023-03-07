@@ -1,7 +1,7 @@
 Package: raveio
 Type: Package
 Title: File-System Toolbox for RAVE Project
-Version: 0.0.9.9018
+Version: 0.0.9.9019
 Language: en-US
 Authors@R: c(
     person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre", "cph")),
@@ -46,7 +46,8 @@ Imports:
     callr (>= 3.7.0),
     remotes (>= 2.1.2),
     promises (>= 1.2.0),
-    threeBrain (>= 0.2.5)
+    threeBrain (>= 0.2.5),
+    ravetools
 Suggests:
     rpymat,
     visNetwork,
@@ -59,6 +60,7 @@ Suggests:
     shiny,
     shinybusy,
     shinyWidgets,
+    freesurferformats,
     arrow,
-    ravetools,
+    rpyANTs,
     later (>= 1.3.0)
