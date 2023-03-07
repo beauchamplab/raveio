@@ -60,6 +60,7 @@ Suggests:
     shiny,
     shinybusy,
     shinyWidgets,
+    freesurferformats,
     arrow,
     rpyANTs,
     later (>= 1.3.0)
