@@ -1,5 +1,10 @@
 #!/usr/bin/env Rscript --no-save --no-restore
 
+# check if rpyANTs is configured
+if( !isTRUE(rpyANTs::ants_available()) ) {
+  rpyANTs::install_ants()
+}
+
 work_path <- normalizePath("{{ work_path }}", winslash = "/")
 ct_path0 <- normalizePath("{{ ct_path }}", mustWork = TRUE, winslash = "/")
 mri_path0 <- normalizePath("{{ mri_path }}", mustWork = TRUE, winslash = "/")
