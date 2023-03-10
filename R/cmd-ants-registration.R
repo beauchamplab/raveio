@@ -389,7 +389,79 @@ ants_mri_to_template <- function(
     NULL
   })
 
-  morph_results
+  if(is.null(morph_results)) {
+    invisible(morph_results)
+  } else {
+    morph_results
+  }
+}
+
+#' @rdname ants_coreg
+#' @export
+cmd_run_ants_mri_to_template <- function(
+    subject, template_subject = getOption("threeBrain.template_subject", "N27"),
+    verbose = TRUE, dry_run = FALSE) {
+
+  require_package("rpyANTs")
+
+  # DIPSAUS DEBUG START
+  # subject <- "devel/YAH"
+  # template_subject <- "fsaverage"
+  # dry_run = FALSE
+
+  subject <- restore_subject_instance(subject, strict = FALSE)
+  force(template_subject)
+  force(dry_run)
+
+  work_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging"),
+    winslash = "/", mustWork = FALSE
+  )
+
+  log_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "log"),
+    mustWork = FALSE, winslash = "/"
+  )
+  log_file <- strftime(Sys.time(), "log-rave-ants-mri-to-template.R.log")
+
+  template <- readLines(system.file("shell-templates/rave-ants-mri-to-template.R", package = "raveio"))
+
+  cmd <- glue(paste(template, collapse = "\n"), .sep = "\n", .open = "{{", .close = "}}", .trim = FALSE, .null = "")
+
+  script_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "scripts",
+              "cmd-ants-mri-to-template.R"),
+    mustWork = FALSE, winslash = "/"
+  )
+
+  execute <- function(...) {
+    dir_create2(log_path)
+    log_abspath <- normalizePath(file.path(log_path, log_file),
+                                 winslash = "/", mustWork = FALSE)
+    cmd_execute(script = cmd, script_path = script_path,
+                args = c("--no-save", "--no-restore"),
+                command = rscript_path(),
+                stdout = log_abspath, stderr = log_abspath, ...)
+  }
+  re <- list(
+    script = cmd,
+    script_path = script_path,
+    subject = subject$subject_id,
+    dry_run = dry_run,
+    log_file = file.path(log_path, log_file, fsep = "/"),
+    execute = execute,
+    command = rscript_path()
+  )
+  if( verbose ) {
+    message(cmd)
+  }
+  if(dry_run) {
+    return(invisible(re))
+  }
+
+  execute()
+
+  return(invisible(re))
 }
 
 

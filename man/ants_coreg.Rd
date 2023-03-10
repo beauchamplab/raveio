@@ -4,6 +4,7 @@
 \alias{ants_coreg}
 \alias{cmd_run_ants_coreg}
 \alias{ants_mri_to_template}
+\alias{cmd_run_ants_mri_to_template}
 \alias{ants_morph_electrode}
 \title{Register 'CT' or 'MR' images via \code{'ANTs'}}
 \usage{
@@ -35,6 +36,13 @@ ants_mri_to_template(
   preview = FALSE,
   verbose = TRUE,
   ...
+)
+
+cmd_run_ants_mri_to_template(
+  subject,
+  template_subject = getOption("threeBrain.template_subject", "N27"),
+  verbose = TRUE,
+  dry_run = FALSE
 )
 
 ants_morph_electrode(subject, preview = FALSE, dry_run = FALSE)
