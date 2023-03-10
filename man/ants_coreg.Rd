@@ -33,10 +33,11 @@ ants_mri_to_template(
   subject,
   template_subject = getOption("threeBrain.template_subject", "N27"),
   preview = FALSE,
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 
-ants_morph_electrode(subject, preview = FALSE)
+ants_morph_electrode(subject, preview = FALSE, dry_run = FALSE)
 }
 \arguments{
 \item{ct_path, mri_path}{absolute paths to 'CT' and 'MR' image files}

@@ -221,8 +221,7 @@ cmd_run_ants_coreg <- function(
 ants_mri_to_template <- function(
     subject,
     template_subject = getOption("threeBrain.template_subject", "N27"),
-    preview = FALSE,
-    verbose = TRUE) {
+    preview = FALSE, verbose = TRUE, ...) {
 
   # DIPSAUS DEBUG START
   # subject <- "devel/PAV006"
@@ -385,7 +384,7 @@ ants_mri_to_template <- function(
   )
 
   morph_results <- tryCatch({
-    ants_morph_electrode(subject, preview = preview)
+    ants_morph_electrode(subject, preview = preview, ...)
   }, error = function(e) {
     NULL
   })
@@ -396,13 +395,13 @@ ants_mri_to_template <- function(
 
 #' @rdname ants_coreg
 #' @export
-ants_morph_electrode <- function(subject, preview = FALSE) {
+ants_morph_electrode <- function(subject, preview = FALSE, dry_run = FALSE) {
 
   # DIPSAUS DEBUG START
   # subject <- "devel/PAV006"
 
   subject <- restore_subject_instance(subject, strict = FALSE)
-  brain <- rave_brain(subject)
+  brain <- rave_brain(subject, use_141 = FALSE)
   if(is.null(brain)) { stop("Cannot morph electrodes. Please run FreeSurfer recon-all first") }
 
   electrode_table <- subject$get_electrode_table()
@@ -465,6 +464,16 @@ ants_morph_electrode <- function(subject, preview = FALSE) {
   morph_electrodes$AffineMNI305S <- coord_lps$z
   morph_electrodes$MorphDistance <- distance
 
+  if( !dry_run ) {
+    electrode_table$MNI305_x <- morph_electrodes$MorphMNI305R
+    electrode_table$MNI305_y <- morph_electrodes$MorphMNI305A
+    electrode_table$MNI305_z <- morph_electrodes$MorphMNI305S
+    electrode_table$MNI305MorphDistance <- distance
+    save_meta2(data = electrode_table, meta_type = "electrodes",
+               project_name = subject$project_name,
+               subject_code = subject$subject_code)
+  }
+
   if( preview ) {
     preview_brain <- threeBrain::threeBrain(
       path = brain$base_path,
@@ -490,6 +499,11 @@ ants_morph_electrode <- function(subject, preview = FALSE) {
     print(viewer)
   }
 
-  morph_electrodes
+  if( dry_run ) {
+    return( morph_electrodes )
+  } else {
+    return( invisible(morph_electrodes) )
+  }
+
 }
 
