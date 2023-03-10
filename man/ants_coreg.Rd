@@ -13,7 +13,7 @@ ants_coreg(
   coreg_path = NULL,
   reg_type = c("DenseRigid", "Rigid", "SyN", "Affine", "TRSAA", "SyNCC", "SyNOnly"),
   aff_metric = c("mattes", "meansquares", "GC"),
-  syn_metric = c("mattes", "meansquares", "demons", "GC"),
+  syn_metric = c("mattes", "meansquares", "demons", "CC"),
   verbose = TRUE,
   ...
 )
@@ -24,7 +24,7 @@ cmd_run_ants_coreg(
   mri_path,
   reg_type = c("DenseRigid", "Rigid", "SyN", "Affine", "TRSAA", "SyNCC", "SyNOnly"),
   aff_metric = c("mattes", "meansquares", "GC"),
-  syn_metric = c("mattes", "meansquares", "demons", "GC"),
+  syn_metric = c("mattes", "meansquares", "demons", "CC"),
   verbose = TRUE,
   dry_run = FALSE
 )

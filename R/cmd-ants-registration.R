@@ -35,7 +35,7 @@ ants_coreg <- function(
     ct_path, mri_path, coreg_path = NULL,
     reg_type = c("DenseRigid", "Rigid", "SyN", "Affine", "TRSAA", "SyNCC", "SyNOnly"),
     aff_metric = c('mattes', 'meansquares', 'GC'),
-    syn_metric = c('mattes', 'meansquares', 'demons', 'GC'),
+    syn_metric = c('mattes', 'meansquares', 'demons', 'CC'),
     verbose = TRUE, ...) {
 
   require_package("rpyANTs")
@@ -137,7 +137,7 @@ cmd_run_ants_coreg <- function(
     subject, ct_path, mri_path,
     reg_type = c("DenseRigid", "Rigid", "SyN", "Affine", "TRSAA", "SyNCC", "SyNOnly"),
     aff_metric = c('mattes', 'meansquares', 'GC'),
-    syn_metric = c('mattes', 'meansquares', 'demons', 'GC'),
+    syn_metric = c('mattes', 'meansquares', 'demons', 'CC'),
     verbose = TRUE, dry_run = FALSE) {
 
   require_package("rpyANTs")
