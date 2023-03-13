@@ -249,6 +249,7 @@ ants_mri_to_template <- function(
     debug("Cannot find [fsaverage]: downloading...")
     threeBrain::download_template_subject("fsaverage")
   }
+  template <- threeBrain::threeBrain(path = template_path, subject_code = template_subject)
 
   fs_path <- brain$base_path
   morph_path <- file.path(subject$preprocess_settings$raw_path, "rave-imaging", "morph-template")
@@ -263,7 +264,7 @@ ants_mri_to_template <- function(
   path_orig_atlas <- file.path(morph_path, "aparc+aseg-orig.nii.gz")
   path_template_atlas <- file.path(morph_path, "aparc+aseg-template.nii.gz")
   t1_path <- file.path(fs_path, "mri", "T1.mgz")
-  t1_path_tmp <- file.path(morph_path, "t1-orig.nii.gz")
+  t1_path_tmp <- file.path(morph_path, "T1-orig.nii.gz")
 
   if( !file.exists(path_orig_atlas) ) {
     debug("Copying in native aparc+aseg.mgz into", basename(path_orig_atlas))
@@ -280,6 +281,7 @@ ants_mri_to_template <- function(
     )
   }
   if( !file.exists(t1_path_tmp) ) {
+    debug("Copying in", template_subject, "T1.mgz into T1-orig.nii.gz")
     mgh_to_nii( t1_path, t1_path_tmp )
   }
 
@@ -288,6 +290,21 @@ ants_mri_to_template <- function(
   if(verbose) {
     print(ants)
   }
+
+  # Step 0: get template in MNI305
+  templateLPS_to_mniLPS <- diag(c(-1,-1,1,1)) %*% template$xfm %*% diag(c(-1,-1,1,1))
+  tfile <- tempfile(fileext = ".mat")
+  ants$write_transform( rpyANTs::as_ANTsTransform( solve(templateLPS_to_mniLPS) ), tfile )
+  atlas_template <- rpyANTs::as_ANTsImage(path_template_atlas, strict = TRUE)
+  atlas_mni <- rpyANTs::ants$apply_transforms(
+    fixed = atlas_template,
+    moving = atlas_template,
+    interpolator = "nearestNeighbor",
+    transformlist = tfile
+  )
+  rm(tfile)
+  atlas_mni$to_file( file.path(morph_path, "aparc+aseg-template-affine_mni305.nii.gz") )
+
 
   # Step 1: from tkrLPS to MNI305 LPS
   # compute from LPS orig_atlas to LPS fsaverage_atlas
@@ -304,9 +321,7 @@ ants_mri_to_template <- function(
   # rpyANTs::ants$apply_transforms_to_points(dim = 3L, points = scannerLPS, transformlist = path_initial_transform, whichtoinvert = list(TRUE))
   # etable[,c("MNI305_x", "MNI305_y", "MNI305_z")]
 
-
   atlas_orig <- rpyANTs::as_ANTsImage(path_orig_atlas, strict = TRUE)
-  atlas_template <- rpyANTs::as_ANTsImage(path_template_atlas, strict = TRUE)
   t1_orig <- rpyANTs::as_ANTsImage(t1_path_tmp)
 
   t1_sanity <- rpyANTs::ants$apply_transforms(
@@ -315,7 +330,7 @@ ants_mri_to_template <- function(
     transformlist = path_initial_transform
   )
   t1_sanity$to_file(
-    file.path(morph_path, "t1-orig-in-mni305.nii.gz")
+    file.path(morph_path, "T1-orig-affine_mni305.nii.gz")
   )
 
   # resample orig into fsaverage (MNI305)
@@ -328,9 +343,9 @@ ants_mri_to_template <- function(
     verbose = verbose
   )
 
-  debug("Saving aparc+aseg (MNI305) to aparc+aseg-orig-in-mni305.nii.gz")
+  debug("Saving aparc+aseg (MNI305) to aparc+aseg-orig-affine_mni305.nii.gz")
   altas_origin_in_mni$to_file(
-    file.path(morph_path, "aparc+aseg-orig-in-mni305.nii.gz")
+    file.path(morph_path, "aparc+aseg-orig-affine_mni305.nii.gz")
   )
   # Sanity check:
   # Open and overlay the followings, they should align pretty well
@@ -344,7 +359,7 @@ ants_mri_to_template <- function(
   # SyN transform (affine + SDR)
   debug("Aligning aparc+aseg (MNI305) to fsaverage using SyN")
   transform <- rpyANTs::ants_registration(
-    fixed = atlas_template, moving = altas_origin_in_mni,
+    fixed = atlas_mni, moving = altas_origin_in_mni,
     type_of_transform = "SyN",
     outprefix = file.path(morph_path, "ants-"),
     verbose = verbose,
