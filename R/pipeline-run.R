@@ -101,6 +101,13 @@ pipeline_run <- function(
         } else {
           do.call(fun, args)
         }
+      }, `tar_condition_run` = function(e){
+        warning(e, call. = FALSE, immediate. = TRUE)
+        warn_table <- as.data.frame(targets::tar_meta(fields = warnings, complete_only = TRUE))
+        if(nrow(warn_table)) {
+          msg <- paste(utils::capture.output(print(warn_table)), collapse = "\n")
+          catgl("\n", msg, .envir = emptyenv(), level = "WARNING", .trim = FALSE)
+        }
       })
     }
 
@@ -262,6 +269,13 @@ pipeline_run_bare <- function(
         local({ do.call(fun, args) })
       } else {
         do.call(fun, args)
+      }
+    }, `tar_condition_run` = function(e){
+      warning(e, call. = FALSE, immediate. = TRUE)
+      warn_table <- as.data.frame(targets::tar_meta(fields = warnings, complete_only = TRUE))
+      if(nrow(warn_table)) {
+        msg <- paste(utils::capture.output(print(warn_table)), collapse = "\n")
+        catgl("\n", msg, .envir = emptyenv(), level = "WARNING", .trim = FALSE)
       }
     })
   }
