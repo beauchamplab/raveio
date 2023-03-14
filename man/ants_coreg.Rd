@@ -4,6 +4,7 @@
 \alias{ants_coreg}
 \alias{cmd_run_ants_coreg}
 \alias{ants_mri_to_template}
+\alias{cmd_run_ants_mri_to_template}
 \alias{ants_morph_electrode}
 \title{Register 'CT' or 'MR' images via \code{'ANTs'}}
 \usage{
@@ -13,7 +14,7 @@ ants_coreg(
   coreg_path = NULL,
   reg_type = c("DenseRigid", "Rigid", "SyN", "Affine", "TRSAA", "SyNCC", "SyNOnly"),
   aff_metric = c("mattes", "meansquares", "GC"),
-  syn_metric = c("mattes", "meansquares", "demons", "GC"),
+  syn_metric = c("mattes", "meansquares", "demons", "CC"),
   verbose = TRUE,
   ...
 )
@@ -24,7 +25,7 @@ cmd_run_ants_coreg(
   mri_path,
   reg_type = c("DenseRigid", "Rigid", "SyN", "Affine", "TRSAA", "SyNCC", "SyNOnly"),
   aff_metric = c("mattes", "meansquares", "GC"),
-  syn_metric = c("mattes", "meansquares", "demons", "GC"),
+  syn_metric = c("mattes", "meansquares", "demons", "CC"),
   verbose = TRUE,
   dry_run = FALSE
 )
@@ -33,10 +34,18 @@ ants_mri_to_template(
   subject,
   template_subject = getOption("threeBrain.template_subject", "N27"),
   preview = FALSE,
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 
-ants_morph_electrode(subject, preview = FALSE)
+cmd_run_ants_mri_to_template(
+  subject,
+  template_subject = getOption("threeBrain.template_subject", "N27"),
+  verbose = TRUE,
+  dry_run = FALSE
+)
+
+ants_morph_electrode(subject, preview = FALSE, dry_run = FALSE)
 }
 \arguments{
 \item{ct_path, mri_path}{absolute paths to 'CT' and 'MR' image files}
