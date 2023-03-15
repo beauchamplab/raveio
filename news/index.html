@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@
 <li>rewrote <code>as_rave_subject</code> such that the subject information will be updated when called</li>
 <li>Revised error handlers in pipeline generating engine, so that when errors occur, the enclosing target expressions and back-trace will be printed</li>
 <li>Supported brain viewer to be loaded without electrodes via <code>include_electrodes</code> argument</li>
+<li>Added <code>coregistration</code> via <code>ANTs</code>
+</li>
+<li>Supports <code>MRI</code> registering to templates via non-linear transforms</li>
 </ul><p>Minor changes:</p>
 <ul><li>When importing electrodes from other formats, the subject used to be required. However, this is totally unnecessary; removed such requirement</li>
 <li>Fixed a small typo that may cause inconsistent electrode labels (<code>Nolabel</code> to <code>NoLabel</code>)</li>
