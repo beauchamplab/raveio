@@ -7,6 +7,8 @@ Major changes:
 * rewrote `as_rave_subject` such that the subject information will be updated when called
 * Revised error handlers in pipeline generating engine, so that when errors occur, the enclosing target expressions and back-trace will be printed
 * Supported brain viewer to be loaded without electrodes via `include_electrodes` argument
+* Added `coregistration` via `ANTs`
+* Supports `MRI` registering to templates via non-linear transforms
 
 Minor changes:
 
