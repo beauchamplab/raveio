@@ -312,7 +312,7 @@ ants_mri_to_template <- function(
   scannerLPS_to_mniLPS <- diag(c(-1,-1,1,1)) %*% brain$xfm %*% diag(c(-1,-1,1,1))
 
   path_initial_transform <- file.path(morph_path, "initial_transform.mat")
-  initial_transform = rpyANTs::as_ANTsTransform( solve(scannerLPS_to_mniLPS) )
+  initial_transform <- rpyANTs::as_ANTsTransform( solve(scannerLPS_to_mniLPS) )
   ants$write_transform( initial_transform, path_initial_transform )
 
   # debug: sanity check
