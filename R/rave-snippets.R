@@ -29,7 +29,7 @@ update_local_snippet <- function(force = TRUE) {
   tmpfile <- tempfile(fileext = ".zip")
 
   utils::download.file(
-    "https://github.com/dipterix/rave-gists/archive/refs/heads/main.zip",
+    "https://github.com/rave-ieeg/rave-gists/archive/refs/heads/main.zip",
     destfile = tmpfile)
   utils::unzip(tmpfile, exdir = root_path)
 }
@@ -53,7 +53,7 @@ load_snippet <- function(topic, local = TRUE) {
   }
 
   if(isFALSE(local)) {
-    path <- sprintf("https://raw.githubusercontent.com/dipterix/rave-gists/main/%s", fname)
+    path <- sprintf("https://raw.githubusercontent.com/rave-ieeg/rave-gists/main/%s", fname)
   }
 
   # load scripts

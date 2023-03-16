@@ -143,7 +143,7 @@ pipeline_install_directory <- function(
 #' @title Install 'RAVE' pipelines
 #' @param src pipeline directory
 #' @param repo 'Github' repository in user-repository combination, for example,
-#' \code{'dipterix/rave-pipeline'}
+#' \code{'rave-ieeg/rave-pipeline'}
 #' @param to installation path; choices are \code{'default'}, \code{'custom'},
 #' \code{'workdir'}, and \code{'tempdir'}. Please specify pipeline root path
 #' via \code{\link{pipeline_root}} when \code{'custom'} is used.
@@ -192,7 +192,7 @@ pipeline_install_github <- function(
   upgrade = FALSE, force = FALSE, ...
 ) {
   # # DEBUG starts
-  # repo <- 'dipterix/rave-pipelines'
+  # repo <- 'rave-ieeg/rave-pipelines'
   # to <- "default"
   # upgrade <- FALSE
   # force <- FALSE
@@ -245,7 +245,7 @@ pipeline_install_github <- function(
     conf <- as.list(as.data.frame(read.dcf(conf_path)))
   }
 
-  if(identical(repo, "dipterix/rave-pipelines")) {
+  if(identical(repo, "rave-ieeg/rave-pipelines")) {
     fs <- list.files(src, recursive = FALSE, full.names = TRUE, all.files = TRUE)
     template_path <- file.path(R_user_dir('raveio', 'data'), "rave-pipelines")
 

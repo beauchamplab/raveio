@@ -1,6 +1,6 @@
 - title: A Collection of 'RAVE' Builtin Pipelines
-  url: https://github.com/dipterix/rave-pipelines
-  repo: dipterix/rave-pipelines
+  url: https://github.com/rave-ieeg/rave-pipelines
+  repo: rave-ieeg/rave-pipelines
   maintainer:
     given: Zhengjia
     family: Wang

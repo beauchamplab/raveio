@@ -70,7 +70,7 @@ get_modules_registries(FALSE)
 
 # create your own registry
 module_registry(
-  repo = "dipterix/rave-pipelines",
+  repo = "rave-ieeg/rave-pipelines",
   title = "A Collection of 'RAVE' Builtin Pipelines",
   authors = list(
     list("Zhengjia", "Wang", role = c("cre", "aut"),
@@ -80,12 +80,12 @@ module_registry(
 )
 
 # If your repository is on Github and RAVE-CONFIG file exists
-module_registry2("dipterix/rave-pipelines")
+module_registry2("rave-ieeg/rave-pipelines")
 
 # send a request to add your registry
 if(interactive()) {
 
-reg <- module_registry2("dipterix/rave-pipelines")
+reg <- module_registry2("rave-ieeg/rave-pipelines")
 add_module_registry(reg)
 
 }

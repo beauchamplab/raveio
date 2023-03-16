@@ -38,7 +38,7 @@ dependencies}
 \item{...}{other parameters not used}
 
 \item{repo}{'Github' repository in user-repository combination, for example,
-\code{'dipterix/rave-pipeline'}}
+\code{'rave-ieeg/rave-pipeline'}}
 }
 \value{
 nothing

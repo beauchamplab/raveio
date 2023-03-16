@@ -488,9 +488,9 @@ finalize_installation <- function(
     upgrade <- FALSE
   }
 
-  repo_name <- 'dipterix/rave-pipelines'
+  repo_name <- 'rave-ieeg/rave-pipelines'
   if( getOption("ravemanager.nightly", FALSE) ) {
-    repo_name <- 'dipterix/rave-pipelines@nightly-dev'
+    repo_name <- 'rave-ieeg/rave-pipelines'
   }
 
   if(async) {
