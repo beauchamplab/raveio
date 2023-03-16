@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.1</span>
       </span>
     </div>
 
@@ -133,11 +133,11 @@ validate and send an email to the 'RAVE' development team.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get current registries</span></span></span>
 <span class="r-in"><span><span class="fu">get_modules_registries</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`dipterix/rave-pipelines`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`rave-ieeg/rave-pipelines`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [RAVE Registry]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Title: A Collection of 'RAVE' Builtin Pipelines</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Repository: dipterix/rave-pipelines</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   URL: https://github.com/dipterix/rave-pipelines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Repository: rave-ieeg/rave-pipelines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   URL: https://github.com/rave-ieeg/rave-pipelines</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Maintainer: Zhengjia Wang &lt;dipterix.wang@gmail.com&gt; [aut, cre]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Authors: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - Zhengjia Wang &lt;dipterix.wang@gmail.com&gt; [aut, cre]</span>
@@ -146,7 +146,7 @@ validate and send an email to the 'RAVE' development team.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create your own registry</span></span></span>
 <span class="r-in"><span><span class="fu">module_registry</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  repo <span class="op">=</span> <span class="st">"dipterix/rave-pipelines"</span>,</span></span>
+<span class="r-in"><span>  repo <span class="op">=</span> <span class="st">"rave-ieeg/rave-pipelines"</span>,</span></span>
 <span class="r-in"><span>  title <span class="op">=</span> <span class="st">"A Collection of 'RAVE' Builtin Pipelines"</span>,</span></span>
 <span class="r-in"><span>  authors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Zhengjia"</span>, <span class="st">"Wang"</span>, role <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cre"</span>, <span class="st">"aut"</span><span class="op">)</span>,</span></span>
@@ -156,19 +156,19 @@ validate and send an email to the 'RAVE' development team.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [RAVE Registry]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Title: A Collection of 'RAVE' Builtin Pipelines</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Repository: dipterix/rave-pipelines</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   URL: https://github.com/dipterix/rave-pipelines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Repository: rave-ieeg/rave-pipelines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   URL: https://github.com/rave-ieeg/rave-pipelines</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Maintainer: Zhengjia Wang &lt;dipterix@rave.wiki&gt; [cre, aut]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Authors: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - Zhengjia Wang &lt;dipterix@rave.wiki&gt; [cre, aut]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Modules: [brain_viewer]</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If your repository is on Github and RAVE-CONFIG file exists</span></span></span>
-<span class="r-in"><span><span class="fu">module_registry2</span><span class="op">(</span><span class="st">"dipterix/rave-pipelines"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">module_registry2</span><span class="op">(</span><span class="st">"rave-ieeg/rave-pipelines"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [RAVE Registry]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Title: A Collection of 'RAVE' Builtin Pipelines</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Repository: dipterix/rave-pipelines</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   URL: https://github.com/dipterix/rave-pipelines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Repository: rave-ieeg/rave-pipelines</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   URL: https://github.com/rave-ieeg/rave-pipelines</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Maintainer: Zhengjia Wang &lt;dipterix.wang@gmail.com&gt; [aut, cre]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Authors: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - Zhengjia Wang &lt;dipterix.wang@gmail.com&gt; [aut, cre]</span>
@@ -177,7 +177,7 @@ validate and send an email to the 'RAVE' development team.</p>
 <span class="r-in"><span><span class="co"># send a request to add your registry</span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu">module_registry2</span><span class="op">(</span><span class="st">"dipterix/rave-pipelines"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu">module_registry2</span><span class="op">(</span><span class="st">"rave-ieeg/rave-pipelines"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">add_module_registry</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
