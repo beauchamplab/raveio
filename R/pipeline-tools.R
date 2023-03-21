@@ -165,8 +165,6 @@ pipeline_debug <- function(
 }
 
 
-
-
 #' @rdname rave-pipeline
 #' @export
 pipeline_eval <- function(names, env = new.env(parent = parent.frame()),

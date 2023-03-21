@@ -46,7 +46,7 @@ load_snippet <- function(topic, local = TRUE) {
     } else {
       path <- file.path(local, fname)
     }
-    if(!file.exists(path)) {
+    if(!startsWith(path, "https://") && !file.exists(path)) {
       warning("Cannot find local snippet [", topic, "]. Please make sure the repository is up-to-date and the topic name is correct. Trying snippets")
       local <- FALSE
     }

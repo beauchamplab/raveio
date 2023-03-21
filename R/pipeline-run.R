@@ -86,29 +86,34 @@ pipeline_run <- function(
       local <- ns$with_future_parallel
     }
     make <- function(fun, use_local = TRUE) {
-      tryCatch({
-        if( use_local ) {
-          local({ do.call(fun, args) })
-        } else {
-          do.call(fun, args)
-        }
-
-      }, `tar_condition_file` = function(e) {
-        # destroy and try again, and throw all other errors
-        targets::tar_destroy(ask = FALSE, destroy = "meta")
-        if( use_local ) {
-          local({ do.call(fun, args) })
-        } else {
-          do.call(fun, args)
-        }
-      # }, `tar_condition_run` = function(e){
-      #   warning(e, call. = FALSE, immediate. = TRUE)
-      #   warn_table <- as.data.frame(targets::tar_meta(fields = warnings, complete_only = TRUE))
-      #   if(nrow(warn_table)) {
-      #     msg <- paste(utils::capture.output(print(warn_table)), collapse = "\n")
-      #     catgl("\n", msg, .envir = emptyenv(), level = "WARNING", .trim = FALSE)
-      #   }
+      suppressWarnings({
+        withCallingHandlers(
+          expr = {
+            if( use_local ) {
+              local({ do.call(fun, args) })
+            } else {
+              do.call(fun, args)
+            }
+          },
+          `tar_condition_file` = function(e) {
+            # destroy and try again, and throw all other errors
+            targets::tar_destroy(ask = FALSE, destroy = "meta")
+            if( use_local ) {
+              local({ do.call(fun, args) })
+            } else {
+              do.call(fun, args)
+            }
+          }
+        )
       })
+
+      warn_table <- as.data.frame(targets::tar_meta(fields = warnings, complete_only = TRUE))
+      if( nrow(warn_table) ) {
+        for(ii in seq_len(nrow(warn_table))) {
+          msg <- sprintf("Caveat in target [%s]: %s", warn_table$name[[ii]], warn_table$warnings[[ii]])
+          warning(msg, call. = FALSE)
+        }
+      }
     }
 
     if("none" == .(scheduler)){
@@ -255,29 +260,33 @@ pipeline_run_bare <- function(
   })
 
   make <- function(fun, use_local = TRUE) {
-    tryCatch({
-      if( use_local ) {
-        local({ do.call(fun, args) })
-      } else {
-        do.call(fun, args)
-      }
-
-    }, `tar_condition_file` = function(e) {
-      # destroy and try again, and throw all other errors
-      targets::tar_destroy(ask = FALSE, destroy = "meta")
-      if( use_local ) {
-        local({ do.call(fun, args) })
-      } else {
-        do.call(fun, args)
-      }
-    # }, `tar_condition_run` = function(e){
-    #   warning(e, call. = FALSE, immediate. = TRUE)
-    #   warn_table <- as.data.frame(targets::tar_meta(fields = warnings, complete_only = TRUE))
-    #   if(nrow(warn_table)) {
-    #     msg <- paste(utils::capture.output(print(warn_table)), collapse = "\n")
-    #     catgl("\n", msg, .envir = emptyenv(), level = "WARNING", .trim = FALSE)
-    #   }
+    suppressWarnings({
+      withCallingHandlers(
+        expr = {
+          if( use_local ) {
+            local({ do.call(fun, args) })
+          } else {
+            do.call(fun, args)
+          }
+        },
+        `tar_condition_file` = function(e) {
+          # destroy and try again, and throw all other errors
+          targets::tar_destroy(ask = FALSE, destroy = "meta")
+          if( use_local ) {
+            local({ do.call(fun, args) })
+          } else {
+            do.call(fun, args)
+          }
+        }
+      )
     })
+    warn_table <- as.data.frame(targets::tar_meta(fields = warnings, complete_only = TRUE))
+    if( nrow(warn_table) ) {
+      for(ii in seq_len(nrow(warn_table))) {
+        msg <- sprintf("Caveat in target [%s]: %s", warn_table$name[[ii]], warn_table$warnings[[ii]])
+        warning(msg, call. = FALSE)
+      }
+    }
   }
 
   switch (
