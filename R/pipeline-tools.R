@@ -399,7 +399,7 @@ pipeline_fork <- function(
   }
 
 
-  fs <- list.files(src, include.dirs = TRUE, full.names = FALSE, pattern = filter_pattern)
+  fs <- list.files(src, include.dirs = TRUE, full.names = FALSE, pattern = filter_pattern, ignore.case = TRUE)
 
   dir_create2(dest)
   dest <- normalizePath(dest, mustWork = TRUE)

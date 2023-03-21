@@ -3,6 +3,9 @@
 \name{PipelineTools}
 \alias{PipelineTools}
 \title{Class definition for pipeline tools}
+\value{
+A new pipeline object based on the path given
+}
 \description{
 Class definition for pipeline tools
 
@@ -15,6 +18,8 @@ Class definition for pipeline tools
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{settings_path}}{absolute path to the settings file}
+
+\item{\code{extdata_path}}{absolute path to the user-defined pipeline data folder}
 
 \item{\code{target_table}}{table of target names and their descriptions}
 
@@ -38,6 +43,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-eval}{\code{PipelineTools$eval()}}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
+\item \href{#method-PipelineTools-fork}{\code{PipelineTools$fork()}}
 \item \href{#method-PipelineTools-with_activated}{\code{PipelineTools$with_activated()}}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
 \item \href{#method-PipelineTools-save_data}{\code{PipelineTools$save_data()}}
@@ -241,6 +247,29 @@ attach pipeline tool to environment (internally used)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{env}}{an environment}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-fork"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-fork}{}}}
+\subsection{Method \code{fork()}}{
+fork (copy) the current pipeline to a new directory
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork(
+  path,
+  filter_pattern =
+    "(^data|R|\\\\.R|\\\\.yaml|\\\\.txt|\\\\.csv|\\\\.fst|\\\\.conf|\\\\.json|\\\\.rds|\\\\.Rmd)$"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{path to the new pipeline, a folder will be created there}
+
+\item{\code{filter_pattern}}{file pattern to copy}
 }
 \if{html}{\out{</div>}}
 }

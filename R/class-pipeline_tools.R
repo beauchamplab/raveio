@@ -244,6 +244,24 @@ PipelineTools <- R6::R6Class(
       env$pipeline_path <- private$.pipeline_path
     },
 
+    #' @description fork (copy) the current pipeline to a new directory
+    #' @param path path to the new pipeline, a folder will be created there
+    #' @param filter_pattern file pattern to copy
+    #' @returns A new pipeline object based on the path given
+    fork = function(path, filter_pattern = "(^data|R|\\.R|\\.yaml|\\.txt|\\.csv|\\.fst|\\.conf|\\.json|\\.rds|\\.Rmd)$") {
+      pipeline_fork(
+        src = self$pipeline_path,
+        dest = path,
+        filter_pattern = filter_pattern,
+        activate = FALSE
+      )
+      pipeline(
+        pipeline_name = basename(path),
+        settings_file = basename(self$settings_path),
+        paths = dirname(path)
+      )
+    },
+
     #' @description run code with pipeline activated, some environment variables
     #' and function behaviors might change under such condition (for example,
     #' \code{targets} package functions)
@@ -316,6 +334,11 @@ PipelineTools <- R6::R6Class(
         private$.pipeline_path,
         private$.settings_file
       )
+    },
+
+    #' @field extdata_path absolute path to the user-defined pipeline data folder
+    extdata_path = function() {
+      file.path(private$.pipeline_path, "data")
     },
 
     #' @field target_table table of target names and their descriptions
