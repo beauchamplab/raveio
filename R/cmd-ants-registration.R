@@ -380,7 +380,7 @@ ants_mri_to_template <- function(
     invtransforms = basename(rpyANTs::py_to_r(transform$invtransforms)),
     original = basename(path_orig_atlas),
     reference = basename(path_template_atlas),
-    method = "SyN"
+    method = "SyNRA"
   )
   save_yaml(config, file = file.path(morph_path, "transform.yaml"))
 
