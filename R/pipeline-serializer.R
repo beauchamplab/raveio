@@ -538,6 +538,171 @@ tfmtreg_rave_repository <- function() {
   )
 }
 
+tfmtreg_rave_prepare_power <- function() {
+  target_format_register(
+    "rave_prepare_power",
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
+      ns <- asNamespace("raveio")
+      re <- ns$load_yaml(path)
+      if(!isTRUE(re$instance_class %in% c("rave_prepare_power"))) {
+        stop("Cannot restore RAVE repository (power) as the instance class must be either `rave_prepare_power`")
+      }
+      repository <- ns$prepare_subject_power(
+        subject = re$subject,
+        electrodes = re$electrodes,
+        epoch_name = re$epoch_name,
+        reference_name = re$reference_name,
+        time_windows = re$time_window,
+        verbose = FALSE
+      )
+      return(repository)
+    },
+    write = function(object, path, target_export = NULL) {
+      if(!inherits(object, "rave_prepare_power")) {
+        stop("The object to save as target is not a valid RAVE repository (power)")
+      }
+
+      ns <- asNamespace("raveio")
+      ns$save_yaml(list(
+        instance_class = "rave_prepare_power",
+        signal_data = "power",
+        subject = object$subject$subject_id,
+        electrodes = dipsaus::deparse_svec(object$electrode_list),
+        epoch_name = object$epoch_name,
+        reference_name = object$reference_name,
+        time_window = object$time_windows
+      ), file = path, sorted = TRUE)
+    }
+  )
+}
+
+tfmtreg_rave_prepare_phase <- function() {
+  target_format_register(
+    "rave_prepare_phase",
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
+      ns <- asNamespace("raveio")
+      re <- ns$load_yaml(path)
+      if(!isTRUE(re$instance_class %in% c("rave_prepare_phase"))) {
+        stop("Cannot restore RAVE repository (phase) as the instance class must be either `rave_prepare_phase`")
+      }
+      repository <- ns$prepare_subject_phase(
+        subject = re$subject,
+        electrodes = re$electrodes,
+        epoch_name = re$epoch_name,
+        reference_name = re$reference_name,
+        time_windows = re$time_window,
+        verbose = FALSE
+      )
+      return(repository)
+    },
+    write = function(object, path, target_export = NULL) {
+      if(!inherits(object, "rave_prepare_phase")) {
+        stop("The object to save as target is not a valid RAVE repository (phase)")
+      }
+
+      ns <- asNamespace("raveio")
+      ns$save_yaml(list(
+        instance_class = "rave_prepare_phase",
+        signal_data = "phase",
+        subject = object$subject$subject_id,
+        electrodes = dipsaus::deparse_svec(object$electrode_list),
+        epoch_name = object$epoch_name,
+        reference_name = object$reference_name,
+        time_window = object$time_windows
+      ), file = path, sorted = TRUE)
+    }
+  )
+}
+
+tfmtreg_rave_prepare_wavelet <- function() {
+  target_format_register(
+    "rave_prepare_wavelet",
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
+      ns <- asNamespace("raveio")
+      re <- ns$load_yaml(path)
+      if(!isTRUE(re$instance_class %in% c("rave_prepare_wavelet"))) {
+        stop("Cannot restore RAVE repository (wavelet coefficients) as the instance class must be either `rave_prepare_wavelet`")
+      }
+      repository <- ns$prepare_subject_wavelet(
+        subject = re$subject,
+        electrodes = re$electrodes,
+        epoch_name = re$epoch_name,
+        reference_name = re$reference_name,
+        time_windows = re$time_window,
+        verbose = FALSE
+      )
+      return(repository)
+    },
+    write = function(object, path, target_export = NULL) {
+      if(!inherits(object, "rave_prepare_wavelet")) {
+        stop("The object to save as target is not a valid RAVE repository (wavelet coefficients)")
+      }
+
+      ns <- asNamespace("raveio")
+      ns$save_yaml(list(
+        instance_class = "rave_prepare_wavelet",
+        signal_data = "wavelet-coefficient",
+        subject = object$subject$subject_id,
+        electrodes = dipsaus::deparse_svec(object$electrode_list),
+        epoch_name = object$epoch_name,
+        reference_name = object$reference_name,
+        time_window = object$time_windows
+      ), file = path, sorted = TRUE)
+    }
+  )
+}
+
+
+tfmtreg_rave_prepare_subject_voltage_with_epoch <- function() {
+  target_format_register(
+    "rave_prepare_subject_voltage_with_epoch",
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
+      ns <- asNamespace("raveio")
+      re <- ns$load_yaml(path)
+      if(!isTRUE(re$instance_class %in% c("rave_prepare_subject_voltage_with_epoch"))) {
+        stop("Cannot restore RAVE repository (phase) as the instance class must be either `rave_prepare_subject_voltage_with_epoch`")
+      }
+      repository <- ns$prepare_subject_voltage_with_epoch(
+        subject = re$subject,
+        electrodes = re$electrodes,
+        epoch_name = re$epoch_name,
+        reference_name = re$reference_name,
+        time_windows = re$time_window,
+        verbose = FALSE
+      )
+      return(repository)
+    },
+    write = function(object, path, target_export = NULL) {
+      if(!inherits(object, "rave_prepare_subject_voltage_with_epoch")) {
+        stop("The object to save as target is not a valid RAVE repository (voltage with epoch)")
+      }
+
+      ns <- asNamespace("raveio")
+      ns$save_yaml(list(
+        instance_class = "rave_prepare_subject_voltage_with_epoch",
+        signal_data = "voltage",
+        subject = object$subject$subject_id,
+        electrodes = dipsaus::deparse_svec(object$electrode_list),
+        epoch_name = object$epoch_name,
+        reference_name = object$reference_name,
+        time_window = object$time_windows
+      ), file = path, sorted = TRUE)
+    }
+  )
+}
+
 # internally used at on load
 target_format_register_onload <- function(verbose = TRUE) {
 
@@ -557,6 +722,22 @@ target_format_register_onload <- function(verbose = TRUE) {
 
   tryCatch({
     tfmtreg_rave_repository()
+  }, error = on_exception, warning = on_exception)
+
+  tryCatch({
+    tfmtreg_rave_prepare_power()
+  }, error = on_exception, warning = on_exception)
+
+  tryCatch({
+    tfmtreg_rave_prepare_phase()
+  }, error = on_exception, warning = on_exception)
+
+  tryCatch({
+    tfmtreg_rave_prepare_wavelet()
+  }, error = on_exception, warning = on_exception)
+
+  tryCatch({
+    tfmtreg_rave_prepare_subject_voltage_with_epoch()
   }, error = on_exception, warning = on_exception)
 
   tryCatch({
