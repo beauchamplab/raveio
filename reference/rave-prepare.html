@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">raveio</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.6</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Prepare 'RAVE' single-subject data</h1>
-    <small class="dont-index">Source: <a href="https://github.com/beauchamplab/raveio/blob/HEAD/R/rave-prepare-subjectbare.R" class="external-link"><code>R/rave-prepare-subjectbare.R</code></a>, <a href="https://github.com/beauchamplab/raveio/blob/HEAD/R/rave-prepare-subjectblock.R" class="external-link"><code>R/rave-prepare-subjectblock.R</code></a>, <a href="https://github.com/beauchamplab/raveio/blob/HEAD/R/rave-prepare-voltage-with-epoch.R" class="external-link"><code>R/rave-prepare-voltage-with-epoch.R</code></a>, and 1 more</small>
+    <small class="dont-index">Source: <a href="https://github.com/beauchamplab/raveio/blob/HEAD/R/rave-prepare-subjectbare.R" class="external-link"><code>R/rave-prepare-subjectbare.R</code></a>, <a href="https://github.com/beauchamplab/raveio/blob/HEAD/R/rave-prepare-subjectblock.R" class="external-link"><code>R/rave-prepare-subjectblock.R</code></a>, <a href="https://github.com/beauchamplab/raveio/blob/HEAD/R/rave-prepare-subjectphase.R" class="external-link"><code>R/rave-prepare-subjectphase.R</code></a>, and 4 more</small>
     <div class="hidden name"><code>rave-prepare.Rd</code></div>
     </div>
 
@@ -80,6 +80,30 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">prepare_subject_with_blocks</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  <span class="va">electrodes</span>,</span>
+<span>  <span class="va">reference_name</span>,</span>
+<span>  <span class="va">blocks</span>,</span>
+<span>  signal_type <span class="op">=</span> <span class="st">"LFP"</span>,</span>
+<span>  time_frequency <span class="op">=</span> <span class="va">signal_type</span> <span class="op">==</span> <span class="st">"LFP"</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  repository_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">prepare_subject_phase</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  <span class="va">electrodes</span>,</span>
+<span>  <span class="va">reference_name</span>,</span>
+<span>  <span class="va">epoch_name</span>,</span>
+<span>  <span class="va">time_windows</span>,</span>
+<span>  signal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span><span class="op">)</span>,</span>
+<span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">prepare_subject_power</span><span class="op">(</span></span>
 <span>  <span class="va">subject</span>,</span>
 <span>  <span class="va">electrodes</span>,</span>
@@ -92,15 +116,15 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">prepare_subject_with_blocks</span><span class="op">(</span></span>
+<span><span class="fu">prepare_subject_wavelet</span><span class="op">(</span></span>
 <span>  <span class="va">subject</span>,</span>
 <span>  <span class="va">electrodes</span>,</span>
 <span>  <span class="va">reference_name</span>,</span>
-<span>  <span class="va">blocks</span>,</span>
-<span>  signal_type <span class="op">=</span> <span class="st">"LFP"</span>,</span>
-<span>  time_frequency <span class="op">=</span> <span class="va">signal_type</span> <span class="op">==</span> <span class="st">"LFP"</span>,</span>
+<span>  <span class="va">epoch_name</span>,</span>
+<span>  <span class="va">time_windows</span>,</span>
+<span>  signal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LFP"</span><span class="op">)</span>,</span>
 <span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  repository_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -168,6 +192,10 @@ time; need to pass the validation <code><a href="validate_time_window.html">vali
 <dd><p>environment to evaluate</p></dd>
 
 
+<dt>blocks</dt>
+<dd><p>one or more session blocks to load</p></dd>
+
+
 <dt>signal_type</dt>
 <dd><p>electrode signal type (length of one) to be considered;
 default is 'LFP'. This option rarely needs to change unless you really want
@@ -175,17 +203,13 @@ to check the power data from other types. For other signal types, check
 <code><a href="raveio-constants.html">SIGNAL_TYPES</a></code></p></dd>
 
 
-<dt>verbose</dt>
-<dd><p>whether to show progress</p></dd>
-
-
-<dt>blocks</dt>
-<dd><p>one or more session blocks to load</p></dd>
-
-
 <dt>time_frequency</dt>
 <dd><p>whether to load time-frequency data when preparing
 block data</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>whether to show progress</p></dd>
 
 </dl></div>
     <div id="value">
