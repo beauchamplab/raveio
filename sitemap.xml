@@ -136,6 +136,9 @@
     <loc>/reference/join_tensors.html</loc>
   </url>
   <url>
+    <loc>/reference/lapply_async.html</loc>
+  </url>
+  <url>
     <loc>/reference/load_bids_ieeg_header.html</loc>
   </url>
   <url>
