@@ -334,9 +334,122 @@ with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
   } else {
     max_workers <- raveio_getopt("max_worker", 1L)
   }
+  auto_parallel_old <- getOption("raveio.auto.parallel", default = TRUE)
+  options("raveio.auto.parallel" = FALSE)
+  on.exit({
+    options("raveio.auto.parallel" = auto_parallel_old)
+  }, add = TRUE, after = TRUE)
   dipsaus::make_forked_clusters(
     workers = max_workers,
     on_failure = on_failure, clean = TRUE, ...
   )
   eval(expr, envir = env)
+}
+
+#' Run \code{\link{lapply}} in parallel
+#' @description
+#' Uses \code{\link[dipsaus]{lapply_async2}}, but allows better parallel
+#' scheduling via \code{\link{with_future_parallel}}. On 'Unix', the function
+#' will fork processes. On 'Windows', the function uses strategies specified
+#' by \code{on_failure}
+#'
+#' @param x iterative elements
+#' @param FUN function to apply to each element of \code{x}
+#' @param FUN.args named list that will be passed to \code{FUN} as arguments
+#' @param callback callback function or \code{NULL}. When passed as function,
+#' the function takes one argument (elements of \code{x}) as input, and it
+#' suppose to return one string character.
+#' @param ncores number of cores to use, constraint by the \code{max_worker}
+#' option (see \code{\link{raveio_getopt}}); default is the maximum number
+#' of workers available
+#' @param on_failure alternative strategy if fork process is
+#' disallowed (set by users or on 'Windows')
+#' @param ... passed to \code{\link[dipsaus]{lapply_async2}}
+#'
+#' @examples
+#'
+#'
+#' if(interactive()) {
+#' library(raveio)
+#'
+#' # ---- Basic example ----------------------------
+#' lapply_async(1:16, function(x) {
+#'   # function that takes long to fun
+#'   Sys.sleep(1)
+#'   x
+#' })
+#'
+#' # With callback
+#' lapply_async(1:16, function(x){
+#'   Sys.sleep(1)
+#'   x + 1
+#' }, callback = function(x) {
+#'   sprintf("Calculating|%s", x)
+#' })
+#'
+#' # With ncores
+#' pids <- lapply_async(1:16, function(x){
+#'   Sys.sleep(0.5)
+#'   Sys.getpid()
+#' }, ncores = 2)
+#'
+#' # Unique number of PIDs (cores)
+#' unique(unlist(pids))
+#'
+#' # ---- With scheduler ----------------------------
+#' # Scheduler pre-initialize parallel workers and temporary
+#' # switches parallel context. The workers ramp-up
+#' # time can be saved by reusing the workers.
+#' #
+#' with_future_parallel({
+#'
+#'   # lapply_async block 1
+#'   pids <- lapply_async(1:16, function(x){
+#'     Sys.sleep(1)
+#'     Sys.getpid()
+#'   }, callback = function(x) {
+#'     sprintf("lapply_async without ncores|%s", x)
+#'   })
+#'   print(unique(unlist(pids)))
+#'
+#'   # lapply_async block 2
+#'   pids <- lapply_async(1:16, function(x){
+#'     Sys.sleep(1)
+#'     Sys.getpid()
+#'   }, callback = function(x) {
+#'     sprintf("lapply_async with ncores|%s", x)
+#'   }, ncores = 4)
+#'   print(unique(unlist(pids)))
+#'
+#' })
+#'
+#'
+#' }
+#'
+#'
+#' @export
+lapply_async <- function(
+    x, FUN, FUN.args = list(), callback = NULL, ncores = NULL,
+    on_failure = "multisession", ...) {
+
+  if(length(ncores) == 1) {
+    if(ncores < 1) { ncores <- 1}
+    max_workers <- raveio_getopt("max_worker", 1L)
+    if(ncores < max_workers) {
+      chunk_size <- ceiling(length(x) / ncores)
+    } else {
+      chunk_size <- NULL
+    }
+  } else {
+    chunk_size <- NULL
+    ncores <- raveio_getopt("max_worker", 1L)
+  }
+  plan <- getOption("raveio.auto.parallel", default = TRUE)
+
+  # check if fork is disabled
+
+
+  dipsaus::lapply_async2(x, FUN = FUN, FUN.args = FUN.args, callback = callback,
+                         plan = plan, future.chunk.size = chunk_size,
+                         on_failure = on_failure, workers = ncores, ...)
 }
