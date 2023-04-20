@@ -20,6 +20,12 @@ rave_directories <- function(subject_code, project_name, blocks = NULL, .force_f
   .force_format <- match.arg(.force_format)
   re <- dipsaus::fastmap2()
 
+  if(startsWith(project_name, "@meta_analysis")) {
+    subject_code <- strsplit(subject_code, "/")[[1]]
+    project_name <- subject_code[[1]]
+    subject_code <- subject_code[[2]]
+  }
+
   subject_code <- stringr::str_remove(subject_code, '^sub-')
 
   re$root_data <- normalizePath(raveio_getopt('data_dir'), mustWork = FALSE)
