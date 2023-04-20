@@ -39,10 +39,10 @@ collapse2.FileArray <- function(x, keep, method = c("mean", "sum"), ...){
     pdim <- pdim[-ndims]
     lidx <- which(keep == ndims)[[1]]
     keep_alt <- keep[-lidx]
-    re <- filearray::fmap2(list(x), fun = function(v){
+    re <- filearray::fmap2(list(x), fun = function(v, ...){
       v <- array(v[[1]], dim = pdim)
       collapse(v, keep_alt, average = is_mean)
-    }, .input_size = prod(pdim), .simplify = TRUE)
+    }, .input_size = prod(pdim), .buffer_count = dm[[ndims]], .simplify = TRUE)
     redim <- dim(re)
     rendim <- length(redim)
     if(rendim > 1 && rendim != lidx){
@@ -55,10 +55,10 @@ collapse2.FileArray <- function(x, keep, method = c("mean", "sum"), ...){
       re <- aperm(re, od)
     }
   } else {
-    re <- filearray::fmap2(list(x), fun = function(v){
+    re <- filearray::fmap2(list(x), fun = function(v, ...){
       v <- array(v[[1]], dim = pdim)
       collapse(v, keep, average = is_mean)
-    }, .input_size = prod(pdim), .simplify = TRUE)
+    }, .input_size = prod(pdim), .buffer_count = dm[[ndims]], .simplify = TRUE)
     re <- collapse(re, seq_along(keep), average = is_mean)
   }
 
@@ -447,17 +447,6 @@ power_baseline.FileArray <- function(
 
 
   if("Electrode" %in% units){
-
-    # system.time({
-    #   partition_dim <- dm
-    #   partition_dim[[length(partition_dim)]] <- 1
-    #   output <- filearray::fmap(x = list(x), fun = function(v){
-    #     data <- v[[1]]
-    #     dim(data) <- partition_dim
-    #     baseline_array(data, along_dim = 2L, baseline_indexpoints = time_index, unit_dims = unit_dims, method = method)
-    #   }, .input_size = prod(partition_dim))
-    # })
-
 
     dipsaus::lapply_async2(seq_len(dm[[length(dm)]]), function(ii){
       res[, , , ii] <-

@@ -34,7 +34,12 @@ restore_subject_instance <- function(subject_id, strict = FALSE) {
                  msg = "`as_rave_subject`: Cannot find subject ID from the given input")
       subject_id <- subject_id$id
     }
-    RAVESubject$new(subject_id, strict = strict)
+    if(startsWith(subject_id, "@meta_analysis")) {
+      subject_id <- gsub("^@meta_analysis/", "", subject_id)
+      return( RAVEMetaSubject$new(subject_id) )
+    } else {
+      return( RAVESubject$new(subject_id, strict = strict) )
+    }
   }
 }
 
