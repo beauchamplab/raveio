@@ -476,11 +476,11 @@ convert_blackrock <- function(
     )
   }
 
-  dipsaus::lapply_async2(electrodes, function(e) {
+  lapply_async(electrodes, function(e) {
     s <- brfile$get_electrode(e)
     save_signal(s, e)
     return()
-  }, plan = FALSE, callback = function(e) {
+  }, callback = function(e) {
     sprintf("Writing data|Electrode %s", e)
   })
 

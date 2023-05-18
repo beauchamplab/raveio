@@ -207,7 +207,7 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
 
   file_info <- attr(res, 'info')
 
-  dipsaus::lapply_async2(
+  lapply_async(
     electrodes, function(e) {
       # Allow both ch1.mat and ch001.mat to pass
       regexp <- stringr::regex(sprintf('(^|[^0-9])[0]{0,}%d\\.(mat|h5)$', e), ignore_case = TRUE)
@@ -234,7 +234,7 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
       invisible()
     }, callback = function(e) {
       sprintf("Importing %s/%s | electrode %s", project_name, subject_code, e)
-    }, plan = FALSE
+    }
   )
 
   # progress <-
@@ -406,7 +406,7 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
     progress$inc(paste('Processing block', b))
     edf_file <- file.path(info$path, info$files)
 
-    dipsaus::lapply_async2(seq_len(ncores), function(margin) {
+    lapply_async(seq_len(ncores), function(margin) {
       sub_es <- schedule_mat[margin, ]
       sub_es <- sub_es[!is.na(sub_es)]
       dat <- read_edf_signal2(path = edf_file, signal_numbers = sub_es, convert_volt = conversion)
@@ -422,7 +422,7 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
                 chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
         invisible()
       })
-    }, plan = FALSE, callback = function(margin) {
+    }, callback = function(margin) {
       sprintf("Importing %s/%s | Block %s - chunk %s",
               project_name, subject_code, b, margin)
     })
@@ -601,7 +601,7 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
     brfile
   }, simplify = FALSE, USE.NAMES = TRUE)
 
-  dipsaus::lapply_async2(
+  lapply_async(
     electrodes, function(e) {
       cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
       for(b in blocks){
@@ -629,7 +629,7 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
       invisible()
     }, callback = function(e) {
       sprintf("Importing %s/%s | electrode %s", project_name, subject_code, e)
-    }, plan = FALSE
+    }
   )
 
 

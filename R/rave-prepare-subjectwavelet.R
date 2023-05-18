@@ -35,29 +35,29 @@ prepare_subject_wavelet <- function(subject, electrodes, reference_name, epoch_n
 
   ref_instances <- dipsaus::drop_nulls(re$reference_instances[ref_mat])
   if(verbose) {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "wavelet-coefficient")
     }, callback = function(ref){
       sprintf("Loading Reference (wavelet-coefficient) | %s", ref$number)
-    }, plan = FALSE)
+    })
   } else {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "wavelet-coefficient")
-    }, callback = NULL, plan = FALSE)
+    }, callback = NULL)
   }
 
 
   # load actual wavelet-coefficient, reference on the fly
   if(verbose) {
-    wavelet_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+    wavelet_list <- lapply_async(re$electrode_instances, function(el){
       el$load_data(type = "wavelet-coefficient")
     }, callback = function(el){
       sprintf("Loading Electrode (wavelet-coefficient) | %s", el$number)
-    }, plan = FALSE)
+    })
   } else {
-    wavelet_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+    wavelet_list <- lapply_async(re$electrode_instances, function(el){
       el$load_data(type = "wavelet-coefficient")
-    }, callback = NULL, plan = FALSE)
+    }, callback = NULL)
   }
 
 

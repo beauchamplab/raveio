@@ -140,7 +140,7 @@ merge_rave_subject <- function(from_subjects, to_subject, ignore_duplicated_bloc
   physical_unit <- NA
   # format <- 7L
 
-  dipsaus::lapply_async2(electrodes, function(e) {
+  lapply_async(electrodes, function(e) {
 
     for(b in names(block_list)) {
 
@@ -178,7 +178,7 @@ merge_rave_subject <- function(from_subjects, to_subject, ignore_duplicated_bloc
       }
     }
 
-  }, plan = FALSE, callback = function(e) {
+  }, callback = function(e) {
     sprintf("Merging subjects|electrode %d", e)
   })
 

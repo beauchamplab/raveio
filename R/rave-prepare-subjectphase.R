@@ -34,29 +34,29 @@ prepare_subject_phase <- function(subject, electrodes, reference_name, epoch_nam
 
   ref_instances <- dipsaus::drop_nulls(re$reference_instances[ref_mat])
   if(verbose) {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "phase")
     }, callback = function(ref){
       sprintf("Loading Reference (phase) | %s", ref$number)
-    }, plan = FALSE)
+    })
   } else {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "phase")
-    }, callback = NULL, plan = FALSE)
+    }, callback = NULL)
   }
 
 
   # load actual phase, reference on the fly
   if(verbose) {
-    phase_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+    phase_list <- lapply_async(re$electrode_instances, function(el){
       el$load_data(type = "phase")
     }, callback = function(el){
       sprintf("Loading Electrode (phase) | %s", el$number)
-    }, plan = FALSE)
+    })
   } else {
-    phase_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+    phase_list <- lapply_async(re$electrode_instances, function(el){
       el$load_data(type = "phase")
-    }, callback = NULL, plan = FALSE)
+    }, callback = NULL)
   }
 
 

@@ -90,14 +90,14 @@ prepare_subject_raw_voltage_with_epoch <- function(subject, electrodes, epoch_na
   re$electrode_instances <- electrode_instances
 
   # ----- load_data -----
-  data_list <- dipsaus::lapply_async2(
+  data_list <- lapply_async(
     re$electrode_instances,
     function(inst) {
       inst$load_data(type = "raw-voltage")
     },
     callback = function(inst) {
       sprintf("Loading raw-voltage|Electrode %s", inst$number)
-    }, plan = FALSE
+    }
   )
   names(data_list) <- names(electrode_instances)
   dim <- dim(data_list[[1]])
@@ -311,25 +311,25 @@ prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, 
   ref_mat <- unique(sprintf("%s_%s", re$reference_table[re$reference_table$Electrode %in% re$electrode_list, "Reference"], electrode_signal_types))
   ref_instances <- dipsaus::drop_nulls(re$reference_instances[ref_mat])
   if(length(ref_instances) < 4) {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "voltage")
-    }, callback = NULL, plan = FALSE)
+    }, callback = NULL)
   } else {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "voltage")
     }, callback = function(ref){
       sprintf("Loading Electrode | %s", ref$number)
-    }, plan = FALSE)
+    })
   }
 
-  data_list <- dipsaus::lapply_async2(
+  data_list <- lapply_async(
     re$electrode_instances,
     function(inst) {
       inst$load_data(type = "voltage")
     },
     callback = function(inst) {
       sprintf("Loading voltage|Electrode %s", inst$number)
-    }, plan = FALSE
+    }
   )
   names(data_list) <- names(electrode_instances)
   dim <- dim(data_list[[1]])

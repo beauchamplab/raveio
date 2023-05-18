@@ -123,7 +123,7 @@ run_wavelet <- function(
   # load signals
   overall_progress$inc("Applying wavelet (a.k.a. the long step)")
   preprocess_dir <- subject$preprocess_path
-  dipsaus::lapply_async2(
+  lapply_async(
     seq_along(electrodes), function(ii){
 
       e <- electrodes[[ii]]
@@ -222,7 +222,6 @@ run_wavelet <- function(
         )
       }
     },
-    plan = FALSE,
     callback = function(ii){
       sprintf(sprintf("Applying wavelet|Electrode - %s", electrodes[[ii]]))
     }

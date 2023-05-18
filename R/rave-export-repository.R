@@ -67,7 +67,7 @@ rave_export.rave_prepare_subject_raw_voltage_with_epoch <- function(x, path, zip
   catgl("Each electrode contains array data of dimension {paste(array_dim, collapse = 'x')}", level = "info")
   # Load data
 
-  dipsaus::lapply_async2(
+  lapply_async(
     x$electrode_instances,
     function(e) {
       h5_path <- file.path(data_path, sprintf("%s.h5", e$number))
@@ -75,7 +75,6 @@ rave_export.rave_prepare_subject_raw_voltage_with_epoch <- function(x, path, zip
       export_data <- export_data[reshape = array_dim, dimnames = FALSE]
       save_h5(export_data, file = h5_path, name = "/raw_voltage", replace = TRUE, ctype = "numeric", quiet = TRUE)
     },
-    plan = FALSE,
     callback = function(e) {
       sprintf("Exporting raw-voltage|Electrode %s", e$number)
     }
@@ -151,7 +150,7 @@ rave_export.rave_prepare_subject_voltage_with_epoch <- function(x, path, zip = F
   catgl("Each electrode contains array data of dimension {paste(array_dim, collapse = 'x')}", level = "info")
   # Load data
 
-  dipsaus::lapply_async2(
+  lapply_async(
     x$electrode_instances,
     function(e) {
       h5_path <- file.path(data_path, sprintf("%s.h5", e$number))
@@ -159,7 +158,6 @@ rave_export.rave_prepare_subject_voltage_with_epoch <- function(x, path, zip = F
       export_data <- export_data[reshape = array_dim, dimnames = FALSE]
       save_h5(export_data, file = h5_path, name = "/voltage", replace = TRUE, ctype = "numeric", quiet = TRUE)
     },
-    plan = FALSE,
     callback = function(e) {
       sprintf("Exporting voltage|Electrode %s", e$number)
     }
@@ -236,7 +234,7 @@ rave_export.rave_prepare_power <- function(x, path, zip = FALSE, ...) {
   catgl("Each electrode contains array data of dimension {paste(array_dim, collapse = 'x')}", level = "info")
   # Load data
 
-  dipsaus::lapply_async2(
+  lapply_async(
     x$electrode_instances,
     function(e) {
       h5_path <- file.path(data_path, sprintf("%s.h5", e$number))
@@ -244,7 +242,6 @@ rave_export.rave_prepare_power <- function(x, path, zip = FALSE, ...) {
       export_data <- export_data[reshape = array_dim, dimnames = FALSE]
       save_h5(export_data, file = h5_path, name = "/power", replace = TRUE, ctype = "numeric", quiet = TRUE)
     },
-    plan = FALSE,
     callback = function(e) {
       sprintf("Exporting power|Electrode %s", e$number)
     }

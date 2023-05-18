@@ -246,7 +246,7 @@ validate_raw_file_lfp.native_matlab <- function(
       elec_bak <- as.integer(number[sel])
       files <- files[sel]
       abspaths <- file.path(info$path, files)
-      dlen <- dipsaus::lapply_async2(abspaths, function(path){
+      dlen <- lapply_async(abspaths, function(path){
         tryCatch({
           dl <- NA
           dat <- read_mat(path)
@@ -258,7 +258,7 @@ validate_raw_file_lfp.native_matlab <- function(
         }, error = function(e){
           NA
         })
-      }, plan = FALSE, callback = function(path) {
+      }, callback = function(path) {
         sprintf("Checking %s", basename(path))
       })
       dlen <- unlist(dlen)
@@ -351,7 +351,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
     # progress <- dipsaus::progress2('Check electrode files within block', shiny_auto_close = TRUE, max = length(blocks) + 1)
     # Need to check content to see whether data is valid
     with_future_parallel({
-      snapshots <- dipsaus::lapply_async2(blocks, function(b){
+      snapshots <- lapply_async(blocks, function(b){
         info <- finfo[[b]]
         files <- info$files[[1]]
         abspath <- file.path(info$path, files)
@@ -400,7 +400,7 @@ validate_raw_file_lfp.native_matlab2 <- function(
             'Block file is broken' = paste('Block', b)
           )
         })
-      }, plan = FALSE, callback = function(b){
+      }, callback = function(b){
         sprintf("Check electrode files within block| - %s", b)
       })
     })

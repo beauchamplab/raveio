@@ -245,7 +245,7 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
         }
       })
 
-      dipsaus::lapply_async2(
+      lapply_async(
         input_list,
         FUN = function(el) {
           input <- el$array[drop = FALSE]
@@ -276,7 +276,6 @@ voltage_baseline.rave_prepare_subject_raw_voltage_with_epoch <- function(
           }
           NULL
         },
-        plan = FALSE,
         callback = function(el) {
           sprintf("Baseline correction | %s", el$electrode)
         }
@@ -377,7 +376,7 @@ voltage_baseline.FileArray <- function(
 
     if("Electrode" %in% units){
       # Baseline per electrodes
-      dipsaus::lapply_async2(seq_len(dm[[length(dm)]]), function(ii){
+      lapply_async(seq_len(dm[[length(dm)]]), function(ii){
         res[, , ii] <-
           baseline_array(
             x[, , ii, drop = FALSE],
@@ -387,7 +386,7 @@ voltage_baseline.FileArray <- function(
             method = method
           )
         NULL
-      }, plan = FALSE)
+      })
 
     } else {
 

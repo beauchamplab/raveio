@@ -29,29 +29,29 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
 
   ref_instances <- dipsaus::drop_nulls(re$reference_instances[ref_mat])
   if(verbose) {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "power")
     }, callback = function(ref){
       sprintf("Loading Reference (power) | %s", ref$number)
-    }, plan = FALSE)
+    })
   } else {
-    refs <- dipsaus::lapply_async2(ref_instances, function(ref){
+    refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "power")
-    }, callback = NULL, plan = FALSE)
+    }, callback = NULL)
   }
 
 
   # load actual power, reference on the fly
   if(verbose) {
-    power_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+    power_list <- lapply_async(re$electrode_instances, function(el){
       el$load_data(type = "power")
     }, callback = function(el){
       sprintf("Loading Electrode (power) | %s", el$number)
-    }, plan = FALSE)
+    })
   } else {
-    power_list <- dipsaus::lapply_async2(re$electrode_instances, function(el){
+    power_list <- lapply_async(re$electrode_instances, function(el){
       el$load_data(type = "power")
-    }, callback = NULL, plan = FALSE)
+    }, callback = NULL)
   }
 
 

@@ -297,7 +297,7 @@ power_baseline.rave_prepare_power <- function(
         )
       })
 
-      dipsaus::lapply_async2(
+      lapply_async(
         input_list,
         FUN = function(el) {
           res[, , , el$index] <- baseline_array(
@@ -309,7 +309,6 @@ power_baseline.rave_prepare_power <- function(
           )
           NULL
         },
-        plan = FALSE,
         callback = function(el) {
           sprintf("Baseline correction | %s (signal type: %s)",
                   el$electrode,
@@ -448,7 +447,7 @@ power_baseline.FileArray <- function(
 
   if("Electrode" %in% units){
 
-    dipsaus::lapply_async2(seq_len(dm[[length(dm)]]), function(ii){
+    lapply_async(seq_len(dm[[length(dm)]]), function(ii){
       res[, , , ii] <-
         baseline_array(
           x = x[, , , ii, drop = FALSE],
@@ -458,7 +457,7 @@ power_baseline.FileArray <- function(
           method = method
         )
       NULL
-    }, plan = FALSE)
+    })
 
   } else {
 
@@ -554,7 +553,7 @@ power_baseline.ECoGTensor <- function(
   if("Electrode" %in% units && hybrid){
     nelec <- dm[[length(dm)]]
     sel <- rep(FALSE, nelec)
-    baselined_data <- dipsaus::lapply_async2(seq_len(nelec), function(ii){
+    baselined_data <- lapply_async(seq_len(nelec), function(ii){
       sel[[ii]] <- TRUE
       dnames$Electrode <- dnames$Electrode[[ii]]
       slice <- x$subset(Electrode ~ sel, drop = FALSE, data_only = TRUE)
@@ -565,7 +564,7 @@ power_baseline.ECoGTensor <- function(
         re$to_swap_now()
       })
       re
-    }, plan = FALSE)
+    })
 
     lapply(baselined_data, function(re){
       re$temporary <- TRUE

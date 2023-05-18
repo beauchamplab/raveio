@@ -151,8 +151,8 @@ collapse_power.FileArray <- function(x, analysis_index_cubes){
     re
   }
 
-  initial_collapse <- dipsaus::lapply_async2(
-    x = which(elec_sel), FUN = fun, plan = FALSE
+  initial_collapse <- lapply_async(
+    x = which(elec_sel), FUN = fun
   )
   # initial_collapse <- lapply(
   #   which(elec_sel), FUN = fun
