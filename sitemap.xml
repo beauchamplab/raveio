@@ -1,294 +1,297 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/404.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/BlackrockFile.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/BlackrockFile.html</loc>
   </url>
   <url>
-    <loc>/reference/ECoGTensor.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/ECoGTensor.html</loc>
   </url>
   <url>
-    <loc>/reference/LFP_electrode.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/LFP_electrode.html</loc>
   </url>
   <url>
-    <loc>/reference/LFP_reference.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/LFP_reference.html</loc>
   </url>
   <url>
-    <loc>/reference/LazyFST.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/LazyFST.html</loc>
   </url>
   <url>
-    <loc>/reference/LazyH5.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/LazyH5.html</loc>
   </url>
   <url>
-    <loc>/reference/PipelineResult.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/PipelineResult.html</loc>
   </url>
   <url>
-    <loc>/reference/PipelineTools.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/PipelineTools.html</loc>
   </url>
   <url>
-    <loc>/reference/RAVEAbstarctElectrode.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/RAVEAbstarctElectrode.html</loc>
   </url>
   <url>
-    <loc>/reference/RAVEEpoch.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/RAVEEpoch.html</loc>
   </url>
   <url>
-    <loc>/reference/RAVEPreprocessSettings.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/RAVEMetaSubject.html</loc>
   </url>
   <url>
-    <loc>/reference/RAVEProject.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/RAVEPreprocessSettings.html</loc>
   </url>
   <url>
-    <loc>/reference/RAVESubject.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/RAVEProject.html</loc>
   </url>
   <url>
-    <loc>/reference/Tensor.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/RAVESubject.html</loc>
   </url>
   <url>
-    <loc>/reference/ants_coreg.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/Tensor.html</loc>
   </url>
   <url>
-    <loc>/reference/as_rave_project.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/ants_coreg.html</loc>
   </url>
   <url>
-    <loc>/reference/as_rave_subject.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/as_rave_project.html</loc>
   </url>
   <url>
-    <loc>/reference/as_rave_unit.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/as_rave_subject.html</loc>
   </url>
   <url>
-    <loc>/reference/auto_process_blackrock.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/as_rave_unit.html</loc>
   </url>
   <url>
-    <loc>/reference/backup_file.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/auto_process_blackrock.html</loc>
   </url>
   <url>
-    <loc>/reference/cache_path.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/backup_file.html</loc>
   </url>
   <url>
-    <loc>/reference/catgl.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/cache_path.html</loc>
   </url>
   <url>
-    <loc>/reference/cmd-external.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/catgl.html</loc>
   </url>
   <url>
-    <loc>/reference/collapse2.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/cmd-external.html</loc>
   </url>
   <url>
-    <loc>/reference/collapse_power.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/collapse2.html</loc>
   </url>
   <url>
-    <loc>/reference/convert-fst.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/collapse_power.html</loc>
   </url>
   <url>
-    <loc>/reference/convert_blackrock.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/convert-fst.html</loc>
   </url>
   <url>
-    <loc>/reference/dir_create2.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/convert_blackrock.html</loc>
   </url>
   <url>
-    <loc>/reference/find_path.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/dir_create2.html</loc>
   </url>
   <url>
-    <loc>/reference/generate_reference.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/find_path.html</loc>
   </url>
   <url>
-    <loc>/reference/get_projects.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/generate_reference.html</loc>
   </url>
   <url>
-    <loc>/reference/get_val2.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/get_projects.html</loc>
   </url>
   <url>
-    <loc>/reference/h5_names.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/get_val2.html</loc>
   </url>
   <url>
-    <loc>/reference/h5_valid.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/h5_names.html</loc>
   </url>
   <url>
-    <loc>/reference/import_electrode_table.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/h5_valid.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/import_electrode_table.html</loc>
   </url>
   <url>
-    <loc>/reference/install_modules.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/is.blank.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/install_modules.html</loc>
   </url>
   <url>
-    <loc>/reference/is.zerolenth.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/is.blank.html</loc>
   </url>
   <url>
-    <loc>/reference/is_valid_ish.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/is.zerolenth.html</loc>
   </url>
   <url>
-    <loc>/reference/join_tensors.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/is_valid_ish.html</loc>
   </url>
   <url>
-    <loc>/reference/lapply_async.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/join_tensors.html</loc>
   </url>
   <url>
-    <loc>/reference/load_bids_ieeg_header.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/lapply_async.html</loc>
   </url>
   <url>
-    <loc>/reference/load_fst_or_h5.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/load_bids_ieeg_header.html</loc>
   </url>
   <url>
-    <loc>/reference/load_h5.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/load_fst_or_h5.html</loc>
   </url>
   <url>
-    <loc>/reference/load_meta2.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/load_h5.html</loc>
   </url>
   <url>
-    <loc>/reference/load_yaml.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/load_meta2.html</loc>
   </url>
   <url>
-    <loc>/reference/mgh_to_nii.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/load_yaml.html</loc>
   </url>
   <url>
-    <loc>/reference/module_add.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/mgh_to_nii.html</loc>
   </url>
   <url>
-    <loc>/reference/module_registry.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/module_add.html</loc>
   </url>
   <url>
-    <loc>/reference/new_electrode.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/module_registry.html</loc>
   </url>
   <url>
-    <loc>/reference/niftyreg_coreg.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/new_electrode.html</loc>
   </url>
   <url>
-    <loc>/reference/pipeline-knitr-markdown.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/niftyreg_coreg.html</loc>
   </url>
   <url>
-    <loc>/reference/pipeline.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/pipeline-knitr-markdown.html</loc>
   </url>
   <url>
-    <loc>/reference/pipeline_install.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/pipeline.html</loc>
   </url>
   <url>
-    <loc>/reference/pipeline_settings_get_set.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/pipeline_install.html</loc>
   </url>
   <url>
-    <loc>/reference/power_baseline.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/pipeline_settings_get_set.html</loc>
   </url>
   <url>
-    <loc>/reference/progress_with_logger.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/power_baseline.html</loc>
   </url>
   <url>
-    <loc>/reference/py_nipy_coreg.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/progress_with_logger.html</loc>
   </url>
   <url>
-    <loc>/reference/rave-pipeline.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/py_nipy_coreg.html</loc>
   </url>
   <url>
-    <loc>/reference/rave-prepare.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave-pipeline.html</loc>
   </url>
   <url>
-    <loc>/reference/rave-raw-validation.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave-prepare.html</loc>
   </url>
   <url>
-    <loc>/reference/rave-server.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave-raw-validation.html</loc>
   </url>
   <url>
-    <loc>/reference/rave-snippet.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave-server.html</loc>
   </url>
   <url>
-    <loc>/reference/rave_brain.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave-snippet.html</loc>
   </url>
   <url>
-    <loc>/reference/rave_command_line_path.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave_brain.html</loc>
   </url>
   <url>
-    <loc>/reference/rave_directories.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave_command_line_path.html</loc>
   </url>
   <url>
-    <loc>/reference/rave_export.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave_directories.html</loc>
   </url>
   <url>
-    <loc>/reference/rave_import.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave_export.html</loc>
   </url>
   <url>
-    <loc>/reference/rave_subject_format_conversion.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave_import.html</loc>
   </url>
   <url>
-    <loc>/reference/raveio-constants.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/rave_subject_format_conversion.html</loc>
   </url>
   <url>
-    <loc>/reference/raveio-option.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/raveio-constants.html</loc>
   </url>
   <url>
-    <loc>/reference/read-brainvision-eeg.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/raveio-option.html</loc>
   </url>
   <url>
-    <loc>/reference/read-write-fst.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/read-brainvision-eeg.html</loc>
   </url>
   <url>
-    <loc>/reference/read_csv_ieeg.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/read-write-fst.html</loc>
   </url>
   <url>
-    <loc>/reference/read_edf_header.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/read_csv_ieeg.html</loc>
   </url>
   <url>
-    <loc>/reference/read_edf_signal.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/read_edf_header.html</loc>
   </url>
   <url>
-    <loc>/reference/read_mat.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/read_edf_signal.html</loc>
   </url>
   <url>
-    <loc>/reference/read_nsx_nev.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/read_mat.html</loc>
   </url>
   <url>
-    <loc>/reference/reexports.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/read_nsx_nev.html</loc>
   </url>
   <url>
-    <loc>/reference/safe_read_csv.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/reexports.html</loc>
   </url>
   <url>
-    <loc>/reference/safe_write_csv.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/safe_read_csv.html</loc>
   </url>
   <url>
-    <loc>/reference/save_h5.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/safe_write_csv.html</loc>
   </url>
   <url>
-    <loc>/reference/save_json.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/save_h5.html</loc>
   </url>
   <url>
-    <loc>/reference/save_meta2.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/save_json.html</loc>
   </url>
   <url>
-    <loc>/reference/save_yaml.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/save_meta2.html</loc>
   </url>
   <url>
-    <loc>/reference/test_hdspeed.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/save_yaml.html</loc>
   </url>
   <url>
-    <loc>/reference/time_diff2.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/test_hdspeed.html</loc>
   </url>
   <url>
-    <loc>/reference/url_neurosynth.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/time_diff2.html</loc>
   </url>
   <url>
-    <loc>/reference/validate_subject.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/url_neurosynth.html</loc>
   </url>
   <url>
-    <loc>/reference/validate_time_window.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/validate_subject.html</loc>
   </url>
   <url>
-    <loc>/reference/voltage_baseline.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/validate_time_window.html</loc>
   </url>
   <url>
-    <loc>/reference/with_future_parallel.html</loc>
+    <loc>https://beauchamplab.github.io/raveio/reference/voltage_baseline.html</loc>
+  </url>
+  <url>
+    <loc>https://beauchamplab.github.io/raveio/reference/with_future_parallel.html</loc>
   </url>
 </urlset>
