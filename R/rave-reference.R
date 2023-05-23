@@ -52,7 +52,7 @@ generate_reference <- function(subject, electrodes) {
 
   electrode_text <- dipsaus::deparse_svec(electrodes)
 
-  ref_signals <- dipsaus::lapply_async2(blocks, function(block){
+  ref_signals <- lapply_async(blocks, function(block){
 
     ref_signal <- 0
     subject_inst <- restore_subject_instance(subject_id, strict = FALSE)
@@ -117,7 +117,7 @@ generate_reference <- function(subject, electrodes) {
       wavelet = warray
     )
 
-  }, plan = FALSE, callback = function(block){
+  }, callback = function(block){
     sprintf("Collecting data|Block %s", block)
   })
   names(ref_signals) <- blocks

@@ -752,7 +752,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
       # go into each channel files and check the length
 
       signal_lengths <- with_future_parallel({
-        dipsaus::lapply_async2(seq_along(electrodes), function(ii){
+        lapply_async(seq_along(electrodes), function(ii){
           e <- electrodes[[ii]]
           pre_elec <- file.path(preprocess_path, 'voltage',
                                 sprintf('electrode_%d.h5', e))
@@ -796,7 +796,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
             return(raw_len)
           })
           signal_lengths
-        }, plan = FALSE, callback = function(ii) {
+        }, callback = function(ii) {
           sprintf('Checking preprocess data|electrode %d', electrodes[[ii]])
         })
       })
@@ -859,7 +859,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
 
       # check signal lengths
       with_future_parallel({
-        length_valid <- dipsaus::lapply_async2(seq_len(nrow(preproc_tbl)), function(ii) {
+        length_valid <- lapply_async(seq_len(nrow(preproc_tbl)), function(ii) {
           e <- preproc_tbl$Electrode[[ii]]
           f <- file.path(volt_path, sprintf('%d.h5', e))
           signal_length <- data.matrix(preproc_tbl[ii, blocks, drop = FALSE])
@@ -905,7 +905,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
             isTRUE(all(ref_lens == signal_length))
           )
 
-        }, plan = FALSE, callback = function(ii) {
+        }, callback = function(ii) {
           sprintf('Checking voltage data|electrode %d', electrodes[[ii]])
         })
         length_valid <- do.call('rbind', length_valid)
@@ -1011,7 +1011,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
     }
 
     dtype_checks <- with_future_parallel({
-      dtype_checks <- dipsaus::lapply_async2(which(sel), function(ii) {
+      dtype_checks <- lapply_async(which(sel), function(ii) {
         e <- tbl$Electrode[[ii]]
         f <- file.path(dpath, sprintf('%d.h5', e))
 
@@ -1064,7 +1064,7 @@ validate_subject_power_phase <- function(subject, version = 2, verbose = TRUE, o
           isTRUE(all(abs(raw_lens[2, ] - el) < 10)),
           isTRUE(all(ref_lens[2, ] == raw_lens[2, ]))
         )
-      }, plan = FALSE, callback = function(ii) {
+      }, callback = function(ii) {
         sprintf('Checking %s data|electrode %d', dtype, tbl$Electrode[[ii]])
       })
       do.call("rbind", dtype_checks)

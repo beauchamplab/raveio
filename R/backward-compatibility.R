@@ -50,7 +50,7 @@ rave_subject_format_conversion <- function(
 
   progress$inc("Adding RAVE 1.0 redundancy data")
 
-  block_lengths <- dipsaus::lapply_async2(seq_along(electrodes), function(ii) {
+  block_lengths <- lapply_async(seq_along(electrodes), function(ii) {
     e <- electrodes[[ii]]
     etype <- electrode_types[[ii]]
     h5path <- file.path(voltage_path, sprintf("%s.h5", e))
@@ -87,7 +87,7 @@ rave_subject_format_conversion <- function(
     } else {
       return()
     }
-  }, plan = FALSE, callback = function(ii) {
+  }, callback = function(ii) {
     sprintf("Migrating voltage|electrode %s", electrodes[[ii]])
   })
 

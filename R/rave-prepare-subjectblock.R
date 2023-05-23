@@ -257,9 +257,8 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
   voltage_cached <- block_data[[1]]$voltage$data$get_header("cached_electrodes", default = NULL)
   voltage_more <- electrodes[!electrodes %in% voltage_cached]
   if(length(voltage_more)) {
-    voltage_more <- dipsaus::lapply_async2(
+    voltage_more <- lapply_async(
       electrode_instances[sprintf("e_%d", voltage_more)],
-      plan = FALSE,
       function(inst) {
         s <- inst$load_blocks(blocks = blocks, type = "voltage", simplify = FALSE)
         for(block in blocks) {
@@ -282,9 +281,8 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
     wavelet_cached <- block_data[[1]]$wavelet$data$get_header("cached_electrodes", default = NULL)
     wavelet_more <- electrodes[!electrodes %in% wavelet_cached]
     if(length(wavelet_more)) {
-      wavelet_more <- dipsaus::lapply_async2(
+      wavelet_more <- lapply_async(
         electrode_instances[sprintf("e_%d", wavelet_more)],
-        plan = FALSE,
         function(inst) {
           s <- inst$load_blocks(blocks = blocks, type = "wavelet-coefficient", simplify = FALSE)
           for(block in blocks) {
