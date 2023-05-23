@@ -16,3 +16,5 @@ inst/rave-pipelines/builtins/*
 ^tidyhtml$
 ^_rs_job\.R$
 ^ui\.R$
+^_pkgdown\.yml$
+^pkgdown$
