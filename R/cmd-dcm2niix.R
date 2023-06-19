@@ -34,6 +34,11 @@ cmd_run_dcm2niix <- function(subject, src_path, type = c("MRI", "CT"),
     file.path(subject$preprocess_settings$raw_path, "rave-imaging", "inputs", type),
     mustWork = FALSE, winslash = "/"
   )
+  derivative_path <- normalizePath(
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "derivative"),
+    mustWork = FALSE, winslash = "/"
+  )
+
   if(!overwrite && dir.exists(dest_path) &&
      length(list.files(dest_path, pattern = "\\.nii($|\\.gz$)", ignore.case = TRUE))) {
     stop("`cmd_run_dcm2niix`: destination folder already exists. Please specify `overwrite=TRUE` to remove the previous results.")
@@ -81,16 +86,25 @@ cat(
 )
 src <- "%s"
 dst_directory <- "%s"
+derivative_path <- "%s"
 dst_filename <- "%s"
 if( !dir.exists( dst_directory )) {
   dir.create(path = dst_directory, showWarnings = FALSE, recursive = TRUE, mode = "0777")
+}
+if( !dir.exists( derivative_path ) ) {
+  dir.create(path = derivative_path, showWarnings = FALSE, recursive = TRUE, mode = "0777")
 }
 file.copy(from = src, to = file.path(dst_directory, dst_filename),
           overwrite = TRUE, recursive = FALSE, copy.mode = TRUE, copy.date = TRUE)
 cat(sep = "",
   "File copied from: ", src, "\nTo: ",
   file.path(dst_directory, dst_filename), "\n")
-)', toupper(type), src_path, dest_path, dst_fname)
+file.copy(from = src, to = file.path(derivative_path, dst_filename),
+          overwrite = TRUE, recursive = FALSE, copy.mode = TRUE, copy.date = TRUE)
+cat(sep = "",
+  "File backed-up in: ",
+  file.path(derivative_path, dst_filename), "\n")
+)', toupper(type), src_path, dest_path, derivative_path, dst_fname)
 
     log_abspath <- file.path(log_path, log_file)
 
