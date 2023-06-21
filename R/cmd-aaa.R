@@ -29,7 +29,7 @@
 #' @param dof,cost,search,searchcost parameters used by 'FSL' \code{'flirt'}
 #' command; see their documentation for details
 #' @param backup whether to back up the script file immediately; default is true
-#' @param ... passed to \code{\link{system2}}
+#' @param ... passed to \code{\link{system2}}, or additional arguments
 #' @returns A list of data containing the script details:
 #' \describe{
 #' \item{\code{script}}{script details}

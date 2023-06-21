@@ -8,6 +8,7 @@
 \alias{cmd_run_dcm2niix}
 \alias{cmd_run_flirt}
 \alias{cmd_run_recon_all}
+\alias{cmd_run_recon_all_clinical}
 \title{External shell commands for 'RAVE'}
 \usage{
 cmd_run_3dAllineate(
@@ -69,6 +70,17 @@ cmd_run_recon_all(
   dry_run = FALSE,
   verbose = dry_run
 )
+
+cmd_run_recon_all_clinical(
+  subject,
+  mri_path,
+  work_path = NULL,
+  overwrite = FALSE,
+  command_path = NULL,
+  dry_run = FALSE,
+  verbose = dry_run,
+  ...
+)
 }
 \arguments{
 \item{subject}{characters or a \code{\link{RAVESubject}} instance}
@@ -100,7 +112,7 @@ dry-run mode, and false otherwise}
 \item{args}{further arguments in the shell command, especially the
 'FreeSurfer' reconstruction command}
 
-\item{...}{passed to \code{\link{system2}}}
+\item{...}{passed to \code{\link{system2}}, or additional arguments}
 
 \item{src_path}{source of the 'DICOM' or 'Nifti' image (absolute path)}
 
