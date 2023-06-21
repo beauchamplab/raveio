@@ -203,7 +203,7 @@ specification:
       description: The rule that determines the dictionary key from a number
       name: packet_id
       type: uint16
-      start_byte: 4
+      start_byte: 8
       size: 2
     dictionary:
       '0':
