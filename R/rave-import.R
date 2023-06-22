@@ -537,14 +537,25 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
   pretools$save()
 }
 
-rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
-                                          electrodes, sample_rate, add = FALSE,
-                                          conversion = NA, data_type = 'LFP', ...){
+rave_import_lfp.native_blackrock <- function(
+    project_name, subject_code, blocks, electrodes, sample_rate, add = FALSE,
+    conversion = NA, data_type = 'LFP', ...){
 
-  # list2env(list(project_name = 'devel', subject_code = "PAV004",
-  #               blocks = c("001", "002"),
-  #               electrodes = "1-230,254-257", sample_rate = 2000, add = FALSE,
+  # DIPSAUS DEBUG START
+  # list2env(list(project_name = 'devel', subject_code = "PAV020",
+  #               blocks = c("BLOCK016_SpeechModalityLocalizer"),
+  #               electrodes = "1-7", sample_rate = 2000, add = FALSE,
   #               conversion = NA, data_type = 'LFP'), envir=.GlobalEnv)
+
+  # DIPSAUS DEBUG START
+  # project_name = 'test'
+  # subject_code = 'YDY'
+  # blocks = "B058"
+  # electrodes = 1:7
+  # sample_rate = 2000
+  # add = FALSE; data_type = 'LFP'; conversion = NA
+
+  progress <- dipsaus::progress2(title = "Importing NEV/NSx", max = 2 + length(blocks)*2, shiny_auto_close = TRUE)
 
   .fs_struct <- raveio_getopt('file_structure')
   on.exit({
@@ -563,12 +574,13 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
   pretools$subject$initialize_paths(include_freesurfer = FALSE)
   pretools$save()
 
-  # Now create instance, always check content as loading is cached
+  progress$inc("Validateing data...")
+  # TODO: validate
   res <- validate_raw_file_lfp.native_blackrock(
     subject_code = subject_code,
     blocks = blocks,
     electrodes = electrodes,
-    check_content = TRUE,
+    check_content = FALSE,
     project_name = project_name
   )
 
@@ -584,54 +596,143 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
 
   file_info <- attr(res, 'info')
 
-  blackrock_files <- sapply(blocks, function(b) {
-    brfile <- BlackrockFile$new(
-      path = file.path(file_info[[b]]$path, file_info[[b]]$files[[1]]),
-      block = b)
 
-    # check sampling frequency
-    actual_srates <- brfile$electrode_table$SampleRate[brfile$electrode_table$Electrode %in% electrodes]
-    actual_srates <- unique(actual_srates)
-    if(any(actual_srates < sample_rate)) {
-      actual_srates <- actual_srates[actual_srates < sample_rate]
-      stop(sprintf("Cannot import the data: the requested sample rate is %.0f Hz. However, some electrode channels have less sampling frequencies: %s", sample_rate, paste(actual_srates, collapse = ", ")))
-    }
+  block_details <- lapply(blocks, function(b) {
 
-    brfile$refresh_data(verbose = FALSE)
-    brfile
-  }, simplify = FALSE, USE.NAMES = TRUE)
+    progress$inc(sprintf("Parsing block %s...", b))
 
-  lapply_async(
-    electrodes, function(e) {
-      cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
-      for(b in blocks){
-        brfile <- blackrock_files[[b]]
-        s <- brfile$get_electrode(e) * factor
-        asrate <- attr(s, "meta")$SampleRate
-        if(asrate > sample_rate) {
-          # decimate
-          decimate_rate <- asrate / sample_rate
-          if(decimate_rate - round(decimate_rate) == 0) {
-            s <- ravetools::decimate(s, decimate_rate)
-          } else {
-            # Cannot decimate...
-            catgl(sprintf("Cannot decimate channel %d from %.1fHz to %.1fHz. Using nearest interpolation. This is highly discouraged. Please consider changing the sampling frequency.", e, asrate, sample_rate), level = "WARNING")
-            tidx <- round(seq(1, length(s), by = decimate_rate))
-            s <- s[tidx]
-          }
-        }
-        # save to HDF5
-        save_h5(x = s, file = cfile, name = sprintf('raw/%s', b),
-                chunk = 1024, replace = TRUE, quiet = TRUE)
-        save_h5(x = unit, file = cfile, name = sprintf('/units/%s', b),
-                chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+    block_path <- file_info[[b]]$path
+    export_path <- convert_blackrock(
+      file = file.path(block_path, file_info[[b]]$files[[1]]),
+      block = b, subject = subject_code,
+      epoch = c("comment", "digital_inputs", "recording", "configuration",
+                "log", "button_trigger", "tracking", "video_sync"),
+      format = "mat", to = block_path, header_only = TRUE
+    )
+
+    extraction_prefix <- attr(export_path, "extraction_prefix")
+    nsp <- get_namespace_function("readNSx", "get_nsp")(extraction_prefix)
+    nparts <- attr(export_path, "nparts")
+
+    part1_path <- ifelse(nparts > 1, sprintf("%s_part1", export_path), export_path)
+
+    channel_info_path <- file.path(export_path, "channels.rds")
+
+    if(file.exists(channel_info_path)) {
+      channel_info <- readRDS(channel_info_path)
+
+      # check sampling frequency
+      actual_srates <- unique(channel_info$SampleRate[channel_info$Electrode %in% electrodes])
+      if(any(actual_srates < sample_rate)) {
+        actual_srates <- actual_srates[actual_srates < sample_rate]
+        stop(sprintf("Cannot import the data: the requested sample rate is %.0f Hz. However, some electrode channels have less sampling frequencies: %s. If you are importing from multiple NSx (e.g. ns3+ns5), it is recommended to choose the least sample rate (e.g. %.0f Hz). Here are default sample rates for BlackRock NSx: ns1 (500 Hz), ns2 (1000 Hz), ns3 (2000 Hz), ns4 (10000 Hz), ns5 (30000 Hz), ns6 (30000 Hz).", sample_rate, paste(actual_srates, collapse = ", "), min(actual_srates)))
       }
-      invisible()
-    }, callback = function(e) {
-      sprintf("Importing %s/%s | electrode %s", project_name, subject_code, e)
     }
-  )
 
+    progress$inc(sprintf("Importing block %s...", b))
+
+    # import channels
+    imported_data <- lapply_async(
+      electrodes, function(e) {
+
+        channel <- get_namespace_function("readNSx", "get_channel")(nsp, e)
+        cfile <- file.path(save_path, sprintf('electrode_%d.h5', e))
+        unit <- channel$channel_info$units
+
+        lapply(seq_len(nparts), function(part) {
+          if(nparts > 1) {
+            dir <- sprintf("%s_part%s", export_path, part)
+          } else {
+            dir <- export_path
+          }
+          actual_block <- basename(dir)
+          meta <- channel$channel_detail[[sprintf("part%s", part)]]$meta
+          data <- channel$channel_detail[[sprintf("part%s", part)]]$data
+
+          srate <- meta$sample_rate
+          sratio <- srate / sample_rate
+          factor1 <- factor / c(1e-6, 1e-3, 1)[c("V", "mV", "uV") == unit]
+          s <- data[] * factor1
+          if( sratio > 1 ) {
+            if( sratio - floor(sratio) > 0.0001 ) {
+              s <- ravetools::decimate(s, sratio)
+            } else {
+              sratio <- round(sratio)
+              tidx <- round(seq(1, length(s), by = sratio))
+              s <- s[tidx]
+            }
+          }
+
+          # read infos
+          if(file.exists(file.path(dir, "channels.rds"))) {
+            channel_info <- readRDS(file.path(dir, "channels.rds"))
+            channel_info <- channel_info[channel_info$Electrode == e, ]
+            channel_info_str <- jsonlite::toJSON(as.list(channel_info), auto_unbox = TRUE)
+          } else {
+            channel_info <- NULL
+            channel_info_str <- "{}"
+          }
+
+          if(file.exists(file.path(dir, "events.rds"))) {
+            event_info <- readRDS(file.path(dir, "events.rds"))
+            event_info_str <- jsonlite::toJSON(event_info, dataframe = "rows")
+          } else {
+            event_info <- NULL
+            event_info_str <- "{}"
+          }
+
+          # save to HDF5
+          save_h5(x = unit, file = cfile, name = sprintf('/units/%s', actual_block),
+                  chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+          save_h5(x = channel_info_str, file = cfile, name = sprintf('/channelInfo/%s', actual_block),
+                  chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+          save_h5(x = event_info_str, file = cfile, name = sprintf('/events/%s', actual_block),
+                  chunk = 1, replace = TRUE, quiet = TRUE, ctype = 'character')
+          save_h5(x = s, file = cfile, name = sprintf('raw/%s', actual_block),
+                  chunk = 1024, replace = TRUE, quiet = TRUE)
+
+          list(
+            actual_block = actual_block,
+            event_info = event_info,
+            channel_info = channel_info
+          )
+        })
+
+      }, callback = function(e) {
+        sprintf("Importing %s/%s | electrode %s (session %s)", project_name, subject_code, e, b)
+      }
+    )
+
+    # get channel information
+    channel_info <- do.call("rbind", lapply(imported_data, function(data) {
+      channel_info <- data[[1]]$channel_info
+      if(!is.data.frame(channel_info)) { return(NULL) }
+      channel_info[,c("Electrode", "Label", "SampleRate", "ChannelOrder", "NSType")]
+    }))
+
+    # events
+    event_info <- do.call("rbind", lapply(imported_data[[1]], "[[", "event_info"))
+    rownames(event_info) <- NULL
+
+    # actual_blocks
+    actual_blocks <- lapply(imported_data, function(data) {
+      unlist(lapply(data, "[[", "actual_block"))
+    })
+    actual_blocks <- unique(unlist(actual_blocks))
+
+    return(list(
+      actual_blocks = actual_blocks,
+      event_info = event_info,
+      channel_info = channel_info
+    ))
+  })
+
+  if(!add){
+    actual_blocks <- unique(unlist(lapply(block_details, "[[", "actual_blocks")))
+    pretools$set_blocks(blocks = actual_blocks)
+  }
+
+  progress$inc("Generating meta data...")
 
   # Now set user conf
   for(e in electrodes){
@@ -641,21 +742,28 @@ rave_import_lfp.native_blackrock <- function(project_name, subject_code, blocks,
   pretools$save()
 
   # generate epoch files as well
-  epoch <- lapply(blackrock_files, function(brfile) {
-    tbl <- brfile$get_epoch()
-    if(is.data.frame(tbl) && nrow(tbl)) {
-      return(tbl)
-    } else {
-      return(NULL)
-    }
-  })
-  epoch <- do.call('rbind', unname(epoch))
-  if(is.data.frame(epoch) && nrow(epoch)) {
+
+  epoch <- do.call("rbind", lapply(block_details, "[[", "event_info"))
+  if(is.data.frame(epoch) && nrow(epoch) > 0) {
+    epoch <- epoch[!duplicated(epoch$EventOrder), ]
+    epoch <- epoch[order(epoch$AbsoluteTime), ]
     epoch$Trial <- seq_len(nrow(epoch))
-    # save epoch
+    epoch <- epoch[,c("Block", "Trial", "Time", "Condition", "SourceFile", "Specification", "EventType", "EventOrder", "AbsoluteTime")]
     path <- file.path(pretools$subject$meta_path, "epoch_nev_exports.csv")
-    safe_write_csv(x = epoch[, c("Block", "Time", "Trial", "Condition")],
-                   file = path, row.names = FALSE)
+    safe_write_csv(x = epoch, file = path, row.names = FALSE)
+  }
+
+  # Channel file
+  channel_info <- block_details[[1]]$channel_info
+  if(is.data.frame(channel_info) && nrow(channel_info) > 0) {
+
+    channel_info$Coord_x <- 0
+    channel_info$Coord_y <- 0
+    channel_info$Coord_z <- 0
+    channel_info$Radius <- 1
+    channel_info$LabelPrefix <- gsub("[0-9 \\-]+$", "", channel_info$Label)
+    path <- file.path(pretools$subject$meta_path, "electrodes_unsaved.csv")
+    safe_write_csv(x = channel_info, file = path, row.names = FALSE)
   }
 
   invisible()

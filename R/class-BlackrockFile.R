@@ -404,6 +404,52 @@ BlackrockFile <- R6::R6Class(
   )
 )
 
+load_nev_events <- function(nsp, epoch_types) {
+  readNSx_get_event <- get_namespace_function("readNSx", "get_event")
+  epoch_table <- lapply(epoch_types, function(epoch_type){
+    event <- readNSx_get_event(nsp, epoch_type)
+
+    if(!is.data.frame(event)) { return() }
+    condition <- switch(
+      epoch_type,
+      "comment" = event$comment,
+      "digital_inputs" = event$digital_input,
+      "recording" = c("start", "stop", "pause", "resume")[event$event_reason + 1],
+      "configuration" = event$config_changed,
+      "log" = paste(event$app_name, event$log_comment, sep = "|"),
+      "button_trigger" = c("undefined", "button_press", "event_reset")[event$trigger_type + 1],
+      "tracking" = sprintf("parent_%s-node_%s-node_count_%s-parent_count_%s-tracking_%s",
+                           event$parent_id, event$node_id, event$node_count,
+                           event$parent_count, event$tracking_point),
+      "video_sync" = sprintf("video_%s-frame_%s-elapsed_%s-source_%s",
+                             event$video_file_number, event$video_frame_number,
+                             event$video_elapsed_time, event$video_source_id),
+      default = {
+        "Unknown"
+      }
+    )
+
+    data.frame(
+      SourceFile = event$original_filename,
+      Condition = condition,
+      EventType = epoch_type,
+      AbsoluteTime = event$time_in_seconds
+    )
+  })
+
+  epoch_table <- dipsaus::drop_nulls(epoch_table)
+
+  if(!length(epoch_table)) { return() }
+
+  epoch_table <- do.call(rbind, epoch_table)
+
+  if(!nrow(epoch_table)) { return() }
+  epoch_table <- epoch_table[order(epoch_table$AbsoluteTime), ]
+  epoch_table$Specification <- nsp$nev$specification$version
+  epoch_table$EventOrder <- seq_len(nrow(epoch_table))
+
+  return(epoch_table)
+}
 
 #' Convert 'BlackRock' 'NEV/NSx' files
 #' @param file path to any 'NEV/NSx' file
@@ -412,89 +458,201 @@ BlackrockFile <- R6::R6Class(
 #' @param to save to path, must be a directory; default is under the file path.
 #' If \code{subject} is provided, then the default is \code{subject} raw
 #' directory path
-#' @param comments whether to extract comment section as epoch; default is true
+#' @param epoch what type of events should be included in epoch file; default
+#' include comment, digital inputs, recording trigger, configuration change,
+#' log comment, button trigger, tracking, and video trigger.
 #' @param format output format, choices are \code{'mat'} or \code{'hdf5'}
+#' @param header_only whether just to generate channel and epoch table; default
+#' is false
+#' @param ... ignored for enhanced backward compatibility
 #' @return The results will be stored in directory specified by \code{to}.
 #' Please read the output message carefully.
 #' @export
 convert_blackrock <- function(
-    file, block = NULL, subject = NULL, to = NULL, comments = TRUE,
-    format = c("mat", "hdf5")) {
+    file, block = NULL, subject = NULL, to = NULL,
+    epoch = c("comment", "digital_inputs", "recording", "configuration",
+              "log", "button_trigger", "tracking", "video_sync"),
+    format = c("mat", "hdf5"), header_only = FALSE, ...) {
 
   # DIPSAUS DEBUG START
-  # file <- '~/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/YDY/block058/EMU-058_subj-YDY_task-noisyAV_run-06_NSP-2.ns5'
+  # file <- '~/Downloads/BLOCK016_SpeechModalityLocalizer/PAV020_Datafile_016.nev'
   # format <- "mat"
   # block <- NULL
   # to <- NULL
   # comments <- FALSE
 
+
   format <- match.arg(format)
-  nev_data <- isTRUE(as.logical(comments))
+  epoch_types <- epoch[epoch %in% c("comment", "digital_inputs", "recording", "configuration", "log", "button_trigger", "tracking", "video_sync")]
 
   if(length(block) != 1 || !nzchar(block)) {
     block <- filenames(file)
     block <- gsub("\\.(ccf|nev|ns[1-6])", "", block, ignore.case = TRUE)
   }
-  catgl("Loading NEV/NSx files...", level = "INFO")
-  brfile <- BlackrockFile$new(file, block = block, nev_data = nev_data)
 
-  electrodes <- as.integer(brfile$electrode_table$Electrode)
-  catgl("Found channels: ", dipsaus::deparse_svec(electrodes), level = "INFO")
-
-  # load blackrock file
-  brfile$refresh_data(nev_data = nev_data)
-
-
+  # prepare saving directory
   if(!length(to)) {
     if(length(subject)) {
-      to <- file.path(raveio_getopt("raw_data_dir"), subject[[1]], block)
+      root_path <- file.path(raveio_getopt("raw_data_dir"), subject[[1]])
     } else {
-      to <- file.path(dirname(file), block)
+      root_path <- dirname(file)
     }
-  }
-  if(dir.exists(to)) {
-    backup_file(to, remove = TRUE)
-  }
-  to <- dir_create2(to)
-
-  save_signal <- function(s, e) {
-    # meta <- as.list(attr(s, "meta"))
-    s <- as.vector(s)
-    switch(
-      format,
-      "mat" = {
-        fname <- file.path(to, sprintf("channel_%s.mat", e))
-        R.matlab::writeMat(fname, data = s)
-      },
-      "h5" = {
-        fname <- file.path(to, sprintf("channel_%s.h5", e))
-        save_h5(s, file = fname, name = "data", quiet = TRUE, replace = TRUE)
-      },
-      {
-        stop("Unsupported format")
-      }
-    )
+    extraction_prefix <- file.path(root_path, gsub("\\.(nev|ns[0-9])", "", filenames(file), ignore.case = TRUE), "block")
+    to <- file.path(root_path, block)
+  } else {
+    extraction_prefix <- file.path(to[[1]], "extraction", "data")
+    to <- to[[1]]
   }
 
-  lapply_async(electrodes, function(e) {
-    s <- brfile$get_electrode(e)
-    save_signal(s, e)
-    return()
-  }, callback = function(e) {
-    sprintf("Writing data|Electrode %s", e)
+  catgl("Loading NEV/NSx files...", level = "INFO")
+  suppressWarnings({
+    nsp <- tryCatch({
+      get_namespace_function("readNSx", "get_nsp")(x = extraction_prefix)
+    }, error = function(e) {
+      get_namespace_function("readNSx", "import_nsp")(path = file, prefix = extraction_prefix, exclude_events = "spike", partition_prefix = "_part")
+    })
   })
 
-  safe_write_csv(brfile$electrode_table, file = file.path(to, "channels.csv"),
-                 row.names = FALSE, quiet = TRUE)
+  electrode_list <- lapply(seq_len(9), function(ii) {
+    nsx <- nsp[[sprintf("ns%d", ii)]]
+    if(!length(nsx)) { return() }
+    as.integer(nsx$header_extended$CC$electrode_id)
+  })
+  names(electrode_list) <- sprintf("ns%d", seq_len(9))
+  electrode_list <- electrode_list[!vapply(electrode_list, is.null, FALSE)]
 
-  if(nev_data) {
-    epoch_table <- brfile$get_epoch()
-    safe_write_csv(epoch_table, file.path(to, "epoch_nev_export.csv"),
-                   row.names = FALSE, quiet = TRUE)
+  if(!length(electrode_list)) {
+    catgl("No channel found. Exit...", level = "INFO")
+    return(invisible(structure(to, extraction_prefix = extraction_prefix, nparts = 1)))
   }
 
+  for(nsx in names(electrode_list)) {
+    catgl("Found channel(s) { dipsaus::deparse_svec(electrode_list[[nsx]]) } in [{ nsx }]", level = "INFO")
+  }
 
-  catgl("Done. Please check the output path: [{to}]", level = "INFO")
+  to <- normalizePath(to, mustWork = FALSE)
 
-  return(invisible(to))
+  electrodes <- unname(unlist(electrode_list))
+  electrode_list_table <- do.call(rbind, lapply(names(electrode_list), function(nsx) {
+    data.frame(
+      Electrode = electrode_list[[nsx]],
+      NSType = nsx,
+      ChannelOrder = order(electrode_list[[nsx]])
+    )
+  }))
+  electrode_table_raw <- readRDS(sprintf("%s_channels.rds", nsp$nev$prefix))
+
+  nparts <- max(c(unlist(lapply(seq_len(9), function(part) {
+    nsx <- nsp[[sprintf("ns%s", part)]]
+    if(length(nsx)) { return(nsx$nparts) }
+    return(0)
+  })), 1))
+
+  # generate epoch
+  epoch_table <- load_nev_events(nsp, epoch_types)
+
+  lapply(seq_len(nparts), function(part) {
+    if(nparts > 1) {
+      dir <- sprintf("%s_part%s", to, part)
+    } else {
+      dir <- to
+    }
+
+    dir <- dir_create2(dir)
+
+    flag <- file.path(dir, "rave_conversion_flag.txt")
+    if(file.exists(flag)) {
+      flag_data <- load_yaml(flag)
+      flag_has_header <- isTRUE(flag_data$header_converted)
+      flag_has_content <- isTRUE(flag_data$data_converted)
+    } else {
+      flag_has_header <- FALSE
+      flag_has_content <- FALSE
+    }
+    if(!flag_has_header || !(header_only || flag_has_content)) {
+
+      block_meta <- lapply_async(electrodes, function(e) {
+
+        channel <- get_namespace_function("readNSx", "get_channel")(nsp, e)
+        partition_data <- channel$channel_detail[[sprintf("part%s", part)]]
+
+        row <- electrode_list_table[which(electrode_list_table$Electrode == e)[[1]], ]
+        label <- electrode_table_raw$name[electrode_table_raw$original_channel == e][[1]]
+        re <- data.frame(
+          Electrode = e,
+          Label = label,
+          SampleRate = partition_data$meta$sample_rate,
+          NSType = row$NSType,
+          ChannelOrder = row$ChannelOrder,
+          TimeStart = partition_data$meta$relative_time,
+          Partition = part,
+          Duration = partition_data$meta$duration,
+          stringsAsFactors = FALSE
+        )
+
+        if(!header_only) {
+          info_str <- jsonlite::toJSON(as.list(re), auto_unbox = TRUE)
+          if( format == "mat" ) {
+            fname <- file.path(dir, sprintf("channel_%s.mat", e))
+            s <- as.vector(partition_data$data[])
+            R.matlab::writeMat(fname, data = s, meta = info_str)
+          } else {
+            fname <- file.path(dir, sprintf("channel_%s.h5", e))
+            s <- as.vector(partition_data$data[])
+            save_h5(info_str, file = fname, name = "meta", quiet = TRUE, replace = TRUE, new_file = TRUE)
+            save_h5(s, file = fname, name = "data", quiet = TRUE, replace = TRUE)
+          }
+        }
+
+        return(re)
+      }, callback = function(e) {
+        sprintf("%s|Electrode %s", ifelse(header_only, "Collecting data", "Writing data"), e)
+      })
+
+      electrode_table <- do.call(rbind, block_meta)
+      safe_write_csv(electrode_table, file = file.path(dir, "channels.csv"),
+                     row.names = FALSE, quiet = TRUE)
+      saveRDS(electrode_table, file = file.path(dir, "channels.rds"))
+
+
+      if(length(epoch_table)) {
+
+        time_start <- min(electrode_table$TimeStart)
+        time_end <- max(electrode_table$TimeStart + electrode_table$Duration)
+        epoch_table_sub <- epoch_table[
+          epoch_table$AbsoluteTime > time_start - 0.01 &
+            epoch_table$AbsoluteTime < time_end + 0.01, ]
+
+        if(nrow(epoch_table_sub) > 0) {
+          epoch_table_sub$Block <- basename(dir)
+          epoch_table_sub$Time <- epoch_table_sub$AbsoluteTime - time_start
+
+          safe_write_csv(
+            epoch_table_sub, row.names = FALSE, quiet = TRUE,
+            file = file.path(dir, "events.csv")
+          )
+          saveRDS(object = epoch_table_sub, file = file.path(dir, "events.rds"))
+        }
+      }
+
+
+      flag_has_header <- TRUE
+      if(header_only) {
+        flag_has_content <- FALSE
+      } else {
+        flag_has_content <- TRUE
+      }
+
+      save_yaml(list(
+        header_converted = flag_has_header,
+        data_converted = flag_has_content,
+        comment = "Please remove this file if you want RAVE to overwrite the data here."
+      ), file = flag)
+
+    }
+
+  })
+
+  catgl("Conversion done. Please check the output path prefix: [{to}]", level = "INFO")
+  return(invisible(structure(to, extraction_prefix = extraction_prefix, nparts = nparts)))
 }

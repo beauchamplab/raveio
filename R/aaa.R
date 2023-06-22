@@ -98,6 +98,18 @@ byte_size_lut <- list(
   "float" = 4, "double" = 8
 )
 
+
+get_namespace_function <- function(ns, func, on_missing) {
+  if(system.file(package = ns) == "") {
+    if(missing(on_missing)) {
+      stop("There is no package called ", sQuote(ns), ". No alternative is provided. Please install this package first")
+    }
+    return(on_missing)
+  }
+
+  return( asNamespace(ns)[[func]] )
+}
+
 #' @title Print colored messages
 #' @param ...,.envir passed to \code{\link[glue]{glue}}
 #' @param level passed to \code{\link[dipsaus]{cat2}}

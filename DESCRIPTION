@@ -63,4 +63,5 @@ Suggests:
     freesurferformats,
     arrow,
     rpyANTs,
+    readNSx,
     later (>= 1.3.0)

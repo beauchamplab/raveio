@@ -9,8 +9,11 @@ convert_blackrock(
   block = NULL,
   subject = NULL,
   to = NULL,
-  comments = TRUE,
-  format = c("mat", "hdf5")
+  epoch = c("comment", "digital_inputs", "recording", "configuration", "log",
+    "button_trigger", "tracking", "video_sync"),
+  format = c("mat", "hdf5"),
+  header_only = FALSE,
+  ...
 )
 }
 \arguments{
@@ -24,9 +27,16 @@ convert_blackrock(
 If \code{subject} is provided, then the default is \code{subject} raw
 directory path}
 
-\item{comments}{whether to extract comment section as epoch; default is true}
+\item{epoch}{what type of events should be included in epoch file; default
+include comment, digital inputs, recording trigger, configuration change,
+log comment, button trigger, tracking, and video trigger.}
 
 \item{format}{output format, choices are \code{'mat'} or \code{'hdf5'}}
+
+\item{header_only}{whether just to generate channel and epoch table; default
+is false}
+
+\item{...}{ignored for enhanced backward compatibility}
 }
 \value{
 The results will be stored in directory specified by \code{to}.
