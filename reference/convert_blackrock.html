@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.13</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,8 +56,11 @@
 <span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  subject <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  to <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  comments <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mat"</span>, <span class="st">"hdf5"</span><span class="op">)</span></span>
+<span>  epoch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"comment"</span>, <span class="st">"digital_inputs"</span>, <span class="st">"recording"</span>, <span class="st">"configuration"</span>, <span class="st">"log"</span>,</span>
+<span>    <span class="st">"button_trigger"</span>, <span class="st">"tracking"</span>, <span class="st">"video_sync"</span><span class="op">)</span>,</span>
+<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mat"</span>, <span class="st">"hdf5"</span><span class="op">)</span>,</span>
+<span>  header_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -81,12 +84,23 @@ If <code>subject</code> is provided, then the default is <code>subject</code> ra
 directory path</p></dd>
 
 
-<dt>comments</dt>
-<dd><p>whether to extract comment section as epoch; default is true</p></dd>
+<dt>epoch</dt>
+<dd><p>what type of events should be included in epoch file; default
+include comment, digital inputs, recording trigger, configuration change,
+log comment, button trigger, tracking, and video trigger.</p></dd>
 
 
 <dt>format</dt>
 <dd><p>output format, choices are <code>'mat'</code> or <code>'hdf5'</code></p></dd>
+
+
+<dt>header_only</dt>
+<dd><p>whether just to generate channel and epoch table; default
+is false</p></dd>
+
+
+<dt>...</dt>
+<dd><p>ignored for enhanced backward compatibility</p></dd>
 
 </dl></div>
     <div class="section level2">

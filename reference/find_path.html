@@ -12,7 +12,7 @@ if the original path is missing; see examples."><!-- mathjax --><script src="htt
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.13</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ along the search path will be returned</p>
 <span class="r-in"><span><span class="co"># root/cd/a     - missing</span></span></span>
 <span class="r-in"><span><span class="co"># root/a        - exists!</span></span></span>
 <span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cd/a'</span>, <span class="va">root</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp9EfNwW/a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpyLuYVG/a"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ------ Case 2: priority -------</span></span></span>
 <span class="r-in"><span><span class="co"># Create two paths in root</span></span></span>
@@ -117,7 +117,7 @@ along the search path will be returned</p>
 <span class="r-in"><span><span class="co"># root/cd/a     - exists - returned</span></span></span>
 <span class="r-in"><span><span class="co"># root/a        - exists, but ignored</span></span></span>
 <span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp9EfNwW/cc/a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpyLuYVG/cc/a"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ------ Case 3: find all -------</span></span></span>
 <span class="r-in"><span><span class="co"># Create two paths in root</span></span></span>
@@ -129,7 +129,7 @@ along the search path will be returned</p>
 <span class="r-in"><span><span class="co"># root/cd/a     - exists - returned</span></span></span>
 <span class="r-in"><span><span class="co"># root/a        - exists - returned</span></span></span>
 <span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp9EfNwW/cc/a" "/tmp/Rtmp9EfNwW/a"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpyLuYVG/cc/a" "/tmp/RtmpyLuYVG/a"   </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

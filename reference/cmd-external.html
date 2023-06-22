@@ -16,7 +16,7 @@ machines, please use the 'WSL2' system."><!-- mathjax --><script src="https://cd
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.13</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,6 +118,17 @@ machines, please use the 'WSL2' system.</p>
 <span>  command_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="va">dry_run</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cmd_run_recon_all_clinical</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  <span class="va">mri_path</span>,</span>
+<span>  work_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  command_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">dry_run</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -177,7 +188,7 @@ dry-run mode, and false otherwise</p></dd>
 
 
 <dt>...</dt>
-<dd><p>passed to <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></code></p></dd>
+<dd><p>passed to <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></code>, or additional arguments</p></dd>
 
 
 <dt>src_path</dt>
