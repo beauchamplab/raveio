@@ -27,7 +27,10 @@ check_knit_packages <- function(languages = c("R", "python")){
 
 resolve_pipeline_error <- function(name, condition, expr = NULL) {
   if(interactive() || dipsaus::shiny_is_running()) {
-    expr <- substitute(expr)
+    expr0 <- substitute(expr)
+    if( !identical(expr0, str2lang(".__target_expr__.")) ) {
+      expr <- expr0
+    }
     if(!is.null(expr)) {
       expr <- deparse1(expr, collapse = "\n")
       catgl("Pipeline code: \n{expr}", level = "ERROR")
