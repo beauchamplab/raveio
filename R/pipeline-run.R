@@ -106,12 +106,22 @@ pipeline_run <- function(
           },
           `tar_condition_run` = function( e ) {
 
-            # remove ANSI code
-            msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
+            meta <- targets::tar_meta(names = targets::any_of(targets::tar_errored()),
+                                      fields = targets::any_of("error"),
+                                      complete_only = TRUE)
 
-            if(startsWith(msg, "Error running targets::tar_make()")) {
-              msg <- gsub("^Error running targets::tar_make().*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
+            if(is.data.frame(meta) && nrow(meta)) {
+              msg <- paste(sprintf("Pipeline target [%s] raised a message: \n  %s", meta$name, meta$error), collapse = "\n")
+              msg <- dipsaus::ansi_strip(msg)
               e$message <- msg
+            } else {
+              # remove ANSI code
+              msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
+
+              if(startsWith(msg, "Error running targets::tar_make()")) {
+                msg <- gsub("^Error running targets::tar_make().*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
+                e$message <- msg
+              }
             }
 
             stop(e, call. = NULL)
