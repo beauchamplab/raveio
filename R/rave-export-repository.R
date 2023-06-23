@@ -47,6 +47,86 @@ rave_export.default <- function(x, path, format = c("rds", "yaml", "json"), ...)
   return(normalizePath(path))
 }
 
+
+export_summary <- function(x, root_path, data_type, rave_data_type) {
+  h5_path <- file.path(root_path, "summary.h5")
+  summary_data <- list()
+  summary_data[["loaded_electrodes"]] <- as.integer(x$electrode_list)
+  raveio::save_h5(x = summary_data[["loaded_electrodes"]], file = h5_path,
+                  name = "loaded_electrodes", ctype = "integer",
+                  replace = TRUE, quiet = TRUE)
+
+  epoch_name <- x$epoch_name
+  if(length(epoch_name) && is.character(epoch_name)) {
+    summary_data[["epoch_name"]] <- epoch_name
+    raveio::save_h5(x = summary_data[["epoch_name"]],
+                    file = h5_path, name = "epoch_name", ctype = "character",
+                    replace = TRUE, quiet = TRUE)
+  }
+
+  reference_name <- x$reference_name
+  if(length(reference_name) && is.character(reference_name)) {
+    summary_data[["reference_name"]] <- reference_name
+    raveio::save_h5(x = summary_data[["reference_name"]],
+                    file = h5_path, name = "reference_name", ctype = "character",
+                    replace = TRUE, quiet = TRUE)
+  }
+
+  time_windows <- as.double(unlist(x$time_windows))
+  if(length(time_windows)) {
+    summary_data[["time_windows"]] <- time_windows
+    raveio::save_h5(x = summary_data[["time_windows"]], file = h5_path,
+                    name = "time_windows", replace = TRUE,
+                    quiet = TRUE, ctype = "numeric")
+  }
+
+  if(length(epoch_name)) {
+    try({
+      condition <- x$epoch$table$Condition
+      if(length(condition)) {
+        summary_data[["condition"]] <- condition
+        raveio::save_h5(x = summary_data[["condition"]], file = h5_path,
+                        name = "condition", replace = TRUE, ctype = "character",
+                        quiet = TRUE)
+      }
+    }, silent = TRUE)
+  }
+
+
+  summary_data[["data_type"]] <- data_type
+  raveio::save_h5(x = data_type, file = h5_path,
+                  name = "data_type", replace = TRUE, ctype = "character",
+                  quiet = TRUE)
+
+  summary_data[["rave_data_type"]] <- rave_data_type
+  raveio::save_h5(x = rave_data_type, file = h5_path,
+                  name = "rave_data_type", replace = TRUE, ctype = "character",
+                  quiet = TRUE)
+
+  etable <- x$electrode_table
+  if(is.data.frame(etable)) {
+    for(nm in names(etable)) {
+      dat <- etable[[nm]]
+      if(is.factor(dat) || is.character(dat)) {
+        dat <- as.character(dat)
+        dat[is.na(dat)] <- ""
+      } else {
+        dat <- as.double(dat)
+      }
+      summary_data[[sprintf("electrode_table_%s", nm)]] <- dat
+      raveio::save_h5(x = dat, file = h5_path,
+                      name = sprintf("electrode_table/%s", nm),
+                      replace = TRUE, quiet = TRUE)
+    }
+  }
+
+  summary_data$con <- normalizePath(file.path(root_path, "summary.mat"),
+                                    mustWork = FALSE)
+  do.call(R.matlab::writeMat, summary_data)
+
+  return(normalizePath(root_path))
+}
+
 #' @rdname rave_export
 #' @export
 rave_export.rave_prepare_subject_raw_voltage_with_epoch <- function(x, path, zip = FALSE, ...) {
@@ -79,41 +159,12 @@ rave_export.rave_prepare_subject_raw_voltage_with_epoch <- function(x, path, zip
       sprintf("Exporting raw-voltage|Electrode %s", e$number)
     }
   )
-  h5_path <- file.path(root_path, "summary.h5")
-  raveio::save_h5(x = as.integer(x$electrode_list), file = h5_path,
-                  name = "loaded_electrodes", ctype = "integer",
-                  replace = TRUE, quiet = TRUE)
-  raveio::save_h5(x = x$epoch_name, file = h5_path, name = "epoch_name",
-                  replace = TRUE, quiet = TRUE)
-  raveio::save_h5(x = as.double(unlist(x$time_windows)), file = h5_path,
-                  name = "time_windows", replace = TRUE,
-                  quiet = TRUE, ctype = "numeric")
-  raveio::save_h5(x = x$epoch$table$Condition, file = h5_path,
-                  name = "condition", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
-  raveio::save_h5(x = "raw_voltage", file = h5_path,
-                  name = "data_type", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
-  raveio::save_h5(x = "rave_prepare_subject_raw_voltage_with_epoch", file = h5_path,
-                  name = "rave_data_type", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
 
-  etable <- x$electrode_table
-  for(nm in names(etable)) {
-    dat <- etable[[nm]]
-    if(is.factor(dat) || is.character(dat)) {
-      dat <- as.character(dat)
-      dat[is.na(dat)] <- ""
-    } else {
-      dat <- as.double(dat)
-    }
-    raveio::save_h5(x = dat, file = h5_path,
-                    name = sprintf("electrode_table/%s", nm),
-                    replace = TRUE, quiet = TRUE)
-  }
-  # h5read('output.h5', '/electrode_table/freesurferlabel')
+  root_path <- export_summary(
+    x, root_path = root_path, data_type = "raw_voltage",
+    rave_data_type = "rave_prepare_subject_raw_voltage_with_epoch"
+  )
 
-  root_path <- normalizePath(root_path)
   if(zip) {
     wd <- getwd()
     on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
@@ -162,43 +213,12 @@ rave_export.rave_prepare_subject_voltage_with_epoch <- function(x, path, zip = F
       sprintf("Exporting voltage|Electrode %s", e$number)
     }
   )
-  h5_path <- file.path(root_path, "summary.h5")
-  raveio::save_h5(x = as.integer(x$electrode_list), file = h5_path,
-                  name = "loaded_electrodes", ctype = "integer",
-                  replace = TRUE, quiet = TRUE)
-  raveio::save_h5(x = x$epoch_name, file = h5_path, name = "epoch_name",
-                  replace = TRUE, quiet = TRUE, ctype = "character")
-  raveio::save_h5(x = x$reference_name, file = h5_path, name = "reference_name",
-                  replace = TRUE, quiet = TRUE, ctype = "character")
-  raveio::save_h5(x = as.double(unlist(x$time_windows)), file = h5_path,
-                  name = "time_windows", replace = TRUE,
-                  quiet = TRUE, ctype = "numeric")
-  raveio::save_h5(x = x$epoch$table$Condition, file = h5_path,
-                  name = "condition", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
-  raveio::save_h5(x = "voltage", file = h5_path,
-                  name = "data_type", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
-  raveio::save_h5(x = "rave_prepare_subject_voltage_with_epoch", file = h5_path,
-                  name = "rave_data_type", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
 
-  etable <- x$electrode_table
-  for(nm in names(etable)) {
-    dat <- etable[[nm]]
-    if(is.factor(dat) || is.character(dat)) {
-      dat <- as.character(dat)
-      dat[is.na(dat)] <- ""
-    } else {
-      dat <- as.double(dat)
-    }
-    raveio::save_h5(x = dat, file = h5_path,
-                    name = sprintf("electrode_table/%s", nm),
-                    replace = TRUE, quiet = TRUE)
-  }
-  # h5read('output.h5', '/electrode_table/freesurferlabel')
+  root_path <- export_summary(
+    x, root_path = root_path, data_type = "voltage",
+    rave_data_type = "rave_prepare_subject_voltage_with_epoch"
+  )
 
-  root_path <- normalizePath(root_path)
   if(zip) {
     wd <- getwd()
     on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
@@ -246,43 +266,11 @@ rave_export.rave_prepare_power <- function(x, path, zip = FALSE, ...) {
       sprintf("Exporting power|Electrode %s", e$number)
     }
   )
-  h5_path <- file.path(root_path, "summary.h5")
-  raveio::save_h5(x = as.integer(x$electrode_list), file = h5_path,
-                  name = "loaded_electrodes", ctype = "integer",
-                  replace = TRUE, quiet = TRUE)
-  raveio::save_h5(x = x$epoch_name, file = h5_path, name = "epoch_name",
-                  replace = TRUE, quiet = TRUE, ctype = "character")
-  raveio::save_h5(x = x$reference_name, file = h5_path, name = "reference_name",
-                  replace = TRUE, quiet = TRUE, ctype = "character")
-  raveio::save_h5(x = as.double(unlist(x$time_windows)), file = h5_path,
-                  name = "time_windows", replace = TRUE,
-                  quiet = TRUE, ctype = "numeric")
-  raveio::save_h5(x = x$epoch$table$Condition, file = h5_path,
-                  name = "condition", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
-  raveio::save_h5(x = "power", file = h5_path,
-                  name = "data_type", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
-  raveio::save_h5(x = "rave_prepare_power", file = h5_path,
-                  name = "rave_data_type", replace = TRUE, ctype = "character",
-                  quiet = TRUE)
 
-  etable <- x$electrode_table
-  for(nm in names(etable)) {
-    dat <- etable[[nm]]
-    if(is.factor(dat) || is.character(dat)) {
-      dat <- as.character(dat)
-      dat[is.na(dat)] <- ""
-    } else {
-      dat <- as.double(dat)
-    }
-    raveio::save_h5(x = dat, file = h5_path,
-                    name = sprintf("electrode_table/%s", nm),
-                    replace = TRUE, quiet = TRUE)
-  }
-  # h5read('output.h5', '/electrode_table/freesurferlabel')
-
-  root_path <- normalizePath(root_path)
+  root_path <- export_summary(
+    x, root_path = root_path, data_type = "power",
+    rave_data_type = "rave_prepare_power"
+  )
   if(zip) {
     wd <- getwd()
     on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
