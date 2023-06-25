@@ -18,6 +18,8 @@
 #' false
 #' @param verbose whether to print out the command script; default is true under
 #' dry-run mode, and false otherwise
+#' @param expr expression to run as command
+#' @param quoted whether \code{expr} is quoted; default is false
 #' @param mri_path the absolute to 'MRI' volume; must in 'Nifti' format
 #' @param ct_path the absolute to 'CT' volume; must in 'Nifti' format
 #' @param args further arguments in the shell command, especially the
@@ -25,6 +27,7 @@
 #' @param work_path work path for 'FreeSurfer' command;
 #' @param script the shell script
 #' @param script_path path to run the script
+#' @param log_file where should log file be stored
 #' @param command which command to invoke; default is \code{'bash'}
 #' @param dof,cost,search,searchcost parameters used by 'FSL' \code{'flirt'}
 #' command; see their documentation for details
@@ -127,4 +130,67 @@ rscript_path <- function(winslash = "\\") {
   if(rscript_path != "") { return(normalizePath(rscript_path, winslash = winslash)) }
 
   return("Rscript")
+}
+
+
+
+#' @rdname cmd-external
+#' @export
+cmd_run_r <- function(
+    expr, quoted = FALSE,
+    verbose = TRUE, dry_run = FALSE,
+    log_file = tempfile(), script_path = tempfile(),
+    ...) {
+
+  force(dry_run)
+  if(!quoted) {
+    expr <- substitute(expr)
+  }
+
+  # work_path <- normalizePath(
+  #   file.path(subject$preprocess_settings$raw_path, "rave-imaging"),
+  #   winslash = "/", mustWork = FALSE
+  # )
+  log_path <- normalizePath(dirname(log_file), mustWork = FALSE, winslash = "/")
+  log_file <- basename(log_file)
+
+  script_path <- normalizePath(
+    script_path,
+    mustWork = FALSE, winslash = "/"
+  )
+
+  cmd <- paste(collapse = "\n", c(
+    "#!/usr/bin/env Rscript --no-save --no-restore",
+    deparse(expr),
+    "",
+    "# END OF SCRIPT"
+  ))
+
+  execute <- function(...) {
+    dir_create2(log_path)
+    log_abspath <- normalizePath(file.path(log_path, log_file), winslash = "/", mustWork = FALSE)
+    cmd_execute(script = cmd, script_path = script_path,
+                args = c("--no-save", "--no-restore"),
+                command = rscript_path(),
+                stdout = log_abspath, stderr = log_abspath, ...)
+  }
+  re <- list(
+    script = cmd,
+    script_path = script_path,
+    dry_run = dry_run,
+    log_file = file.path(log_path, log_file, fsep = "/"),
+    execute = execute,
+    command = rscript_path()
+  )
+  if( verbose ) {
+    message(cmd)
+  }
+  if(dry_run) {
+    return(invisible(re))
+  }
+
+  execute()
+
+  return(invisible(re))
+
 }

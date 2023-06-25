@@ -5,6 +5,7 @@
 \alias{cmd_run_3dAllineate}
 \alias{cmd-external}
 \alias{cmd_execute}
+\alias{cmd_run_r}
 \alias{cmd_run_dcm2niix}
 \alias{cmd_run_flirt}
 \alias{cmd_run_recon_all}
@@ -28,6 +29,16 @@ cmd_execute(
   dry_run = FALSE,
   backup = TRUE,
   args = NULL,
+  ...
+)
+
+cmd_run_r(
+  expr,
+  quoted = FALSE,
+  verbose = TRUE,
+  dry_run = FALSE,
+  log_file = tempfile(),
+  script_path = tempfile(),
   ...
 )
 
@@ -113,6 +124,12 @@ dry-run mode, and false otherwise}
 'FreeSurfer' reconstruction command}
 
 \item{...}{passed to \code{\link{system2}}, or additional arguments}
+
+\item{expr}{expression to run as command}
+
+\item{quoted}{whether \code{expr} is quoted; default is false}
+
+\item{log_file}{where should log file be stored}
 
 \item{src_path}{source of the 'DICOM' or 'Nifti' image (absolute path)}
 
