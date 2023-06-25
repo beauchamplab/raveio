@@ -128,4 +128,4 @@ rm -r "$wdir_fs"
 
 echo "Done." | tee -a "$log_file"
 
-## END OF RAVE Script: FreeSurfer recon-all with flags: {{ paste(c(args, ""), collapse = " ") }} ##
+## END OF RAVE Script: FreeSurfer recon-all ##
