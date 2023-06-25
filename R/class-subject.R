@@ -177,10 +177,19 @@ RAVESubject <- R6::R6Class(
       default_path <- file.path(self$note_path, sprintf("%s.json", namespace))
       default_path_backup <- file.path(self$note_path, sprintf("%s.yaml", namespace))
       defaults <- dipsaus::fastmap2()
+      exists <- FALSE
       if(file.exists(default_path)){
-        load_json(default_path, map = defaults)
-      } else if (file.exists(default_path_backup)) {
-        load_yaml(default_path_backup, map = defaults)
+        try(silent = TRUE, {
+          load_json(default_path, map = defaults)
+          exists <- TRUE
+        })
+      }
+
+      if (!exists && file.exists(default_path_backup)) {
+        try(silent = TRUE, {
+          load_yaml(default_path_backup, map = defaults)
+          exists <- TRUE
+        })
       }
 
       old_val <- defaults[[key]]
@@ -237,10 +246,19 @@ RAVESubject <- R6::R6Class(
 
       defaults <- dipsaus::fastmap2(missing_default = default_if_missing)
 
+      exists <- FALSE
       if(file.exists(default_path)){
-        load_json(con = default_path, map = defaults)
-      } else if (file.exists(default_path_backup)) {
-        load_yaml(default_path_backup, map = defaults)
+        tryCatch({
+          load_json(con = default_path, map = defaults)
+          exists <- TRUE
+        }, error = function(){})
+      }
+
+      if (!exists && file.exists(default_path_backup)) {
+        tryCatch({
+          load_yaml(default_path_backup, map = defaults)
+          exists <- TRUE
+        }, error = function(){})
       }
 
       re <- defaults[...]
@@ -334,11 +352,23 @@ RAVESubject <- R6::R6Class(
 
         defaults <- dipsaus::fastmap2(missing_default = default_if_missing)
 
+        exists <- FALSE
+
         if(file.exists(default_path)){
-          try({ load_json(con = default_path, map = defaults) })
-        } else if (file.exists(default_path_backup)) {
-          try({ load_yaml(default_path_backup, map = defaults) })
-        } else { return(NULL) }
+          try({
+            load_json(con = default_path, map = defaults)
+            exists <- TRUE
+          })
+        }
+
+        if (!exists && file.exists(default_path_backup)) {
+          try({
+            load_yaml(default_path_backup, map = defaults)
+            exists <- TRUE
+          })
+        }
+
+        if(!exists) { return(NULL) }
 
         for(nm in names(defaults)) {
           if(nm != "") {
