@@ -16,7 +16,7 @@ machines, please use the 'WSL2' system."><!-- mathjax --><script src="https://cd
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.15</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,6 +77,16 @@ machines, please use the 'WSL2' system.</p>
 <span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  backup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  args <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cmd_run_r</span><span class="op">(</span></span>
+<span>  <span class="va">expr</span>,</span>
+<span>  quoted <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  script_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -189,6 +199,18 @@ dry-run mode, and false otherwise</p></dd>
 
 <dt>...</dt>
 <dd><p>passed to <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></code>, or additional arguments</p></dd>
+
+
+<dt>expr</dt>
+<dd><p>expression to run as command</p></dd>
+
+
+<dt>quoted</dt>
+<dd><p>whether <code>expr</code> is quoted; default is false</p></dd>
+
+
+<dt>log_file</dt>
+<dd><p>where should log file be stored</p></dd>
 
 
 <dt>src_path</dt>

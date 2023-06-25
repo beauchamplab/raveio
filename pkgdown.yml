@@ -2,7 +2,7 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2023-06-23T21:37Z
+last_built: 2023-06-25T04:51Z
 urls:
   reference: https://beauchamplab.github.io/raveio/reference
   article: https://beauchamplab.github.io/raveio/articles
