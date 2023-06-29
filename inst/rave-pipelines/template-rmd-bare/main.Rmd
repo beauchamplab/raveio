@@ -60,9 +60,10 @@ build_pipeline(make_file = "make-TEMPLATE.R")
 Once the pipeline script `make-TEMPLATE.R` is built, you can visualize and execute the pipeline without the need of re-knit this document. Notice we use `r` block instead of `rave`. (This is because the code blocks are not part of pipeline targets.)
 
 ```{r visualize, echo=FALSE}
-Sys.setenv("RAVE_PIPELINE" = normalizePath("."))
+# Fixed usage, show pipeline graph
 try({
-  raveio::pipeline_visualize()
+  asNamespace("raveio")$pipeline_dependency_graph(
+    pipeline_path = ".", glimpse = TRUE)
 }, silent = TRUE)
 ```
 
