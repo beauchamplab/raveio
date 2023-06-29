@@ -8,7 +8,7 @@
 #' @param map a map to save the results
 #' @param ... other parameters to pass into \code{\link[jsonlite]{toJSON}} or
 #' \code{\link[jsonlite]{fromJSON}}
-#' @return \code{save_json} returns nothing; \code{load_json} returns an
+#' @returns \code{save_json} returns nothing; \code{load_json} returns an
 #' R object.
 #'
 #' @examples

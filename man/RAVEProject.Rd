@@ -3,6 +3,11 @@
 \name{RAVEProject}
 \alias{RAVEProject}
 \title{Definition for 'RAVE' project class}
+\value{
+character vector
+
+true or false whether subject is in the project
+}
 \description{
 Definition for 'RAVE' project class
 
@@ -75,9 +80,6 @@ get all imported subjects within project
 \if{html}{\out{<div class="r">}}\preformatted{RAVEProject$subjects()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-character vector
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RAVEProject-has_subject"></a>}}
@@ -94,9 +96,6 @@ whether a specific subject exists in this project
 \item{\code{subject_code}}{character, subject name}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-true or false whether subject is in the project
 }
 }
 \if{html}{\out{<hr>}}

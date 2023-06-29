@@ -12,7 +12,7 @@
 #' speed is less than 0.1 MB per second.
 #' @param use_cache if hard drive speed was tested before, abort testing
 #' and return cached results or not; default is false.
-#' @return A vector of two: writing and reading speed in MB per seconds.
+#' @returns A vector of two: writing and reading speed in MB per seconds.
 #' @export
 test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
                          abort_if_slow = TRUE, use_cache = FALSE){
@@ -95,7 +95,7 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
 #' @param path file path
 #' @param root_dir top directory of the search path
 #' @param all return all possible paths, default is false
-#' @return The absolute path of file if exists, or \code{NULL} if
+#' @returns The absolute path of file if exists, or \code{NULL} if
 #' missing/failed.
 #' @details When file is missing, \code{find_path} concatenates the
 #' root directory and path combined to find the file. For example,
@@ -175,7 +175,7 @@ find_path <- function(path, root_dir, all = FALSE){
 #' @param x path to create
 #' @param showWarnings,recursive,... passed to \code{\link{dir.create}}
 #' @param check whether to check the directory after creation
-#' @return Normalized path
+#' @returns Normalized path
 #'
 #' @examples
 #'

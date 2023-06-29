@@ -4,7 +4,7 @@
 #' @param subject subject ID or \code{\link{RAVESubject}} instance
 #' @param electrodes electrodes to calculate the common average; these
 #' electrodes must run through 'Wavelet' first
-#' @return A reference instance returned by \code{\link{new_reference}} with
+#' @returns A reference instance returned by \code{\link{new_reference}} with
 #' signal type determined automatically.
 #' @details
 #' The goal of generating common average signals is to capture the common

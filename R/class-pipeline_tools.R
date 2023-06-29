@@ -123,7 +123,7 @@ PipelineTools <- R6::R6Class(
     #' @param constraint the constraint of the results; if input value is not
     #' from \code{constraint}, then only the first element of \code{constraint}
     #' will be returned.
-    #' @return The value of the inputs, or a list if \code{key} is missing
+    #' @returns The value of the inputs, or a list if \code{key} is missing
     get_settings = function(key, default = NULL, constraint) {
       if(missing(key)){
         return(as.list(private$.settings))
@@ -145,7 +145,7 @@ PipelineTools <- R6::R6Class(
     #' all the intermediate variables
     #' @param ifnotfound variable default value if not found
     #' @param ... other parameters passing to \code{\link{pipeline_read}}
-    #' @return The values of the targets
+    #' @returns The values of the targets
     read = function(var_names, ifnotfound = NULL, ...) {
       if(missing(var_names)) {
         var_names <- pipeline_target_names(pipe_dir = private$.pipeline_path)
@@ -172,7 +172,7 @@ PipelineTools <- R6::R6Class(
     #' @param scheduler,type,envir,callr_function,... passed to
     #' \code{\link{pipeline_run}} if \code{as_promise} is true, otherwise
     #' these arguments will be passed to \code{pipeline_run_bare}
-    #' @return A \code{\link{PipelineResult}} instance if \code{as_promise}
+    #' @returns A \code{\link{PipelineResult}} instance if \code{as_promise}
     #' or \code{async} is true; otherwise a list of values for input \code{names}
     run = function(names = NULL, async = FALSE, as_promise = async,
                    scheduler = c("none", "future", "clustermq"),
@@ -227,9 +227,16 @@ PipelineTools <- R6::R6Class(
                     settings_path = self$settings_path)
     },
 
+    #' @description run the pipeline shared library in scripts starting with
+    #' path \code{R/shared}
+    #' @returns An environment of shared variables
+    shared_env = function() {
+      return(pipeline_shared(pipe_dir = private$.pipeline_path))
+    },
+
     #' @description get progress of the pipeline
     #' @param method either \code{'summary'} or \code{'details'}
-    #' @return A table of the progress
+    #' @returns A table of the progress
     progress = function(method = c("summary", "details")) {
       method <- match.arg(method)
       pipeline_progress(pipe_dir = private$.pipeline_path, method = method)
@@ -242,6 +249,26 @@ PipelineTools <- R6::R6Class(
       env$pipeline_get <- self$get_settings
       env$pipeline_settings_path <- self$settings_path
       env$pipeline_path <- private$.pipeline_path
+    },
+
+    #' @description visualize pipeline target dependency graph
+    #' @param glimpse whether to glimpse the graph network or render the state
+    #' @param aspect_ratio controls node spacing
+    #' @param node_size,label_size size of nodes and node labels
+    #' @param ... passed to \code{\link{pipeline_visualize}}
+    #' @returns Nothing
+    visualize = function(glimpse = FALSE, aspect_ratio = 2, node_size = 30, label_size = 40, ...) {
+      args <- list(pipe_dir = private$.pipeline_path, glimpse = glimpse, ...)
+      tryCatch({
+        widget <- pipeline_dependency_graph(
+          glimpse = glimpse, pipeline_path = private$.pipeline_path,
+          aspect_ratio = aspect_ratio, node_size = node_size, label_size = label_size, ...)
+        asNamespace("htmlwidgets")
+        print(widget)
+      }, error = function(e) {
+        do.call(pipeline_visualize, args)
+      })
+      return(invisible())
     },
 
     #' @description fork (copy) the current pipeline to a new directory
@@ -297,7 +324,7 @@ PipelineTools <- R6::R6Class(
     #' environments, use \code{'rds'}
     #' @param overwrite whether to overwrite existing files; default is no
     #' @param ... passed to saver functions
-    #' @return the saved file path
+    #' @returns the saved file path
     save_data = function(data, name, format = c("json", "yaml", "csv", "fst", "rds"),
                          overwrite = FALSE, ...) {
       format <- match.arg(format)
@@ -313,7 +340,7 @@ PipelineTools <- R6::R6Class(
     #' @param format the format of the data, default is automatically obtained
     #' from the file extension
     #' @param ... passed to loader functions
-    #' @return the data if file is found or a default value
+    #' @returns the data if file is found or a default value
     load_data = function(name, error_if_missing = TRUE, default_if_missing = NULL,
                          format = c("auto", "json", "yaml", "csv", "fst", "rds"), ...) {
 
@@ -387,7 +414,7 @@ PipelineTools <- R6::R6Class(
 #' @param paths the paths to search for the pipeline, usually the parent
 #' directory of the pipeline; default is \code{\link{pipeline_root}}, which
 #' only search for pipelines that are installed or in current working directory.
-#' @return A \code{\link{PipelineTools}} instance
+#' @returns A \code{\link{PipelineTools}} instance
 #' @examples
 #'
 #' if(interactive()) {

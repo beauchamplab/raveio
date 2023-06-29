@@ -136,7 +136,7 @@ Tensor <- R6::R6Class(
 
     #' @description print out the data dimensions and snapshot
     #' @param ... ignored
-    #' @return self
+    #' @returns self
     print = function(...){
       cat('Dimension: ', paste(sprintf('%d', self$dim), collapse = ' x '), '\n')
 
@@ -283,7 +283,7 @@ Tensor <- R6::R6Class(
     #' @param data_only whether just return the data value, or wrap them as a
     #' \code{Tensor} instance
     #' @param .env environment where \code{...} is evaluated
-    #' @return the sliced data
+    #' @returns the sliced data
     subset = function(..., drop = FALSE, data_only = FALSE,
                       .env = parent.frame()){
       ..wrapper <- list2env(self$dimnames, parent = .env)
@@ -439,7 +439,7 @@ Tensor <- R6::R6Class(
     #' @description converts tensor (array) to a table (data frame)
     #' @param include_index logical, whether to include dimension names
     #' @param value_name character, column name of the value
-    #' @return a data frame with the dimension names as index columns and
+    #' @returns a data frame with the dimension names as index columns and
     #' \code{value_name} as value column
     flatten = function(include_index = FALSE, value_name = 'value'){
       nrow <- prod(self$dim)
@@ -528,7 +528,7 @@ Tensor <- R6::R6Class(
     #' @description restore data from hard drive to memory
     #' @param drop whether to apply \code{\link{drop}} to the data
     #' @param gc_delay seconds to delay the garbage collection
-    #' @return original array
+    #' @returns original array
     get_data = function(drop = FALSE, gc_delay = 3){
       self$last_used <- Sys.time()
       d <- NULL
@@ -584,7 +584,7 @@ Tensor <- R6::R6Class(
     #' @description apply mean, sum, or median to collapse data
     #' @param keep which dimensions to keep
     #' @param method \code{"mean"}, \code{"sum"}, or \code{"median"}
-    #' @return the collapsed data
+    #' @returns the collapsed data
     collapse = function(keep, method = 'mean'){
       sel <- keep %in% seq_along(self$dim)
       if(any(!sel)){
@@ -791,7 +791,7 @@ ECoGTensor <- R6::R6Class(
     #' @description converts tensor (array) to a table (data frame)
     #' @param include_index logical, whether to include dimension names
     #' @param value_name character, column name of the value
-    #' @return a data frame with the dimension names as index columns and
+    #' @returns a data frame with the dimension names as index columns and
     #' \code{value_name} as value column
     flatten = function(include_index = TRUE, value_name = 'value'){
       nrow <- prod(self$dim)
@@ -832,7 +832,7 @@ ECoGTensor <- R6::R6Class(
     #' @param use_index logical, when \code{multi_files} is true, whether use
     #' index dimension as partition number
     #' @param ... further passed to \code{\link{Tensor}} constructor
-    #' @return an \code{ECoGTensor} instance
+    #' @returns an \code{ECoGTensor} instance
     initialize = function(data, dim, dimnames, varnames, hybrid = FALSE,
                           swap_file = temp_tensor_file(), temporary = TRUE,
                           multi_files = FALSE, use_index = TRUE, ...){
@@ -895,7 +895,7 @@ ECoGTensor <- R6::R6Class(
 #' @author Zhengjia Wang
 #' @param tensors list of \code{\link{Tensor}} instances
 #' @param temporary whether to garbage collect space when exiting R session
-#' @return A new \code{\link{Tensor}} instance with the last dimension
+#' @returns A new \code{\link{Tensor}} instance with the last dimension
 #' @details Merges multiple tensors. Each tensor must share the same dimension
 #' with the last one dimension as 1, for example, \code{100x100x1}. Join 3
 #' tensors like this will result in a \code{100x100x3} tensor. This function

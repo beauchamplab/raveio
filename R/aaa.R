@@ -116,7 +116,7 @@ get_namespace_function <- function(ns, func, on_missing) {
 #' @param .pal see \code{pal} in \code{\link[dipsaus]{cat2}}
 #' @param .capture logical, whether to capture message and return it without
 #' printing
-#' @return The message as characters
+#' @returns The message as characters
 #' @details The level has order that sorted from low to high: \code{"DEBUG"},
 #' \code{"DEFAULT"}, \code{"INFO"}, \code{"WARNING"}, \code{"ERROR"},
 #' \code{"FATAL"}. Each different level will display different colors and
@@ -305,7 +305,7 @@ baseline_array <- function(
 #' \code{raveio_getopt("max_worker",1L)}
 #' @param ... additional parameters passing into
 #' \code{\link[dipsaus]{make_forked_clusters}}
-#' @return The evaluation results of \code{expr}
+#' @returns The evaluation results of \code{expr}
 #' @details Some 'RAVE' functions such as \code{\link{prepare_subject_power}}
 #' support parallel computing to speed up. However, the parallel computing is
 #' optional. You can enable it by wrapping the function calls within

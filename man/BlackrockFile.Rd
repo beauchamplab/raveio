@@ -3,6 +3,20 @@
 \name{BlackrockFile}
 \alias{BlackrockFile}
 \title{Class definition to load data from 'BlackRock' 'Micro-systems' files}
+\value{
+absolute file path
+
+absolute file paths
+
+nothing
+
+a data frame
+
+a list of spike 'waveform' (without normalization)
+
+a normalized numeric vector (analog signals with \code{'uV'}
+as the unit)
+}
 \description{
 Currently only supports minimum file specification version
 \code{2.3}. Please contact the package maintainer or 'RAVE' team
@@ -90,9 +104,6 @@ get 'NEV' file path
 \if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$nev_path()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-absolute file path
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BlackrockFile-nsx_paths"></a>}}
@@ -110,9 +121,6 @@ get 'NSx' file paths
 available paths, default is \code{NULL}; must be integers}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-absolute file paths
 }
 }
 \if{html}{\out{<hr>}}
@@ -136,9 +144,6 @@ loaded and cached before}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-nothing
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BlackrockFile-get_epoch"></a>}}
@@ -149,9 +154,6 @@ get epoch table from the 'NEV' comment data packet
 \if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$get_epoch()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-a data frame
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BlackrockFile-get_waveform"></a>}}
@@ -162,9 +164,6 @@ get 'waveform' of the spike data
 \if{html}{\out{<div class="r">}}\preformatted{BlackrockFile$get_waveform()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-a list of spike 'waveform' (without normalization)
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BlackrockFile-get_electrode"></a>}}
@@ -183,10 +182,6 @@ get electrode data
 \item{\code{nstype}}{which signal bank, for example, \code{'ns3'}, \code{'ns5'}}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-a normalized numeric vector (analog signals with \code{'uV'}
-as the unit)
 }
 }
 \if{html}{\out{<hr>}}

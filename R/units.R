@@ -4,7 +4,7 @@
 #' @param x numeric or numeric vector
 #' @param unit the unit of \code{x}
 #' @param label prefix when printing \code{x}
-#' @return Still numeric, but print-friendly class
+#' @returns Still numeric, but print-friendly class
 #' @examples
 #'
 #' sp <- as_rave_unit(1024, 'GB', 'Hard-disk space is ')
@@ -46,7 +46,7 @@ as_rave_unit <- function(x, unit, label = ''){
 #' @param start,end start and end of timer
 #' @param units passed to \code{\link[dipsaus]{time_delta}}
 #' @param label \code{rave-units} label for display purpose.
-#' @return A number inherits \code{rave-units} class.
+#' @returns A number inherits \code{rave-units} class.
 #' @seealso \code{\link{as_rave_unit}}
 #' @examples
 #' start <- Sys.time()
@@ -73,7 +73,7 @@ time_diff2 <- function(start, end, units = 'secs', label = ''){
 #' @param subject_code subject code to remove; default is missing. If
 #' \code{subject_code} is provided, then only this subject-related cache
 #' files will be removed.
-#' @return \code{cache_root} returns the root path that stores the 'RAVE'
+#' @returns \code{cache_root} returns the root path that stores the 'RAVE'
 #' cache data; \code{clear_cached_files} returns nothing
 #' @details 'RAVE' intensively uses cache files. If running on personal
 #' computers, the disk space might be filled up very quickly. These cache
@@ -237,7 +237,7 @@ symlink_enabled <- local({
 #' @param path path to a file or a directory
 #' @param remove whether to remove the original path; default is false
 #' @param quiet whether not to verbose the messages; default is false
-#' @return \code{FALSE} if nothing to back up, or the back-up path
+#' @returns \code{FALSE} if nothing to back up, or the back-up path
 #' if \code{path} exists
 #' @examples
 #'

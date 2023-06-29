@@ -3,6 +3,15 @@
 \name{LFP_reference}
 \alias{LFP_reference}
 \title{Definitions of reference with 'LFP' signal type}
+\value{
+if the reference number if \code{NULL} or \code{'noref'}, then
+returns 0, otherwise returns a \code{\link[filearray]{FileArray-class}}
+
+If \code{simplify} is enabled, and only one block is loaded,
+then the result will be a vector (\code{type="voltage"}) or a matrix
+(others), otherwise the result will be a named list where the names
+are the blocks.
+}
 \description{
 Please use a safer \code{\link{new_reference}} function to
 create instances. This documentation is to describe the member methods
@@ -160,10 +169,6 @@ load non-referenced wavelet coefficients (internally used)
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-if the reference number if \code{NULL} or \code{'noref'}, then
-returns 0, otherwise returns a \code{\link[filearray]{FileArray-class}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LFP_reference-.load_noref_voltage"></a>}}
@@ -270,12 +275,6 @@ transforms are required.}
 \item{\code{simplify}}{whether to simplify the result}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-If \code{simplify} is enabled, and only one block is loaded,
-then the result will be a vector (\code{type="voltage"}) or a matrix
-(others), otherwise the result will be a named list where the names
-are the blocks.
 }
 }
 \if{html}{\out{<hr>}}

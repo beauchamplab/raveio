@@ -360,7 +360,7 @@ rave_knitr_build <- function(targets, make_file){
 #' usually the active project folder
 #' @param collapse,comment passed to \code{set} method of
 #' \code{\link[knitr]{opts_chunk}}
-#' @return A function that is supposed to be called later that builds the
+#' @returns A function that is supposed to be called later that builds the
 #' pipeline scripts
 #' @export
 configure_knitr <- function(languages = c("R", "python")){

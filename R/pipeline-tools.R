@@ -1,5 +1,5 @@
-load_target <- function(src){
-  s <- source(src, local = TRUE, echo = FALSE, verbose = FALSE, chdir = TRUE)
+load_target <- function(src, local = TRUE){
+  s <- source(src, local = local, echo = FALSE, verbose = FALSE, chdir = TRUE)
   target <- s$value
   if(!is.list(target)){
     stop("Script ", src, " must need to end with a list.")
@@ -11,8 +11,11 @@ load_target <- function(src){
 
 #' @rdname rave-pipeline
 #' @export
-load_targets <- function(...){
-  targets <- lapply(c(...), load_target)
+load_targets <- function(..., env = NULL){
+  if(!is.environment(env)) {
+    env <- TRUE
+  }
+  targets <- lapply(c(...), load_target, local = env)
   do.call("c", targets)
 }
 
@@ -359,6 +362,115 @@ pipeline_visualize <- function(
 }
 
 
+pipeline_dependency_graph <- function(pipeline_path, targets_only = TRUE, shortcut = FALSE,
+                                      zoom_speed = 0.1, aspect_ratio = 1.5, main = "",
+                                      node_size = 30, label_size = node_size, glimpse = FALSE) {
+
+  targets::tar_assert_package("visNetwork")
+
+  widget <- callr::r(
+    function(pipeline_path, targets_only, shortcut, zoom_speed, aspect_ratio, main, label_size, node_size, glimpse) {
+      raveio <- asNamespace("raveio")
+      targets <- asNamespace("targets")
+      visNetwork <- asNamespace("visNetwork")
+
+      pipeline_path <- raveio$activate_pipeline(pipeline_path)
+
+      target_names <- raveio$pipeline_target_names(pipeline_path)
+      target_descr <- sapply(strsplit(names(target_names), "_"), function(x){
+        x <- x[x != ""]
+        if(!length(x)) { return(NA) }
+        substr(x[[1]], start = 1, stop = 1) <- toupper(
+          substr(x[[1]], start = 1, stop = 1)
+        )
+        paste(x, collapse = " ")
+      })
+      descr <- data.frame(
+        name = target_names,
+        rave_description = target_descr
+      )
+
+      target_script <- attr(pipeline_path, "target_script")
+      # load & combine pipelines
+      target <- raveio$load_targets(target_script)
+      target <- targets$tar_as_pipeline(target)
+
+      store <- targets$tar_config_get("store")
+      names <- targets$pipeline_get_names(target)
+      reporter <- targets$tar_config_get("reporter_outdated")
+
+
+      if( glimpse ) {
+        network <- targets$glimpse_init(
+          pipeline = target, meta = targets$meta_init(path_store = store),
+          progress = targets$progress_init(path_store = store), targets_only = targets_only,
+          names = names, shortcut = shortcut, allow = NULL,
+          exclude = ".Random.seed")
+      } else {
+        network <- targets$inspection_init(
+          pipeline = target, meta = targets$meta_init(path_store = store),
+          progress = targets$progress_init(path_store = store), targets_only = targets_only,
+          names = names, shortcut = shortcut, allow = NULL,
+          exclude = ".Random.seed", outdated = TRUE, reporter = reporter)
+      }
+      visual <- targets$visnetwork_init(
+        network = network, label = NULL,
+        level_separation = 100, degree_from = 1L,
+        degree_to = 1L, zoom_speed = zoom_speed)
+
+
+      level <- visual$network$vertices$level
+      height <- max(c(table(level), 1))
+      width <- max(c(level, 0)) + 1
+
+      visual$level_separation <- height / width * 150 * aspect_ratio
+      visual$update_network()
+      visual$update_labels()
+      visual$update_colors()
+      visual$update_extra()
+      visual$update_legend()
+
+      vertices <- merge(visual$network$vertices, descr, by = "name", all.x = TRUE, all.y = FALSE)
+      vertices$shape <- "hexagon"
+      vertices$title <- sprintf(
+        "Variable: %s%s%s",
+        vertices$label,
+        ifelse(is.na(vertices$rave_description), "", sprintf("<br>Description: %s", vertices$rave_description)),
+        ifelse(is.na(vertices$bytes), "", sprintf("<br>Size:     %.1f MB", vertices$bytes / 1024))
+      )
+      edges <- visual$network$edges
+      out <- visNetwork$visNetwork(nodes = vertices, edges = edges, main = main)
+      out <- visNetwork$visNodes(out, physics = FALSE, size = node_size, font = list(size = label_size))
+      out <- visNetwork$visEdges(out, smooth = list(type = "cubicBezier",
+                                                     forceDirection = "horizontal"))
+      out <- visNetwork$visOptions(
+        graph = out, collapse = TRUE,
+        highlightNearest = list(
+          enabled = TRUE, algorithm = "hierarchical",
+          degree = list(from = min(visual$degree_from, nrow(vertices)),
+                        to = min(visual$degree_to, nrow(vertices)))))
+      out <- visNetwork$visLegend(graph = out, useGroups = FALSE, enabled = !glimpse,
+                                   addNodes = visual$legend, ncol = 1L, position = "right", width = 0.1,
+                                   zoom = FALSE)
+      out <- visNetwork$visPhysics(graph = out, stabilization = FALSE)
+      out <- visNetwork$visInteraction(graph = out, zoomSpeed = visual$zoom_speed)
+      widget <- visNetwork$visHierarchicalLayout(
+        edgeMinimization = TRUE,
+        graph = out, direction = "LR", levelSeparation = visual$level_separation, sortMethod = "directed"
+      )
+      visual$visual <- widget
+      return( widget )
+    },
+    args = list(
+      pipeline_path = pipeline_path, targets_only = targets_only,
+      shortcut = shortcut, zoom_speed = zoom_speed, aspect_ratio = aspect_ratio,
+      main = main, node_size = node_size, label_size = label_size, glimpse = glimpse
+    )
+  )
+
+  return(widget)
+}
+
 
 #' @rdname rave-pipeline
 #' @export
@@ -651,7 +763,7 @@ pipeline_description <- function (file) {
 #' @param pipeline_path the root directory of the pipeline
 #' @param pipeline_settings_path the settings file of the pipeline, must be
 #' a 'yaml' file; default is \code{'settings.yaml'} in the current pipeline
-#' @return \code{pipeline_settings_set} returns a list of all the settings.
+#' @returns \code{pipeline_settings_set} returns a list of all the settings.
 #' \code{pipeline_settings_get} returns the value of given key.
 #' @export
 pipeline_settings_set <- function(
@@ -915,4 +1027,51 @@ pipeline_save_extdata <- function(
     { stop("Unsupported file format") }
   )
   invisible(path)
+}
+
+
+#' @rdname rave-pipeline
+#' @export
+pipeline_shared <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
+
+  # try to get environment from targets
+  env <- callr::r(
+    function(pipe_dir) {
+      shared_env <- new.env()
+      runtime_env <- new.env()
+      runtime_env$pipe_dir <- pipe_dir
+      runtime_env$shared_env <- shared_env
+
+      with(runtime_env, {
+        raveio <- asNamespace("raveio")
+        pipe_dir <- raveio$activate_pipeline(pipe_dir)
+        target_script <- attr(pipe_dir, "target_script")
+
+        # shared_libs <-
+        #   list.files(
+        #     file.path(pipe_dir, "R"),
+        #     pattern = "^shared-.*\\.R",
+        #     full.names = TRUE,
+        #     ignore.case = TRUE
+        #   )
+        #
+        #
+        # lapply(sort(shared_libs), function(f) {
+        #   source(file = f,
+        #          local = shared_env,
+        #          chdir = TRUE)
+        # })
+
+        # load & combine pipelines
+        raveio$load_targets(target_script, env = shared_env)
+
+      })
+
+      return(shared_env)
+    },
+    args = list(pipe_dir = pipe_dir),
+    cmdargs = c("--slave", "--no-save", "--no-restore")
+  )
+  return( env )
+
 }

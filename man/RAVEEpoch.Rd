@@ -3,6 +3,9 @@
 \name{RAVEEpoch}
 \alias{RAVEEpoch}
 \title{Definition for epoch class}
+\value{
+\code{self$table}
+}
 \description{
 Trial epoch, contains the following information: \code{Block}
 experiment block/session string; \code{Time} trial onset within that block;
@@ -126,9 +129,6 @@ manually update table field
 \if{html}{\out{<div class="r">}}\preformatted{RAVEEpoch$update_table()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-\code{self$table}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RAVEEpoch-set_trial"></a>}}

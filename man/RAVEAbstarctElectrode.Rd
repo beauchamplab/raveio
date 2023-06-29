@@ -3,6 +3,12 @@
 \name{RAVEAbstarctElectrode}
 \alias{RAVEAbstarctElectrode}
 \title{Abstract definition of electrode class in RAVE}
+\value{
+If \code{simplify} is enabled, and only one block is loaded,
+then the result will be a vector (\code{type="voltage"}) or a matrix
+(others), otherwise the result will be a named list where the names
+are the blocks.
+}
 \description{
 This class is not intended for direct use. Please
 create new child classes and implement some key methods.
@@ -241,12 +247,6 @@ useful when epoch is absent
 \item{\code{simplify}}{whether to simplify the result}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-If \code{simplify} is enabled, and only one block is loaded,
-then the result will be a vector (\code{type="voltage"}) or a matrix
-(others), otherwise the result will be a named list where the names
-are the blocks.
 }
 }
 \if{html}{\out{<hr>}}

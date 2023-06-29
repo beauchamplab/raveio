@@ -7,7 +7,7 @@
 #' @param type type of command
 #' @param unset default to return if the command is not found
 #' @param error_on_missing whether to raise errors if command is missing
-#' @return Normalized path to the command, or \code{unset} if command is
+#' @returns Normalized path to the command, or \code{unset} if command is
 #' missing.
 #' @export
 normalize_commandline_path <- function(

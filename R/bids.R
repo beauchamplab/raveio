@@ -89,7 +89,7 @@ bids_json <- function(data_file, bids_root){
 #' analyze other folders. However, by default, the function is designed for
 #' \code{'ieeg'} folder.
 #'
-#' @return A list containing the information below:
+#' @returns A list containing the information below:
 #' \item{subject_code}{character, removed leading \code{"sub-"}}
 #' \item{project_name}{character, project name}
 #' \item{has_session}{whether session/block names are indicated

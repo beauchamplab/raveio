@@ -10,7 +10,7 @@
 #' \code{\link[dipsaus]{cat2}} if \code{'ravedash'} is not installed. If
 #' \code{log=NULL}, then the message will be suppressed in 'shiny' applications.
 #' If a function provided, then the function will be called.
-#' @return A list, see \code{\link[dipsaus]{progress2}}
+#' @returns A list, see \code{\link[dipsaus]{progress2}}
 #'
 #' @export
 progress_with_logger <- function (

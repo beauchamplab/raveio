@@ -18,7 +18,7 @@
 #' @param preview whether to preview results; default is false
 #' @param template_subject template to map 'MR' images
 #' @param ... other arguments passed to \code{\link[rpyANTs]{ants_registration}}
-#' @return Aligned 'CT' will be generated at the \code{coreg_path} path:
+#' @returns Aligned 'CT' will be generated at the \code{coreg_path} path:
 #' \describe{
 #' \item{\code{'ct_in_t1.nii.gz'}}{aligned 'CT' image; the image is
 #' also re-sampled into 'MRI' space}

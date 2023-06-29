@@ -6,7 +6,7 @@
 #' @param format export format
 #' @param zip whether to zip the files
 #' @param ... passed to other methods
-#' @return Exported data path
+#' @returns Exported data path
 #' @examples
 #'
 #' x <- "my data"

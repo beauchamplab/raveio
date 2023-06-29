@@ -27,6 +27,7 @@
 \alias{pipeline_description}
 \alias{pipeline_load_extdata}
 \alias{pipeline_save_extdata}
+\alias{pipeline_shared}
 \title{'RAVE' pipeline functions}
 \usage{
 pipeline_root(root_path)
@@ -69,7 +70,7 @@ pipeline_run_bare(
   ...
 )
 
-load_targets(...)
+load_targets(..., env = NULL)
 
 pipeline_target_names(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
 
@@ -169,6 +170,8 @@ pipeline_save_extdata(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
   ...
 )
+
+pipeline_shared(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
 }
 \arguments{
 \item{root_path}{the root directory for pipeline templates}
@@ -211,9 +214,9 @@ see \code{\link[dipsaus]{progress2}}.}
 
 \item{ask}{whether to ask}
 
-\item{quick}{whether to skip finished targets to save time}
-
 \item{env, envir}{environment to execute the pipeline}
+
+\item{quick}{whether to skip finished targets to save time}
 
 \item{skip_names}{hint of target names to fast skip provided they are
 up-to-date; only used when \code{quick=TRUE}. If missing, then

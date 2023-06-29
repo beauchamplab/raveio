@@ -2,7 +2,7 @@
 
 #' @title Check If Input Has Blank String
 #' @param x input data: a vector or an array
-#' @return \code{x == ""}
+#' @returns \code{x == ""}
 #' @export
 is.blank <- function(x){
   x == ''
@@ -10,7 +10,7 @@ is.blank <- function(x){
 
 #' @title Check If Input Has Zero Length
 #' @param x input data: a vector, list, or array
-#' @return whether \code{x} has zero length
+#' @returns whether \code{x} has zero length
 #' @export
 is.zerolenth <- function(x){
   length(x) == 0
@@ -53,7 +53,7 @@ rand_string <- function(length = 50){
 #' @param blank whether blank string considered invalid?
 #' @param all if \code{na} or \code{blank} is true, whether all element
 #' of \code{x} being invalid will result in failure?
-#' @return logicals whether input \code{x} is valid
+#' @returns logicals whether input \code{x} is valid
 #'
 #' @examples
 #'
@@ -117,7 +117,7 @@ is_valid_ish <- function(x, min_len = 1, max_len = Inf, mode = NA,
 #' return x. Default is \code{NA}
 #' @param default default value if
 #' @param na,min_len,... passed to \code{\link{is_valid_ish}}
-#' @return values of the keys or default is invalid
+#' @returns values of the keys or default is invalid
 #' @examples
 #'
 #' x <- list(a=1, b = NA, c = character(0))
@@ -165,7 +165,7 @@ get_val2 <- function(x, key = NA, default = NULL, na=FALSE, min_len=1L, ...){
 #' @description Make sure the time windows are valid intervals and returns
 #' a reshaped window list
 #' @param time_windows vectors or a list of time intervals
-#' @return A list of time intervals (ordered, length of 2)
+#' @returns A list of time intervals (ordered, length of 2)
 #' @examples
 #'
 #'

@@ -24,7 +24,7 @@
 #' instead of executing the code; default is false
 #' @param subject 'RAVE' subject
 #' @param verbose whether to verbose command; default is false
-#' @return Nothing is returned from the function. However, several files will
+#' @returns Nothing is returned from the function. However, several files will
 #' be generated at the 'CT' path:
 #' \describe{
 #' \item{\code{'ct_in_t1.nii'}}{aligned 'CT' image; the image is

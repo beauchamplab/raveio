@@ -3,7 +3,7 @@
 #' backup original file.
 #' @param x,file,... pass to \code{write.csv}
 #' @param quiet whether to suppress overwrite message
-#' @return Normalized path of \code{file}
+#' @returns Normalized path of \code{file}
 #'
 #' @examples
 #'
@@ -52,7 +52,7 @@ safe_write_csv <- function(x, file, ..., quiet = FALSE){
 #' Read comma separated value files with given column classes
 #' @param file,header,sep,colClasses,skip,quote,stringsAsFactors,...
 #' passed to \code{read.csv}
-#' @return A data frame
+#' @returns A data frame
 #' @details
 #' Reading a comma separated value file using builtin function
 #' \code{read.csv} might result in some unexpected

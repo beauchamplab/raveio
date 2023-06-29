@@ -23,7 +23,7 @@
 #' \code{'VertexNumber'} if given.
 #' @param include_electrodes whether to include electrode in the model; default
 #' is true
-#' @return A \code{'threeBrain'} instance if brain is found or
+#' @returns A \code{'threeBrain'} instance if brain is found or
 #' \code{usetemplateifmissing} is set to true; otherwise returns \code{NULL}
 #' @examples
 #'

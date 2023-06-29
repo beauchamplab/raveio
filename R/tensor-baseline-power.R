@@ -5,7 +5,7 @@
 #' @param keep integer vector, the margins to keep
 #' @param method character, calculates mean or sum of the array when collapsing
 #' @param ... passed to other methods
-#' @return A collapsed array (or a vector or matrix), depending on \code{keep}
+#' @returns A collapsed array (or a vector or matrix), depending on \code{keep}
 #' @seealso \code{\link[dipsaus]{collapse}}
 #' @examples
 #'
@@ -113,7 +113,7 @@ collapse2.array <- function(x, keep, method = c("mean", "sum"), ...){
 #' only; default is all available electrodes in each of \code{signal_types}
 #' @param ... passed to other methods
 #'
-#' @return Usually the same type as the input: for arrays,
+#' @returns Usually the same type as the input: for arrays,
 #' \code{\link[filearray]{filearray}},
 #' or \code{\link{ECoGTensor}}, the outputs are
 #' also the same type with the same dimensions; for \code{'rave_prepare_power'}

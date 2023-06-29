@@ -46,13 +46,13 @@ LazyFST <- R6::R6Class(
 
     #' @description to be compatible with \code{\link{LazyH5}}
     #' @param ... ignored
-    #' @return none
+    #' @returns none
     open = function(...){},
 
     #' @description close the connection
     #' @param ... ignored
     #' @param .remove_file whether to remove the file when garbage collected
-    #' @return none
+    #' @returns none
     close = function(..., .remove_file = FALSE){
       if(.remove_file){
         unlink(private$file_path)
@@ -61,7 +61,7 @@ LazyFST <- R6::R6Class(
 
     #' @description to be compatible with \code{\link{LazyH5}}
     #' @param ... ignored
-    #' @return none
+    #' @returns none
     save = function(...){
       warning('NOT Implemented yet')
     },
@@ -96,7 +96,7 @@ LazyFST <- R6::R6Class(
 
     #' @description get data dimension
     #' @param ... ignored
-    #' @return vector, dimensions
+    #' @returns vector, dimensions
     get_dims = function(...){
       private$dims
     },
@@ -104,7 +104,7 @@ LazyFST <- R6::R6Class(
     #' @description subset data
     #' @param i,j,... index along each dimension
     #' @param drop whether to apply \code{\link{drop}} the subset
-    #' @return subset of data
+    #' @returns subset of data
     subset = function(i = NULL, j = NULL, ..., drop = TRUE){
       if(!length(j)){
         j <- seq_len(private$dims[2])
@@ -287,7 +287,7 @@ load_fst <- function(path, ..., as.data.table = TRUE){
 #' @param fst_need_transpose does 'fst' data need transpose?
 #' @param fst_need_drop drop dimensions
 #' @param ram whether to load to memory directly or perform lazy loading
-#' @return If 'fst' cache file exists, returns \code{\link{LazyFST}} object,
+#' @returns If 'fst' cache file exists, returns \code{\link{LazyFST}} object,
 #' otherwise returns \code{\link{LazyH5}} instance
 #' @details RAVE stores data with redundancy. One electrode data
 #' is usually saved with two copies in different formats: 'HDF5' and

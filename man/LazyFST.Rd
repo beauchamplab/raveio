@@ -3,6 +3,17 @@
 \name{LazyFST}
 \alias{LazyFST}
 \title{R6 Class to Load 'fst' Files}
+\value{
+none
+
+none
+
+none
+
+vector, dimensions
+
+subset of data
+}
 \description{
 provides hybrid data structure for 'fst' file
 }
@@ -64,9 +75,6 @@ to be compatible with \code{\link{LazyH5}}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-none
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LazyFST-close"></a>}}
@@ -86,9 +94,6 @@ close the connection
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-none
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LazyFST-save"></a>}}
@@ -105,9 +110,6 @@ to be compatible with \code{\link{LazyH5}}
 \item{\code{...}}{ignored}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-none
 }
 }
 \if{html}{\out{<hr>}}
@@ -149,9 +151,6 @@ get data dimension
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-vector, dimensions
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LazyFST-subset"></a>}}
@@ -170,9 +169,6 @@ subset data
 \item{\code{drop}}{whether to apply \code{\link{drop}} the subset}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-subset of data
 }
 }
 }

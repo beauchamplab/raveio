@@ -3,6 +3,9 @@
 \name{RAVEPreprocessSettings}
 \alias{RAVEPreprocessSettings}
 \title{Defines preprocess configurations}
+\value{
+list of electrode type, number, etc.
+}
 \description{
 \code{R6} class definition
 }
@@ -243,9 +246,6 @@ get electrode information
 \item{\code{electrode}}{integer}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-list of electrode type, number, etc.
 }
 }
 \if{html}{\out{<hr>}}

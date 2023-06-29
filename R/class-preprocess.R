@@ -226,7 +226,7 @@ RAVEPreprocessSettings <- R6::R6Class(
 
     #' @description get electrode information
     #' @param electrode integer
-    #' @return list of electrode type, number, etc.
+    #' @returns list of electrode type, number, etc.
     electrode_info = function(electrode){
       if(!electrode %in% self$electrodes){
         return()

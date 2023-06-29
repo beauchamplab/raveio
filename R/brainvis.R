@@ -87,7 +87,7 @@ read_ini <- function (path, encoding = getOption("encoding")) {
 #' @param path optional, path to data file if original data file is missing or
 #' renamed; must be absolute path.
 #'
-#' @return \code{read_eeg_header} returns a list containing information below:
+#' @returns \code{read_eeg_header} returns a list containing information below:
 #' \item{raw}{raw header contents}
 #' \item{common}{a list of descriptors of header}
 #' \item{channels}{table of channels, including number,

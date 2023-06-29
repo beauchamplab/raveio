@@ -73,7 +73,7 @@
 #' is not found
 #' @param data extended data to be saved
 #' @param ... other parameters, targets, etc.
-#' @return \describe{
+#' @returns \describe{
 #' \item{\code{pipeline_root}}{the root directories of the pipelines}
 #' \item{\code{pipeline_list}}{the available pipeline names under \code{pipeline_root}}
 #' \item{\code{pipeline_find}}{the path to the pipeline}

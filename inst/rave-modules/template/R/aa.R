@@ -17,7 +17,7 @@ debug <- TRUE
 #' \code{module_html} will be called, and module 'UI' should be displayed.
 #' If \code{FALSE} is returned, \code{open_loader} event will be dispatched,
 #' resulting in calling function \code{loader_html}.
-#' @return Logical variable of length one.
+#' @returns Logical variable of length one.
 check_data_loaded <- function(first_time = FALSE){
   # Always use loading screen
   FALSE

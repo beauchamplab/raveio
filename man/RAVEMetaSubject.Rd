@@ -3,6 +3,9 @@
 \name{RAVEMetaSubject}
 \alias{RAVEMetaSubject}
 \title{Defines 'RAVE' subject class for meta analyses}
+\value{
+data frame
+}
 \description{
 \code{R6} class definition
 }
@@ -153,9 +156,6 @@ get subject meta data located in \code{"meta/"} folder
 read in \code{'reference_<meta_name>.csv'}.}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-data frame
 }
 }
 \if{html}{\out{<hr>}}

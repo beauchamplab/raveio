@@ -111,7 +111,7 @@ RAVEEpoch <- R6::R6Class(
     },
 
     #' @description manually update table field
-    #' @return \code{self$table}
+    #' @returns \code{self$table}
     update_table = function(){
       self$table <- do.call('rbind', lapply(self$trials, self$trial_at, df = TRUE))
       self$table

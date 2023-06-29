@@ -4,7 +4,24 @@
 \alias{PipelineTools}
 \title{Class definition for pipeline tools}
 \value{
+The value of the inputs, or a list if \code{key} is missing
+
+The values of the targets
+
+A \code{\link{PipelineResult}} instance if \code{as_promise}
+or \code{async} is true; otherwise a list of values for input \code{names}
+
+An environment of shared variables
+
+A table of the progress
+
+Nothing
+
 A new pipeline object based on the path given
+
+the saved file path
+
+the data if file is found or a default value
 }
 \description{
 Class definition for pipeline tools
@@ -41,8 +58,10 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-read}{\code{PipelineTools$read()}}
 \item \href{#method-PipelineTools-run}{\code{PipelineTools$run()}}
 \item \href{#method-PipelineTools-eval}{\code{PipelineTools$eval()}}
+\item \href{#method-PipelineTools-shared_env}{\code{PipelineTools$shared_env()}}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
+\item \href{#method-PipelineTools-visualize}{\code{PipelineTools$visualize()}}
 \item \href{#method-PipelineTools-fork}{\code{PipelineTools$fork()}}
 \item \href{#method-PipelineTools-with_activated}{\code{PipelineTools$with_activated()}}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
@@ -120,9 +139,6 @@ will be returned.}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-The value of the inputs, or a list if \code{key} is missing
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-read"></a>}}
@@ -145,9 +161,6 @@ all the intermediate variables}
 \item{\code{...}}{other parameters passing to \code{\link{pipeline_read}}}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The values of the targets
 }
 }
 \if{html}{\out{<hr>}}
@@ -185,10 +198,6 @@ these arguments will be passed to \code{pipeline_run_bare}}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-A \code{\link{PipelineResult}} instance if \code{as_promise}
-or \code{async} is true; otherwise a list of values for input \code{names}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-eval"></a>}}
@@ -215,6 +224,17 @@ respected.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-shared_env"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-shared_env}{}}}
+\subsection{Method \code{shared_env()}}{
+run the pipeline shared library in scripts starting with
+path \code{R/shared}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$shared_env()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-progress"></a>}}
 \if{latex}{\out{\hypertarget{method-PipelineTools-progress}{}}}
 \subsection{Method \code{progress()}}{
@@ -230,9 +250,6 @@ get progress of the pipeline
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-A table of the progress
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-attach"></a>}}
@@ -247,6 +264,35 @@ attach pipeline tool to environment (internally used)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{env}}{an environment}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-visualize"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-visualize}{}}}
+\subsection{Method \code{visualize()}}{
+visualize pipeline target dependency graph
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$visualize(
+  glimpse = FALSE,
+  aspect_ratio = 2,
+  node_size = 30,
+  label_size = 40,
+  ...
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{glimpse}}{whether to glimpse the graph network or render the state}
+
+\item{\code{aspect_ratio}}{controls node spacing}
+
+\item{\code{node_size, label_size}}{size of nodes and node labels}
+
+\item{\code{...}}{passed to \code{\link{pipeline_visualize}}}
 }
 \if{html}{\out{</div>}}
 }
@@ -351,9 +397,6 @@ environments, use \code{'rds'}}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-the saved file path
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-load_data"></a>}}
@@ -385,9 +428,6 @@ from the file extension}
 \item{\code{...}}{passed to loader functions}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-the data if file is found or a default value
 }
 }
 \if{html}{\out{<hr>}}

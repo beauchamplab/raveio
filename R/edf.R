@@ -22,7 +22,7 @@ check_edf <- function(){
 #' For 'iEEG' data, this is electric potential unit, and choices are \code{'V'}
 #' for volt, \code{'mV'} for millivolt, and \code{'uV'} for micro-volt.
 #' For more details, see \url{https://www.edfplus.info/specs/edftexts.html}
-#' @return A list is header information of an 'EDF/BDF' file.
+#' @returns A list is header information of an 'EDF/BDF' file.
 #'
 #' @export
 read_edf_header <- function(path){
@@ -44,7 +44,7 @@ read_edf_header <- function(path){
 #' @param convert_volt convert voltage (electric potential) to a new unit,
 #' \code{NA} means no conversion, other choices are \code{'V'}, \code{'mV'}, and
 #' \code{'uV'}.
-#' @return A list containing header information, signal lists, and
+#' @returns A list containing header information, signal lists, and
 #' channel/electrode names. If \code{signal_numbers} is specified,
 #' the corresponding names should appear as \code{selected_signal_names}.
 #' \code{get_signal()} can get physical signals after unit conversion.

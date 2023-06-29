@@ -48,7 +48,7 @@ guess_raw_trace <- function(dat, electrodes = NULL, is_vector = TRUE){
 #' @param ... other parameters used if validating \code{'BIDS'} format; see
 #' details.
 #'
-#' @return logical true or false whether the directory is valid. Attributes
+#' @returns logical true or false whether the directory is valid. Attributes
 #' containing error reasons or snapshot of the data. The attributes might be:
 #' \item{\code{snapshot}}{description of data found if passing the
 #' validation}

@@ -2,7 +2,7 @@
 #' @param subject_id character in format \code{"project/subject"}
 #' @param strict whether to check if subject directories exist or not
 #' @param reload whether to reload (update) subject information, default is true
-#' @return \code{\link{RAVESubject}} instance
+#' @returns \code{\link{RAVESubject}} instance
 #' @seealso \code{\link{RAVESubject}}
 #' @export
 as_rave_subject <- function(subject_id, strict = TRUE, reload = TRUE){
@@ -104,7 +104,7 @@ RAVESubject <- R6::R6Class(
     #' \code{'epoch_<meta_name>.csv'}; if \code{meta_type='references'},
     #' read in \code{'reference_<meta_name>.csv'}.
     #' @seealso \code{\link{load_meta2}}
-    #' @return data frame
+    #' @returns data frame
     meta_data = function(
       meta_type = c('electrodes', 'frequencies', 'time_points',
                     'epoch', 'references'),
@@ -120,7 +120,7 @@ RAVESubject <- R6::R6Class(
     #' \code{meta_type} is 'reference'
     #' @param refresh whether to reload reference table before obtaining data,
     #' default is false
-    #' @return integer vector of valid electrodes
+    #' @returns integer vector of valid electrodes
     valid_electrodes = function(reference_name, refresh = FALSE){
       if(refresh){
         private$.reference_tables[[reference_name]] <- self$meta_data(
@@ -161,7 +161,7 @@ RAVESubject <- R6::R6Class(
     #' @param key character
     #' @param value value of the key
     #' @param namespace file name of the note (without post-fix)
-    #' @return The same as \code{value}
+    #' @returns The same as \code{value}
     set_default = function(key, value, namespace = "default"){
 
       stopifnot2(is.character(key) && length(key) == 1, msg = "`key` must be a character of length 1")
@@ -235,7 +235,7 @@ RAVESubject <- R6::R6Class(
     #' @param simplify whether to simplify the results if there is only one key
     #' to fetch; default is \code{TRUE}
     #' @param namespace file name of the note (without post-fix)
-    #' @return A named list of key-value pairs, or if one key is specified and
+    #' @returns A named list of key-value pairs, or if one key is specified and
     #' \code{simplify=TRUE}, then only the value will be returned.
     get_default = function(..., default_if_missing = NULL, simplify = TRUE,
                            namespace = "default"){
@@ -283,7 +283,7 @@ RAVESubject <- R6::R6Class(
     #' namespaces
     #' @param include_history whether to include history entries; default is
     #' false
-    #' @return A data frame with four columns: \code{'namespace'} for the group
+    #' @returns A data frame with four columns: \code{'namespace'} for the group
     #' name of the entry (entries within the same namespace usually share same
     #' module), \code{'timestamp'} for when the entry was registered.
     #' \code{'entry_name'} is the name of the entry. If \code{include_history}
@@ -397,7 +397,7 @@ RAVESubject <- R6::R6Class(
     #' is false
     #' @param trial_starts the start of the trial relative to epoch time;
     #' default is 0
-    #' @return If \code{as_table} is \code{FALSE}, then returns as
+    #' @returns If \code{as_table} is \code{FALSE}, then returns as
     #' \code{\link{RAVEEpoch}} instance; otherwise returns epoch table; will
     #' raise errors when file is missing or the epoch is invalid.
     get_epoch = function(epoch_name, as_table = FALSE, trial_starts = 0){
@@ -434,7 +434,7 @@ RAVESubject <- R6::R6Class(
     #' @param reference_name reference name, depending on the subject's meta
     #' file settings
     #' @param simplify whether to only return the reference column
-    #' @return If \code{simplify} is true, returns a vector of reference
+    #' @returns If \code{simplify} is true, returns a vector of reference
     #' electrode names, otherwise returns the whole table; will
     #' raise errors when file is missing or the reference is invalid.
     get_reference = function(reference_name, simplify = FALSE){
@@ -464,7 +464,7 @@ RAVESubject <- R6::R6Class(
     #' @param reference_name see method \code{get_reference}
     #' @param subset whether to subset the resulting data table
     #' @param simplify whether to only return electrodes
-    #' @return If \code{simplify} is true, returns a vector of electrodes
+    #' @returns If \code{simplify} is true, returns a vector of electrodes
     #' that are valid (or won't be excluded) under given reference; otherwise
     #' returns a table. If \code{subset} is true, then the table will be
     #' subset and only rows with electrodes to be loaded will be kept.
@@ -538,7 +538,7 @@ RAVESubject <- R6::R6Class(
     #' @description check and get subject's frequency table, time-frequency
     #' decomposition is needed.
     #' @param simplify whether to simplify as vector
-    #' @return If \code{simplify} is true, returns a vector of frequencies;
+    #' @returns If \code{simplify} is true, returns a vector of frequencies;
     #' otherwise returns a table.
     get_frequency = function(simplify = TRUE){
       frequency_table <- self$meta_data('frequencies')

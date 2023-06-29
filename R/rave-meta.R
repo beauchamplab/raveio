@@ -5,7 +5,7 @@
 #' @param meta_type see load meta
 #' @param project_name project name
 #' @param subject_code subject code
-#' @return Either none if no meta matched or the absolute path of file saved.
+#' @returns Either none if no meta matched or the absolute path of file saved.
 #' @export
 save_meta2 <- function(data, meta_type, project_name, subject_code){
   subject_code <- stringr::str_remove(subject_code, '^sub-')
@@ -80,7 +80,7 @@ load_electrodes_csv <- function(file) {
 #' @param subject_code subject code
 #' @param subject_id "project_name/subject_code"
 #' @param meta_name only used if meta_type is epochs or references
-#' @return A data frame of the specified meta type or \code{NULL} is no meta
+#' @returns A data frame of the specified meta type or \code{NULL} is no meta
 #' data is found.
 #' @export
 load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_name){
@@ -244,7 +244,7 @@ load_meta2 <- function(meta_type, project_name, subject_code, subject_id, meta_n
 #' @param dry_run whether to dry-run the process; if true, then the table
 #' will be generated but not saved to subject's meta folder
 #' @param ... passed to \code{\link[utils]{read.csv}}
-#' @return Nothing, the electrode information will be written directly to the
+#' @returns Nothing, the electrode information will be written directly to the
 #' subject's meta directory
 #' @export
 import_electrode_table <- function (path, subject, use_fs = NA,

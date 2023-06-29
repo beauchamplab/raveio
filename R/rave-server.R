@@ -8,7 +8,7 @@
 #' 65535.
 #' @param user user to run the service as; default is the login user
 #' @param rave_version internally used; might be deprecated in the future
-#' @return nothing
+#' @returns nothing
 #' @examples
 #' \dontrun{
 #'

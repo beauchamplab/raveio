@@ -148,7 +148,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @param type data type such as \code{"power"}, \code{"phase"},
     #' \code{"voltage"}, \code{"wavelet-coefficient"}.
     #' @param simplify whether to simplify the result
-    #' @return If \code{simplify} is enabled, and only one block is loaded,
+    #' @returns If \code{simplify} is enabled, and only one block is loaded,
     #' then the result will be a vector (\code{type="voltage"}) or a matrix
     #' (others), otherwise the result will be a named list where the names
     #' are the blocks.
@@ -297,7 +297,7 @@ RAVEAbstarctElectrode <- R6::R6Class(
 #' automatically inferred, but it is highly recommended to specify a value;
 #' see \code{\link{SIGNAL_TYPES}}
 #' @param ... other parameters passed to class constructors, respectively
-#' @return Electrode or reference instances that inherit
+#' @returns Electrode or reference instances that inherit
 #' \code{\link{RAVEAbstarctElectrode}} class
 #' @details In \code{new_electrode}, \code{number} should be a positive
 #' valid integer indicating the electrode number. In \code{new_reference},

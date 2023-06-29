@@ -3,6 +3,40 @@
 \name{RAVESubject}
 \alias{RAVESubject}
 \title{Defines 'RAVE' subject class}
+\value{
+data frame
+
+integer vector of valid electrodes
+
+The same as \code{value}
+
+A named list of key-value pairs, or if one key is specified and
+\code{simplify=TRUE}, then only the value will be returned.
+
+A data frame with four columns: \code{'namespace'} for the group
+name of the entry (entries within the same namespace usually share same
+module), \code{'timestamp'} for when the entry was registered.
+\code{'entry_name'} is the name of the entry. If \code{include_history}
+is true, then multiple entries with the same \code{'entry_name'} might
+appear since the obsolete entries are included. \code{'entry_value'}
+is the value of the corresponding entry.
+
+If \code{as_table} is \code{FALSE}, then returns as
+\code{\link{RAVEEpoch}} instance; otherwise returns epoch table; will
+raise errors when file is missing or the epoch is invalid.
+
+If \code{simplify} is true, returns a vector of reference
+electrode names, otherwise returns the whole table; will
+raise errors when file is missing or the reference is invalid.
+
+If \code{simplify} is true, returns a vector of electrodes
+that are valid (or won't be excluded) under given reference; otherwise
+returns a table. If \code{subset} is true, then the table will be
+subset and only rows with electrodes to be loaded will be kept.
+
+If \code{simplify} is true, returns a vector of frequencies;
+otherwise returns a table.
+}
 \description{
 \code{R6} class definition
 }
@@ -145,9 +179,6 @@ read in \code{'reference_<meta_name>.csv'}.}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-data frame
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RAVESubject-valid_electrodes"></a>}}
@@ -169,9 +200,6 @@ in \code{self$meta_data} or \code{\link{load_meta2}} when
 default is false}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-integer vector of valid electrodes
 }
 }
 \if{html}{\out{<hr>}}
@@ -212,9 +240,6 @@ modules
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-The same as \code{value}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RAVESubject-get_default"></a>}}
@@ -245,10 +270,6 @@ to fetch; default is \code{TRUE}}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-A named list of key-value pairs, or if one key is specified and
-\code{simplify=TRUE}, then only the value will be returned.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RAVESubject-get_note_summary"></a>}}
@@ -271,15 +292,6 @@ namespaces}
 false}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A data frame with four columns: \code{'namespace'} for the group
-name of the entry (entries within the same namespace usually share same
-module), \code{'timestamp'} for when the entry was registered.
-\code{'entry_name'} is the name of the entry. If \code{include_history}
-is true, then multiple entries with the same \code{'entry_name'} might
-appear since the obsolete entries are included. \code{'entry_value'}
-is the value of the corresponding entry.
 }
 }
 \if{html}{\out{<hr>}}
@@ -304,11 +316,6 @@ default is 0}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-If \code{as_table} is \code{FALSE}, then returns as
-\code{\link{RAVEEpoch}} instance; otherwise returns epoch table; will
-raise errors when file is missing or the epoch is invalid.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RAVESubject-get_reference"></a>}}
@@ -328,11 +335,6 @@ file settings}
 \item{\code{simplify}}{whether to only return the reference column}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-If \code{simplify} is true, returns a vector of reference
-electrode names, otherwise returns the whole table; will
-raise errors when file is missing or the reference is invalid.
 }
 }
 \if{html}{\out{<hr>}}
@@ -364,12 +366,6 @@ that are load-able
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-If \code{simplify} is true, returns a vector of electrodes
-that are valid (or won't be excluded) under given reference; otherwise
-returns a table. If \code{subset} is true, then the table will be
-subset and only rows with electrodes to be loaded will be kept.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RAVESubject-get_frequency"></a>}}
@@ -387,10 +383,6 @@ decomposition is needed.
 \item{\code{simplify}}{whether to simplify as vector}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-If \code{simplify} is true, returns a vector of frequencies;
-otherwise returns a table.
 }
 }
 \if{html}{\out{<hr>}}

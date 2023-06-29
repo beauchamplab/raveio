@@ -52,13 +52,13 @@ LazyH5 <- R6::R6Class(
     quiet = FALSE,
 
     #' @description garbage collection method
-    #' @return none
+    #' @returns none
     finalize = function(){
       self$close(all = TRUE)
     },
 
     #' @description overrides print method
-    #' @return self instance
+    #' @returns self instance
     print = function(){
       if(!is.null(private$data_ptr)){
         if(private$data_ptr$is_valid){
@@ -79,7 +79,7 @@ LazyH5 <- R6::R6Class(
     #' recommended to set this to be true, otherwise the file connection is
     #' exclusive.
     #' @param quiet whether to suppress messages, default is false
-    #' @return self instance
+    #' @returns self instance
     initialize = function(file_path, data_name, read_only = FALSE, quiet = FALSE){
 
       # First get absolute path, otherwise hdf5r may report file not found error
@@ -260,7 +260,7 @@ LazyH5 <- R6::R6Class(
     #' @param stream whether to read partial data at a time
     #' @param envir if \code{i,j,...} are expressions, where should the
     #' expression be evaluated
-    #' @return subset of data
+    #' @returns subset of data
     subset = function(
       ...,
       drop = FALSE, stream = FALSE,
@@ -350,7 +350,7 @@ LazyH5 <- R6::R6Class(
 
     #' @description get data dimension
     #' @param stay_open whether to leave the connection opened
-    #' @return dimension of the array
+    #' @returns dimension of the array
     get_dims = function(stay_open = TRUE){
       self$open()
       re <- private$data_ptr$dims
@@ -362,7 +362,7 @@ LazyH5 <- R6::R6Class(
 
     #' @description get data type
     #' @param stay_open whether to leave the connection opened
-    #' @return data type, currently only character, integer, raw,
+    #' @returns data type, currently only character, integer, raw,
     #' double, and complex are available, all other types will yield "unknown"
     get_type = function(stay_open = TRUE) {
       self$open()
@@ -458,7 +458,7 @@ exp.LazyH5 <- function(x){
 #' @param ram load data to memory immediately, default is false
 #' @param quiet whether to suppress messages
 #'
-#' @return If \code{ram} is true, then return data as arrays, otherwise return
+#' @returns If \code{ram} is true, then return data as arrays, otherwise return
 #' a \code{\link{LazyH5}} instance.
 #'
 #' @seealso \code{\link{save_h5}}
@@ -526,7 +526,7 @@ load_h5 <- function(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE){
 #' please store separately the real and imaginary parts.
 #' @param quiet whether to suppress messages, default is false
 #' @param ... passed to other \code{LazyH5$save}
-#' @return Absolute path of the file saved
+#' @returns Absolute path of the file saved
 #'
 #' @seealso \code{\link{load_h5}}
 #' @examples
@@ -578,7 +578,7 @@ save_h5 <- function(x, file, name, chunk = 'auto', level = 4,replace = TRUE,
 #' @param close_all whether to close all connections or just close current
 #' connection; default is false. Set this to \code{TRUE} if you want to
 #' close all other connections to the file
-#' @return logical whether the file can be opened.
+#' @returns logical whether the file can be opened.
 #'
 #' @examples
 #'
@@ -626,7 +626,7 @@ h5_valid <- function(file, mode = c('r', 'w'), close_all = FALSE){
 
 #' Returns all names contained in 'HDF5' file
 #' @param file, 'HDF5' file path
-#' @return characters, data set names
+#' @returns characters, data set names
 #' @export
 h5_names <- function(file){
   # make sure the file is valid

@@ -3,7 +3,7 @@
 #' in the following sequence \code{Frequency}, \code{Time}, \code{Trial},
 #' and \code{Electrode}
 #' @param analysis_index_cubes a list of analysis indices for each mode
-#' @return a list of collapsed (mean) results
+#' @returns a list of collapsed (mean) results
 #' \describe{
 #' \item{\code{freq_trial_elec}}{collapsed over time-points}
 #' \item{\code{freq_time_elec}}{collapsed over trials}

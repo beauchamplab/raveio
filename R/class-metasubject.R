@@ -33,7 +33,7 @@ RAVEMetaSubject <- R6::R6Class(
     #' \code{'epoch_<meta_name>.csv'}; if \code{meta_type='references'},
     #' read in \code{'reference_<meta_name>.csv'}.
     #' @seealso \code{\link{load_meta2}}
-    #' @return data frame
+    #' @returns data frame
     meta_data = function(
       meta_type = c('electrodes', 'frequencies', 'time_points',
                     'epoch', 'references'),

@@ -3,6 +3,20 @@
 \name{LazyH5}
 \alias{LazyH5}
 \title{Lazy 'HDF5' file loader}
+\value{
+none
+
+self instance
+
+self instance
+
+subset of data
+
+dimension of the array
+
+data type, currently only character, integer, raw,
+double, and complex are available, all other types will yield "unknown"
+}
 \description{
 provides hybrid data structure for 'HDF5' file
 }
@@ -59,9 +73,6 @@ garbage collection method
 \if{html}{\out{<div class="r">}}\preformatted{LazyH5$finalize()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-none
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LazyH5-print"></a>}}
@@ -72,9 +83,6 @@ overrides print method
 \if{html}{\out{<div class="r">}}\preformatted{LazyH5$print()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-self instance
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LazyH5-new"></a>}}
@@ -99,9 +107,6 @@ exclusive.}
 \item{\code{quiet}}{whether to suppress messages, default is false}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-self instance
 }
 }
 \if{html}{\out{<hr>}}
@@ -214,9 +219,6 @@ expression be evaluated}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-subset of data
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LazyH5-get_dims"></a>}}
@@ -234,9 +236,6 @@ get data dimension
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-dimension of the array
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-LazyH5-get_type"></a>}}
@@ -253,10 +252,6 @@ get data type
 \item{\code{stay_open}}{whether to leave the connection opened}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-data type, currently only character, integer, raw,
-double, and complex are available, all other types will yield "unknown"
 }
 }
 }

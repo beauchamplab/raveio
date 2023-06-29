@@ -204,7 +204,7 @@ BlackrockFile <- R6::R6Class(
     },
 
     #' @description get 'NEV' file path
-    #' @return absolute file path
+    #' @returns absolute file path
     nev_path = function() {
       file.path(private$.path, private$.nev_file)
     },
@@ -212,7 +212,7 @@ BlackrockFile <- R6::R6Class(
     #' @description get 'NSx' file paths
     #' @param which which signal file to get, or \code{NULL} to return all
     #' available paths, default is \code{NULL}; must be integers
-    #' @return absolute file paths
+    #' @returns absolute file paths
     nsx_paths = function(which = NULL) {
       which <- as.integer(which)
       if(!length(which)) {
@@ -230,7 +230,7 @@ BlackrockFile <- R6::R6Class(
     #' loaded and cached before
     #' @param verbose whether to print out messages when loading
     #' @param nev_data whether to refresh 'NEV' extended data; default is false
-    #' @return nothing
+    #' @returns nothing
     refresh_data = function(force = FALSE, verbose = TRUE, nev_data = FALSE) {
       private$.initialize(self$base_path, header_only = FALSE,
                           force = force, verbose = verbose, nev_data = nev_data)
@@ -238,7 +238,7 @@ BlackrockFile <- R6::R6Class(
     },
 
     #' @description get epoch table from the 'NEV' comment data packet
-    #' @return a data frame
+    #' @returns a data frame
     get_epoch = function() {
 
       srate <- self$sample_rate_nev_timestamp
@@ -269,7 +269,7 @@ BlackrockFile <- R6::R6Class(
     },
 
     #' @description get 'waveform' of the spike data
-    #' @return a list of spike 'waveform' (without normalization)
+    #' @returns a list of spike 'waveform' (without normalization)
     get_waveform = function() {
       srate_timestamp <- self$sample_rate_nev_timestamp
       wave_table <- private$.nev$extended_header$NEUEVWAV
@@ -304,7 +304,7 @@ BlackrockFile <- R6::R6Class(
     #' @description get electrode data
     #' @param electrode integer, must be a length of one
     #' @param nstype which signal bank, for example, \code{'ns3'}, \code{'ns5'}
-    #' @return a normalized numeric vector (analog signals with \code{'uV'}
+    #' @returns a normalized numeric vector (analog signals with \code{'uV'}
     #' as the unit)
     get_electrode = function(electrode, nstype = NULL) {
 
@@ -465,7 +465,7 @@ load_nev_events <- function(nsp, epoch_types) {
 #' @param header_only whether just to generate channel and epoch table; default
 #' is false
 #' @param ... ignored for enhanced backward compatibility
-#' @return The results will be stored in directory specified by \code{to}.
+#' @returns The results will be stored in directory specified by \code{to}.
 #' Please read the output message carefully.
 #' @export
 convert_blackrock <- function(

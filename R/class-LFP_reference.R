@@ -120,7 +120,7 @@ LFP_reference <- R6::R6Class(
 
     #' @description load non-referenced wavelet coefficients (internally used)
     #' @param reload whether to reload cache
-    #' @return if the reference number if \code{NULL} or \code{'noref'}, then
+    #' @returns if the reference number if \code{NULL} or \code{'noref'}, then
     #' returns 0, otherwise returns a \code{\link[filearray]{FileArray-class}}
     .load_noref_wavelet = function(reload = FALSE){
 
@@ -444,7 +444,7 @@ LFP_reference <- R6::R6Class(
     #' is voltage, then 'Notch' filters must be applied; otherwise 'Wavelet'
     #' transforms are required.
     #' @param simplify whether to simplify the result
-    #' @return If \code{simplify} is enabled, and only one block is loaded,
+    #' @returns If \code{simplify} is enabled, and only one block is loaded,
     #' then the result will be a vector (\code{type="voltage"}) or a matrix
     #' (others), otherwise the result will be a named list where the names
     #' are the blocks.

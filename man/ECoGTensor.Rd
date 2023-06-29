@@ -3,6 +3,12 @@
 \name{ECoGTensor}
 \alias{ECoGTensor}
 \title{'iEEG/ECoG' Tensor class inherit from \code{\link{Tensor}}}
+\value{
+a data frame with the dimension names as index columns and
+\code{value_name} as value column
+
+an \code{ECoGTensor} instance
+}
 \description{
 Four-mode tensor (array) especially designed for
 'iEEG/ECoG' data. The Dimension names are: \code{Trial},
@@ -55,10 +61,6 @@ converts tensor (array) to a table (data frame)
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-a data frame with the dimension names as index columns and
-\code{value_name} as value column
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ECoGTensor-new"></a>}}
@@ -108,9 +110,6 @@ index dimension as partition number}
 \item{\code{...}}{further passed to \code{\link{Tensor}} constructor}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-an \code{ECoGTensor} instance
 }
 }
 }

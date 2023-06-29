@@ -18,7 +18,7 @@
 #' calculating the baseline with data from other blocks.
 #' @param ... passed to other methods
 #'
-#' @return The same type as the inputs
+#' @returns The same type as the inputs
 #'
 #' @details The arrays must be three-mode tensor and must have valid named
 #' \code{\link{dimnames}}. The dimension names must be \code{'Trial'},

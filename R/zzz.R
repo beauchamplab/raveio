@@ -334,7 +334,7 @@ load_setting <- function(reset_temp = TRUE){
 #' @param temp when saving, whether the key-value pair should be considered
 #' temporary, a temporary settings will be ignored when saving; when getting
 #' options, setting \code{temp} to false will reveal the actual settings.
-#' @return \code{raveio_setopt} returns modified \code{value};
+#' @returns \code{raveio_setopt} returns modified \code{value};
 #' \code{raveio_resetopt} returns current settings as a list;
 #' \code{raveio_confpath} returns absolute path for the settings file;
 #' \code{raveio_getopt} returns the settings value to the given key, or

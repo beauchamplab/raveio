@@ -3,6 +3,18 @@
 \name{Tensor}
 \alias{Tensor}
 \title{R6 Class for large Tensor (Array) in Hybrid Mode}
+\value{
+self
+
+the sliced data
+
+a data frame with the dimension names as index columns and
+\code{value_name} as value column
+
+original array
+
+the collapsed data
+}
 \description{
 can store on hard drive, and read slices of GB-level
 data in seconds
@@ -120,9 +132,6 @@ print out the data dimensions and snapshot
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-self
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tensor-.use_multi_files"></a>}}
@@ -210,9 +219,6 @@ subset tensor
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-the sliced data
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tensor-flatten"></a>}}
@@ -231,10 +237,6 @@ converts tensor (array) to a table (data frame)
 \item{\code{value_name}}{character, column name of the value}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-a data frame with the dimension names as index columns and
-\code{value_name} as value column
 }
 }
 \if{html}{\out{<hr>}}
@@ -297,9 +299,6 @@ restore data from hard drive to memory
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-original array
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tensor-set_data"></a>}}
@@ -338,9 +337,6 @@ apply mean, sum, or median to collapse data
 \item{\code{method}}{\code{"mean"}, \code{"sum"}, or \code{"median"}}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-the collapsed data
 }
 }
 \if{html}{\out{<hr>}}

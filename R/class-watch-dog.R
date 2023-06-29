@@ -754,7 +754,7 @@ RAVEWatchDog <- R6::R6Class(
 #' default is false
 #' @param config_open whether to open the pipeline configuration file; default
 #' is equal to \code{dry_run}
-#' @return When \code{dry_run} is true, then the watcher's instance will be
+#' @returns When \code{dry_run} is true, then the watcher's instance will be
 #' returned; otherwise nothing will be returned.
 #' @export
 auto_process_blackrock <- function(

@@ -2,7 +2,7 @@
 #' @description For more examples, see \code{\link{save_yaml}}.
 #' @param file,... passed to \code{\link[yaml]{read_yaml}}
 #' @param map \code{\link[dipsaus]{fastmap2}} instance or \code{NULL}
-#' @return A \code{\link[dipsaus]{fastmap2}}. If \code{map} is provided
+#' @returns A \code{\link[dipsaus]{fastmap2}}. If \code{map} is provided
 #' then return map, otherwise return newly created one
 #' @seealso \code{\link[dipsaus]{fastmap2}}, \code{\link{save_yaml}},
 #' \code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}}
@@ -26,7 +26,7 @@ load_yaml <- function(file, ..., map = NULL){
 #' @param x a named list, \code{\link[dipsaus]{fastmap2}}, or anything
 #' that can be transformed into named list via \code{as.list}
 #' @param file,... passed to \code{\link[yaml]{write_yaml}}
-#' @return Normalized file path
+#' @returns Normalized file path
 #' @param sorted whether to sort the results by name; default is false
 #' @seealso \code{\link[dipsaus]{fastmap2}}, \code{\link{load_yaml}},
 #' \code{\link[yaml]{read_yaml}}, \code{\link[yaml]{write_yaml}}

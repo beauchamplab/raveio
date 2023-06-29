@@ -274,7 +274,7 @@ PipelineResult <- R6::R6Class(
     #' @param names target names to wait, default is \code{NULL}, i.e. to
     #' wait for all targets that have been scheduled
     #' @param timeout maximum waiting time in seconds
-    #' @return \code{TRUE} if the target is finished, or \code{FALSE} if
+    #' @returns \code{TRUE} if the target is finished, or \code{FALSE} if
     #' timeout is reached
     await = function(names = NULL, timeout = Inf){
       if(!self$valid){ return(FALSE) }

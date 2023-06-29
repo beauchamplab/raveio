@@ -5,7 +5,7 @@
 #' @param ram whether to load data into memory. Only available when
 #' the file is in 'HDF5' format. Default is false and will load arrays,
 #' if set to true, then lazy-load data. This is useful when array is very large.
-#' @return A list of All the data stored in the file
+#' @returns A list of All the data stored in the file
 #' @details \code{\link[R.matlab]{readMat}} can only read 'Matlab' files
 #' prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
 #' to store its data, and \code{read_mat} can handle both cases.

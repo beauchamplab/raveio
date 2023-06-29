@@ -1,7 +1,7 @@
 #' Convert character to \code{\link{RAVEProject}} instance
 #' @param project character project name
 #' @param ... passed to other methods
-#' @return A \code{\link{RAVEProject}} instance
+#' @returns A \code{\link{RAVEProject}} instance
 #' @seealso \code{\link{RAVEProject}}
 #' @export
 as_rave_project <- function(project, ...){
@@ -15,7 +15,7 @@ as_rave_project <- function(project, ...){
 
 #' Get all possible projects in 'RAVE' directory
 #' @param refresh whether to refresh the cache; default is true
-#' @return characters of project names
+#' @returns characters of project names
 #' @export
 get_projects <- local({
   re <- NULL
@@ -71,7 +71,7 @@ RAVEProject <- R6::R6Class(
     },
 
     #' @description get all imported subjects within project
-    #' @return character vector
+    #' @returns character vector
     subjects = function(){
       re <- list.dirs(private$.path, full.names = FALSE, recursive = FALSE)
       # Must start with a-zA-Z
@@ -82,7 +82,7 @@ RAVEProject <- R6::R6Class(
 
     #' @description whether a specific subject exists in this project
     #' @param subject_code character, subject name
-    #' @return true or false whether subject is in the project
+    #' @returns true or false whether subject is in the project
     has_subject = function(subject_code){
       dirs <- rave_directories(subject_code, project_name = private$.name)
       dir.exists(dirs$subject_path)

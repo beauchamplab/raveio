@@ -14,7 +14,7 @@ volc_units <- c('V', 'mV', 'uV')
 #' @param project_name 'RAVE' project name
 #' @param blocks session or block names, optional
 #' @param .force_format format of the data, default is automatically detected.
-#' @return A list of directories
+#' @returns A list of directories
 #' @export
 rave_directories <- function(subject_code, project_name, blocks = NULL, .force_format = c('', 'native', 'BIDS')){
   .force_format <- match.arg(.force_format)
@@ -1015,7 +1015,7 @@ rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
 #' @param add whether to add electrodes. If set to true, then only new
 #' electrodes are allowed to be imported, blocks will be ignored and trying to
 #' import electrodes that have been imported will still result in error.
-#' @return None
+#' @returns None
 #' @section 'RAVE' Project:
 #' A 'rave' project can be very flexible. A project can refer to a task, a
 #' research objective, or "arbitrarily" as long as you find common research

@@ -3,6 +3,10 @@
 \name{PipelineResult}
 \alias{PipelineResult}
 \title{Pipeline result object}
+\value{
+\code{TRUE} if the target is finished, or \code{FALSE} if
+timeout is reached
+}
 \description{
 Pipeline result object
 
@@ -162,10 +166,6 @@ wait for all targets that have been scheduled}
 \item{\code{timeout}}{maximum waiting time in seconds}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-\code{TRUE} if the target is finished, or \code{FALSE} if
-timeout is reached
 }
 }
 \if{html}{\out{<hr>}}

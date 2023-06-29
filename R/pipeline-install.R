@@ -152,7 +152,7 @@ pipeline_install_directory <- function(
 #' dependencies
 #' @param force whether to force installing the pipelines
 #' @param ... other parameters not used
-#' @return nothing
+#' @returns nothing
 #' @export
 pipeline_install_local <- function(
   src, to = c("default", "custom", "workdir", "tempdir"),
