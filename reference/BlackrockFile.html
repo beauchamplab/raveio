@@ -14,7 +14,7 @@ if older specifications are needed"><!-- mathjax --><script src="https://cdnjs.c
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.17</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,30 @@ if older specifications are needed</p>
     </div>
 
 
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>absolute file path</p>
+
+
+<p>absolute file paths</p>
+
+
+<p>nothing</p>
+
+
+<p>a data frame</p>
+
+
+<p>a list of spike 'waveform' (without normalization)</p>
+
+
+<p>a normalized numeric vector (analog signals with <code>'uV'</code></p>
+
+
+<p>as the unit)</p>
+    </div>
     <div class="section level2">
     <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>
     <p></p><div class="r6-fields"><dl><dt><code>block</code></dt>
@@ -152,10 +176,6 @@ extensions</p></dd>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BlackrockFile</span><span class="op">$</span><span class="fu">nev_path</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
-<p>absolute file path</p>
-</div>
 
 </div><p></p><hr><a id="method-BlackrockFile-nsx_paths"></a><div class="section">
 <h3 id="method-nsx-paths-">Method <code>nsx_paths()</code><a class="anchor" aria-label="anchor" href="#method-nsx-paths-"></a></h3>
@@ -172,10 +192,6 @@ available paths, default is <code>NULL</code>; must be integers</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
-<p>absolute file paths</p>
 </div>
 
 </div><p></p><hr><a id="method-BlackrockFile-refresh_data"></a><div class="section">
@@ -202,10 +218,6 @@ loaded and cached before</p></dd>
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
-<p>nothing</p>
-</div>
 
 </div><p></p><hr><a id="method-BlackrockFile-get_epoch"></a><div class="section">
 <h3 id="method-get-epoch-">Method <code>get_epoch()</code><a class="anchor" aria-label="anchor" href="#method-get-epoch-"></a></h3>
@@ -214,10 +226,6 @@ loaded and cached before</p></dd>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BlackrockFile</span><span class="op">$</span><span class="fu">get_epoch</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
-<p>a data frame</p>
-</div>
 
 </div><p></p><hr><a id="method-BlackrockFile-get_waveform"></a><div class="section">
 <h3 id="method-get-waveform-">Method <code>get_waveform()</code><a class="anchor" aria-label="anchor" href="#method-get-waveform-"></a></h3>
@@ -226,10 +234,6 @@ loaded and cached before</p></dd>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BlackrockFile</span><span class="op">$</span><span class="fu">get_waveform</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
-<p>a list of spike 'waveform' (without normalization)</p>
-</div>
 
 </div><p></p><hr><a id="method-BlackrockFile-get_electrode"></a><div class="section">
 <h3 id="method-get-electrode-">Method <code>get_electrode()</code><a class="anchor" aria-label="anchor" href="#method-get-electrode-"></a></h3>
@@ -249,11 +253,6 @@ loaded and cached before</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
-<p>a normalized numeric vector (analog signals with <code>'uV'</code>
-as the unit)</p>
 </div>
 
 </div><p></p><hr><a id="method-BlackrockFile-clone"></a><div class="section">

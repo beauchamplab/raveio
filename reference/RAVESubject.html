@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.17</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,6 +50,56 @@
     </div>
 
 
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>data frame</p>
+
+
+<p>integer vector of valid electrodes</p>
+
+
+<p>The same as <code>value</code></p>
+
+
+
+<p>A named list of key-value pairs, or if one key is specified and
+<code>simplify=TRUE</code>, then only the value will be returned.</p>
+
+
+<p>A data frame with four columns: <code>'namespace'</code> for the group
+name of the entry (entries within the same namespace usually share same
+module), <code>'timestamp'</code> for when the entry was registered.
+<code>'entry_name'</code> is the name of the entry. If <code>include_history</code></p>
+
+
+<p>is true, then multiple entries with the same <code>'entry_name'</code> might
+appear since the obsolete entries are included. <code>'entry_value'</code></p>
+
+
+<p>is the value of the corresponding entry.</p>
+
+
+<p>If <code>as_table</code> is <code>FALSE</code>, then returns as
+<code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance; otherwise returns epoch table; will
+raise errors when file is missing or the epoch is invalid.</p>
+
+
+<p>If <code>simplify</code> is true, returns a vector of reference
+electrode names, otherwise returns the whole table; will
+raise errors when file is missing or the reference is invalid.</p>
+
+
+<p>If <code>simplify</code> is true, returns a vector of electrodes
+that are valid (or won't be excluded) under given reference; otherwise
+returns a table. If <code>subset</code> is true, then the table will be
+subset and only rows with electrodes to be loaded will be kept.</p>
+
+
+<p>If <code>simplify</code> is true, returns a vector of frequencies;
+otherwise returns a table.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="load_meta2.html">load_meta2</a></code></p></div>
@@ -241,10 +291,6 @@ read in <code>'reference_&lt;meta_name&gt;.csv'</code>.</p></dd>
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
-<p>data frame</p>
-</div>
 
 </div><p></p><hr><a id="method-RAVESubject-valid_electrodes"></a><div class="section">
 <h3 id="method-valid-electrodes-">Method <code>valid_electrodes()</code><a class="anchor" aria-label="anchor" href="#method-valid-electrodes-"></a></h3>
@@ -267,10 +313,6 @@ default is false</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
-<p>integer vector of valid electrodes</p>
 </div>
 
 </div><p></p><hr><a id="method-RAVESubject-initialize_paths"></a><div class="section">
@@ -313,10 +355,6 @@ modules</p><div class="section">
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
-<p>The same as <code>value</code></p>
-</div>
 
 </div><p></p><hr><a id="method-RAVESubject-get_default"></a><div class="section">
 <h3 id="method-get-default-">Method <code>get_default()</code><a class="anchor" aria-label="anchor" href="#method-get-default-"></a></h3>
@@ -352,11 +390,6 @@ to fetch; default is <code>TRUE</code></p></dd>
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
-<p>A named list of key-value pairs, or if one key is specified and
-<code>simplify=TRUE</code>, then only the value will be returned.</p>
-</div>
 
 </div><p></p><hr><a id="method-RAVESubject-get_note_summary"></a><div class="section">
 <h3 id="method-get-note-summary-">Method <code>get_note_summary()</code><a class="anchor" aria-label="anchor" href="#method-get-note-summary-"></a></h3>
@@ -380,16 +413,6 @@ false</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
-<p>A data frame with four columns: <code>'namespace'</code> for the group
-name of the entry (entries within the same namespace usually share same
-module), <code>'timestamp'</code> for when the entry was registered.
-<code>'entry_name'</code> is the name of the entry. If <code>include_history</code>
-is true, then multiple entries with the same <code>'entry_name'</code> might
-appear since the obsolete entries are included. <code>'entry_value'</code>
-is the value of the corresponding entry.</p>
 </div>
 
 </div><p></p><hr><a id="method-RAVESubject-get_epoch"></a><div class="section">
@@ -417,12 +440,6 @@ default is 0</p></dd>
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
-<p>If <code>as_table</code> is <code>FALSE</code>, then returns as
-<code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance; otherwise returns epoch table; will
-raise errors when file is missing or the epoch is invalid.</p>
-</div>
 
 </div><p></p><hr><a id="method-RAVESubject-get_reference"></a><div class="section">
 <h3 id="method-get-reference-">Method <code>get_reference()</code><a class="anchor" aria-label="anchor" href="#method-get-reference-"></a></h3>
@@ -443,12 +460,6 @@ file settings</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
-<p>If <code>simplify</code> is true, returns a vector of reference
-electrode names, otherwise returns the whole table; will
-raise errors when file is missing or the reference is invalid.</p>
 </div>
 
 </div><p></p><hr><a id="method-RAVESubject-get_electrode_table"></a><div class="section">
@@ -485,13 +496,6 @@ that are load-able</p><div class="section">
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
-<p>If <code>simplify</code> is true, returns a vector of electrodes
-that are valid (or won't be excluded) under given reference; otherwise
-returns a table. If <code>subset</code> is true, then the table will be
-subset and only rows with electrodes to be loaded will be kept.</p>
-</div>
 
 </div><p></p><hr><a id="method-RAVESubject-get_frequency"></a><div class="section">
 <h3 id="method-get-frequency-">Method <code>get_frequency()</code><a class="anchor" aria-label="anchor" href="#method-get-frequency-"></a></h3>
@@ -508,11 +512,6 @@ decomposition is needed.</p><div class="section">
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
-<p>If <code>simplify</code> is true, returns a vector of frequencies;
-otherwise returns a table.</p>
 </div>
 
 </div><p></p><hr><a id="method-RAVESubject-clone"></a><div class="section">

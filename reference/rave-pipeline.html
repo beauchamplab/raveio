@@ -16,7 +16,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.17</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,7 +100,7 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">load_targets</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">load_targets</span><span class="op">(</span><span class="va">...</span>, env <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pipeline_target_names</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -199,7 +199,9 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_shared</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -270,12 +272,12 @@ see <code><a href="https://dipterix.org/dipsaus/reference/progress2.html" class=
 <dd><p>whether to ask</p></dd>
 
 
-<dt>quick</dt>
-<dd><p>whether to skip finished targets to save time</p></dd>
-
-
 <dt>env, envir</dt>
 <dd><p>environment to execute the pipeline</p></dd>
+
+
+<dt>quick</dt>
+<dd><p>whether to skip finished targets to save time</p></dd>
 
 
 <dt>skip_names</dt>

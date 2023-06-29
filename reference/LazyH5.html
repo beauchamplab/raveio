@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.17</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,28 @@
 
 
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>none</p>
+
+
+<p>self instance</p>
+
+
+<p>self instance</p>
+
+
+<p>subset of data</p>
+
+
+<p>dimension of the array</p>
+
+
+<p>data type, currently only character, integer, raw,
+double, and complex are available, all other types will yield "unknown"</p>
+    </div>
+    <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Zhengjia Wang</p>
     </div>
@@ -84,10 +106,6 @@
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LazyH5</span><span class="op">$</span><span class="fu">finalize</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
-<p>none</p>
-</div>
 
 </div><p></p><hr><a id="method-LazyH5-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
@@ -96,10 +114,6 @@
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">LazyH5</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
-<p>self instance</p>
-</div>
 
 </div><p></p><hr><a id="method-LazyH5-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -129,10 +143,6 @@ exclusive.</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
-<p>self instance</p>
 </div>
 
 </div><p></p><hr><a id="method-LazyH5-save"></a><div class="section">
@@ -267,10 +277,6 @@ expression be evaluated</p></dd>
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
-<p>subset of data</p>
-</div>
 
 </div><p></p><hr><a id="method-LazyH5-get_dims"></a><div class="section">
 <h3 id="method-get-dims-">Method <code>get_dims()</code><a class="anchor" aria-label="anchor" href="#method-get-dims-"></a></h3>
@@ -286,10 +292,6 @@ expression be evaluated</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
-<p>dimension of the array</p>
 </div>
 
 </div><p></p><hr><a id="method-LazyH5-get_type"></a><div class="section">
@@ -307,11 +309,6 @@ expression be evaluated</p></dd>
 
 </dl><p></p></div>
 </div>
-<div class="section">
-<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
-<p>data type, currently only character, integer, raw,
-double, and complex are available, all other types will yield "unknown"</p>
-</div>
 
 </div>
 
@@ -325,9 +322,9 @@ double, and complex are available, all other types will yield "unknown"</p>
 <span class="r-in"><span><span class="co"># Save to local disk</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="save_h5.html">save_h5</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">f</span>, name <span class="op">=</span> <span class="st">'x'</span>, chunk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span>, level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /tmp/Rtmpwyk7Yp/file17e3754dd924 =&gt; x (Dataset Created) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /tmp/Rtmpwyk7Yp/file17e3754dd924 =&gt; x (Dataset Removed) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /tmp/Rtmpwyk7Yp/file17e3754dd924 =&gt; x (Dataset Created) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /tmp/RtmpLusuAn/file184f42695370 =&gt; x (Dataset Created) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /tmp/RtmpLusuAn/file184f42695370 =&gt; x (Dataset Removed) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /tmp/RtmpLusuAn/file184f42695370 =&gt; x (Dataset Created) </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load via LazyFST</span></span></span>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">LazyH5</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>file_path <span class="op">=</span> <span class="va">f</span>, data_name <span class="op">=</span> <span class="st">'x'</span>, read_only <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -341,7 +338,7 @@ double, and complex are available, all other types will yield "unknown"</p>
 <span class="r-in"><span><span class="co"># Read a slice of the data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span>,<span class="fl">10</span>,<span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.198   0.000   0.197 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.27    0.00    0.27 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
