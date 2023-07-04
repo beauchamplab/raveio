@@ -19,7 +19,7 @@ check_knit_packages <- function(languages = c("R", "python")){
     if(!isTRUE(ans)){
       stop("User abort.")
     }
-    remotes::install_cran(pkgs, upgrade = "never", lib = guess_libpath())
+    install_cran(pkgs = pkgs, upgrade = FALSE)
   }
 
 

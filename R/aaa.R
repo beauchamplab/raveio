@@ -465,3 +465,61 @@ lapply_async <- function(
                          plan = plan, future.chunk.size = chunk_size,
                          on_failure = on_failure, workers = ncores, ...)
 }
+
+
+guess_libpath <- function() {
+
+  lib_path <- getOption("ravemanager.libpath", default = NULL)
+
+  try(silent = TRUE, expr = {
+    if(length(lib_path) == 1 && !is.na(lib_path) && is.character(lib_path) && dir.exists(lib_path)) {
+      return(normalizePath(lib_path))
+    }
+  })
+
+  lib_path <- Sys.getenv("RAVE_LIB_PATH", unset = Sys.getenv("R_LIBS_USER", unset = ""))
+
+  ostype <- get_os()
+
+  if(ostype == 'windows') {
+    lib_path <- strsplit(lib_path, ";")[[1]]
+  } else {
+    lib_path <- strsplit(lib_path, ":")[[1]]
+  }
+
+  if(length(lib_path)) {
+    return(lib_path[[1]])
+  }
+
+  return(.libPaths()[[1]])
+}
+
+install_deps <- function(root, upgrade = FALSE, force = FALSE, lib = guess_libpath(), ...) {
+  succeed <- FALSE
+  try(silent = TRUE, expr = {
+    if(dipsaus::package_installed("pak")) {
+      pak <- asNamespace("pak")
+      pak$local_install_deps(root = root, upgrade = upgrade, ask = FALSE, dependencies = NA, lib = lib)
+      succeed <- TRUE
+    }
+  })
+  if(!succeed) {
+    remotes::install_deps(pkgdir = root, upgrade = upgrade, force = force, lib = lib, ...)
+  }
+}
+
+install_cran <- function(pkgs, upgrade = FALSE, lib = guess_libpath(), ...) {
+  succeed <- FALSE
+  try(silent = TRUE, expr = {
+    if(dipsaus::package_installed("pak")) {
+      pak <- asNamespace("pak")
+      pak$pkg_install(pkg = pkgs, lib = lib, upgrade = upgrade, ask = FALSE, dependencies = NA)
+      succeed <- TRUE
+    }
+  })
+  if(!succeed) {
+    remotes::install_cran(pkgs, upgrade = ifelse(isTRUE(upgrade), "always", "never"),
+                          lib = lib, ...)
+  }
+
+}

@@ -3,32 +3,6 @@
 # directory <- '~/Dropbox/projects/rave-pipelines/'
 # pipeline_install_bare(directory, dest, upgrade = FALSE)
 
-guess_libpath <- function() {
-
-  lib_path <- getOption("ravemanager.libpath", default = NULL)
-
-  try(silent = TRUE, expr = {
-    if(length(lib_path) == 1 && !is.na(lib_path) && is.character(lib_path) && dir.exists(lib_path)) {
-      return(normalizePath(lib_path))
-    }
-  })
-
-  lib_path <- Sys.getenv("RAVE_LIB_PATH", unset = Sys.getenv("R_LIBS_USER", unset = ""))
-
-  ostype <- get_os()
-
-  if(ostype == 'windows') {
-    lib_path <- strsplit(lib_path, ";")[[1]]
-  } else {
-    lib_path <- strsplit(lib_path, ":")[[1]]
-  }
-
-  if(length(lib_path)) {
-    return(lib_path[[1]])
-  }
-
-  return(.libPaths()[[1]])
-}
 
 pipeline_install_directory <- function(
   directory, dest, upgrade = FALSE, force = FALSE, ...){
@@ -57,10 +31,10 @@ pipeline_install_directory <- function(
   }, add = TRUE)
   file.copy(config_path, file.path(tmp_dir, "DESCRIPTION"), overwrite = TRUE, recursive = FALSE)
   if(upgrade || force) {
-    remotes::install_deps(tmp_dir, upgrade = upgrade, force = force, lib = guess_libpath(), ...)
+    install_deps(root = tmp_dir, upgrade = upgrade, force = force, ...)
   } else {
     tryCatch({
-      remotes::install_deps(tmp_dir, upgrade = upgrade, force = force, lib = guess_libpath(), ...)
+      install_deps(root = tmp_dir, upgrade = upgrade, force = force, ...)
     }, error = function(e) {
       # Github might set a rate limit on the request
     })
