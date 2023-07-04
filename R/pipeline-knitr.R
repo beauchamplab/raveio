@@ -5,7 +5,7 @@ RAVE_KNITR_SUPPORTED_LANG <- c("R", "python")
 check_knit_packages <- function(languages = c("R", "python")){
   pkgs <- c('knitr', 'rmarkdown')
   if("python" %in% languages){
-    pkgs <- c(pkgs, 'reticulate')
+    pkgs <- c(pkgs, 'rpymat')
   }
   # check knitr, rmarkdown, reticulate
   pkgs <- pkgs[!dipsaus::package_installed(pkgs)]
@@ -19,7 +19,7 @@ check_knit_packages <- function(languages = c("R", "python")){
     if(!isTRUE(ans)){
       stop("User abort.")
     }
-    remotes::install_cran(pkgs, upgrade = "never")
+    remotes::install_cran(pkgs, upgrade = "never", lib = guess_libpath())
   }
 
 
@@ -100,7 +100,7 @@ rave_knit_r <- function(export, code, deps = NULL, cue = "thorough", pattern = N
   # )
 }
 
-rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", pattern = NULL, convert = FALSE, local = FALSE, ..., target_names = NULL){
+rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", pattern = NULL, local = TRUE, ..., target_names = NULL){
   if(is.character(pattern)){
     pattern <- parse(text = pattern)
   }
@@ -109,22 +109,58 @@ rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", patter
     targets::tar_target_raw(
       name = .(export),
       command = quote({
-        reticulate::py_run_string(
-          code = paste(.(code), collapse = "\n"),
-          local = .(local),
-          convert = .(convert)
-        )
-        return(reticulate::py[[.(export)]])
+
+        script_dir <- file.path(targets::tar_config_get("store"), "_pyscripts")
+        if(!dir.exists(script_dir)) {
+          script_dir <- dir_create2(script_dir)
+        }
+        script_path <- file.path(script_dir, .(sprintf("%s.py", export)))
+        writeLines(text = paste(.(code), collapse = "\n"), con = script_path)
+        rpymat::ensure_rpymat(verbose = FALSE)
+
+        py <- rpymat::import("__main__", convert = FALSE)
+        for(nm in .(deps)) {
+          py[[ nm ]] <- get(nm)
+        }
+        re <- rpymat::run_script(script_path, local = .(local), convert = FALSE)
+        target_name <- .(export)
+        if(!target_name %in% names(re)) {
+          stop(sprintf("Cannot find target name [%s] in Python object", target_name))
+        }
+        return(re[[target_name]])
       }),
       deps = .(deps),
       cue = targets::tar_cue(.(cue)),
       pattern = .(pattern),
-      iteration = "list"
+      iteration = "list",
+      format = asNamespace("raveio")$target_format_dynamic(
+        "user-defined-python", target_export = .(export))
     )
   )
 }
 
 rave_knitr_engine <- function(targets){
+
+  python_engine <- knitr::knit_engines$get("python")
+  if(inherits(python_engine, "knit_engine_rave_python")) {
+    python_engine2 <- python_engine
+    python_engine <- attr(python_engine2, "original_engine")
+  } else {
+    python_engine2 <- structure(
+      function(options) {
+        if(isTRUE(options$use_rave)) {
+          options$engine <- "python"
+          options$language <- "python"
+          knitr::knit_engines$get("rave")(options)
+        } else {
+          python_engine(options)
+        }
+      },
+      class = c("knit_engine_rave_python", "function"),
+      original_engine = python_engine
+    )
+  }
+  knitr::knit_engines$set(python = python_engine2)
 
   knitr::knit_engines$set("rave" = function(options) {
     # for R
@@ -179,14 +215,16 @@ rave_knitr_engine <- function(targets){
     }
     # assign('options', options, envir = globalenv())
 
+    message("\nAdding target ", options$export, " [", lang, "]")
     targets$add(options)
 
-    real_engine <- knitr::knit_engines$get(lang)
+    # real_engine <- knitr::knit_engines$get(lang)
 
     env <- knitr::knit_global()
     switch(
       lang,
       "R" = {
+        real_engine <- knitr::knit_engines$get("R")
         # keep names
         nms <- c(ls(env, all.names = TRUE, sorted = FALSE), options$export)
         options$engine <- "r"
@@ -201,9 +239,14 @@ rave_knitr_engine <- function(targets){
         }
       },
       "python" = {
+        real_engine <- python_engine
         options$engine <- "python"
+        py <- rpymat::import("__main__", convert = FALSE)
+        for(nm in options$deps) {
+          py[[ nm ]] <- get(nm, envir = env)
+        }
         res <- real_engine(options)
-        env[[options$export]] <- reticulate::py[[options$export]]
+        env[[options$export]] <- py[[options$export]]
       },
       {
         # not reach here
@@ -214,6 +257,7 @@ rave_knitr_engine <- function(targets){
     return(res)
 
   })
+
 }
 
 rave_knitr_build <- function(targets, make_file){
@@ -228,6 +272,7 @@ rave_knitr_build <- function(targets, make_file){
   nms <- lapply(targets, "[[", "label")
   exprs <- structure(
     lapply(targets, function(options){
+      message("Building target ", options$export, " [", options$language, "]")
       switch(
         options$language,
         "R" = {
@@ -338,6 +383,20 @@ rave_knitr_build <- function(targets, make_file){
     ')), function(f) {',
     '  source(f, local = ._._env_._., chdir = TRUE)',
     '})',
+    'if(dir.exists("py/")) {',
+    '  try({',
+    '    library(rpymat)',
+    '    rpymat::ensure_rpymat(verbose = FALSE)',
+    '    lapply(sort(',
+    '      list.files("py/", ignore.case = TRUE, ',
+    '                 pattern = "^shared-.*\\\\.py", ',
+    '                 full.names = TRUE)), ',
+    '      function(f) {',
+    '        f <- normalizePath(f, mustWork = TRUE)',
+    '        rpymat::run_script(f, work_dir = basename(f), local = FALSE, convert = FALSE)',
+    '      })',
+    '  })',
+    '}',
     'targets::tar_option_set(envir = ._._env_._.)',
     'rm(._._env_._.)',
 
@@ -411,6 +470,28 @@ pipeline_setup_rmd <- function(
     source(f, local = env, chdir = TRUE)
     return()
   })
+
+  shared_scripts <- list.files(
+    file.path(project_path, "modules", module_id, "py"),
+    pattern = "^shared-.*\\.py$",
+    ignore.case = TRUE,
+    full.names = TRUE
+  )
+
+  if(length(shared_scripts)) {
+    rpymat::ensure_rpymat(verbose = TRUE)
+    lapply(sort(shared_scripts), function(f) {
+      f <- normalizePath(f, mustWork = TRUE)
+      rpymat::run_script(
+        f,
+        work_dir = basename(f),
+        local = FALSE,
+        convert = FALSE
+      )
+      return()
+    })
+  }
+
 
   settings <- load_yaml(file.path( project_path, "modules",
                                    module_id, "settings.yaml"))

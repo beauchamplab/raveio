@@ -195,6 +195,28 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
     source(file = f, local = env, chdir = TRUE)
   })
 
+  shared_scripts_py <- list.files(
+    file.path(pipe_dir, "py"),
+    pattern = "^shared-.*\\.py$",
+    ignore.case = TRUE,
+    full.names = TRUE
+  )
+
+  if(length(shared_scripts_py)) {
+    rpymat::ensure_rpymat(verbose = TRUE)
+    lapply(sort(shared_scripts_py), function(f) {
+      f <- normalizePath(f, mustWork = TRUE)
+      rpymat::run_script(
+        f,
+        work_dir = basename(f),
+        local = FALSE,
+        convert = FALSE
+      )
+      return()
+    })
+  }
+
+
   if(file.exists(settings_path)) {
     input_settings <- yaml::read_yaml(settings_path)
     input_settings <- input_settings[names(input_settings) %in% tnames]

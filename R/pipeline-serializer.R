@@ -102,6 +102,86 @@ target_format_unregister <- function(name) {
   return(invisible(NULL))
 }
 
+tfmtreg_user_defined_python <- function() {
+  target_format_register(
+    name = "user-defined-python",
+    read = function(path, target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
+      message("Unserializing [", target_export, "] using format [user-defined-python]")
+      raveio <- asNamespace("raveio")
+
+      config <- raveio$load_yaml(file = path)
+      if(isTRUE(config$null_value)) {
+        return(NULL)
+      }
+
+      pipe_dir <- Sys.getenv("RAVE_PIPELINE", ".")
+      serialize_script <- file.path(pipe_dir, "py", "pipeline-serialize.py")
+      if(!file.exists(serialize_script)) {
+        stop("Unable to find (un)serialization script for user-defined python objects.")
+      }
+      serialize_script <- normalizePath(serialize_script)
+      serializers <- rpymat::run_script(
+        serialize_script, work_dir = basename(serialize_script),
+        local = FALSE, convert = FALSE)
+      unserialize_func <- serializers["rave_unserialize"]
+      if(inherits(unserialize_func, "python.builtin.NoneType")) {
+        stop(sprintf("Unable to find unserialization function for user-defined python objects: %s", paste(target_export, collapse = ",")))
+      }
+      path2 <- raveio$target_user_path(target_export = target_export, check = TRUE)
+      re <- unserialize_func(path2, target_export)
+      py <- rpymat::import("__main__", convert = FALSE)
+      py[[ target_export ]] <- re
+      return(re)
+    },
+    write = function(object, path, target_export = NULL) {
+
+      message("Serializing [", target_export, "] using format [user-defined-python]")
+      raveio <- asNamespace("raveio")
+
+      pipe_dir <- Sys.getenv("RAVE_PIPELINE", ".")
+      serialize_script <- file.path(pipe_dir, "py", "pipeline-serialize.py")
+      if(!file.exists(serialize_script)) {
+        stop("Unable to find (un)serialization script for user-defined python objects.")
+      }
+      serialize_script <- normalizePath(serialize_script)
+      serializers <- rpymat::run_script(
+        serialize_script, work_dir = basename(serialize_script),
+        local = FALSE, convert = FALSE)
+      serialize_func <- serializers["rave_serialize"]
+      if(inherits(serialize_func, "python.builtin.NoneType")) {
+        stop(sprintf("Unable to find serialization function for user-defined python objects: %s", paste(target_export, collapse = ",")))
+      }
+      path2 <- raveio$target_user_path(target_export = target_export, check = TRUE)
+      path3 <- serialize_func(object, normalizePath(path2, mustWork = FALSE),
+                              target_export)
+      if(!is.null(path3) && !inherits(path3, "python.builtin.NoneType")) {
+        path2 <- as.character(path3)
+      }
+
+      null_value <- FALSE
+      if(dir.exists(path2)) {
+        fs <- list.files(path2, all.files = FALSE, recursive = TRUE, full.names = TRUE, include.dirs = FALSE, no.. = TRUE)
+        signature <- lapply(sort(fs), function(f) {
+          dipsaus::digest(file = f)
+        })
+        signature <- dipsaus::digest(object = signature)
+      } else if( file.exists(path2) ){
+        signature <- dipsaus::digest(file = path2)
+      } else {
+        null_value = TRUE
+        signature <- NULL
+      }
+      raveio$save_yaml(list(
+        null_value = null_value,
+        signature = signature
+      ), file = path, sorted = TRUE)
+      return()
+    }
+  )
+}
+
 tfmtreg_filearray <- function() {
   target_format_register(
     "filearray",
@@ -743,5 +823,11 @@ target_format_register_onload <- function(verbose = TRUE) {
   tryCatch({
     tfmtreg_rave_brain()
   }, error = on_exception, warning = on_exception)
+
+  tryCatch({
+    tfmtreg_user_defined_python()
+  }, error = on_exception, warning = on_exception)
+
+
 
 }

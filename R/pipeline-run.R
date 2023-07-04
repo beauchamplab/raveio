@@ -80,7 +80,24 @@ pipeline_run <- function(
                               full.names = TRUE, ignore.case = TRUE)
     lapply(sort(shared_libs), function(f) {
       source(file = f, local = args$envir, chdir = TRUE)
+      return()
     })
+
+    shared_libs_py <- list.files(file.path(.(pipe_dir), "py"), pattern = "^shared-.*\\.py",
+                                 full.names = TRUE, ignore.case = TRUE)
+    if(length(shared_libs_py)) {
+      rpymat::ensure_rpymat(verbose = FALSE)
+      lapply(sort(shared_libs_py), function(f) {
+        f <- normalizePath(f, mustWork = TRUE)
+        rpymat::run_script(
+          f,
+          work_dir = dirname(f),
+          local = FALSE,
+          convert = FALSE
+        )
+        return()
+      })
+    }
 
     if(.(type) == "smart"){
       local <- ns$with_future_parallel
@@ -279,7 +296,24 @@ pipeline_run_bare <- function(
                             full.names = TRUE, ignore.case = TRUE)
   lapply(sort(shared_libs), function(f) {
     source(file = f, local = args$envir, chdir = TRUE)
+    return()
   })
+
+  shared_libs_py <- list.files(file.path(pipe_dir, "py"), pattern = "^shared-.*\\.py",
+                               full.names = TRUE, ignore.case = TRUE)
+  if(length(shared_libs_py)) {
+    rpymat::ensure_rpymat(verbose = FALSE)
+    lapply(sort(shared_libs_py), function(f) {
+      f <- normalizePath(f, mustWork = TRUE)
+      rpymat::run_script(
+        f,
+        work_dir = dirname(f),
+        local = FALSE,
+        convert = FALSE
+      )
+      return()
+    })
+  }
 
   make <- function(fun, use_local = TRUE) {
     suppressWarnings({
