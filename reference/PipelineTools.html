@@ -12,7 +12,7 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.20</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.21</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -149,7 +149,8 @@ signatures of data and commands</p></dd>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/PipelineTools.html">PipelineTools</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  <span class="va">pipeline_name</span>,</span>
 <span>  settings_file <span class="op">=</span> <span class="st">"settings.yaml"</span>,</span>
-<span>  paths <span class="op">=</span> <span class="fu"><a href="../reference/rave-pipeline.html">pipeline_root</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  paths <span class="op">=</span> <span class="fu"><a href="../reference/rave-pipeline.html">pipeline_root</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  temporary <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -168,6 +169,12 @@ user inputs are stored</p></dd>
 <dt><code>paths</code></dt>
 <dd><p>the paths to find the pipeline, usually the parent folder
 of the pipeline; default is <code><a href="rave-pipeline.html">pipeline_root()</a></code></p></dd>
+
+
+<dt><code>temporary</code></dt>
+<dd><p>whether not to save <code>paths</code> to current pipeline
+root registry. Set this to <code>TRUE</code> when importing pipelines
+from subject pipeline folders</p></dd>
 
 
 </dl><p></p></div>

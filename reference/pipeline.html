@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.20</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.21</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipeline</span><span class="op">(</span></span>
 <span>  <span class="va">pipeline_name</span>,</span>
 <span>  settings_file <span class="op">=</span> <span class="st">"settings.yaml"</span>,</span>
-<span>  paths <span class="op">=</span> <span class="fu"><a href="rave-pipeline.html">pipeline_root</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  paths <span class="op">=</span> <span class="fu"><a href="rave-pipeline.html">pipeline_root</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  temporary <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -75,6 +76,10 @@ inputs</p></dd>
 <dd><p>the paths to search for the pipeline, usually the parent
 directory of the pipeline; default is <code><a href="rave-pipeline.html">pipeline_root</a></code>, which
 only search for pipelines that are installed or in current working directory.</p></dd>
+
+
+<dt>temporary</dt>
+<dd><p>see <code><a href="rave-pipeline.html">pipeline_root</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
