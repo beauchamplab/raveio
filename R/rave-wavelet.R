@@ -5,6 +5,24 @@ run_wavelet <- function(
     kernels_precision = "float", pre_downsample = 1,
     verbose = TRUE
 ) {
+  # DIPSAUS DEBUG START
+  # list2env(
+  #   list(
+  #     subject = "YAEL/PAV020",
+  #     electrodes = c(1, 2, 3, 4, 5, 6,
+  #                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20),
+  #     freqs = c(2L,
+  #               22L, 42L, 62L, 82L, 102L, 122L, 142L, 162L, 182L),
+  #     cycles = c(3,
+  #                8, 11, 12, 14, 15, 16, 17, 18, 19),
+  #     target_sample_rate = 100,
+  #     kernels_precision = "float",
+  #     pre_downsample = 4,
+  #     verbose = TRUE
+  #   ),
+  #   envir = globalenv()
+  # )
+
   subject <- restore_subject_instance(subject, strict = FALSE)
 
   # clear subject's cached files
@@ -29,7 +47,7 @@ run_wavelet <- function(
 
   overall_progress <- dipsaus::progress2(
     title = "Wavelet overall progress",
-    max = 5,
+    max = 6,
     shiny_auto_close = TRUE,
     quiet = !verbose
   )
@@ -227,10 +245,11 @@ run_wavelet <- function(
     }
   )
 
-  overall_progress$inc("Saving configurations and update log files")
-
   # reload preprocess settings in case some changes are not captured
   preproc <- RAVEPreprocessSettings$new(subject = subject$subject_id, read_only = TRUE)
+
+
+  overall_progress$inc("Saving configurations and update log files")
 
   for(e in electrodes) {
     preproc$data[[as.character(e)]]$notch_filtered <- TRUE
@@ -297,6 +316,36 @@ run_wavelet <- function(
   tpfile <- file.path(subject$meta_path, "time_points.csv")
   if(file.exists(tpfile)) {
     unlink(tpfile)
+  }
+
+  overall_progress$inc("Make sure reference files are up-to-date")
+
+  subject <- restore_subject_instance(subject$subject_id)
+  # check subject references
+  refs <- unlist(lapply(subject$reference_names, function(refname) {
+    tryCatch({
+      refs <- unique(subject$get_reference(refname, simplify = TRUE))
+      refs <- refs[startsWith(refs, "ref_")]
+      if(length(refs)) {
+        refs <- refs[vapply(refs, function(ref) {
+          isTRUE(length(dipsaus::parse_svec(gsub("^ref_", "", ref))) > 1)
+        }, FALSE)]
+      }
+      return(refs)
+    }, error = function(e) { NULL })
+  }))
+  refs <- unique(refs)
+
+  if(length(refs)) {
+    lapply_async(refs, function(ref, subject_id) {
+      try({
+        ref_electrodes <- dipsaus::parse_svec(gsub("^ref_", "", ref))
+        generate_reference(subject = subject_id, electrodes = ref_electrodes)
+      })
+      return()
+    }, FUN.args = list(subject_id = subject$subject_id), callback = function(ref) {
+      sprintf("Re-generate reference|%s", ref)
+    })
   }
 
   return(wavelet_params)
