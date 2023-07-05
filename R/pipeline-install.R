@@ -272,24 +272,32 @@ pipeline_install_github <- function(
 #' @export
 pipeline_root <- local({
   root <- NULL
-  function(root_path){
+  function(root_path, temporary = FALSE){
+    re <- root
     if(!missing(root_path)){
       if(any(is.na(root_path))){ stop("pipeline root cannot be NA") }
       if('.' %in% root_path){
         root_path <- root_path[root_path != '.']
-        root <<- c(".", normalizePath(root_path, mustWork = FALSE))
+        re <- c(".", normalizePath(root_path, mustWork = FALSE))
+        if(!temporary) {
+          root <<- re
+        }
       } else {
-        root <<- normalizePath(root_path, mustWork = FALSE)
+        re <- normalizePath(root_path, mustWork = FALSE)
+        if(!temporary) {
+          root <<- re
+        }
       }
-      if(!any(dir.exists(root))){
-        warning("The following pipeline root directories do not exist: \n  |> ", paste(root, collapse = "\n  |> "))
+      if(!any(dir.exists(re))){
+        warning("The following pipeline root directories do not exist: \n  |> ", paste(re, collapse = "\n  |> "))
       }
     } else {
-      if(is.null(root)){
-        root <<- c(".", file.path(R_user_dir('raveio', "data"), "pipelines"))
+      if(is.null(re)){
+        re <- c(".", file.path(R_user_dir('raveio', "data"), "pipelines"))
+        root <<- re
       }
     }
-    unique(root)
+    unique(re)
   }
 })
 

@@ -7,7 +7,8 @@
 pipeline(
   pipeline_name,
   settings_file = "settings.yaml",
-  paths = pipeline_root()
+  paths = pipeline_root(),
+  temporary = FALSE
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ inputs}
 \item{paths}{the paths to search for the pipeline, usually the parent
 directory of the pipeline; default is \code{\link{pipeline_root}}, which
 only search for pipelines that are installed or in current working directory.}
+
+\item{temporary}{see \code{\link{pipeline_root}}}
 }
 \value{
 A \code{\link{PipelineTools}} instance

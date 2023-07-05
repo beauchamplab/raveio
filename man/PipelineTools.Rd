@@ -79,7 +79,8 @@ construction function
 \if{html}{\out{<div class="r">}}\preformatted{PipelineTools$new(
   pipeline_name,
   settings_file = "settings.yaml",
-  paths = pipeline_root()
+  paths = pipeline_root(),
+  temporary = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -94,6 +95,10 @@ user inputs are stored}
 
 \item{\code{paths}}{the paths to find the pipeline, usually the parent folder
 of the pipeline; default is \code{pipeline_root()}}
+
+\item{\code{temporary}}{whether not to save \code{paths} to current pipeline
+root registry. Set this to \code{TRUE} when importing pipelines
+from subject pipeline folders}
 }
 \if{html}{\out{</div>}}
 }

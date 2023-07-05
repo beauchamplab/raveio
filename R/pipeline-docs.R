@@ -54,6 +54,9 @@
 #' name within subject's pipeline path
 #' @param template_type which template type to create; choices are \code{'r'}
 #' or \code{'rmd'}
+#' @param temporary whether not to save \code{paths} to current pipeline
+#' root registry. Set this to \code{TRUE} when importing pipelines
+#' from subject pipeline folders
 #' @param overwrite whether to overwrite existing pipeline; default is false
 #' so users can double-check; if true, then existing pipeline, including the
 #' data will be erased

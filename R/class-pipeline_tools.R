@@ -22,16 +22,18 @@ PipelineTools <- R6::R6Class(
     #' user inputs are stored
     #' @param paths the paths to find the pipeline, usually the parent folder
     #' of the pipeline; default is \code{pipeline_root()}
+    #' @param temporary whether not to save \code{paths} to current pipeline
+    #' root registry. Set this to \code{TRUE} when importing pipelines
+    #' from subject pipeline folders
     initialize = function(pipeline_name,
                           settings_file = "settings.yaml",
-                          paths = pipeline_root()) {
+                          paths = pipeline_root(), temporary = FALSE) {
 
       default_paths <- c(".", file.path(R_user_dir('raveio', 'data'), "pipelines"))
 
       paths <- c(paths[dir.exists(paths)], default_paths)
 
-      pipeline_root(paths)
-      private$.pipeline_path <- pipeline_find(pipeline_name)
+      private$.pipeline_path <- pipeline_find(pipeline_name, root_path = pipeline_root(paths, temporary = temporary))
       private$.pipeline_name <- attr(private$.pipeline_path, "target_name")
       private$.settings_file <- settings_file
 
@@ -411,6 +413,7 @@ PipelineTools <- R6::R6Class(
 #' file is missing)
 #' @param settings_file the name of the settings file, usually stores user
 #' inputs
+#' @param temporary see \code{\link{pipeline_root}}
 #' @param paths the paths to search for the pipeline, usually the parent
 #' directory of the pipeline; default is \code{\link{pipeline_root}}, which
 #' only search for pipelines that are installed or in current working directory.
@@ -468,8 +471,9 @@ PipelineTools <- R6::R6Class(
 #' @export
 pipeline <- function(pipeline_name,
                      settings_file = "settings.yaml",
-                     paths = pipeline_root()) {
-  PipelineTools$new(pipeline_name, settings_file, paths)
+                     paths = pipeline_root(),
+                     temporary = FALSE) {
+  PipelineTools$new(pipeline_name, settings_file, paths, temporary = temporary)
 }
 
 

@@ -30,7 +30,7 @@
 \alias{pipeline_shared}
 \title{'RAVE' pipeline functions}
 \usage{
-pipeline_root(root_path)
+pipeline_root(root_path, temporary = FALSE)
 
 pipeline_list(root_path = pipeline_root())
 
@@ -175,6 +175,10 @@ pipeline_shared(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
 }
 \arguments{
 \item{root_path}{the root directory for pipeline templates}
+
+\item{temporary}{whether not to save \code{paths} to current pipeline
+root registry. Set this to \code{TRUE} when importing pipelines
+from subject pipeline folders}
 
 \item{name, pipeline_name}{the pipeline name to create; usually also the folder}
 
