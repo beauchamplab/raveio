@@ -348,14 +348,20 @@ with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
   }
   auto_parallel_old <- getOption("raveio.auto.parallel", default = TRUE)
   options("raveio.auto.parallel" = FALSE)
-  on.exit({
-    options("raveio.auto.parallel" = auto_parallel_old)
-  }, add = TRUE, after = TRUE)
   dipsaus::make_forked_clusters(
     workers = max_workers,
-    on_failure = on_failure, clean = TRUE, ...
+    on_failure = on_failure, clean = FALSE, ...
   )
-  eval(expr, envir = env)
+  on.exit({
+    asNamespace("future")$plan("sequential")
+    options("raveio.auto.parallel" = auto_parallel_old)
+  }, add = TRUE, after = FALSE)
+
+  re <- eval(expr, envir = env)
+  asNamespace("future")$plan("sequential")
+  options("raveio.auto.parallel" = auto_parallel_old)
+
+  re
 }
 
 #' Run \code{\link{lapply}} in parallel
@@ -459,11 +465,27 @@ lapply_async <- function(
   plan <- getOption("raveio.auto.parallel", default = TRUE)
 
   # check if fork is disabled
+  if(isTRUE(plan)) {
+    dipsaus::make_forked_clusters(
+      workers = ncores,
+      on_failure = on_failure, clean = FALSE, ...
+    )
+    on.exit({
+      future <- asNamespace("future")
+      future$plan("sequential")
+    }, add = FALSE)
+  }
 
+  re <- dipsaus::lapply_async2(x, FUN = FUN, FUN.args = FUN.args, callback = callback,
+                         plan = FALSE, future.chunk.size = chunk_size)
 
-  dipsaus::lapply_async2(x, FUN = FUN, FUN.args = FUN.args, callback = callback,
-                         plan = plan, future.chunk.size = chunk_size,
-                         on_failure = on_failure, workers = ncores, ...)
+  if(isTRUE(plan)) {
+    future <- asNamespace("future")
+    future$plan("sequential")
+    on.exit({}, add = FALSE)
+  }
+
+  re
 }
 
 
