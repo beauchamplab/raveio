@@ -44,12 +44,19 @@
 #'
 #' # Plot power over frequency and time
 #' groupB_result <- results$B
+#'
+#' if(interactive()) {
+#'
 #' image(t(groupB_result$freq_time),
 #'       x = dnames$Time[groupB_result$cube_index$Time],
 #'       y = dnames$Frequency[groupB_result$cube_index$Frequency],
 #'       xlab = "Time (s)",
 #'       ylab = "Frequency (Hz)",
 #'       xlim = range(dnames$Time))
+#'
+#' }
+#'
+#' x$delete(force = TRUE)
 #'
 #'
 #' @export

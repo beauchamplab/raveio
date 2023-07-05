@@ -182,7 +182,9 @@ validate_raw_file_lfp <- function(subject_code, blocks, electrodes, format, chec
       'Unknown format' = character(0)
     ), class = 'validate_failure'))
   } else {
-    UseMethod('validate_raw_file_lfp', structure(subject_code, class = m))
+    validate_func <- asNamespace("raveio")[[sprintf("validate_raw_file_lfp.%s", m)]]
+    return(validate_func(subject_code = subject_code, blocks = blocks, electrodes = electrodes,
+                         check_content = check_content, ...))
   }
 }
 

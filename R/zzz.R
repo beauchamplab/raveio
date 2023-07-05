@@ -566,7 +566,7 @@ install_modules <- function(modules, dependencies = FALSE) {
   # check if rhdf5 has been installed
   s <- NULL
 
-  pkg <- getNamespace(pkgname)
+  pkg <- asNamespace(pkgname)
   if(length(pkg$.startup_msg)){
     s <- c(pkg$.startup_msg, "")
   }
@@ -586,17 +586,20 @@ install_modules <- function(modules, dependencies = FALSE) {
 
   # Sys.unsetenv("RAVE_PIPELINE")
 
-  pkg <- getNamespace(pkgname)
+  pkg <- asNamespace(pkgname)
   sess_str <- rand_string(15)
   # .session_string <<- sess_str
   assign('.session_string', sess_str, envir = pkg)
 
   err_f <- function(e){
-    assign('.startup_msg', e$message, envir = pkg)
+    assign('.startup_msg', sprintf("Issues loading `raveio`: %s\n", paste(e$message, collapse = "\n")), envir = pkg)
     NULL
   }
-  s <- tryCatch({
-    load_setting(reset_temp = TRUE)
+  s <- NULL
+  tryCatch({
+    suppressWarnings({
+      s <- load_setting(reset_temp = TRUE)
+    })
   }, error = err_f, warning = err_f)
 
   if( is.null(s) ){
@@ -619,11 +622,23 @@ install_modules <- function(modules, dependencies = FALSE) {
   # map stays with current session. When
   # settings is gced, remove these files.
   reg.finalizer(cenv, function(cenv){
-    ts_path <- file.path(cenv$get('tensor_temp_path'),
-                         cenv$get('session_string'))
-    if(isTRUE(dir.exists(ts_path))){
-      unlink(ts_path, recursive = TRUE)
-    }
+    try(expr = {
+      if(is.function(cenv$get)) {
+        tf_path <- cenv$get('tensor_temp_path')
+        sess_str2 <- paste(sess_str, collapse = "")
+        if(
+          length(tf_path) == 1 && !is.na(tf_path) && is.character(tf_path) &&
+          !trimws(tf_path) %in% c("", ".", "/") && file.exists(tf_path) &&
+          !is.na(sess_str2) && nzchar(sess_str2)
+        ) {
+          ts_path <- file.path(tf_path, sess_str2)
+          if(isTRUE(dir.exists(ts_path))){
+            unlink(ts_path, recursive = TRUE)
+          }
+        }
+      }
+    })
+
   }, onexit = TRUE)
 
   # check if ravetools is installed
@@ -637,10 +652,16 @@ install_modules <- function(modules, dependencies = FALSE) {
   try({
     s <- load_setting(reset_temp = TRUE)
     sess_str <- get('.session_string')
-    ts_path <- file.path(s[['tensor_temp_path']], sess_str)
-
-    if(dir.exists(ts_path)){
-      unlink(ts_path, recursive = TRUE)
+    tf_path <- s[['tensor_temp_path']]
+    if(
+      length(tf_path) == 1 && !is.na(tf_path) && is.character(tf_path) &&
+      !trimws(tf_path) %in% c("", ".", "/") && file.exists(tf_path) &&
+      length(sess_str) == 1 && !is.na(sess_str) && nzchar(sess_str)
+    ) {
+      ts_path <- file.path(tf_path, sess_str)
+      if(isTRUE(dir.exists(ts_path))){
+        unlink(ts_path, recursive = TRUE)
+      }
     }
   }, silent = TRUE)
 }

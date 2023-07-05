@@ -40,6 +40,16 @@ collapse2(x, c(3, 2))
 # Alternative method, but slower when `x` is a large array
 apply(x, c(3, 2), mean)
 
+# filearray
+y <- filearray::as_filearray(x)
+
+collapse2(y, c(3, 2))
+
+collapse2(y, c(3, 2), "sum")
+
+# clean up
+y$delete(force = TRUE)
+
 }
 \seealso{
 \code{\link[dipsaus]{collapse}}

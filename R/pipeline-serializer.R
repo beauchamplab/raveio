@@ -170,7 +170,7 @@ tfmtreg_user_defined_python <- function() {
       } else if( file.exists(path2) ){
         signature <- dipsaus::digest(file = path2)
       } else {
-        null_value = TRUE
+        null_value <- TRUE
         signature <- NULL
       }
       raveio$save_yaml(list(
