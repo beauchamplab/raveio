@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.22</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,48 @@
       <small>Source: <a href="https://github.com/beauchamplab/raveio/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.0" id="raveio-090">raveio 0.9.0<a class="anchor" aria-label="anchor" href="#raveio-090"></a></h2>
+<p>We are close to a major release.</p>
+<p>Major changes:</p>
+<ul><li><p>Pipeline supports <code>Python</code> now! (I think this deserves the first place)</p></li>
+<li><p>Referencing electrodes does not require users to run <code>wavelet</code> anymore (this one wins the second as it allows for more flexible data processing pipelines)</p></li>
+<li><p><code>run_wavelet</code> will trigger caching existing references</p></li>
+<li><p>The pipeline errors is properly handled</p></li>
+<li><p>Pipeline error messages also print out the expressions causing the issues</p></li>
+<li><p>Clears pipeline object directory when related errors are raised; in this case pipeline is rescheduled automatically</p></li>
+<li><p>Pipeline also reports warning messages</p></li>
+<li><p>Allow pipelines to fork</p></li>
+<li><p>Added external data path (<code>extdata</code>) to pipeline to store large temporary data</p></li>
+<li><p>Added <code>prepare_subject_phase</code> and <code>prepare_subject_wavelet</code> to support loading phase and time-frequency data (besides amplitude)</p></li>
+<li><p>Pipeline shared scripts uses script directory as working directory</p></li>
+<li><p>Added <code>lapply_async</code> that can run in parallel standalone while is compatible with <code>with_future_parallel</code>; this function replaces <code><a href="https://dipterix.org/dipsaus/reference/lapply_async2.html" class="external-link">dipsaus::lapply_async2</a></code></p></li>
+<li><p>Added a new subject class <code>RAVEMetaSubject</code> for meta-analysis</p></li>
+<li><p>Added support for <code>FreeSurfer</code> <code>recon-all-clinical.sh</code>, allowing users to apply super-resolution to their clinical <code>MRI</code> before surface reconstruction</p></li>
+<li><p>Supports when one <code>NSx</code> block data contains multiple recordings (discontinued/paused recording in one block)</p></li>
+<li><p><code>rave_export</code> exports summary in <code>Matlab</code> format as well (thanks <a href="https://github.com/Kaitlyn" class="external-link">@Kaitlyn</a>)</p></li>
+<li><p>Added <code>cmd_run_r</code> to generate reproducible shell scripts that run code</p></li>
+<li><p>Added <code>pipeline$visualize</code> to view the target relationships and schedule graphs</p></li>
+<li><p>Added <code>pipeline$shared_env</code> to obtain shared environment</p></li>
+</ul><p>Minor changes:</p>
+<ul><li>Default pipeline repository user name has been changed to <code>rave-ieeg</code>
+</li>
+<li>Updated <code>Github</code> action configurations</li>
+<li>Copy <code>MRI</code> to derivative folder when importing images from <code>NIfTI</code> format (before imaging segmentation and <code>CT</code> to <code>MRI</code> registration)</li>
+<li>Updated pipeline template to display the latest pipeline dependency</li>
+<li>Pipeline dependency are installed at the same directory as <code>ravemanager</code>
+</li>
+<li>Removed improper <code>S3</code>generics in <code>validate_raw_file_lfp</code>
+</li>
+<li>Pipeline root searching path can be set with temporary values</li>
+<li>Added <code>is_on_cran</code>, allowing certain examples and tests to be suppressed during <code>CRAN</code> check, while these code are enabled in the local tests - this helps me to keep examples up-to-date</li>
+</ul><p>Bug fixes:</p>
+<ul><li>Fixed template module <code>UI</code> having extra padding on bottom</li>
+<li>Fixed <code>Blackrock</code> <code>NEV-3.0</code> specification configurations</li>
+<li>Fixed errors when subject <code>set_default</code> and <code>get_default</code> raise errors when configuration files are corrupted</li>
+<li>Fixed a potential code injection issue</li>
+<li>Fixed parallel code not closing socket connections correctly</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="raveio-010">raveio 0.1.0<a class="anchor" aria-label="anchor" href="#raveio-010"></a></h2><p class="text-muted">CRAN release: 2023-03-15</p>
 <p>Major changes:</p>

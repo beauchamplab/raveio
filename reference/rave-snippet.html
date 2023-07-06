@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.22</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,12 +81,64 @@ repository</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="is_on_cran.html">is_on_cran</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="fu">update_local_snippet</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">snippet</span> <span class="op">&lt;-</span> <span class="fu">load_snippet</span><span class="op">(</span><span class="st">"dummy-snippet"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">snippet</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Read snippet documentation</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">snippet</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Run snippet as a function</span></span></span>
+<span class="r-in"><span>  <span class="fu">snippet</span><span class="op">(</span><span class="st">"this is an input"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> NOT_CRAN is TRUE/true (not on CRAN)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;RAVE code snippet: [dummy-snippet]&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snippet path: /home/runner/.cache/R/raveio/rave-gists-main/dummy-snippet.R</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   @author Zhengjia Wang</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   @date Feb 08, 2023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   @license Apache-2.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   @title This file is used to demonstrate how rave-snippet works</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     A RAVE code snippet contains three sections:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       * documentation section,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       * variable section,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       * code section.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     This documentation is located at `documentation section`, starting with two</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     characters `#'`. The section ends with `#' END OF DOC`. The documentation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     section describes what the code snippets do, and what are</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     the inputs and outputs, and possibly with examples. To understand what</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     inputs are, look for keywords `@param`, for example:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   @param my_input defines an input argument `my_input`, followed by</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     its explanation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     The variable section starts right after `#' END OF DOC`. They are usually</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     commented for a reason (see 'How to use snippets' below). You can download</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     and un-comment these lines and run snippets as standalone scripts.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     The last section is code section, usually you don't have to change the magic</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     there unless you know what you are doing.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   @section How to use rave-snippets:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Scenario 1: You can download the script to your local disk, from there</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     un-comment the *variable section*, set variable as required, and run the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     whole script using `ctrl/command+shift+enter` (or `command+enter` to run</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     line by line)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Scenario 2: You can use `rave` built-in functions to load the snippet:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         topic &lt;- "dummy-snippet"   # &lt;- this should be the snippet name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         snippet &lt;- raveio::load_snippet(topic); snippet</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         snippet(param1 = ..., param2 = ...)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   @usage: snippet(my_input, ...)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> this is an input</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
