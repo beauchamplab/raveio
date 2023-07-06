@@ -107,7 +107,7 @@ pipeline_fork(
   src = Sys.getenv("RAVE_PIPELINE", "."),
   dest = tempfile(pattern = "rave_pipeline_"),
   filter_pattern =
-    "(^data|R|\\\\.R|\\\\.yaml|\\\\.txt|\\\\.csv|\\\\.fst|\\\\.conf|\\\\.json|\\\\.rds)$",
+    "(^data|^R|^py|\\\\.R|\\\\.py|\\\\.yaml|\\\\.txt|\\\\.csv|\\\\.fst|\\\\.conf|\\\\.json|\\\\.rds|\\\\.Rmd)$",
   activate = FALSE
 )
 

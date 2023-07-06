@@ -277,7 +277,7 @@ PipelineTools <- R6::R6Class(
     #' @param path path to the new pipeline, a folder will be created there
     #' @param filter_pattern file pattern to copy
     #' @returns A new pipeline object based on the path given
-    fork = function(path, filter_pattern = "(^data|R|\\.R|\\.yaml|\\.txt|\\.csv|\\.fst|\\.conf|\\.json|\\.rds|\\.Rmd)$") {
+    fork = function(path, filter_pattern = "(^data|^R|^py|\\.R|\\.py|\\.yaml|\\.txt|\\.csv|\\.fst|\\.conf|\\.json|\\.rds|\\.Rmd)$") {
       pipeline_fork(
         src = self$pipeline_path,
         dest = path,

@@ -311,7 +311,7 @@ fork (copy) the current pipeline to a new directory
 \if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork(
   path,
   filter_pattern =
-    "(^data|R|\\\\.R|\\\\.yaml|\\\\.txt|\\\\.csv|\\\\.fst|\\\\.conf|\\\\.json|\\\\.rds|\\\\.Rmd)$"
+    "(^data|^R|^py|\\\\.R|\\\\.py|\\\\.yaml|\\\\.txt|\\\\.csv|\\\\.fst|\\\\.conf|\\\\.json|\\\\.rds|\\\\.Rmd)$"
 )}\if{html}{\out{</div>}}
 }
 
