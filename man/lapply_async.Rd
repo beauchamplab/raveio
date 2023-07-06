@@ -43,7 +43,7 @@ by \code{on_failure}
 \examples{
 
 
-if(interactive()) {
+if(!is_on_cran()) {
 library(raveio)
 
 # ---- Basic example ----------------------------

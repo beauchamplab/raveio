@@ -26,11 +26,16 @@ Run snippet code
 }
 \examples{
 
-if(interactive()) {
+if(!is_on_cran()) {
 
   update_local_snippet()
   snippet <- load_snippet("dummy-snippet")
-  snippet
+
+  # Read snippet documentation
+  print(snippet)
+
+  # Run snippet as a function
+  snippet("this is an input")
 }
 
 }

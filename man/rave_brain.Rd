@@ -59,12 +59,12 @@ modern web browsers
 
 # Please make sure DemoSubject is correctly installed
 # The subject is ~1GB from Github
-brain <- rave_brain("demo/DemoSubject")
 
-brain
+if(interactive()){
+  brain <- rave_brain("demo/DemoSubject")
 
-if(interactive() && !is.null(brain)){
-  brain$plot()
+  if( !is.null(brain) ) { brain$plot() }
+
 }
 
 

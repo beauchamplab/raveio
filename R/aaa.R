@@ -98,6 +98,54 @@ byte_size_lut <- list(
   "float" = 4, "double" = 8
 )
 
+#' @title Check if current session is on 'CRAN'
+#' @description
+#' Use this function only for examples and test. The goal is to comply with the
+#' 'CRAN' policy. Do not use it in normal functions to cheat. Violating 'CRAN'
+#' policy will introduce instability to your code. Make sure reading Section
+#' 'Details' before using this function.
+#' @param if_interactive whether interactive session will be considered as
+#' on 'CRAN'; default is \code{FALSE}
+#' @details
+#' According to 'CRAN' policy, package examples and test functions may only
+#' use maximum 2 'CPU' cores. Examples running too long should be suppressed.
+#' Normally package developers will use \code{interactive()} to avoid running
+#' examples or parallel code on 'CRAN'. However, when checked locally, these
+#' examples will be skipped too. Coding bug in those examples will not be
+#' reported.
+#'
+#' The objective is to allow 'RAVE' package developers to write and test
+#' examples locally or on integrated development environment (such as
+#' 'Github'), while suppressing them on 'CRAN'. In such way, bugs in the
+#' examples will be revealed and fixed promptly.
+#'
+#' Do not use this function inside of the package functions to cheat or slip
+#' illegal code under the eyes of 'CRAN' folks. This will increase their work
+#' load and introduce instability to your code. If I find it out, I will report
+#' your package to 'CRAN'. Only use this function to make your package more
+#' robust. If you are developing 'RAVE' module, this function
+#' is explicitly banned. I'll implement a check for this, sooner or later.
+#'
+#' @returns A logical whether current environment should be considered as on
+#' 'CRAN'.
+#' @export
+is_on_cran <- function(if_interactive = FALSE) {
+
+  # check if this is on CRAN
+  is_on_cran <- FALSE
+  not_cran_flag <- identical(toupper(as.character(Sys.getenv("NOT_CRAN", ""))), "TRUE")
+  limit_core_flag <- Sys.getenv("_R_CHECK_LIMIT_CORES_") == "TRUE"
+  interactive_flag <- interactive()
+  if( limit_core_flag ) {
+    is_on_cran <- TRUE
+  } else if ( not_cran_flag ) {
+    is_on_cran <- FALSE
+  } else if ( interactive_flag ) {
+    is_on_cran <- isTRUE(if_interactive)
+  }
+  return( is_on_cran )
+}
+
 
 get_namespace_function <- function(ns, func, on_missing) {
   if(system.file(package = ns) == "") {
@@ -387,7 +435,7 @@ with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
 #' @examples
 #'
 #'
-#' if(interactive()) {
+#' if(!is_on_cran()) {
 #' library(raveio)
 #'
 #' # ---- Basic example ----------------------------

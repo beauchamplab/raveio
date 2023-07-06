@@ -420,7 +420,7 @@ PipelineTools <- R6::R6Class(
 #' @returns A \code{\link{PipelineTools}} instance
 #' @examples
 #'
-#' if(interactive()) {
+#' if(!is_on_cran()) {
 #'
 #' library(raveio)
 #'

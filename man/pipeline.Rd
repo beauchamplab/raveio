@@ -33,7 +33,7 @@ Set pipeline inputs, execute, and read pipeline outputs
 }
 \examples{
 
-if(interactive()) {
+if(!is_on_cran()) {
 
 library(raveio)
 

@@ -19,7 +19,7 @@ provides hybrid data structure for 'fst' file
 }
 \examples{
 
-if(interactive()){
+if(!is_on_cran()){
 
 # Data to save, total 8 MB
 x <- matrix(rnorm(1000000), ncol = 100)

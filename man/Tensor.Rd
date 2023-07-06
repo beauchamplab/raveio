@@ -21,7 +21,7 @@ data in seconds
 }
 \examples{
 
-if(interactive()){  # Avoid checkings from CRAN
+if(!is_on_cran()){
 
 # Create a tensor
 ts <- Tensor$new(
