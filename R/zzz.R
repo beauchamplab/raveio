@@ -451,13 +451,41 @@ raveio_getopt <- function(key, default = NA, temp = TRUE){
     return(s)
   }
 
+  re <- NULL
+  key_found <- FALSE
   if(temp && (key %in% names(tmp))){
-    return(tmp[[key]])
+    re <- tmp[[key]]
+    key_found <- TRUE
   }
-  if(.subset2(s, 'has')(key)){
-    return(s[[key]])
+  if(!key_found && .subset2(s, 'has')(key)){
+    re <- s[[key]]
+    key_found <- TRUE
   }
-  default
+
+  if(!key_found) {
+    re <- default
+  }
+
+  try(silent = TRUE, expr = {
+    if( identical(key, "max_worker") ) {
+      if( re <= 0L ) {
+        re <- 1L
+      } else if(
+        identical(key, "max_worker") &&
+        (
+          # identical(Sys.getenv("OMP_THREAD_LIMIT"), "2") ||
+          identical(toupper(Sys.getenv("_R_CHECK_LIMIT_CORES_")), "TRUE")
+        ) &&
+        re > 2L
+      ) {
+        # Make sure using max 2 CPU cores on CRAN
+        re <- 1L
+      }
+    }
+  })
+
+  re
+
 }
 
 #' @rdname raveio-option

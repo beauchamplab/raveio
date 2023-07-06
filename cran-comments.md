@@ -1,3 +1,3 @@
-# `raveio` (0.1.0)
+# `raveio` (0.9.0)
 
-Self checks indicated no error/warning/note. 
+Self checks (`oldrel`, `release`, and `devel`) indicated no error/warning/note. 

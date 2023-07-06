@@ -106,6 +106,7 @@ byte_size_lut <- list(
 #' 'Details' before using this function.
 #' @param if_interactive whether interactive session will be considered as
 #' on 'CRAN'; default is \code{FALSE}
+#' @param verbose whether to print out reason of return; default is no
 #' @details
 #' According to 'CRAN' policy, package examples and test functions may only
 #' use maximum 2 'CPU' cores. Examples running too long should be suppressed.
@@ -129,21 +130,43 @@ byte_size_lut <- list(
 #' @returns A logical whether current environment should be considered as on
 #' 'CRAN'.
 #' @export
-is_on_cran <- function(if_interactive = FALSE) {
+is_on_cran <- function(if_interactive = FALSE, verbose = FALSE) {
 
   # check if this is on CRAN
-  is_on_cran <- FALSE
   not_cran_flag <- identical(toupper(as.character(Sys.getenv("NOT_CRAN", ""))), "TRUE")
-  limit_core_flag <- Sys.getenv("_R_CHECK_LIMIT_CORES_") == "TRUE"
+  limit_core_flag <- identical(toupper(Sys.getenv("_R_CHECK_LIMIT_CORES_")), "TRUE")
+  shiny_flag <- dipsaus::shiny_is_running()
   interactive_flag <- interactive()
+
   if( limit_core_flag ) {
-    is_on_cran <- TRUE
-  } else if ( not_cran_flag ) {
-    is_on_cran <- FALSE
-  } else if ( interactive_flag ) {
-    is_on_cran <- isTRUE(if_interactive)
+    # CRAN checks will add _R_CHECK_LIMIT_CORES_ to environment
+    if( verbose ) {
+      message("_R_CHECK_LIMIT_CORES_ is TRUE/true (on CRAN)")
+    }
+    return(TRUE)
   }
-  return( is_on_cran )
+
+  if ( not_cran_flag ) {
+    # testthat on local uses this flag to indicate not on CRAN
+    message("NOT_CRAN is TRUE/true (not on CRAN)")
+    return(FALSE)
+  }
+
+  if( shiny_flag ) {
+    # Shiny is enabled, cannot be on CRAN
+    message("Inside of shiny reactive context (not on CRAN)")
+    return(FALSE)
+  }
+
+  if ( interactive_flag ) {
+    if_interactive <- isTRUE(if_interactive)
+    message(sprintf("Session is interactive (%son CRAN)", ifelse(if_interactive, "", "not ")))
+    return(if_interactive)
+
+  }
+
+  message("No flag detected, default is on CRAN")
+  return( TRUE )
 }
 
 

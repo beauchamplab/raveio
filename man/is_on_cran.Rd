@@ -4,11 +4,13 @@
 \alias{is_on_cran}
 \title{Check if current session is on 'CRAN'}
 \usage{
-is_on_cran(if_interactive = FALSE)
+is_on_cran(if_interactive = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{if_interactive}{whether interactive session will be considered as
 on 'CRAN'; default is \code{FALSE}}
+
+\item{verbose}{whether to print out reason of return; default is no}
 }
 \value{
 A logical whether current environment should be considered as on
