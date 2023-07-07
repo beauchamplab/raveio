@@ -185,8 +185,23 @@ PipelineTools <- R6::R6Class(
       if(!as_promise && async) {
         stop("If you run the pipeline asynchronous, then the result must be a `promise` object")
       }
-      scheduler <- match.arg(scheduler)
-      type <- match.arg(type)
+      if(missing(scheduler) && missing(type)) {
+        py_module_exists <- tryCatch({
+          self$python_module("exist")
+        }, error = function(e) { FALSE })
+
+        if( isTRUE(py_module_exists) ) {
+          scheduler <- "future"
+          type <- "callr"
+        } else {
+          scheduler <- match.arg(scheduler)
+          type <- match.arg(type)
+        }
+      } else {
+        scheduler <- match.arg(scheduler)
+        type <- match.arg(type)
+      }
+
       force(envir)
       force(callr_function)
 
@@ -236,6 +251,64 @@ PipelineTools <- R6::R6Class(
       return(pipeline_shared(pipe_dir = private$.pipeline_path))
     },
 
+    python_module = function(type = c("info", "module", "shared", "exist"),
+                             must_work = TRUE) {
+      type <- match.arg(type)
+
+      if(type == "exist") { must_work <- FALSE }
+
+      re <- tryCatch({
+
+        if( type == "module" ) {
+          return(pipeline_py_module(
+            pipe_dir = self$pipeline_path,
+            must_work = must_work,
+            convert = FALSE
+          ))
+        }
+
+        minfo <- pipeline_py_info(pipe_dir = self$pipeline_path, must_work = must_work)
+        switch(
+          type,
+          "info" = { return(minfo) },
+          "exist" = {
+            return(isTRUE(is.list(minfo)))
+          },
+          {
+            if(!is.list(minfo)) { return(NULL) }
+            pypath <- file.path(self$pipeline_path, "py")
+            cwd <- getwd()
+            on.exit({
+              if(length(cwd) == 1) { setwd(cwd) }
+            }, add = TRUE, after = FALSE)
+
+            setwd(pypath)
+
+            shared <- rpymat::import(sprintf("%s.shared", minfo$module_name),
+                                     convert = FALSE, delay_load = FALSE)
+
+            setwd(cwd)
+            cwd <- NULL
+
+            return(shared)
+          }
+        )
+
+      }, error = function(e) {
+
+        if(must_work) {
+          stop(e)
+        }
+        NULL
+
+      })
+
+
+      return(re)
+
+
+    },
+
     #' @description get progress of the pipeline
     #' @param method either \code{'summary'} or \code{'details'}
     #' @returns A table of the progress
@@ -277,7 +350,7 @@ PipelineTools <- R6::R6Class(
     #' @param path path to the new pipeline, a folder will be created there
     #' @param filter_pattern file pattern to copy
     #' @returns A new pipeline object based on the path given
-    fork = function(path, filter_pattern = "(^data|^R|^py|\\.R|\\.py|\\.yaml|\\.txt|\\.csv|\\.fst|\\.conf|\\.json|\\.rds|\\.Rmd)$") {
+    fork = function(path, filter_pattern = PIPELINE_FORK_PATTERN) {
       pipeline_fork(
         src = self$pipeline_path,
         dest = path,

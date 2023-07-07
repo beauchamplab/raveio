@@ -83,21 +83,10 @@ pipeline_run <- function(
       return()
     })
 
-    shared_libs_py <- list.files(file.path(.(pipe_dir), "py"), pattern = "^shared-.*\\.py",
-                                 full.names = TRUE, ignore.case = TRUE)
-    if(length(shared_libs_py)) {
-      rpymat::ensure_rpymat(verbose = FALSE)
-      lapply(sort(shared_libs_py), function(f) {
-        f <- normalizePath(f, mustWork = TRUE)
-        rpymat::run_script(
-          f,
-          work_dir = dirname(f),
-          local = FALSE,
-          convert = FALSE
-        )
-        return()
-      })
-    }
+    # if(dir.exists(file.path(.(pipe_dir), "py"))) {
+    #   pipeline_py_module(pipe_dir = .(pipe_dir),
+    #                      convert = FALSE)
+    # }
 
     if(.(type) == "smart"){
       local <- ns$with_future_parallel
@@ -299,21 +288,11 @@ pipeline_run_bare <- function(
     return()
   })
 
-  shared_libs_py <- list.files(file.path(pipe_dir, "py"), pattern = "^shared-.*\\.py",
-                               full.names = TRUE, ignore.case = TRUE)
-  if(length(shared_libs_py)) {
-    rpymat::ensure_rpymat(verbose = FALSE)
-    lapply(sort(shared_libs_py), function(f) {
-      f <- normalizePath(f, mustWork = TRUE)
-      rpymat::run_script(
-        f,
-        work_dir = dirname(f),
-        local = FALSE,
-        convert = FALSE
-      )
-      return()
-    })
-  }
+  # Python modules loaded from here will be null pointers in targets
+  # if(dir.exists(file.path(pipe_dir, "py"))) {
+  #   pipeline_py_module(pipe_dir = pipe_dir,
+  #                      convert = FALSE)
+  # }
 
   make <- function(fun, use_local = TRUE) {
     suppressWarnings({

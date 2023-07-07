@@ -56,6 +56,11 @@ HDF5_EAGERLOAD <- TRUE
 
 RAVEIO_FILEARRAY_VERSION <- 1L
 
+# The following pipeline files will be copied
+#' @rdname raveio-constants
+#' @export
+PIPELINE_FORK_PATTERN <- "(^data|^R|^py|\\.R$|\\.py$|\\.yaml$|\\.txt$|\\.csv$|\\.fst$|\\.conf$|\\.json$|\\.rds$|\\.Rmd$)"
+
 #' @export
 glue::glue
 

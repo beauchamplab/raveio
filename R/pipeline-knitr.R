@@ -105,29 +105,90 @@ rave_knit_python <- function(export, code, deps = NULL, cue = "thorough", patter
     pattern <- parse(text = pattern)
   }
 
+  # save to python submodule
+  indent_info <- guess_py_indent(code)
+
+  # get python module information, the pipeline directory should be "."
+  py_info <- pipeline_py_info(".", must_work = TRUE)
+
+  # get shared path
+  shared_scripts <- NULL
+  common_script_path <- file.path(py_info$pipeline_path, "py", "knitr-common.py")
+  if(file.exists(common_script_path)) {
+    shared_scripts <- readLines(common_script_path)
+  }
+
+
+  rave_path_py <- file.path(py_info$module_path, "rave_pipeline_adapters")
+  dir_create2(rave_path_py)
+  path_target_py <- file.path(rave_path_py, sprintf("pipeline_target_%s.py", export))
+
+  indent <- paste(rep(indent_info$char, indent_info$count), collapse = "")
+  indented_code <- strsplit(paste(code, collapse = "\n"), "\n")[[1]]
+  indented_code <- paste(sprintf("%s%s%s", indent, indent, indented_code), collapse = "\n")
+
+  wrapped_code <- sprintf("\n%s\n\n", glue(r"(
+from .. import shared
+from . import RAVERuntimeException
+
+def pipeline_target_{export}({paste(deps, collapse = ', ')}):
+{indent}try:
+{indented_code}
+{indent}{indent}return {export}
+{indent}except Exception as e:
+{indent}{indent}return RAVERuntimeException(e)
+)"))
+  # write to `path_target_py`
+  writeLines(c(shared_scripts, wrapped_code), path_target_py)
+
   bquote(
     targets::tar_target_raw(
       name = .(export),
       command = quote({
 
-        script_dir <- file.path(targets::tar_config_get("store"), "_pyscripts")
-        if(!dir.exists(script_dir)) {
-          script_dir <- dir_create2(script_dir)
-        }
-        script_path <- file.path(script_dir, .(sprintf("%s.py", export)))
-        writeLines(text = paste(.(code), collapse = "\n"), con = script_path)
-        rpymat::ensure_rpymat(verbose = FALSE)
+        .py_error_handler <- function(e, use_py_last_error = TRUE) {
+          if( use_py_last_error ) {
+            e2 <- asNamespace("reticulate")$py_last_error()
+            if(!is.null(e2)) {
+              e <- e2
+            }
+          }
 
-        py <- rpymat::import("__main__", convert = FALSE)
-        for(nm in .(deps)) {
-          py[[ nm ]] <- get(nm)
+          code <- .(code)
+          stop(sprintf(
+            "Target [%s] (python) encountered the following error: \n%s\nAnalysis pipeline code:\n# ---- Target python code: %s -----\n%s\n# ---------------------------------------",
+            .(export), paste(e$message, collapse = "\n"),
+            .(export), paste(code, collapse = "\n")
+          ))
         }
-        re <- rpymat::run_script(script_path, local = .(local), convert = FALSE)
-        target_name <- .(export)
-        if(!target_name %in% names(re)) {
-          stop(sprintf("Cannot find target name [%s] in Python object", target_name))
-        }
-        return(re[[target_name]])
+
+        re <- withCallingHandlers(
+          expr = {
+            .env <- environment()
+            if(length(.(deps))) {
+              args <- structure(
+                names = .(deps),
+                lapply(.(deps), get, envir = .env)
+              )
+            } else {
+              args <- list()
+            }
+            module <- asNamespace("raveio")$pipeline_py_module(convert = FALSE, must_work = TRUE)
+            target_function <- module$rave_pipeline_adapters[.(export)]
+            re <- do.call(target_function, args)
+            cls <- class(re)
+            if(length(cls) && any(endsWith(cls, "rave_pipeline_adapters.RAVERuntimeException"))) {
+              error_message <- rpymat::py_to_r(re$`__str__`())
+              .py_error_handler(simpleError(error_message), use_py_last_error = FALSE)
+            }
+            return(re)
+          },
+          python.builtin.BaseException = .py_error_handler,
+          python.builtin.Exception = .py_error_handler,
+          py_error = .py_error_handler
+        )
+
+        return(re)
       }),
       deps = .(deps),
       cue = targets::tar_cue(.(cue)),
@@ -260,6 +321,42 @@ rave_knitr_engine <- function(targets){
 
 }
 
+guess_py_indent <- function(code, default_count = 2L) {
+  code <- paste(code, collapse = "\n")
+  code <- strsplit(code, "\n")[[1]]
+  white_space <- "[ \t]"
+
+  indent_char = " "
+
+  code <- code[grepl(sprintf("^(%s+)", white_space), x = code)]
+
+  indents <- default_count
+  if(length(code)) {
+
+    indent_char <- substr(code[[1]], start = 1L, stop = 1L)
+    indents <- vapply(strsplit(code, white_space), function(x) {
+      indents <- which(x == "")
+      if(!1L %in% indents) { return(0L) }
+      indents <- dipsaus::deparse_svec(indents, concatenate = FALSE)
+      if(!length(indents)) { return(0L) }
+      indents <- dipsaus::parse_svec(indents[[1]])
+      return(as.integer(indents[[length(indents)]]))
+    }, 0L)
+    indents <- unique(indents[indents > 0])
+    if(length(indents)) {
+      indents <- min(indents)
+    } else {
+      indents <- default_count
+    }
+  }
+
+
+  list(
+    char = indent_char,
+    count = indents
+  )
+}
+
 rave_knitr_build <- function(targets, make_file){
   # generate targets
   targets <- as.list(targets)
@@ -270,6 +367,8 @@ rave_knitr_build <- function(targets, make_file){
   }
 
   nms <- lapply(targets, "[[", "label")
+  python_exports <- NULL
+
   exprs <- structure(
     lapply(targets, function(options){
       message("Building target ", options$export, " [", options$language, "]")
@@ -280,6 +379,7 @@ rave_knitr_build <- function(targets, make_file){
           quos <- do.call(rave_knit_r, options)
         },
         "python" = {
+          python_exports <<- c(python_exports, options$export)
           quos <- do.call(rave_knit_python, options)
         },
         {
@@ -289,6 +389,64 @@ rave_knitr_build <- function(targets, make_file){
       quos
     }), names = nms
   )
+
+  if(length(python_exports)) {
+    py_info <- pipeline_py_info(".", must_work = TRUE)
+    rave_path_py <- file.path(py_info$module_path, "rave_pipeline_adapters")
+    dir_create2(rave_path_py)
+    path_init_py <- file.path(rave_path_py, "__init__.py")
+
+    py_script <- r"(
+class RAVERuntimeException(object):
+  original_exception = None
+  def __init__(self, e):
+    if isinstance(e, Exception):
+      self.original_exception = e
+    elif isinstance(e, str):
+      self.original_exception = Exception(e)
+    else:
+      self.original_exception = Exception('Unknown error')
+  def __str__(self):
+    return '{}: {}'.format(type(self.original_exception).__name__, self.original_exception)
+
+from .serializers import rave_serialize
+from .serializers import rave_unserialize
+)"
+    writeLines(c(
+      py_script,
+      sprintf("from .pipeline_target_%s import pipeline_target_%s as %s", python_exports, python_exports, python_exports)
+    ), con = path_init_py)
+
+    path_serializer_py <- file.path(rave_path_py, "serializers.py")
+    if(!file.exists(path_serializer_py)) {
+      writeLines(
+        con = path_serializer_py,
+        text = r"(
+def rave_serialize(x, path, name):
+  '''
+  Serialization function for serializing Python objects into a file
+  parameters:
+    - x:    python object to serialize
+    - path: path prefix to store the object
+    - name: pipeline target name
+  '''
+  raise NotImplementedError('Please implement `rave_serialize` in rave_pipeline_adapters.serializers')
+
+def rave_unserialize(x, path, name):
+  '''
+  Unserialization function for restoring Python objects from a file
+  parameters:
+    - path: path prefix to store the object
+    - name: pipeline target name
+  '''
+  raise NotImplementedError('Please implement `rave_unserialize` in rave_pipeline_adapters.serializers')
+
+)"
+      )
+    }
+
+  }
+
   if(file.exists("settings.yaml")){
     settings <- as.list(load_yaml("settings.yaml"))
 
@@ -383,20 +541,20 @@ rave_knitr_build <- function(targets, make_file){
     ')), function(f) {',
     '  source(f, local = ._._env_._., chdir = TRUE)',
     '})',
-    'if(dir.exists("py/")) {',
-    '  try({',
-    '    library(rpymat)',
-    '    rpymat::ensure_rpymat(verbose = FALSE)',
-    '    lapply(sort(',
-    '      list.files("py/", ignore.case = TRUE, ',
-    '                 pattern = "^shared-.*\\\\.py", ',
-    '                 full.names = TRUE)), ',
-    '      function(f) {',
-    '        f <- normalizePath(f, mustWork = TRUE)',
-    '        rpymat::run_script(f, work_dir = basename(f), local = FALSE, convert = FALSE)',
-    '      })',
-    '  })',
-    '}',
+    # 'if(dir.exists("py/")) {',
+    # '  try({',
+    # '    library(rpymat)',
+    # '    rpymat::ensure_rpymat(verbose = FALSE)',
+    # '    lapply(sort(',
+    # '      list.files("py/", ignore.case = TRUE, ',
+    # '                 pattern = "^shared-.*\\\\.py", ',
+    # '                 full.names = TRUE)), ',
+    # '      function(f) {',
+    # '        f <- normalizePath(f, mustWork = TRUE)',
+    # '        rpymat::run_script(f, work_dir = basename(f), local = FALSE, convert = FALSE)',
+    # '      })',
+    # '  })',
+    # '}',
     'targets::tar_option_set(envir = ._._env_._.)',
     'rm(._._env_._.)',
 
@@ -459,8 +617,10 @@ pipeline_setup_rmd <- function(
   env$build_pipeline <- configure_knitr(languages = languages)
   env$.module_id <- module_id
 
+  module_path <- file.path(project_path, "modules", module_id)
+
   shared_scripts <- list.files(
-    file.path(project_path, "modules", module_id, "R"),
+    file.path(module_path, "R"),
     pattern = "^shared-.*\\.R$",
     ignore.case = TRUE,
     full.names = TRUE
@@ -471,27 +631,24 @@ pipeline_setup_rmd <- function(
     return()
   })
 
-  shared_scripts <- list.files(
-    file.path(project_path, "modules", module_id, "py"),
-    pattern = "^shared-.*\\.py$",
-    ignore.case = TRUE,
-    full.names = TRUE
-  )
 
-  if(length(shared_scripts)) {
-    rpymat::ensure_rpymat(verbose = TRUE)
-    lapply(sort(shared_scripts), function(f) {
-      f <- normalizePath(f, mustWork = TRUE)
-      rpymat::run_script(
-        f,
-        work_dir = basename(f),
-        local = FALSE,
-        convert = FALSE
-      )
-      return()
-    })
+  py_dir <- file.path(module_path, "py")
+  if(dir.exists(py_dir)) {
+    py_info <- pipeline_py_info(pipe_dir = module_path, must_work = TRUE)
+    cwd <- getwd()
+    on.exit({ if(length(cwd)) { setwd(cwd) } }, add = TRUE, after = FALSE)
+
+    setwd(py_dir)
+
+    common_script_path <- file.path(py_info$pipeline_path, "py", "knitr-common.py")
+    py <- rpymat::import_main(convert = FALSE)
+
+    # import external libraries
+    rpymat::run_pyscript(common_script_path, local = FALSE, convert = FALSE)
+
+    # load shared modules
+    py$shared <- rpymat::import(sprintf("%s.shared", py_info$module_name))
   }
-
 
   settings <- load_yaml(file.path( project_path, "modules",
                                    module_id, "settings.yaml"))

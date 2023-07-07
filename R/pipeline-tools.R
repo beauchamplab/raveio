@@ -195,27 +195,11 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
     source(file = f, local = env, chdir = TRUE)
   })
 
-  shared_scripts_py <- list.files(
-    file.path(pipe_dir, "py"),
-    pattern = "^shared-.*\\.py$",
-    ignore.case = TRUE,
-    full.names = TRUE
-  )
 
-  if(length(shared_scripts_py)) {
-    rpymat::ensure_rpymat(verbose = TRUE)
-    lapply(sort(shared_scripts_py), function(f) {
-      f <- normalizePath(f, mustWork = TRUE)
-      rpymat::run_script(
-        f,
-        work_dir = basename(f),
-        local = FALSE,
-        convert = FALSE
-      )
-      return()
-    })
-  }
-
+  # if(dir.exists(file.path(pipe_dir, "py"))) {
+  #   pipeline_py_module(pipe_dir = pipe_dir,
+  #                      convert = FALSE)
+  # }
 
   if(file.exists(settings_path)) {
     input_settings <- yaml::read_yaml(settings_path)
@@ -519,7 +503,7 @@ pipeline_progress <- function(
 pipeline_fork <- function(
   src = Sys.getenv("RAVE_PIPELINE", "."),
   dest = tempfile(pattern = "rave_pipeline_"),
-  filter_pattern = "(^data|^R|^py|\\.R|\\.py|\\.yaml|\\.txt|\\.csv|\\.fst|\\.conf|\\.json|\\.rds|\\.Rmd)$",
+  filter_pattern = PIPELINE_FORK_PATTERN,
   activate = FALSE
 ){
   if(!dir.exists(src)){
@@ -1096,4 +1080,66 @@ pipeline_shared <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
   )
   return( env )
 
+}
+
+
+pipeline_py_info <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."), must_work = NA) {
+
+  pipe_dir <- normalizePath(pipe_dir, mustWork = TRUE)
+  env_yaml <- file.path(pipe_dir, "py", c("rave-py-submodule.yaml", "rave-py-submodule.yml"))
+  env_yaml <- env_yaml[file.exists(env_yaml)]
+  if(!length(env_yaml)) {
+    msg <- sprintf("Unable to find python sub-module for the pipeline: no `rave-py-submodule.yaml` found. (pipeline: %s)", pipe_dir)
+    if(is.na(must_work)) {
+      warning(msg)
+    } else if (must_work) {
+      stop(msg)
+    }
+    return()
+  }
+
+  py_pkg_name <- NULL
+  tryCatch({
+    env_yaml <- load_yaml(env_yaml[[1]])
+    py_pkg_name <- env_yaml$name
+  }, error = function(e) {
+    stop("Unable to load python sub-module for the pipeline: cannot parse `rave-py-submodule.yaml`")
+  })
+
+  if(!length(py_pkg_name)) {
+    stop("Unable to find name for python sub-module from `rave-py-submodule.yaml`")
+  }
+
+  module_path <- file.path(pipe_dir, "py", py_pkg_name)
+  if(!dir.exists(module_path)) {
+    stop("Unable to load python sub-module: module [",
+         py_pkg_name, "] is not found under the `py` folder!")
+  }
+
+  list(
+    pipeline_path = pipe_dir,
+    module_path = module_path,
+    target_path = file.path(module_path, "rave_pipeline_adapters"),
+    module_name = py_pkg_name
+  )
+}
+
+pipeline_py_module <- function(
+    pipe_dir = Sys.getenv("RAVE_PIPELINE", "."), must_work = NA,
+    convert = FALSE) {
+
+  pipe_dir <- normalizePath(pipe_dir, mustWork = TRUE)
+  info <- pipeline_py_info(pipe_dir = pipe_dir, must_work = must_work)
+
+  py_pkg_name <- info$module_name
+
+  cwd <- getwd()
+  on.exit({ setwd(cwd) }, add = TRUE, after = TRUE)
+  pydir <- file.path(pipe_dir, "py")
+  setwd(pydir)
+
+  py_module <- rpymat::import(py_pkg_name, convert = convert, delay_load = FALSE)
+  setwd(cwd)
+
+  py_module
 }

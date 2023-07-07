@@ -59,6 +59,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-run}{\code{PipelineTools$run()}}
 \item \href{#method-PipelineTools-eval}{\code{PipelineTools$eval()}}
 \item \href{#method-PipelineTools-shared_env}{\code{PipelineTools$shared_env()}}
+\item \href{#method-PipelineTools-python_module}{\code{PipelineTools$python_module()}}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
 \item \href{#method-PipelineTools-visualize}{\code{PipelineTools$visualize()}}
@@ -240,6 +241,18 @@ path \code{R/shared}
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-python_module"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-python_module}{}}}
+\subsection{Method \code{python_module()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$python_module(
+  type = c("info", "module", "shared", "exist"),
+  must_work = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-progress"></a>}}
 \if{latex}{\out{\hypertarget{method-PipelineTools-progress}{}}}
 \subsection{Method \code{progress()}}{
@@ -308,11 +321,7 @@ visualize pipeline target dependency graph
 \subsection{Method \code{fork()}}{
 fork (copy) the current pipeline to a new directory
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork(
-  path,
-  filter_pattern =
-    "(^data|^R|^py|\\\\.R|\\\\.py|\\\\.yaml|\\\\.txt|\\\\.csv|\\\\.fst|\\\\.conf|\\\\.json|\\\\.rds|\\\\.Rmd)$"
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork(path, filter_pattern = PIPELINE_FORK_PATTERN)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

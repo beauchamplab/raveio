@@ -6,6 +6,7 @@
 \alias{SIGNAL_TYPES}
 \alias{LOCATION_TYPES}
 \alias{MNI305_to_MNI152}
+\alias{PIPELINE_FORK_PATTERN}
 \title{The constant variables}
 \format{
 An object of class \code{character} of length 6.
@@ -13,6 +14,8 @@ An object of class \code{character} of length 6.
 An object of class \code{character} of length 5.
 
 An object of class \code{matrix} (inherits from \code{array}) with 4 rows and 4 columns.
+
+An object of class \code{character} of length 1.
 }
 \usage{
 SIGNAL_TYPES
@@ -20,6 +23,8 @@ SIGNAL_TYPES
 LOCATION_TYPES
 
 MNI305_to_MNI152
+
+PIPELINE_FORK_PATTERN
 }
 \description{
 The constant variables
