@@ -136,136 +136,110 @@ PipelineResult <- R6::R6Class(
       private$.vartable <- NULL
       # self$names <- names
 
-      promise <- promises::promise(function(resolve, reject){
-        tryCatch({
-          resolve(eval(expr, env))
-        }, error = function(e){
-          reject(e)
-        })
-      })
-
       if(async){
         private$.process_type <- 'remote'
-        if(inherits(process, "process")){
-          private$.process <- process
-        } else {
-          promise <- promises::then(
-            promise,
-            onFulfilled = function(process, ...){
-              if(inherits(process, "process")){
+
+        self$promise <- promises::promise(
+          function(resolve, reject){
+            process <- tryCatch({
+              process <- eval(expr, env)
+              if(inherits(process, "r_process")) {
                 private$.process <- process
               } else {
                 stop("`PipelineResult`: `expr` must return a callr::r_process instance")
               }
-            },
-            onRejected = function(e) {
+              process
+            }, error = function(e){
               private$.state <- "errored"
               private$close_progressor()
-              stop(e)
-            }
-          )
-        }
-
-        self$promise <- promise$then(
-          onFulfilled = function(...){
-
-            self$promise <- promises::promise(function(resolve, reject){
-
-              callback <- function(){
-
-                continue <- tryCatch({
-                  if(private$.invalidated){
-                    private$.state <- "canceled"
-                    self$invalidate()
-                    e <- simpleCondition("Pipeline canceled")
-
-                    tryCatch({
-                      if(is.function(self$async_callback)) {
-                        self$async_callback()
-                      }
-                    })
-
-                    reject(e)
-                    return()
-                  }
-
-                  progress <- self$get_progress()
-
-                  if(!private$.process$is_alive()){
-                    private$.state <- "finished"
-                    private$close_progressor()
-                    private$.process$get_result()
-                    resolve(private$.vartable)
-                    return()
-                  }
-
-                  # show progress
-                  if(length(self$progressor)){
-                    old_val <- self$progressor$get_value()
-                    increment <- progress$index - old_val
-                    if(increment > 0){
-                      self$progressor$inc(
-                        detail = progress$description,
-                        amount = increment
-                      )
-                    }
-                  }
-
-                  nrow(private$.vartable)
-
-                  TRUE
-                }, error = function(e){
-                  private$.state <- "errored"
-                  private$close_progressor()
-                  reject(e)
-                  FALSE
-                })
-
-                if(continue){
-                  later::later(callback, delay = self$check_interval)
-                  tryCatch({
-                    if(is.function(self$async_callback)) {
-                      self$async_callback()
-                    }
-                  })
-                } else {
-                  tryCatch({
-                    if(is.function(self$async_callback)) {
-                      self$async_callback()
-                    }
-                  })
-                  return()
-                }
-              }
-
-              callback()
-
+              reject(e)
+              NULL
             })
 
-          },
-          onRejected = function(e) {
-            private$.state <- "errored"
-            private$close_progressor()
-            stop(e)
+            if(is.null(process)) { return() }
+
+            run_async_callback <- function() {
+              tryCatch({
+                if(is.function(self$async_callback)) {
+                  self$async_callback()
+                }
+              }, error = warning)
+            }
+
+            callback <- function(){
+
+              continue <- tryCatch({
+                if(private$.invalidated){
+                  private$.state <- "canceled"
+                  self$invalidate()
+                  e <- simpleCondition("Pipeline canceled")
+                  run_async_callback()
+                  reject(e)
+                  return()
+                }
+
+                progress <- self$get_progress()
+
+                if(!private$.process$is_alive()){
+                  private$.state <- "finished"
+                  private$close_progressor()
+                  private$.process$get_result()
+                  resolve(private$.vartable)
+                  return()
+                }
+
+                # show progress
+                if(length(self$progressor)){
+                  old_val <- self$progressor$get_value()
+                  increment <- progress$index - old_val
+                  if(increment > 0){
+                    self$progressor$inc(
+                      detail = progress$description,
+                      amount = increment
+                    )
+                  }
+                }
+
+                # nrow(private$.vartable)
+
+                TRUE
+              }, error = function(e){
+                private$.state <- "errored"
+                private$close_progressor()
+                e
+              })
+
+              run_async_callback()
+
+              if(isTRUE(continue)){
+                later::later(callback, delay = self$check_interval)
+              } else {
+                reject(callback)
+                return()
+              }
+            }
+
+            callback()
+
           }
         )
 
       } else {
         private$.process_type <- 'native'
-        promise <- promises::then(
-          promise,
-          onFulfilled = function(...){
-            private$.state <- "finished"
-            self$variables
-            return(private$.vartable)
-          },
-          onRejected = function(e){
-            private$.state <- "errored"
-            private$close_progressor()
-            stop(e)
+        self$promise <- promises::promise(
+          function(resolve, reject){
+            tryCatch({
+              eval(expr, env)
+              private$.state <- "finished"
+              # self$variables
+              resolve(private$.vartable)
+            }, error = function(e) {
+              private$.state <- "errored"
+              private$close_progressor()
+              reject(e)
+            })
           }
         )
-        self$promise <- promise
       }
 
     },
