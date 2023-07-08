@@ -12,7 +12,7 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.22</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.23</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,10 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
 
 
 <p>An environment of shared variables</p>
+
+
+<p>See <code>type</code></p>
+
 
 
 <p>A table of the progress</p>
@@ -133,6 +137,7 @@ signatures of data and commands</p></dd>
 <li><p><a href="#method-PipelineTools-run"><code>PipelineTools$run()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-eval"><code>PipelineTools$eval()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-shared_env"><code>PipelineTools$shared_env()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-python_module"><code>PipelineTools$python_module()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-progress"><code>PipelineTools$progress()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-attach"><code>PipelineTools$attach()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-visualize"><code>PipelineTools$visualize()</code></a></p></li>
@@ -327,15 +332,44 @@ path <code>R/shared</code></p><div class="section">
 </div>
 
 
-</div><p></p><hr><a id="method-PipelineTools-progress"></a><div class="section">
-<h3 id="method-progress-">Method <code>progress()</code><a class="anchor" aria-label="anchor" href="#method-progress-"></a></h3>
-<p>get progress of the pipeline</p><div class="section">
+</div><p></p><hr><a id="method-PipelineTools-python_module"></a><div class="section">
+<h3 id="method-python-module-">Method <code>python_module()</code><a class="anchor" aria-label="anchor" href="#method-python-module-"></a></h3>
+<p>get 'Python' module embedded in the pipeline</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">progress</span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"summary"</span>, <span class="st">"details"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">python_module</span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"info"</span>, <span class="st">"module"</span>, <span class="st">"shared"</span>, <span class="st">"exist"</span><span class="op">)</span>,</span>
+<span>  must_work <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>type</code></dt>
+<dd><p>return type, choices are <code>'info'</code> (get basic information
+such as module path, default), <code>'module'</code> (load module and return
+it), <code>'shared'</code> (load a shared sub-module from the module, which
+is shared also in report script), and <code>'exist'</code> (returns true
+or false on whether the module exists or not)</p></dd>
+
+
+<dt><code>must_work</code></dt>
+<dd><p>whether the module needs to be existed or not. If
+<code>TRUE</code>, the raise errors when the module does not exist; default
+is <code>TRUE</code>, ignored when <code>type</code> is <code>'exist'</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-PipelineTools-progress"></a><div class="section">
+<h3 id="method-progress-">Method <code>progress()</code><a class="anchor" aria-label="anchor" href="#method-progress-"></a></h3>
+<p>get progress of the pipeline</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">progress</span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"summary"</span>, <span class="st">"details"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>method</code></dt>
 <dd><p>either <code>'summary'</code> or <code>'details'</code></p></dd>
 
@@ -346,12 +380,12 @@ path <code>R/shared</code></p><div class="section">
 </div><p></p><hr><a id="method-PipelineTools-attach"></a><div class="section">
 <h3 id="method-attach-">Method <code><a href="https://rdrr.io/r/base/attach.html" class="external-link">attach()</a></code><a class="anchor" aria-label="anchor" href="#method-attach-"></a></h3>
 <p>attach pipeline tool to environment (internally used)</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="kw">attach</span><span class="op">(</span><span class="va">env</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>env</code></dt>
 <dd><p>an environment</p></dd>
 
@@ -362,7 +396,7 @@ path <code>R/shared</code></p><div class="section">
 </div><p></p><hr><a id="method-PipelineTools-visualize"></a><div class="section">
 <h3 id="method-visualize-">Method <code>visualize()</code><a class="anchor" aria-label="anchor" href="#method-visualize-"></a></h3>
 <p>visualize pipeline target dependency graph</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">visualize</span><span class="op">(</span></span>
 <span>  glimpse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  aspect_ratio <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -373,7 +407,7 @@ path <code>R/shared</code></p><div class="section">
 </div>
 
 <div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>glimpse</code></dt>
 <dd><p>whether to glimpse the graph network or render the state</p></dd>
 
@@ -396,16 +430,12 @@ path <code>R/shared</code></p><div class="section">
 </div><p></p><hr><a id="method-PipelineTools-fork"></a><div class="section">
 <h3 id="method-fork-">Method <code>fork()</code><a class="anchor" aria-label="anchor" href="#method-fork-"></a></h3>
 <p>fork (copy) the current pipeline to a new directory</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">fork</span><span class="op">(</span></span>
-<span>  <span class="va">path</span>,</span>
-<span>  filter_pattern <span class="op">=</span></span>
-<span>    <span class="st">"(^data|R|\\.R|\\.yaml|\\.txt|\\.csv|\\.fst|\\.conf|\\.json|\\.rds|\\.Rmd)$"</span></span>
-<span><span class="op">)</span></span></code></pre></div><p></p></div>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">fork</span><span class="op">(</span><span class="va">path</span>, filter_pattern <span class="op">=</span> <span class="va">PIPELINE_FORK_PATTERN</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>path</code></dt>
 <dd><p>path to the new pipeline, a folder will be created there</p></dd>
 
@@ -422,12 +452,12 @@ path <code>R/shared</code></p><div class="section">
 <p>run code with pipeline activated, some environment variables
 and function behaviors might change under such condition (for example,
 <code>targets</code> package functions)</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">with_activated</span><span class="op">(</span><span class="va">expr</span>, quoted <span class="op">=</span> <span class="cn">FALSE</span>, env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>expr</code></dt>
 <dd><p>expression to evaluate</p></dd>
 
@@ -446,7 +476,7 @@ and function behaviors might change under such condition (for example,
 </div><p></p><hr><a id="method-PipelineTools-clean"></a><div class="section">
 <h3 id="method-clean-">Method <code>clean()</code><a class="anchor" aria-label="anchor" href="#method-clean-"></a></h3>
 <p>clean all or part of the data store</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clean</span><span class="op">(</span></span>
 <span>  destroy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"cloud"</span>, <span class="st">"local"</span>, <span class="st">"meta"</span>, <span class="st">"process"</span>, <span class="st">"progress"</span>, <span class="st">"objects"</span>,</span>
 <span>    <span class="st">"scratch"</span>, <span class="st">"workspaces"</span><span class="op">)</span>,</span>
@@ -455,7 +485,7 @@ and function behaviors might change under such condition (for example,
 </div>
 
 <div class="section">
-<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
+<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>destroy, ask</code></dt>
 <dd><p>see <code><a href="https://docs.ropensci.org/targets/reference/tar_destroy.html" class="external-link">tar_destroy</a></code></p></dd>
 
@@ -466,7 +496,7 @@ and function behaviors might change under such condition (for example,
 </div><p></p><hr><a id="method-PipelineTools-save_data"></a><div class="section">
 <h3 id="method-save-data-">Method <code>save_data()</code><a class="anchor" aria-label="anchor" href="#method-save-data-"></a></h3>
 <p>save data to pipeline data folder</p><div class="section">
-<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">save_data</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">name</span>,</span>
@@ -477,7 +507,7 @@ and function behaviors might change under such condition (for example,
 </div>
 
 <div class="section">
-<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
+<h4 id="arguments-13">Arguments<a class="anchor" aria-label="anchor" href="#arguments-13"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>data</code></dt>
 <dd><p>R object</p></dd>
 
@@ -507,7 +537,7 @@ environments, use <code>'rds'</code></p></dd>
 </div><p></p><hr><a id="method-PipelineTools-load_data"></a><div class="section">
 <h3 id="method-load-data-">Method <code>load_data()</code><a class="anchor" aria-label="anchor" href="#method-load-data-"></a></h3>
 <p>load data from pipeline data folder</p><div class="section">
-<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">load_data</span><span class="op">(</span></span>
 <span>  <span class="va">name</span>,</span>
 <span>  error_if_missing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -518,7 +548,7 @@ environments, use <code>'rds'</code></p></dd>
 </div>
 
 <div class="section">
-<h4 id="arguments-13">Arguments<a class="anchor" aria-label="anchor" href="#arguments-13"></a></h4>
+<h4 id="arguments-14">Arguments<a class="anchor" aria-label="anchor" href="#arguments-14"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>name</code></dt>
 <dd><p>the name of the data</p></dd>
 
@@ -546,12 +576,12 @@ from the file extension</p></dd>
 </div><p></p><hr><a id="method-PipelineTools-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-14">Arguments<a class="anchor" aria-label="anchor" href="#arguments-14"></a></h4>
+<h4 id="arguments-15">Arguments<a class="anchor" aria-label="anchor" href="#arguments-15"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
