@@ -13,6 +13,8 @@ or \code{async} is true; otherwise a list of values for input \code{names}
 
 An environment of shared variables
 
+See \code{type}
+
 A table of the progress
 
 Nothing
@@ -244,6 +246,7 @@ path \code{R/shared}
 \if{html}{\out{<a id="method-PipelineTools-python_module"></a>}}
 \if{latex}{\out{\hypertarget{method-PipelineTools-python_module}{}}}
 \subsection{Method \code{python_module()}}{
+get 'Python' module embedded in the pipeline
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PipelineTools$python_module(
   type = c("info", "module", "shared", "exist"),
@@ -251,6 +254,21 @@ path \code{R/shared}
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{return type, choices are \code{'info'} (get basic information
+such as module path, default), \code{'module'} (load module and return
+it), \code{'shared'} (load a shared sub-module from the module, which
+is shared also in report script), and \code{'exist'} (returns true
+or false on whether the module exists or not)}
+
+\item{\code{must_work}}{whether the module needs to be existed or not. If
+\code{TRUE}, the raise errors when the module does not exist; default
+is \code{TRUE}, ignored when \code{type} is \code{'exist'}.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-progress"></a>}}

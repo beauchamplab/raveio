@@ -251,6 +251,16 @@ PipelineTools <- R6::R6Class(
       return(pipeline_shared(pipe_dir = private$.pipeline_path))
     },
 
+    #' @description get 'Python' module embedded in the pipeline
+    #' @param type return type, choices are \code{'info'} (get basic information
+    #' such as module path, default), \code{'module'} (load module and return
+    #' it), \code{'shared'} (load a shared sub-module from the module, which
+    #' is shared also in report script), and \code{'exist'} (returns true
+    #' or false on whether the module exists or not)
+    #' @param must_work whether the module needs to be existed or not. If
+    #' \code{TRUE}, the raise errors when the module does not exist; default
+    #' is \code{TRUE}, ignored when \code{type} is \code{'exist'}.
+    #' @returns See \code{type}
     python_module = function(type = c("info", "module", "shared", "exist"),
                              must_work = TRUE) {
       type <- match.arg(type)
