@@ -13,7 +13,7 @@
 #' @returns Nothing.
 #' @export
 module_add <- function(
-  module_id, module_label, path = ".", type = c("default", "bare"), ...,
+  module_id, module_label, path = ".", type = c("default", "bare", "scheduler"), ...,
   pipeline_name = module_id, overwrite = FALSE
 ){
 
@@ -36,6 +36,7 @@ module_add <- function(
   template_type <- switch (
     type,
     'bare' = "rmd-bare",
+    'scheduler' = "rmd-scheduler",
     "rmd"
   )
 

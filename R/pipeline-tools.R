@@ -372,7 +372,7 @@ pipeline_dependency_graph <- function(pipeline_path, targets_only = TRUE, shortc
                                       zoom_speed = 0.1, aspect_ratio = 1.5, main = "",
                                       node_size = 30, label_size = node_size, glimpse = FALSE) {
 
-  targets::tar_assert_package("visNetwork")
+  require_package("visNetwork")
 
   widget <- callr::r(
     function(pipeline_path, targets_only, shortcut, zoom_speed, aspect_ratio, main, label_size, node_size, glimpse) {
@@ -615,7 +615,7 @@ pipeline_watch <- function(
 #' @export
 pipeline_create_template <- function(
   root_path, pipeline_name, overwrite = FALSE,
-  activate = TRUE, template_type = c("rmd", 'r', 'rmd-bare')
+  activate = TRUE, template_type = c("rmd", 'r', 'rmd-bare', 'rmd-scheduler')
 ) {
   template_type <- match.arg(template_type)
   pipeline_name <- tolower(pipeline_name)

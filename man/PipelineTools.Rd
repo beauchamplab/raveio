@@ -185,6 +185,7 @@ run the pipeline
   type = c("smart", "callr", "vanilla"),
   envir = new.env(parent = globalenv()),
   callr_function = NULL,
+  return_values = TRUE,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -200,7 +201,7 @@ calculate all the targets}
 \item{\code{as_promise}}{whether to return a \code{\link{PipelineResult}}
 instance}
 
-\item{\code{scheduler, type, envir, callr_function, ...}}{passed to
+\item{\code{scheduler, type, envir, callr_function, return_values, ...}}{passed to
 \code{\link{pipeline_run}} if \code{as_promise} is true, otherwise
 these arguments will be passed to \code{pipeline_run_bare}}
 }

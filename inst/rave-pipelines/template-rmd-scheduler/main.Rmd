@@ -1,0 +1,40 @@
+---
+title: "RAVE Pipeline Scheduler"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include = FALSE}
+# This code block sets up the engine environment
+# Please do not remove me
+raveio::pipeline_setup_rmd("TEMPLATE", project_path = "../../")
+```
+
+<!-- RAVE Scheduler Placeholder -->
+
+## Build, Visualize, & Run
+
+Please make sure the following code block is at the end of your pipeline file. This block will build the pipeline and generate a `make-TEMPLATE.R` script with your pipeline markdown file. `RAVE` will use the generated pipeline script to execute the pipeline in the dashboard application, or in massive production mode.
+
+```{r build, echo=FALSE, results='hide'}
+build_pipeline(make_file = "make-TEMPLATE.R")
+```
+
+
+Once the pipeline script `make-TEMPLATE.R` is built, you can visualize and execute the pipeline without the need of re-knit this document. Notice we use `r` block instead of `rave`. (This is because the code blocks are not part of pipeline targets.)
+
+```{r visualize, echo=FALSE}
+# Fixed usage, show pipeline graph
+try({
+  asNamespace("raveio")$pipeline_dependency_graph(
+    pipeline_path = ".", glimpse = TRUE)
+}, silent = TRUE)
+```
+
+
+
+
+
+
+

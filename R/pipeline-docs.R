@@ -27,6 +27,9 @@
 #' @param names the names of pipeline targets that are to be executed; default
 #' is \code{NULL}, which runs all targets; use \code{pipeline_target_names}
 #' to check all your available target names.
+#' @param return_values whether to return pipeline target values; default is
+#' true; only works in \code{pipeline_run_bare} and will be ignored by
+#' \code{pipeline_run}
 #' @param method how the progress should be presented; choices are
 #' \code{"summary"}, \code{"details"}, \code{"custom"}. If custom method is
 #' chosen, then \code{func} will be called

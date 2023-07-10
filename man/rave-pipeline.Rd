@@ -50,6 +50,7 @@ pipeline_run(
   progress_quiet = !async,
   progress_max = NA,
   progress_title = "Running pipeline",
+  return_values = TRUE,
   ...
 )
 
@@ -67,6 +68,7 @@ pipeline_run_bare(
   envir = new.env(parent = globalenv()),
   callr_function = NULL,
   names = NULL,
+  return_values = TRUE,
   ...
 )
 
@@ -139,7 +141,7 @@ pipeline_create_template(
   pipeline_name,
   overwrite = FALSE,
   activate = TRUE,
-  template_type = c("rmd", "r", "rmd-bare")
+  template_type = c("rmd", "r", "rmd-bare", "rmd-scheduler")
 )
 
 pipeline_create_subject_pipeline(
@@ -210,6 +212,10 @@ how often to check the pipeline}
 
 \item{progress_title, progress_max, progress_quiet}{control the progress,
 see \code{\link[dipsaus]{progress2}}.}
+
+\item{return_values}{whether to return pipeline target values; default is
+true; only works in \code{pipeline_run_bare} and will be ignored by
+\code{pipeline_run}}
 
 \item{...}{other parameters, targets, etc.}
 

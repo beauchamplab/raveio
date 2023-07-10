@@ -12,6 +12,7 @@ pipeline_run <- function(
   progress_quiet = !async,
   progress_max = NA,
   progress_title = "Running pipeline",
+  return_values = TRUE,
   ...){
 
   pipe_dir <- activate_pipeline(pipe_dir)
@@ -232,7 +233,7 @@ pipeline_run_bare <- function(
   type = c("smart", "callr", "vanilla"),
   envir = new.env(parent = globalenv()),
   callr_function = NULL,
-  names = NULL,
+  names = NULL, return_values = TRUE,
   ...) {
   pipe_dir <- activate_pipeline(pipe_dir)
 
@@ -375,6 +376,12 @@ pipeline_run_bare <- function(
   if(!length(names)) {
     names <- pipeline_target_names(pipe_dir = pipe_dir)
   }
-  pipeline_read(var_names = names, pipe_dir = pipe_dir)
+
+  if( return_values ) {
+    return(pipeline_read(var_names = names, pipe_dir = pipe_dir))
+  } else {
+    return(invisible())
+  }
+
 
 }
