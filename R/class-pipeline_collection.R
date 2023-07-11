@@ -45,7 +45,7 @@ PipelineCollections <- R6::R6Class(
     add_pipeline = function(
       x, names = NULL, deps = NULL, pre_hook = NULL, post_hook = NULL,
       cue = c("always", "thorough", "never"), search_paths = pipeline_root(),
-      standalone = FALSE
+      standalone = FALSE, hook_envir = parent.frame()
     ) {
       cue <- match.arg(cue)
 
@@ -123,7 +123,7 @@ PipelineCollections <- R6::R6Class(
       if(is.function(pre_hook)) {
         pre_hook_pak <- list(
           func = pre_hook,
-          globals = globals::globalsOf(pre_hook)
+          globals = globals::globalsOf(pre_hook, envir = hook_envir)
         )
       }
 
@@ -131,7 +131,7 @@ PipelineCollections <- R6::R6Class(
       if(is.function(post_hook)) {
         post_hook_pak <- list(
           func = post_hook,
-          globals = globals::globalsOf(post_hook)
+          globals = globals::globalsOf(post_hook, envir = hook_envir)
         )
       }
 
