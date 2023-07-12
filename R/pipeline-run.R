@@ -117,8 +117,8 @@ pipeline_run <- function(
               # remove ANSI code
               msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
 
-              if(startsWith(msg, "Error running targets::tar_make()")) {
-                msg <- gsub("^Error running targets::tar_make().*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
+              if(startsWith(msg, "Error running targets::tar_make")) {
+                msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
                 e$message <- msg
               }
             }
@@ -312,8 +312,8 @@ pipeline_run_bare <- function(
             # remove ANSI code
             msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
 
-            if(startsWith(msg, "Error running targets::tar_make()")) {
-              msg <- gsub("^Error running targets::tar_make().*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
+            if(startsWith(msg, "Error running targets::tar_make")) {
+              msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
               e$message <- msg
             }
           }
