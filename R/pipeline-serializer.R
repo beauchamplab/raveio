@@ -128,24 +128,29 @@ tfmtreg_user_defined_python <- function() {
       }
 
 
-      withCallingHandlers({
+      tryCatch(
+        {
+          py_module <- raveio$pipeline_py_module(convert = FALSE, must_work = TRUE)
+          unserialize_func <- py_module$rave_pipeline_adapters$rave_unserialize
+          if(!inherits(unserialize_func, "python.builtin.function")) {
+            stop(sprintf("Unable to find unserialization function for user-defined python objects: %s", paste(target_export, collapse = ",")))
+          }
+          message("Unserializing [", target_export, "] using Python module [", py_module$`__name__`, "]")
+          path2 <- raveio$target_user_path(target_export = target_export, check = TRUE)
+          re <- unserialize_func(path2, target_export)
+          py <- rpymat::import_main(convert = FALSE)
+          py[[ target_export ]] <- re
+          return(re)
 
-        py_module <- raveio$pipeline_py_module(convert = FALSE, must_work = TRUE)
-        unserialize_func <- py_module$rave_pipeline_adapters$rave_unserialize
-        if(!inherits(unserialize_func, "python.builtin.function")) {
-          stop(sprintf("Unable to find unserialization function for user-defined python objects: %s", paste(target_export, collapse = ",")))
+        },
+        python.builtin.BaseException = py_error_handler,
+        python.builtin.Exception = py_error_handler,
+        py_error = py_error_handler,
+        error = function(e) {
+          traceback(e)
+          stop(e$message, call. = FALSE)
         }
-        message("Unserializing [", target_export, "] using Python module [", py_module$`__name__`, "]")
-        path2 <- raveio$target_user_path(target_export = target_export, check = TRUE)
-        re <- unserialize_func(path2, target_export)
-        py <- rpymat::import_main(convert = FALSE)
-        py[[ target_export ]] <- re
-        return(re)
-
-      },
-      python.builtin.BaseException = py_error_handler,
-      python.builtin.Exception = py_error_handler,
-      py_error = py_error_handler)
+      )
 
     },
     write = function(object, path, target_export = NULL) {
@@ -163,53 +168,56 @@ tfmtreg_user_defined_python <- function() {
         ), call. = FALSE)
       }
 
-      withCallingHandlers({
-        info_module <- raveio$pipeline_py_info(must_work = TRUE)
-        py_module <- raveio$pipeline_py_module(convert = FALSE, must_work = TRUE)
-        serialize_func <- py_module$rave_pipeline_adapters$rave_serialize
-        if(!inherits(serialize_func, "python.builtin.function")) {
-          stop(sprintf("Unable to find serialization function for user-defined python objects: %s", paste(target_export, collapse = ",")))
-        }
-        script_signature <- dipsaus::digest(file = file.path(info_module$target_path, sprintf("pipeline_target_%s.py", target_export)))
-        message("Serializing [", target_export, "] using Python module [", py_module$`__name__`, "]")
-        path2 <- raveio$target_user_path(target_export = target_export, check = TRUE)
-        message(path2)
-        path3 <- serialize_func(object, normalizePath(path2, mustWork = FALSE),
-                                target_export)
-        message(path3)
-        if(!is.null(path3) && !inherits(path3, "python.builtin.NoneType")) {
-          path3 <- rpymat::py_to_r(path3)
-          if(is.character(path3) && length(path3) == 1 &&
-             !is.na(path3) && file.exists(path3)) {
-            path2 <- path3
+      tryCatch(
+        {
+          info_module <- raveio$pipeline_py_info(must_work = TRUE)
+          py_module <- raveio$pipeline_py_module(convert = FALSE, must_work = TRUE)
+          serialize_func <- py_module$rave_pipeline_adapters$rave_serialize
+          if(!inherits(serialize_func, "python.builtin.function")) {
+            stop(sprintf("Unable to find serialization function for user-defined python objects: %s", paste(target_export, collapse = ",")))
           }
-        }
+          script_signature <- dipsaus::digest(file = file.path(info_module$target_path, sprintf("pipeline_target_%s.py", target_export)))
+          message("Serializing [", target_export, "] using Python module [", py_module$`__name__`, "]")
+          path2 <- raveio$target_user_path(target_export = target_export, check = TRUE)
+          message(path2)
+          path3 <- serialize_func(object, normalizePath(path2, mustWork = FALSE),
+                                  target_export)
+          message(path3)
+          if(!is.null(path3) && !inherits(path3, "python.builtin.NoneType")) {
+            path3 <- rpymat::py_to_r(path3)
+            if(is.character(path3) && length(path3) == 1 &&
+               !is.na(path3) && file.exists(path3)) {
+              path2 <- path3
+            }
+          }
 
-        null_value <- FALSE
-        if(dir.exists(path2)) {
-          fs <- list.files(path2, all.files = FALSE, recursive = TRUE, full.names = TRUE, include.dirs = FALSE, no.. = TRUE)
-          data_signature <- lapply(sort(fs), function(f) {
-            dipsaus::digest(file = f)
-          })
-          data_signature <- dipsaus::digest(object = data_signature)
-        } else if( file.exists(path2) ){
-          data_signature <- dipsaus::digest(file = path2)
-        } else {
-          null_value <- TRUE
-          data_signature <- NULL
+          null_value <- FALSE
+          if(dir.exists(path2)) {
+            fs <- list.files(path2, all.files = FALSE, recursive = TRUE, full.names = TRUE, include.dirs = FALSE, no.. = TRUE)
+            data_signature <- lapply(sort(fs), function(f) {
+              dipsaus::digest(file = f)
+            })
+            data_signature <- dipsaus::digest(object = data_signature)
+          } else if( file.exists(path2) ){
+            data_signature <- dipsaus::digest(file = path2)
+          } else {
+            null_value <- TRUE
+            data_signature <- NULL
+          }
+          raveio$save_yaml(list(
+            null_value = null_value,
+            script_signature = script_signature,
+            data_signature = data_signature
+          ), file = path, sorted = TRUE)
+        },
+        python.builtin.BaseException = py_error_handler,
+        python.builtin.Exception = py_error_handler,
+        py_error = py_error_handler,
+        error = function(e) {
+          traceback(e)
+          stop(e$message, call. = FALSE)
         }
-        raveio$save_yaml(list(
-          null_value = null_value,
-          script_signature = script_signature,
-          data_signature = data_signature
-        ), file = path, sorted = TRUE)
-      },
-      python.builtin.BaseException = py_error_handler,
-      python.builtin.Exception = py_error_handler,
-      py_error = py_error_handler, error = function(e) {
-        traceback(e)
-        stop(e)
-      })
+      )
       return()
     }
   )

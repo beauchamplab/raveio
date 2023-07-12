@@ -162,7 +162,7 @@ def pipeline_target_{export}({paste(deps, collapse = ', ')}):
           ))
         }
 
-        re <- withCallingHandlers(
+        re <- tryCatch(
           expr = {
             .env <- environment()
             if(length(.(deps))) {
@@ -185,7 +185,11 @@ def pipeline_target_{export}({paste(deps, collapse = ', ')}):
           },
           python.builtin.BaseException = .py_error_handler,
           python.builtin.Exception = .py_error_handler,
-          py_error = .py_error_handler
+          py_error = .py_error_handler,
+          error = function(e) {
+            traceback(e)
+            stop(e$message, call. = FALSE)
+          }
         )
 
         return(re)

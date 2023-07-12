@@ -94,7 +94,7 @@ pipeline_run <- function(
     }
     make <- function(fun, use_local = TRUE) {
       suppressWarnings({
-        withCallingHandlers(
+        tryCatch(
           expr = {
             if( use_local ) {
               local({ do.call(fun, args) })
@@ -111,17 +111,9 @@ pipeline_run <- function(
               do.call(fun, args)
             }
           },
-          `tar_condition_run` = function( e ) {
+          error = function( e ) {
 
-            # meta <- targets::tar_meta(names = targets::any_of(targets::tar_errored()),
-            #                           fields = targets::any_of("error"),
-            #                           complete_only = TRUE)
-            #
-            # if(is.data.frame(meta) && nrow(meta)) {
-            #   msg <- paste(sprintf("Pipeline target [%s] raised a message: \n  %s", meta$name, meta$error), collapse = "\n")
-            #   msg <- dipsaus::ansi_strip(msg)
-            #   e$message <- msg
-            # } else {
+            if(inherits(e, "tar_condition_run")) {
               # remove ANSI code
               msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
 
@@ -129,9 +121,9 @@ pipeline_run <- function(
                 msg <- gsub("^Error running targets::tar_make().*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
                 e$message <- msg
               }
-            # }
+            }
 
-            stop(e, call. = NULL)
+            stop(e)
           }
         )
       })
@@ -297,7 +289,7 @@ pipeline_run_bare <- function(
 
   make <- function(fun, use_local = TRUE) {
     suppressWarnings({
-      withCallingHandlers(
+      tryCatch(
         expr = {
           if( use_local ) {
             local({ do.call(fun, args) })
@@ -314,27 +306,19 @@ pipeline_run_bare <- function(
             do.call(fun, args)
           }
         },
-        `tar_condition_run` = function( e ) {
+        error = function( e ) {
 
-          # meta <- targets::tar_meta(names = targets::any_of(targets::tar_errored()),
-          #                           fields = targets::any_of("error"),
-          #                           complete_only = TRUE)
-
-          # if(is.data.frame(meta) && nrow(meta)) {
-          #   msg <- paste(sprintf("Pipeline target [%s] raised a message: \n  %s", meta$name, meta$error), collapse = "\n")
-          #   msg <- dipsaus::ansi_strip(msg)
-          #   e$message <- msg
-          # } else {
+          if(inherits(e, "tar_condition_run")) {
             # remove ANSI code
-            msg <- trimws(dipsaus::ansi_strip(paste(e$message, collapse = "\n")), which = "left")
+            msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
 
             if(startsWith(msg, "Error running targets::tar_make()")) {
               msg <- gsub("^Error running targets::tar_make().*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
               e$message <- msg
             }
-          # }
+          }
 
-          stop(msg, call. = FALSE)
+          stop(e)
         }
       )
     })
