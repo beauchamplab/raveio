@@ -212,7 +212,7 @@ PipelineCollections <- R6::R6Class(
       )
 
       # inject code blocks
-      path_scheduler = file.path(self$root_path, "modules", "raveio_scheduler")
+      path_scheduler <- file.path(self$root_path, "modules", "raveio_scheduler")
       scheduler <- pipeline(pipeline_name = "raveio_scheduler", paths = file.path(self$root_path, "modules"), temporary = TRUE)
       path_rmd <- file.path(path_scheduler, "main.Rmd")
       pipeline_rmd <- readLines(path_rmd)
@@ -345,7 +345,7 @@ PipelineCollections <- R6::R6Class(
 
     #' @description Get \code{scheduler} object
     get_scheduler = function() {
-      path_scheduler = file.path(self$root_path, "modules", "raveio_scheduler")
+      path_scheduler <- file.path(self$root_path, "modules", "raveio_scheduler")
       if(!dir.exists(path_scheduler)) {
         stop("Scheduler does not exists. Please build the scheduler & pipelines first.")
       }

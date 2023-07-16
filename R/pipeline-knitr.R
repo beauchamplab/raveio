@@ -330,7 +330,7 @@ guess_py_indent <- function(code, default_count = 2L) {
   code <- strsplit(code, "\n")[[1]]
   white_space <- "[ \t]"
 
-  indent_char = " "
+  indent_char <- " "
 
   code <- code[grepl(sprintf("^(%s+)", white_space), x = code)]
 
