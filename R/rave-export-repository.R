@@ -52,14 +52,14 @@ export_summary <- function(x, root_path, data_type, rave_data_type) {
   h5_path <- file.path(root_path, "summary.h5")
   summary_data <- list()
   summary_data[["loaded_electrodes"]] <- as.integer(x$electrode_list)
-  raveio::save_h5(x = summary_data[["loaded_electrodes"]], file = h5_path,
+  save_h5(x = summary_data[["loaded_electrodes"]], file = h5_path,
                   name = "loaded_electrodes", ctype = "integer",
                   replace = TRUE, quiet = TRUE)
 
   epoch_name <- x$epoch_name
   if(length(epoch_name) && is.character(epoch_name)) {
     summary_data[["epoch_name"]] <- epoch_name
-    raveio::save_h5(x = summary_data[["epoch_name"]],
+    save_h5(x = summary_data[["epoch_name"]],
                     file = h5_path, name = "epoch_name", ctype = "character",
                     replace = TRUE, quiet = TRUE)
   }
@@ -67,7 +67,7 @@ export_summary <- function(x, root_path, data_type, rave_data_type) {
   reference_name <- x$reference_name
   if(length(reference_name) && is.character(reference_name)) {
     summary_data[["reference_name"]] <- reference_name
-    raveio::save_h5(x = summary_data[["reference_name"]],
+    save_h5(x = summary_data[["reference_name"]],
                     file = h5_path, name = "reference_name", ctype = "character",
                     replace = TRUE, quiet = TRUE)
   }
@@ -75,7 +75,7 @@ export_summary <- function(x, root_path, data_type, rave_data_type) {
   time_windows <- as.double(unlist(x$time_windows))
   if(length(time_windows)) {
     summary_data[["time_windows"]] <- time_windows
-    raveio::save_h5(x = summary_data[["time_windows"]], file = h5_path,
+    save_h5(x = summary_data[["time_windows"]], file = h5_path,
                     name = "time_windows", replace = TRUE,
                     quiet = TRUE, ctype = "numeric")
   }
@@ -85,7 +85,7 @@ export_summary <- function(x, root_path, data_type, rave_data_type) {
       condition <- x$epoch$table$Condition
       if(length(condition)) {
         summary_data[["condition"]] <- condition
-        raveio::save_h5(x = summary_data[["condition"]], file = h5_path,
+        save_h5(x = summary_data[["condition"]], file = h5_path,
                         name = "condition", replace = TRUE, ctype = "character",
                         quiet = TRUE)
       }
@@ -94,12 +94,12 @@ export_summary <- function(x, root_path, data_type, rave_data_type) {
 
 
   summary_data[["data_type"]] <- data_type
-  raveio::save_h5(x = data_type, file = h5_path,
+  save_h5(x = data_type, file = h5_path,
                   name = "data_type", replace = TRUE, ctype = "character",
                   quiet = TRUE)
 
   summary_data[["rave_data_type"]] <- rave_data_type
-  raveio::save_h5(x = rave_data_type, file = h5_path,
+  save_h5(x = rave_data_type, file = h5_path,
                   name = "rave_data_type", replace = TRUE, ctype = "character",
                   quiet = TRUE)
 
@@ -114,7 +114,7 @@ export_summary <- function(x, root_path, data_type, rave_data_type) {
         dat <- as.double(dat)
       }
       summary_data[[sprintf("electrode_table_%s", nm)]] <- dat
-      raveio::save_h5(x = dat, file = h5_path,
+      save_h5(x = dat, file = h5_path,
                       name = sprintf("electrode_table/%s", nm),
                       replace = TRUE, quiet = TRUE)
     }

@@ -8,6 +8,7 @@
 #   print(a)
 # })
 
+#' Connect and schedule pipelines
 PipelineCollections <- R6::R6Class(
   classname = "PipelineCollection",
   portable = TRUE,
@@ -22,8 +23,13 @@ PipelineCollections <- R6::R6Class(
     }
   ),
   public = list(
+
+    #' @field verbose whether to verbose the build
     verbose = TRUE,
 
+    #' @description Constructor
+    #' @param root_path where to store the pipelines and intermediate results
+    #' @param overwrite whether to overwrite if \code{root_path} exists
     initialize = function(root_path = NULL, overwrite = FALSE) {
       if(missing(root_path) || is.null(root_path)) {
         root_path <- tempfile(tmpdir = cache_root(), pattern = "pipeline-collection-")
@@ -42,15 +48,44 @@ PipelineCollections <- R6::R6Class(
       private$.pipline_collections <- dipsaus::fastqueue2()
     },
 
+    #' @description Add pipeline into the collection
+    #' @param x a pipeline name (can be found via \code{\link{pipeline_list}}),
+    #' or a \code{\link{PipelineTools}}
+    #' @param names pipeline targets to execute
+    #' @param deps pipeline IDs to depend on; see 'Values' below
+    #' @param pre_hook function to run before the pipeline; the function needs
+    #' two arguments: input map (can be edit in-place), and path to a directory
+    #' that allows to store temporary files
+    #' @param post_hook function to run after the pipeline; the function needs
+    #' two arguments: pipeline object, and path to a directory
+    #' that allows to store intermediate results
+    #' @param hook_envir where to look for global environments if \code{pre_hook}
+    #' or \code{post_hook} contains global variables; default is the calling
+    #' environment
+    #' @param cue whether to always run dependence
+    #' @param search_paths where to search for pipeline if \code{x} is a
+    #' character; ignored when \code{x} is a pipeline object
+    #' @param standalone whether the pipeline should be standalone, set to
+    #' \code{TRUE} if the same pipeline added multiple times should run
+    #' independently; default is true
+    #' @returns A list containing
+    #' \describe{
+    #' \item{\code{id}}{the pipeline ID that can be used by \code{deps}}
+    #' \item{\code{pipeline}}{forked pipeline instance}
+    #' \item{\code{target_names}}{copy of \code{names}}
+    #' \item{\code{depend_on}}{copy of \code{deps}}
+    #' \item{\code{cue}}{copy of \code{cue}}
+    #' \item{\code{standalone}}{copy of \code{standalone}}
+    #' }
     add_pipeline = function(
       x, names = NULL, deps = NULL, pre_hook = NULL, post_hook = NULL,
       cue = c("always", "thorough", "never"), search_paths = pipeline_root(),
-      standalone = FALSE, hook_envir = parent.frame()
+      standalone = TRUE, hook_envir = parent.frame()
     ) {
       cue <- match.arg(cue)
 
       if(!inherits(x, "PipelineTools")) {
-        x <- raveio::pipeline(pipeline_name = x, temporary = TRUE, paths = search_paths)
+        x <- pipeline(pipeline_name = x, temporary = TRUE, paths = search_paths)
       }
 
       private$.verbose(
@@ -163,6 +198,8 @@ PipelineCollections <- R6::R6Class(
       )))
     },
 
+    #' @description Build pipelines and visualize
+    #' @param visualize whether to visualize the pipeline; default is true
     build_pipelines = function(visualize = TRUE) {
       module_label <- strftime(Sys.time(), "Scheduler %y%m%d-%H%M%S (created)")
 
@@ -176,7 +213,7 @@ PipelineCollections <- R6::R6Class(
 
       # inject code blocks
       path_scheduler = file.path(self$root_path, "modules", "raveio_scheduler")
-      scheduler <- raveio::pipeline(pipeline_name = "raveio_scheduler", paths = file.path(self$root_path, "modules"), temporary = TRUE)
+      scheduler <- pipeline(pipeline_name = "raveio_scheduler", paths = file.path(self$root_path, "modules"), temporary = TRUE)
       path_rmd <- file.path(path_scheduler, "main.Rmd")
       pipeline_rmd <- readLines(path_rmd)
 
@@ -271,6 +308,13 @@ PipelineCollections <- R6::R6Class(
       return(invisible(scheduler))
     },
 
+    #' @description Run the collection of pipelines
+    #' @param error what to do when error occurs; default is \code{'error'}
+    #' throwing errors; other choices are \code{'warning'} and \code{'ignore'}
+    #' @param .scheduler,.type,.as_promise,.async,... passed to
+    #' \code{\link{pipeline_run}}
+    #' @param rebuild whether to re-build the pipeline; default is \code{NA} (
+    #' if the pipeline has been built before, then do not rebuild)
     run = function(error = c("error", "warning", "ignore"),
                    .scheduler = c("none", "future", "clustermq"),
                    .type = c("callr", "smart", "vanilla"),
@@ -298,26 +342,31 @@ PipelineCollections <- R6::R6Class(
       )
       scheduler$run(scheduler = .scheduler, type = .type, as_promise = .as_promise, async = .async, ...)
     },
+
+    #' @description Get \code{scheduler} object
     get_scheduler = function() {
       path_scheduler = file.path(self$root_path, "modules", "raveio_scheduler")
       if(!dir.exists(path_scheduler)) {
         stop("Scheduler does not exists. Please build the scheduler & pipelines first.")
       }
-      scheduler <- raveio::pipeline(pipeline_name = "raveio_scheduler", paths = file.path(self$root_path, "modules"), temporary = TRUE)
+      scheduler <- pipeline(pipeline_name = "raveio_scheduler", paths = file.path(self$root_path, "modules"), temporary = TRUE)
       scheduler
     }
 
   ),
   active = list(
+    #' @field root_path path to the directory that contains pipelines and
+    #' scheduler
     root_path = function() {
       private$.root_path
     },
+
+    #' @field collection_path path to the pipeline collections
     collection_path = function() {
       file.path(private$.root_path, "pipelines")
-    # },
-    # scheduler_path = function() {
-    #   file.path(private$.root_path, "scheduler")
     },
+
+    #' @field pipeline_ids pipeline ID codes
     pipeline_ids = function() {
       vapply(seq_len(private$.pipline_collections$size()), function(ii) {
         private$.pipline_collections$at(ii)$id
@@ -337,7 +386,7 @@ run_collection_pipeline <- function(collection_path, pipeline_id, pipeline_name,
   error <- match.arg(error)
 
   # load pipeline
-  pipeline <- raveio::pipeline(
+  pipeline <- pipeline(
     pipeline_name = pipeline_name, temporary = TRUE,
     paths = file.path(collection_path, "pipelines")
   )
@@ -346,7 +395,7 @@ run_collection_pipeline <- function(collection_path, pipeline_id, pipeline_name,
   config <- readRDS(file.path(pipeline$pipeline_path, sprintf("configurations_%s.rds", pipeline_id)))
 
   # pipeline inputs
-  inputs <- raveio::load_yaml(pipeline$settings_path)
+  inputs <- load_yaml(pipeline$settings_path)
 
   shared_path <- file.path(collection_path, "shared", pipeline_id)
   shared_path <- dir_create2(shared_path)
@@ -434,7 +483,7 @@ run_collection_pipeline <- function(collection_path, pipeline_id, pipeline_name,
 #' @param root_path directory to store pipelines and results
 #' @param overwrite whether to overwrite if \code{root_path} exists; default is
 #' false, and raises an error when \code{root_path} exists
-#' @returns A \code{PipelineCollection} instance
+#' @returns A \code{\link{PipelineCollections}} instance
 #' @export
 pipeline_collection <- function(root_path = NULL, overwrite = FALSE) {
   PipelineCollections$new(root_path = root_path, overwrite = overwrite)

@@ -552,7 +552,7 @@ finalize_installation <- function(
 
   if(length(fs)) {
     for(path in file.path(cache_path, fs)) {
-      raveio::backup_file(path, remove = TRUE, quiet = TRUE)
+      backup_file(path, remove = TRUE, quiet = TRUE)
     }
   }
   invisible()

@@ -13,7 +13,7 @@ pipeline_collection(root_path = NULL, overwrite = FALSE)
 false, and raises an error when \code{root_path} exists}
 }
 \value{
-A \code{PipelineCollection} instance
+A \code{\link{PipelineCollections}} instance
 }
 \description{
 Combine and execute pipelines

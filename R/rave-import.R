@@ -134,7 +134,7 @@ rave_import_lfp <- function(
 
     if(has_fs) {
       # Try to import
-      raveio::import_electrode_table(
+      import_electrode_table(
         path = file.path(subject$meta_path, "electrodes.csv"),
         subject = subject, use_fs = has_fs)
     }
@@ -147,7 +147,7 @@ rave_import_lfp <- function(
       Label = "NoLabel",
       SignalType = subject$electrode_types
     )
-    raveio::save_meta2(
+    save_meta2(
       data = tbl,
       meta_type = "electrodes",
       project_name = project_name,

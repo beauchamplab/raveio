@@ -7,6 +7,7 @@ Major changes:
 
 * Pipeline supports `Python` now! (I think this deserves the first place)
 * Referencing electrodes does not require users to run `wavelet` anymore (this one wins the second as it allows for more flexible data processing pipelines)
+* Added `PipelineCollections`, allowing users to build and run multiple pipelines 
 
 * `run_wavelet` will trigger caching existing references
 * The pipeline errors is properly handled
