@@ -63,6 +63,8 @@ validate and send an email to the 'RAVE' development team.
 }
 \examples{
 
+if(interactive()) {
+
 library(raveio)
 
 # get current registries
@@ -83,7 +85,6 @@ module_registry(
 module_registry2("rave-ieeg/rave-pipelines")
 
 # send a request to add your registry
-if(interactive()) {
 
 reg <- module_registry2("rave-ieeg/rave-pipelines")
 add_module_registry(reg)
