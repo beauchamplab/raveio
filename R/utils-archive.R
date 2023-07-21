@@ -615,6 +615,46 @@ template_subjects <- list(
   "yael_demo_001" = list(
     version = 2,
     url = "https://github.com/beauchamplab/rave/releases/download/v1.0.3/yael_demo_001.zip"
+  ),
+  "DemoSubject" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.9-beta/DemoSubjectFull.zip"
+  ),
+  "KC" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_KC.zip"
+  ),
+  "YAB" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_YAB.zip"
+  ),
+  "YAD" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_YAD.zip"
+  ),
+  "YAF" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_YAF.zip"
+  ),
+  "YAH" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_YAH.zip"
+  ),
+  "YAI" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_YAI.zip"
+  ),
+  "YAJ" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_YAJ.zip"
+  ),
+  "YAK" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo_YAK.zip"
+  ),
+  "DemoGroupData" = list(
+    version = 1,
+    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.8-beta/demo__group_data.zip"
   )
 )
 
