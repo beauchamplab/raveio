@@ -429,6 +429,20 @@ install_subject <- function(
     dry_run = FALSE, force_project = NA, force_subject = NA,
     ...) {
 
+  if(path %in% names(template_subjects)) {
+    item <- template_subjects[[path]]
+    if(isTRUE(item$version == 1)){
+      # use rave::download_sample_data (RAVE 1.0)
+      rave <- asNamespace("rave")
+      rave$download_sample_data(subject = path, replace_if_exists = TRUE)
+      return(invisible())
+    }
+    # version >= 2
+    path <- item$url
+    overwrite <- TRUE
+    backup <- FALSE
+  }
+
   if(startsWith(path, "http") || startsWith(path, "ftp")) {
     current_timeout <- getOption("timeout", 60)
     options("timeout" = 60*60)
@@ -586,6 +600,8 @@ install_subject <- function(
     message("Done.")
     tryCatch({
       subject <- RAVESubject$new(project_name = project_name, subject_code = subject_code, strict = FALSE)
+      subject$initialize_paths(include_freesurfer = FALSE)
+      subject
       return(invisible(subject))
     }, error = function(e) {
       invisible(NULL)
@@ -594,13 +610,11 @@ install_subject <- function(
 }
 
 
-# ravedash::start_session(page_title = )
-# rave::start_rave2(
-#   page_title = c("YAEL", sprintf("YAEL %s", as.character(utils::packageVersion("threeBrain")))),
-#   modules = c(
-#     "surface_reconstruction",
-#     "electrode_localization",
-#     "custom_3d_viewer",
-#     "configure_rave"
-#   )
-# )
+
+template_subjects <- list(
+  "yael_demo_001" = list(
+    version = 2,
+    url = "https://github.com/beauchamplab/rave/releases/download/v1.0.3/yael_demo_001.zip"
+  )
+)
+
