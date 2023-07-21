@@ -67,6 +67,9 @@
     <loc>https://beauchamplab.github.io/raveio/reference/ants_preprocessing.html</loc>
   </url>
   <url>
+    <loc>https://beauchamplab.github.io/raveio/reference/archive_subject.html</loc>
+  </url>
+  <url>
     <loc>https://beauchamplab.github.io/raveio/reference/as_rave_project.html</loc>
   </url>
   <url>
@@ -131,6 +134,9 @@
   </url>
   <url>
     <loc>https://beauchamplab.github.io/raveio/reference/install_modules.html</loc>
+  </url>
+  <url>
+    <loc>https://beauchamplab.github.io/raveio/reference/install_subject.html</loc>
   </url>
   <url>
     <loc>https://beauchamplab.github.io/raveio/reference/is.blank.html</loc>
