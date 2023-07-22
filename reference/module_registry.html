@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,8 @@
 <span></span>
 <span><span class="fu">get_modules_registries</span><span class="op">(</span>update <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">get_module_description</span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">add_module_registry</span><span class="op">(</span><span class="va">title</span>, <span class="va">repo</span>, <span class="va">modules</span>, <span class="va">authors</span>, <span class="va">url</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -93,12 +95,12 @@ registry</p></dd>
 <dd><p>the web address of the repository</p></dd>
 
 
-<dt>description</dt>
-<dd><p>path to <code>'DESCRIPTION'</code> or <code>RAVE-CONFIG</code> file</p></dd>
-
-
 <dt>update</dt>
 <dd><p>whether to force updating the registry</p></dd>
+
+
+<dt>path, description</dt>
+<dd><p>path to <code>'DESCRIPTION'</code> or <code>RAVE-CONFIG</code> file</p></dd>
 
 
 <dt>dry_run</dt>
