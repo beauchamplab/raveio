@@ -321,11 +321,11 @@ format.raveModuleDescription <- function(
     sprintf("Website: %s", x$URL),
     sprintf("Bug report: %s", x$BugReports)
   )
-  if(citation_style != "none" && length(x$citations)) {
+  if(citation_style != "none" && length(x$Citations)) {
     re <- c(
       re,
       "Citation information:",
-      format(x$citations, style = citation_style)
+      format(x$Citations, style = citation_style)
     )
   }
   paste(re, collapse = "\n")
