@@ -13,7 +13,7 @@
 #' @param url the web address of the repository
 #' @param dry_run whether to generate and preview message content instead of
 #' opening an email link
-#' @param description path to \code{'DESCRIPTION'} or \code{RAVE-CONFIG} file
+#' @param path,description path to \code{'DESCRIPTION'} or \code{RAVE-CONFIG} file
 #' @param update whether to force updating the registry
 #' @returns a registry object, or a list of registries
 #' @details A 'RAVE' registry contains the following data entries: repository
@@ -267,6 +267,73 @@ get_modules_registries <- function(update = NA) {
   }
 
   regs
+}
+
+#' @rdname module_registry
+#' @export
+get_module_description <- function(path) {
+  # DIPSAUS DEBUG START
+  # path <- "~/Dropbox (PennNeurosurgery)/rave-pipelines/modules/import_lfp_native/"
+  if(length(path) != 1) {
+    stop("`get_module_description`: invalid `path`, length must be 1")
+  }
+  fs <- file.path(path, c("", "RAVE-CONFIG", "DESCRIPTION"))
+  fs <- fs[!dir.exists(fs) & file.exists(fs)]
+  if(!length(fs)) {
+    stop("`get_module_description`: invalid `path`... cannot find file RAVE-CONFIG or DESCRIPTION")
+  }
+  path <- fs[[1]]
+  dcf <- read.dcf(path)
+  if(nrow(dcf) == 0) {
+    stop("`get_module_description`: invalid module description...")
+  }
+  dcf <- as.list(dcf[1,])
+
+  if(length(dcf$`Authors@R`)) {
+    tryCatch({
+      aut <- eval(parse(text = dcf$`Authors@R`))
+      dcf$Author <- aut
+      dcf$`Authors@R` <- NULL
+    }, error = function(e){})
+  }
+  citation_path <- file.path(dirname(path), "CITATION")
+  citations <- NULL
+  if(file.exists(citation_path)) {
+    citations <- utils::readCitationFile(citation_path)
+  }
+  dcf$Citations <- citations
+  class(dcf) <- "raveModuleDescription"
+  dcf
+}
+
+#' @export
+format.raveModuleDescription <- function(
+    x, citation_style = c("citation", "hidden", "textVersion", "text", "html", "bibtex", "R"), ...) {
+
+  citation_style <- match.arg(citation_style)
+  re <- c(
+    sprintf("Module ID: [%s] (ver: %s)", x$Package, x$Version),
+    sprintf("Title: %s", x$Title),
+    sprintf("Description: %s", x$Description),
+    sprintf("License: %s", x$License),
+    "Author list:",
+    sprintf("  %s", x$Author),
+    sprintf("Website: %s", x$URL),
+    sprintf("Bug report: %s", x$BugReports)
+  )
+  if(citation_style != "none" && length(x$citations)) {
+    re <- c(
+      re,
+      "Citation information:",
+      format(x$citations, style = citation_style)
+    )
+  }
+  paste(re, collapse = "\n")
+}
+
+#' @export
+print.raveModuleDescription <- function(x, ...) {
+  cat(format(x, ...), "\n", sep = "")
 }
 
 #' @rdname module_registry

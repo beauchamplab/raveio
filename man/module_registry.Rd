@@ -4,6 +4,7 @@
 \alias{module_registry}
 \alias{module_registry2}
 \alias{get_modules_registries}
+\alias{get_module_description}
 \alias{add_module_registry}
 \title{'RAVE' module registry}
 \usage{
@@ -18,6 +19,8 @@ module_registry(
 module_registry2(repo, description)
 
 get_modules_registries(update = NA)
+
+get_module_description(path)
 
 add_module_registry(title, repo, modules, authors, url, dry_run = FALSE)
 }
@@ -37,9 +40,9 @@ registry}
 
 \item{url}{the web address of the repository}
 
-\item{description}{path to \code{'DESCRIPTION'} or \code{RAVE-CONFIG} file}
-
 \item{update}{whether to force updating the registry}
+
+\item{path, description}{path to \code{'DESCRIPTION'} or \code{RAVE-CONFIG} file}
 
 \item{dry_run}{whether to generate and preview message content instead of
 opening an email link}
