@@ -512,6 +512,11 @@ finalize_installation <- function(
     }
   }
 
+  update_sample_data <- FALSE
+  if(upgrade %in% c("always", "data-only")) {
+    update_sample_data <- TRUE
+  }
+
   if(upgrade %in% c('always')) {
     upgrade <- TRUE
   } else {
@@ -521,28 +526,6 @@ finalize_installation <- function(
   repo_name <- 'rave-ieeg/rave-pipelines'
   if( getOption("ravemanager.nightly", FALSE) ) {
     repo_name <- 'rave-ieeg/rave-pipelines'
-  }
-
-  if(async) {
-    dipsaus::rs_exec(bquote({
-      ns <- asNamespace("raveio")
-      ns$pipeline_install_github(
-        repo = repo_name,
-        to = "default",
-        upgrade = .(upgrade)
-      )
-      ns$update_local_snippet(force = TRUE)
-      message("Done.")
-    }),
-    quoted = TRUE,
-    name = "Upgrade pipeline templates",
-    focus_on_console = TRUE)
-  } else {
-    pipeline_install_github(
-      repo = repo_name,
-      to = "default", upgrade = upgrade
-    )
-    update_local_snippet(force = TRUE)
   }
 
   # Backup ravedash sessions since they might be too old now
@@ -555,6 +538,64 @@ finalize_installation <- function(
       backup_file(path, remove = TRUE, quiet = TRUE)
     }
   }
+
+  if(async) {
+    dipsaus::rs_exec(bquote({
+      ns <- asNamespace("raveio")
+      ns$pipeline_install_github(
+        repo = repo_name,
+        to = "default",
+        upgrade = .(upgrade)
+      )
+      ns$update_local_snippet(force = TRUE)
+
+
+      update_sample_data <- .(update_sample_data)
+      subject <- ns$RAVESubject$new(project_name = "YAEL", subject_code = "yael_demo_001", strict = FALSE)
+      if(is.na(subject$freesurfer_path)) {
+        update_sample_data <- TRUE
+      }
+      if( update_sample_data ) {
+        ns$install_subject(
+          "yael_demo_001",
+          overwrite = TRUE,
+          backup = FALSE,
+          use_cache = TRUE,
+          ask = FALSE
+        )
+      }
+
+      message("Done.")
+    }),
+    quoted = TRUE,
+    name = "Upgrade pipeline templates",
+    focus_on_console = TRUE)
+  } else {
+    pipeline_install_github(
+      repo = repo_name,
+      to = "default", upgrade = upgrade
+    )
+    update_local_snippet(force = TRUE)
+
+    subject <- RAVESubject$new(project_name = "YAEL", subject_code = "yael_demo_001", strict = FALSE)
+    if(is.na(subject$freesurfer_path)) {
+      update_sample_data <- TRUE
+    }
+
+    if( update_sample_data ) {
+      install_subject(
+        "yael_demo_001",
+        overwrite = TRUE,
+        backup = FALSE,
+        use_cache = TRUE,
+        ask = FALSE
+      )
+    }
+
+  }
+
+
+
   invisible()
 
 }

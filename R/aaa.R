@@ -593,31 +593,32 @@ guess_libpath <- function() {
 }
 
 install_deps <- function(root, upgrade = FALSE, force = FALSE, lib = guess_libpath(), ...) {
-  succeed <- FALSE
-  try(silent = TRUE, expr = {
-    if(dipsaus::package_installed("pak")) {
-      pak <- asNamespace("pak")
-      pak$local_install_deps(root = root, upgrade = upgrade, ask = FALSE, dependencies = NA, lib = lib)
-      succeed <- TRUE
-    }
-  })
-  if(!succeed) {
-    remotes::install_deps(pkgdir = root, upgrade = upgrade, force = force, lib = lib, ...)
-  }
+  # succeed <- FALSE
+  # try(silent = TRUE, expr = {
+  #   if(dipsaus::package_installed("pak")) {
+  #     pak <- asNamespace("pak")
+  #     pak$local_install_deps(root = root, upgrade = upgrade, ask = FALSE, dependencies = NA, lib = lib)
+  #     succeed <- TRUE
+  #   }
+  # })
+  # if(!succeed) {
+  #   remotes::install_deps(pkgdir = root, upgrade = upgrade, force = force, lib = lib, ...)
+  # }
+  remotes::install_deps(pkgdir = root, upgrade = upgrade, force = force, lib = lib, ...)
 }
 
 install_cran <- function(pkgs, upgrade = FALSE, lib = guess_libpath(), ...) {
-  succeed <- FALSE
-  try(silent = TRUE, expr = {
-    if(dipsaus::package_installed("pak")) {
-      pak <- asNamespace("pak")
-      pak$pkg_install(pkg = pkgs, lib = lib, upgrade = upgrade, ask = FALSE, dependencies = NA)
-      succeed <- TRUE
-    }
-  })
-  if(!succeed) {
-    remotes::install_cran(pkgs, upgrade = ifelse(isTRUE(upgrade), "always", "never"),
-                          lib = lib, ...)
-  }
+  # succeed <- FALSE
+  # try(silent = TRUE, expr = {
+  #   if(dipsaus::package_installed("pak")) {
+  #     pak <- asNamespace("pak")
+  #     pak$pkg_install(pkg = pkgs, lib = lib, upgrade = upgrade, ask = FALSE, dependencies = NA)
+  #     succeed <- TRUE
+  #   }
+  # })
+  # if(!succeed) {
+  # }
+  remotes::install_cran(pkgs, upgrade = ifelse(isTRUE(upgrade), "always", "never"),
+                        lib = lib, ...)
 
 }
