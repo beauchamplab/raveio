@@ -299,7 +299,7 @@ get_module_description <- function(path) {
   citation_path <- file.path(dirname(path), "CITATION")
   citations <- NULL
   if(file.exists(citation_path)) {
-    citations <- utils::readCitationFile(citation_path)
+    citations <- utils::readCitationFile(citation_path, meta = dcf)
   }
   dcf$Citations <- citations
   class(dcf) <- "raveModuleDescription"

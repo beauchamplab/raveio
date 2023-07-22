@@ -52,12 +52,28 @@ load_json <- function(con, ..., map = NULL){
   s <- readLines(con)
   args <- list(...)
 
-  re <- tryCatch({
-    jsonlite::unserializeJSON(s)
-  }, error = function(e){
-    args$txt <- s
-    do.call(jsonlite::fromJSON, args)
-  })
+  s <- trimws(paste(s, collapse = ""))
+
+  re <- list()
+  if(nzchar(s)) {
+    ok <- FALSE
+    tryCatch({
+      withRestarts({
+        re <- jsonlite::unserializeJSON(s)
+        ok <- TRUE
+      }, abort = function() {})
+    }, error = function(e) {})
+    if(!ok) {
+      tryCatch({
+        withRestarts({
+          args$txt <- s
+          re <- do.call(jsonlite::fromJSON, args)
+          ok <- TRUE
+        }, abort = function() {})
+      }, error = function(e) {})
+    }
+  }
+
   if(is.list(re) && !is.null(map)){
     if(is.environment(map)){
       list2env(re, map)
