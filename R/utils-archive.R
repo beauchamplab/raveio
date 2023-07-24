@@ -291,6 +291,11 @@ archive_subject <- function(
       to = path_imaging
     )
 
+    copy_file(
+      from = file.path(subject_imaging_path, "custom-data"),
+      to = path_imaging
+    )
+
     has_ants <- copy_file(
       from = file.path(subject_imaging_path, "ants"),
       to = path_imaging
