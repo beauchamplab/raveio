@@ -622,8 +622,8 @@ template_subjects <- list(
     url = "https://github.com/beauchamplab/rave/releases/download/v1.0.3/yael_demo_001.zip"
   ),
   "DemoSubject" = list(
-    version = 1,
-    url = "https://github.com/beauchamplab/rave/releases/download/v0.1.9-beta/DemoSubjectFull.zip"
+    version = 2,
+    url = "https://github.com/beauchamplab/rave/releases/download/v1.0.3/DemoSubject.zip"
   ),
   "KC" = list(
     version = 1,

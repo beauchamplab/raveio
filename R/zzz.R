@@ -552,12 +552,20 @@ finalize_installation <- function(
 
       update_sample_data <- .(update_sample_data)
       subject <- ns$RAVESubject$new(project_name = "YAEL", subject_code = "yael_demo_001", strict = FALSE)
-      if(is.na(subject$freesurfer_path)) {
-        update_sample_data <- TRUE
-      }
-      if( update_sample_data ) {
+      if(update_sample_data || is.na(subject$freesurfer_path)) {
         ns$install_subject(
           "yael_demo_001",
+          overwrite = TRUE,
+          backup = FALSE,
+          use_cache = TRUE,
+          ask = FALSE
+        )
+      }
+
+      subject <- ns$RAVESubject$new(project_name = "demo", subject_code = "DemoSubject", strict = FALSE)
+      if(update_sample_data || !dir.exists(subject$path)) {
+        ns$install_subject(
+          "DemoSubject",
           overwrite = TRUE,
           backup = FALSE,
           use_cache = TRUE,
@@ -578,11 +586,7 @@ finalize_installation <- function(
     update_local_snippet(force = TRUE)
 
     subject <- RAVESubject$new(project_name = "YAEL", subject_code = "yael_demo_001", strict = FALSE)
-    if(is.na(subject$freesurfer_path)) {
-      update_sample_data <- TRUE
-    }
-
-    if( update_sample_data ) {
+    if(update_sample_data || is.na(subject$freesurfer_path)) {
       install_subject(
         "yael_demo_001",
         overwrite = TRUE,
@@ -591,6 +595,18 @@ finalize_installation <- function(
         ask = FALSE
       )
     }
+
+    subject <- RAVESubject$new(project_name = "demo", subject_code = "DemoSubject", strict = FALSE)
+    if(update_sample_data || !dir.exists(subject$path)) {
+      install_subject(
+        "DemoSubject",
+        overwrite = TRUE,
+        backup = FALSE,
+        use_cache = TRUE,
+        ask = FALSE
+      )
+    }
+
 
   }
 
