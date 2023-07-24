@@ -113,48 +113,210 @@ rave_import_lfp <- function(
     }
   }
 
+  on.exit({
+
+    subject <- RAVESubject$new(project_name = project_name,
+                               subject_code = subject_code,
+                               strict = FALSE)
+    electrodes <- dipsaus::parse_svec(electrodes)
+
+    saved <- FALSE
+    tryCatch({
+      # Save to electrodes.csv
+      has_fs <- FALSE
+      if(length(subject$freesurfer_path) == 1 && !is.na(subject$freesurfer_path)) {
+        has_fs <- threeBrain::check_freesurfer_path(
+          fs_subject_folder = subject$freesurfer_path,
+          autoinstall_template = FALSE,
+          check_volume = TRUE
+        )
+      }
+
+      # check if electrodes.csv exists
+      elec_table_path <- file.path(subject$meta_path, "electrodes.csv")
+      if(file.exists(elec_table_path)) {
+
+        catgl("Trying to use existing electrodes.csv", level = "DEFAULT")
+
+        # check if electrodes.csv exists
+        orig <- subject$get_electrode_table(reference_name = ".fake", simplify = FALSE)
+
+        if(all(electrodes %in% orig$Electrode)) {
+          if(!any(orig$Electrode %in% electrodes)) {
+            orig <- orig[orig$Electrode %in% electrodes, , drop = FALSE]
+            orig <- orig[order(orig$Electrode), ]
+            save_meta2(
+              data = orig,
+              meta_type = "electrodes",
+              project_name = subject$project_name,
+              subject_code = subject$subject_code
+            )
+          }
+
+          # Try to import
+          if( has_fs ) {
+            import_electrode_table(
+              path = elec_table_path,
+              subject = subject, use_fs = has_fs)
+            saved <- TRUE
+          }
+        }
+      }
+    }, error = function(e){
+      catgl(e$message, level = 'WARNING')
+    })
+
+    if(!saved) {
+      # check if exists any channels.tsv/csv
+      channel_files <- list.files(
+        subject$preprocess_settings$raw_path,
+        pattern = "channels\\.[tc]sv$",
+        all.files = FALSE,
+        full.names = TRUE,
+        recursive = TRUE,
+        ignore.case = TRUE,
+        include.dirs = FALSE
+      )
+
+      for(channel_file in channel_files) {
+        if(!saved) {
+          tryCatch({
+
+            catgl("Trying to obtain electrode groups from {channel_file}", level = 'DEFAULT')
+
+            electrode_table <- NULL
+
+            if(endsWith(tolower(channel_file), "csv")) {
+              tbl <- utils::read.csv(channel_file)
+            } else {
+              tbl <- utils::read.table(channel_file, sep = "\t", header = TRUE)
+            }
+
+            if(
+              all(c("Electrode", "Label") %in% names(tbl)) &&
+              all(electrodes %in% tbl$Electrode)
+            ) {
+
+              # For blackrock imported channels.csv
+              #     Electrode    Label SampleRate NSType ChannelOrder TimeStart Partition Duration
+              # 1           1 LI01-001       2000    ns3            1         0         1  406.651
+              # 2           2 LI02-002       2000    ns3            2         0         1  406.651
+              # 3           3 LI03-003       2000    ns3            3         0         1  406.651
+              # 4           4 LI04-004       2000    ns3            4         0         1  406.651
+
+              tbl <- tbl[tbl$Electrode %in% electrodes, , drop = FALSE]
+              if(!length(tbl$Coord_x) || !length(tbl$Coord_y) || !length(tbl$Coord_z)) {
+                tbl$Coord_x <- 0
+                tbl$Coord_y <- 0
+                tbl$Coord_z <- 0
+              }
+              if(!length(tbl$LocationType)) {
+                tbl$LocationType <- 'iEEG'
+              }
+              electrode_table <- data.frame(
+                Electrode = as.integer(tbl$Electrode),
+                Coord_x = tbl$Coord_x,
+                Coord_y = tbl$Coord_y,
+                Coord_z = tbl$Coord_z,
+                LabelPrefix = gsub("[0-9_-]+$", "", tbl$Label),
+                LocationType = tbl$LocationType,
+                Hemisphere = "auto"
+              )
+            } else if(
+              all(c("name", "original_channel") %in% names(tbl)) &&
+              all(electrodes %in% tbl$original_channel)
+            ) {
+
+              # For blackrock imported channels.csv in partitions
+              #        name   original_channel
+              # 1     photo   257
+              # 2  LI01-001   1
+
+              tbl <- tbl[tbl$original_channel %in% electrodes, , drop = FALSE]
+
+              if(!length(tbl$Coord_x) || !length(tbl$Coord_y) || !length(tbl$Coord_z)) {
+                tbl$Coord_x <- 0
+                tbl$Coord_y <- 0
+                tbl$Coord_z <- 0
+              }
+              if(!length(tbl$LocationType)) {
+                tbl$LocationType <- 'iEEG'
+              }
+              electrode_table <- data.frame(
+                Electrode = as.integer(tbl$original_channel),
+                Coord_x = tbl$Coord_x,
+                Coord_y = tbl$Coord_y,
+                Coord_z = tbl$Coord_z,
+                LabelPrefix = gsub("[0-9_-]+$", "", tbl$name),
+                LocationType = tbl$LocationType,
+                Hemisphere = "auto"
+              )
+              # } else if(
+              #   all(c("name", ) %in% names(tbl)) &&
+              #   all(electrodes %in% tbl$original_channel)
+              # ) {
+              #   # BIDS imported
+              #   # For BIDS
+              #   # name	type	units	low_cutoff	high_cutoff	description	sampling_frequency	status	status_description
+              #   # ABT1	ECOG	n/a	0	500	Electrocorticography	1000	good	n/a
+              #   # ABT2	ECOG	n/a	0	500	Electrocorticography	1000	good	n/a
+              #
+
+            }
+
+
+
+            if(is.data.frame(electrode_table)) {
+              electrode_table <- electrode_table[order(electrode_table$Electrode), ]
+              electrode_table <- do.call("rbind", lapply(split(electrode_table, electrode_table$LabelPrefix), function(sub) {
+                sub$Dimension <- nrow(sub)
+                sub$Label <- sprintf("%s%d", sub$LabelPrefix, seq_len(nrow(sub)))
+                sub
+              }))
+              rownames(electrode_table) <- NULL
+              electrode_table <- electrode_table[order(electrode_table$Electrode), ]
+
+              save_meta2(
+                data = electrode_table,
+                meta_type = "electrodes",
+                project_name = subject$project_name,
+                subject_code = subject$subject_code
+              )
+
+              saved <- TRUE
+              break
+            }
+
+          }, error = function(e) {
+            catgl(e$message, level = 'WARNING')
+          })
+        }
+      }
+
+    }
+
+    if(!saved) {
+      catgl("Cannot import from existing electrodes.csv, creating a new one", level = "INFO")
+      tbl <- data.frame(
+        Electrode = subject$electrodes,
+        Coord_x = 0, Coord_y = 0, Coord_z = 0,
+        Label = "NoLabel",
+        SignalType = subject$electrode_types,
+        LocationType = "iEEG",
+        Hemisphere = "auto"
+      )
+      save_meta2(
+        data = tbl,
+        meta_type = "electrodes",
+        project_name = project_name,
+        subject_code = subject_code
+      )
+    }
+  }, add = TRUE, after = FALSE)
+
+
   # Not imported, import
   re <- UseMethod('rave_import_lfp')
-
-  subject <- RAVESubject$new(project_name = project_name,
-                             subject_code = subject_code,
-                             strict = FALSE)
-  electrodes <- dipsaus::parse_svec(electrodes)
-  tryCatch({
-    # Save to electrodes.csv
-    has_fs <- !is.null(rave_brain(subject))
-
-    # check if electrodes.csv exists
-    orig <- subject$get_electrode_table(reference_name = ".fake", simplify = FALSE)
-
-
-    if(!setequal(orig$Electrode, electrodes)) {
-      stop("Electrode set is wrong")
-    }
-
-    if(has_fs) {
-      # Try to import
-      import_electrode_table(
-        path = file.path(subject$meta_path, "electrodes.csv"),
-        subject = subject, use_fs = has_fs)
-    }
-
-  }, error = function(e){
-    catgl("Cannot import from existing electrodes.csv, creating a new one", level = "INFO")
-    tbl <- data.frame(
-      Electrode = subject$electrodes,
-      Coord_x = 0, Coord_y = 0, Coord_z = 0,
-      Label = "NoLabel",
-      SignalType = subject$electrode_types
-    )
-    save_meta2(
-      data = tbl,
-      meta_type = "electrodes",
-      project_name = project_name,
-      subject_code = subject_code
-    )
-  })
-
   return(re)
 }
 
@@ -762,6 +924,24 @@ rave_import_lfp.native_blackrock <- function(
     channel_info$Coord_z <- 0
     channel_info$Radius <- 1
     channel_info$LabelPrefix <- gsub("[0-9 \\-]+$", "", channel_info$Label)
+
+    # Do not use sample rate as signals with different sample rates are re-sampled
+    channel_info$SampleRate <- NULL
+
+    channel_info <- do.call(
+      "rbind",
+      lapply(split(channel_info, channel_info$LabelPrefix), function(sub) {
+        electrode_size <- nrow(sub)
+        sub$Dimension <- electrode_size
+        sub$Label <- sprintf("%s%d", sub$LabelPrefix, seq_len(electrode_size))
+        sub
+      })
+    )
+
+    channel_info <- channel_info[order(channel_info$Electrode), ]
+    channel_info$LocationType <- "iEEG"
+    channel_info$Hemisphere <- "auto"
+
     path <- file.path(pretools$subject$meta_path, "electrodes_unsaved.csv")
     safe_write_csv(x = channel_info, file = path, row.names = FALSE)
   }
