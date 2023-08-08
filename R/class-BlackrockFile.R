@@ -475,11 +475,14 @@ convert_blackrock <- function(
     format = c("mat", "hdf5"), header_only = FALSE, ...) {
 
   # DIPSAUS DEBUG START
-  # file <- '~/Downloads/BLOCK016_SpeechModalityLocalizer/PAV020_Datafile_016.nev'
+  # file = '~/Dropbox (PennNeurosurgery)/RAVE/Samples/raw/PAV023/BLOCK024_mTurkWords_run1/PAV023_Datafile_024.nev'
   # format <- "mat"
   # block <- NULL
   # to <- NULL
   # comments <- FALSE
+  # epoch = c("comment", "digital_inputs", "recording", "configuration",
+  #           "log", "button_trigger", "tracking", "video_sync")
+  # subject <- "PAV023"
 
 
   format <- match.arg(format)

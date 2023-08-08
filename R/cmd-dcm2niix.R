@@ -1,5 +1,91 @@
 # Scripts to generate shell commands - dcm to nii
 
+
+# dcm2niix <- function(
+#     src_path, prefix, merge = c("Auto", "No", "Yes"),
+#     float = c("Yes", "No"),
+#     crop = c("No", "Yes", "Ignore"),
+#     overwrite = FALSE, command_path = NULL,
+#     log_path = ""
+# ) {
+#   # DIPSAUS DEBUG START
+#   # src_path <- "/Users/dipterix/Dropbox (PENN Neurotrauma)/RAVE/Samples/raw/PAV006/pre-MRI/DICOM_SAG_MPRAGE_20220728090416_13.nii"
+#   # merge <- "Auto"
+#   # float <- "Yes"
+#   # crop <- "No"
+#   # command_path <- NULL
+#   # overwrite <- FALSE
+#
+#   merge <- match.arg(merge)
+#   float <- match.arg(float)
+#   crop <- match.arg(crop)
+#
+#   dst_path <- dirname(prefix)
+#   if(!overwrite && dir.exists(dst_path) &&
+#      length(list.files(dst_path, pattern = "\\.nii($|\\.gz$)", ignore.case = TRUE))) {
+#     stop("`raveio::dcm2niix`: destination folder already exists. Please specify `overwrite=TRUE` to remove the previous results.")
+#   }
+#   if(missing(src_path) || length(src_path) != 1 || is.na(src_path) || !file.exists(src_path)) {
+#     stop("`raveio::dcm2niix`: Blank or invalid `src_path` specified.")
+#   }
+#
+#   # Check if source file is a nifti file
+#   if( grepl("\\.(nii|nii\\.gz)$", src_path, ignore.case = TRUE) ) {
+#     # nii file, do not use dcm2niix!
+#
+#     cat(file = log_path, "Copying ", src_path, " to ", dst_path, "\n")
+#
+#     dst_fname <- sprintf(
+#       "%s_RAW.nii%s", type,
+#       ifelse( grepl("gz$", src_path, ignore.case = TRUE), ".gz", "")
+#     )
+#
+#     dst_path <- dir_create2(dst_path)
+#
+#     file.copy(src_path, file.path(dst_path, dst_fname), overwrite = TRUE, recursive = FALSE, copy.mode = FALSE, copy.date = TRUE)
+#
+#     return(file.path(dst_path, dst_fname))
+#
+#   }
+#
+#   # this is DICOM
+#   # try to get dcm2niix
+#   default_dcm2niix_path <- cmd_dcm2niix(error_on_missing = FALSE)
+#   dcm2niix <- normalize_commandline_path(
+#     path = command_path,
+#     unset = default_dcm2niix_path,
+#     type = "dcm2niix"
+#   )
+#   if(length(dcm2niix) != 1 || is.na(dcm2niix) || !isTRUE(file.exists(dcm2niix))) {
+#     dcm2niix <- NULL
+#   } else if (!identical(default_dcm2niix_path, dcm2niix)) {
+#     raveio_setopt("dcm2niix_path", dcm2niix)
+#   }
+#   has_dcm2niix <- !is.null(dcm2niix)
+#
+#   # Generate script
+#   if(!has_dcm2niix) {
+#     dcm2niix <- "dcm2niix"
+#   }
+#
+#   merge <- c("-m n ", "-m y ", "")[[which(c("No", "Yes", "Auto") == merge)]]
+#   float <- c('-p y ', '-p n ')[[which(c("Yes", "No") == float)]]
+#   crop <- c("-x n", "-x y", "-x i")[[which(c("No", "Yes", "Ignore") == crop)]]
+#
+#   dir_create2(dst_path)
+#   dst_path <- normalizePath(dst_path, winslash = "/")
+#   src_path <- normalizePath(src_path, winslash = "/")
+#
+#   system2(
+#     dcm2niix,
+#     args = c(
+#       paste0(merge, float, crop),
+#       "-o", shQuote(dst_path), shQuote(src_path)
+#     ), stdout = log_path, stderr = log_path, wait = TRUE
+#   )
+#   return(dst_path)
+# }
+
 #' @rdname cmd-external
 #' @export
 cmd_run_dcm2niix <- function(subject, src_path, type = c("MRI", "CT"),

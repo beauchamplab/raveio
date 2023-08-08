@@ -5,6 +5,9 @@
 #' @param ram whether to load data into memory. Only available when
 #' the file is in 'HDF5' format. Default is false and will load arrays,
 #' if set to true, then lazy-load data. This is useful when array is very large.
+#' @param engine method to read the file, choices are \code{'r'} and
+#' \code{'py'} ('Python'); if \code{'py'} is chosen, make sure
+#' \code{\link[rpymat]{configure_conda}} is configured.
 #' @returns A list of All the data stored in the file
 #' @details \code{\link[R.matlab]{readMat}} can only read 'Matlab' files
 #' prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
@@ -44,50 +47,118 @@
 #'
 #'
 #' @export
-read_mat <- function(file, ram = TRUE){
-  file <- normalizePath(file, mustWork = TRUE)
+read_mat <- function(file, ram = TRUE, engine = c("r", "py")){
+  engine <- match.arg(engine)
+  file <- normalizePath(file, mustWork = TRUE, winslash = "/")
   # Check if the file is HDF5 format
-  if( h5FileValid(file) ){
 
-    dset_names <- h5_names(file)
-    re <- sapply(dset_names, function(nm){
-      y <- load_h5(file, name = nm, ram = ram)
-      y
-    }, simplify = FALSE, USE.NAMES = TRUE)
-  }else{
-    re <- R.matlab::readMat(file)
+  if(engine == "r") {
+    if( h5FileValid(file) ){
+
+      dset_names <- h5_names(file)
+      re <- sapply(dset_names, function(nm){
+        y <- load_h5(file, name = nm, ram = ram)
+        y
+      }, simplify = FALSE, USE.NAMES = TRUE)
+    }else{
+      re <- R.matlab::readMat(file)
+    }
+  } else {
+    # use python
+    rpymat::ensure_rpymat(verbose = FALSE, cache = TRUE)
+    mat73 <- tryCatch({
+      rpymat::import("mat73", convert = FALSE)
+    }, error = function(e) {
+      rpymat::add_packages("mat73")
+      rpymat::import("mat73", convert = FALSE)
+    })
+    sio <- tryCatch({
+      rpymat::import("scipy.io", convert = FALSE)
+    }, error = function(e) {
+      rpymat::add_packages("scipy")
+      rpymat::import("scipy.io", convert = FALSE)
+    })
+
+    dat <- tryCatch({
+      sio$loadmat(file_name = file)
+    }, error = function(e) {
+      mat73$loadmat(filename = file)
+    })
+    re <- dipsaus::fastmap2()
+    for(nm in names(dat)) {
+      re[[nm]] <- rpymat::py_to_r(dat[[nm]])
+    }
   }
+
   re
 }
 
 #' @rdname read_mat
 #' @export
-read_mat2 <- function(file, ram = TRUE){
-  file <- normalizePath(file, mustWork = TRUE)
+read_mat2 <- function(file, ram = TRUE, engine = c("r", "py")){
+  engine <- match.arg(engine)
+  file <- normalizePath(file, mustWork = TRUE, winslash = "/")
   # Check if the file is HDF5 format
-  if( h5FileValid(file) ){
 
-    dset_names <- h5_names(file)
-    re <- dipsaus::fastmap2()
-    lapply(dset_names, function(nm){
-      y <- load_h5(file, name = nm, ram = ram)
-      nm_path <- strsplit(nm, "/")[[1]]
-      d <- re
-      for(ii in seq_along(nm_path)){
-        nm <- nm_path[[ii]]
-        if(ii != length(nm_path)){
-          if(!inherits(d[[nm]], 'fastmap2')){
-            d[[nm]] <- dipsaus::fastmap2()
+  if(engine == "r") {
+    if( h5FileValid(file) ){
+
+      dset_names <- h5_names(file)
+      re <- dipsaus::fastmap2()
+      lapply(dset_names, function(nm){
+        y <- load_h5(file, name = nm, ram = ram)
+        nm_path <- strsplit(nm, "/")[[1]]
+        d <- re
+        for(ii in seq_along(nm_path)){
+          nm <- nm_path[[ii]]
+          if(ii != length(nm_path)){
+            if(!inherits(d[[nm]], 'fastmap2')){
+              d[[nm]] <- dipsaus::fastmap2()
+            }
+            d <- d[[nm]]
+          } else {
+            d[[nm]] <- y
           }
-          d <- d[[nm]]
-        } else {
-          d[[nm]] <- y
         }
-      }
-      NULL
+        NULL
+      })
+    }else{
+      re <- dipsaus::list_to_fastmap2(R.matlab::readMat(file))
+    }
+  } else {
+    # use python
+    rpymat::ensure_rpymat(verbose = FALSE, cache = TRUE)
+    mat73 <- tryCatch({
+      rpymat::import("mat73", convert = FALSE)
+    }, error = function(e) {
+      rpymat::add_packages("mat73")
+      rpymat::import("mat73", convert = FALSE)
     })
-  }else{
-    re <- dipsaus::list_to_fastmap2(R.matlab::readMat(file))
+    sio <- tryCatch({
+      rpymat::import("scipy.io", convert = FALSE)
+    }, error = function(e) {
+      rpymat::add_packages("scipy")
+      rpymat::import("scipy.io", convert = FALSE)
+    })
+
+    dat <- tryCatch({
+      sio$loadmat(file_name = file)
+    }, error = function(e) {
+      mat73$loadmat(filename = file)
+    })
+    re <- dipsaus::fastmap2()
+
+    iterate <- function(x, prefix = "") {
+      if(!inherits(x, "python.builtin.dict")) {
+        re[[ gsub("^/", "", prefix) ]] <- rpymat::py_to_r(x)
+        return()
+      }
+      nms <- names(x)
+      for(nm in nms) {
+        Recall(x[[nm]], prefix = sprintf("%s/%s", prefix, nm))
+      }
+    }
+    iterate(dat)
   }
   re
 }

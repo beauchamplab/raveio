@@ -5,9 +5,9 @@
 \alias{read_mat2}
 \title{Read 'Matlab' files}
 \usage{
-read_mat(file, ram = TRUE)
+read_mat(file, ram = TRUE, engine = c("r", "py"))
 
-read_mat2(file, ram = TRUE)
+read_mat2(file, ram = TRUE, engine = c("r", "py"))
 }
 \arguments{
 \item{file}{path to a 'Matlab' file}
@@ -15,6 +15,10 @@ read_mat2(file, ram = TRUE)
 \item{ram}{whether to load data into memory. Only available when
 the file is in 'HDF5' format. Default is false and will load arrays,
 if set to true, then lazy-load data. This is useful when array is very large.}
+
+\item{engine}{method to read the file, choices are \code{'r'} and
+\code{'py'} ('Python'); if \code{'py'} is chosen, make sure
+\code{\link[rpymat]{configure_conda}} is configured.}
 }
 \value{
 A list of All the data stored in the file
