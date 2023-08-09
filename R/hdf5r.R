@@ -267,84 +267,89 @@ LazyH5 <- R6::R6Class(
       envir = parent.frame()
     ) {
       self$open()
-      dims <- self$get_dims()
+      on.exit({
+        self$close(all = !private$read_only)
+      })
+      # dims <- self$get_dims()
 
       # step 1: eval indices
+      dot_len <- ...length()
       args <- eval(substitute(alist(...)))
-      if(length(args) == 0 || (length(args) == 1 && args[[1]] == '')){
-        return(private$data_ptr$read())
+      if(dot_len == 0 || (dot_len == 1 && isTRUE(args[[1]] == ''))){
+        return(private$data_ptr$read(drop = drop))
       }
-      args <- lapply(args, function(x){
-        if(x == ''){
-          return(x)
-        }else{
-          return(eval(x, envir = envir))
-        }
-      })
-
-      # step 2: get allocation size
-      alloc_dim <- sapply(seq_along(dims), function(ii){
-        if(is.logical(args[[ii]])){
-          return(sum(args[[ii]]))
-        }else if(is.numeric(args[[ii]])){
-          return(length(args[[ii]]))
-        }else{
-          # must be blank '', otherwise raise error
-          return(dims[ii])
-        }
-      })
-
-      # step 3: get legit indices
-      legit_args <- lapply(seq_along(dims), function(ii){
-        if(is.logical(args[[ii]])){
-          return(args[[ii]])
-        }else if(is.numeric(args[[ii]])){
-          return(
-            args[[ii]][args[[ii]] <= dims[ii] & args[[ii]] > 0]
-          )
-        }else{
-          return(args[[ii]])
-        }
-      })
-
-      # step 4: get mapping
-      mapping <- lapply(seq_along(dims), function(ii){
-        if(is.logical(args[[ii]])){
-          return(
-            rep(TRUE, sum(args[[ii]]))
-          )
-        }else if(is.numeric(args[[ii]])){
-          return(args[[ii]] <= dims[ii] & args[[ii]] > 0)
-        }else{
-          return(args[[ii]])
-        }
-      })
-
-      # alloc space
-      re <- array(NA, dim = alloc_dim)
-
-      if(stream){
-        re <- do.call(`[<-`, c(list(re), mapping, list(
-          value = private$data_ptr$read(
-            args = legit_args,
-            drop = FALSE,
-            envir = environment()
-          )
-        )))
-      }else{
-        re <- do.call(`[<-`, c(list(re), mapping, list(
-          value = do.call('[', c(list(private$data_ptr$read()), legit_args, list(drop = FALSE)))
-        )))
-      }
-
-      self$close(all = !private$read_only)
-
-
-      if(drop){
-        return(drop(re))
-      }else{
-        return(re)
-      }
+      return(private$data_ptr$read(args = args, drop = drop, envir = envir))
+      # args <- lapply(args, function(x){
+      #   if(x == ''){
+      #     return(x)
+      #   }else{
+      #     return(eval(x, envir = envir))
+      #   }
+      # })
+      #
+      # # step 2: get allocation size
+      # alloc_dim <- sapply(seq_along(dims), function(ii){
+      #   if(is.logical(args[[ii]])){
+      #     return(sum(args[[ii]]))
+      #   }else if(is.numeric(args[[ii]])){
+      #     return(length(args[[ii]]))
+      #   }else{
+      #     # must be blank '', otherwise raise error
+      #     return(dims[ii])
+      #   }
+      # })
+      #
+      # # step 3: get legit indices
+      # legit_args <- lapply(seq_along(dims), function(ii){
+      #   if(is.logical(args[[ii]])){
+      #     return(args[[ii]])
+      #   }else if(is.numeric(args[[ii]])){
+      #     return(
+      #       args[[ii]][args[[ii]] <= dims[ii] & args[[ii]] > 0]
+      #     )
+      #   }else{
+      #     return(args[[ii]])
+      #   }
+      # })
+      #
+      # # step 4: get mapping
+      # mapping <- lapply(seq_along(dims), function(ii){
+      #   if(is.logical(args[[ii]])){
+      #     return(
+      #       rep(TRUE, sum(args[[ii]]))
+      #     )
+      #   }else if(is.numeric(args[[ii]])){
+      #     return(args[[ii]] <= dims[ii] & args[[ii]] > 0)
+      #   }else{
+      #     return(args[[ii]])
+      #   }
+      # })
+      #
+      # # alloc space
+      # re <- array(NA, dim = alloc_dim)
+      #
+      # if(stream){
+      #   re <- do.call(`[<-`, c(list(re), mapping, list(
+      #     value = private$data_ptr$read(
+      #       args = legit_args,
+      #       drop = FALSE,
+      #       envir = environment()
+      #     )
+      #   )))
+      # }else{
+      #   re <- do.call(`[<-`, c(list(re), mapping, list(
+      #     value = do.call('[', c(list(private$data_ptr$read()), legit_args, list(drop = FALSE)))
+      #   )))
+      # }
+      #
+      # self$close(all = !private$read_only)
+      #
+      #
+      # if(drop){
+      #   return(drop(re))
+      # }else{
+      #   return(re)
+      # }
     },
 
 
