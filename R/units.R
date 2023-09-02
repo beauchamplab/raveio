@@ -310,11 +310,3 @@ backup_file <- function(path, remove = FALSE, quiet = FALSE) {
   return(invisible(path2))
 
 }
-
-
-
-
-
-
-
-
