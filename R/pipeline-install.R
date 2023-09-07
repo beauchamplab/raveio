@@ -225,6 +225,7 @@ pipeline_install_github <- function(
       }
     }
   }
+  conf_path <- conf_path[file.exists(conf_path)]
   if(length(conf_path)) {
     conf_path <- conf_path[[1]]
     repo0 <- gsub("@.*$", "", repo)
