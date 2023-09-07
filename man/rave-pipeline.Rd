@@ -56,8 +56,8 @@ pipeline_run(
 
 pipeline_clean(
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  destroy = c("all", "cloud", "local", "meta", "process", "progress", "objects",
-    "scratch", "workspaces"),
+  destroy = c("all", "cloud", "local", "meta", "process", "preferences", "progress",
+    "objects", "scratch", "workspaces"),
   ask = FALSE
 )
 
@@ -253,7 +253,7 @@ default is \code{\link[targets]{tar_progress_summary}}}
 \item{src, dest}{pipeline folder to copy the pipeline script from and to}
 
 \item{filter_pattern}{file name patterns used to filter the scripts to
-avoid copying data files; default is \code{"\\.(R|yaml|txt|csv|fst|conf)$"}}
+avoid copying data files; default is \code{PIPELINE_FORK_PATTERN}}
 
 \item{activate}{whether to activate the new pipeline folder from \code{dest};
 default is false}

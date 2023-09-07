@@ -1040,11 +1040,14 @@ pipeline_save_extdata <- function(
 #' @export
 pipeline_shared <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
 
+  pipe_dir <- normalizePath(pipe_dir, mustWork = TRUE)
+
   # try to get environment from targets
   env <- callr::r(
     function(pipe_dir) {
       shared_env <- new.env()
       runtime_env <- new.env()
+      raveio <- asNamespace("raveio")
       runtime_env$pipe_dir <- pipe_dir
       runtime_env$shared_env <- shared_env
 

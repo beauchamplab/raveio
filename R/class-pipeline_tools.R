@@ -248,7 +248,8 @@ PipelineTools <- R6::R6Class(
     #' path \code{R/shared}
     #' @returns An environment of shared variables
     shared_env = function() {
-      return(pipeline_shared(pipe_dir = private$.pipeline_path))
+      env <- pipeline_shared(pipe_dir = private$.pipeline_path)
+      return(env)
     },
 
     #' @description get 'Python' module embedded in the pipeline
@@ -393,8 +394,9 @@ PipelineTools <- R6::R6Class(
 
     #' @description clean all or part of the data store
     #' @param destroy,ask see \code{\link[targets]{tar_destroy}}
-    clean = function(destroy = c("all", "cloud", "local", "meta", "process",
-                                 "progress", "objects", "scratch", "workspaces"),
+    clean = function(destroy = c(
+      "all", "cloud", "local", "meta", "process", "preferences",
+      "progress", "objects", "scratch", "workspaces"),
                      ask = FALSE) {
       destroy <- match.arg(destroy)
       pipeline_clean(pipe_dir = private$.pipeline_path, ask = ask, destroy = destroy)
@@ -451,6 +453,11 @@ PipelineTools <- R6::R6Class(
     #' @field extdata_path absolute path to the user-defined pipeline data folder
     extdata_path = function() {
       file.path(private$.pipeline_path, "data")
+    },
+
+    #' @field preference_path directory to the pipeline preference folder
+    preference_path = function() {
+      file.path(private$.pipeline_path, "preferences")
     },
 
     #' @field target_table table of target names and their descriptions

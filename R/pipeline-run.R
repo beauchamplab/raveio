@@ -208,13 +208,22 @@ pipeline_run <- function(
 #' @export
 pipeline_clean <- function(
     pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-    destroy = c("all", "cloud", "local", "meta", "process",
+    destroy = c("all", "cloud", "local", "meta", "process", "preferences",
                 "progress", "objects", "scratch", "workspaces"),
     ask = FALSE
     ) {
   destroy <- match.arg(destroy)
   pipe_dir <- activate_pipeline(pipe_dir)
-  targets::tar_destroy(ask = ask, destroy = destroy)
+  if( destroy != "preferences" ) {
+    targets::tar_destroy(ask = ask, destroy = destroy)
+  }
+  if( destroy %in% c("all", "preferences", "local") ) {
+    pref_path <- file.path(pipe_dir, "preferences")
+    if(dir.exists(pref_path)) {
+      unlink(pref_path, recursive = TRUE, force = TRUE)
+    }
+  }
+  invisible()
 }
 
 #' @rdname rave-pipeline

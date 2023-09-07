@@ -630,6 +630,7 @@ pipeline_setup_rmd <- function(
     full.names = TRUE
   )
 
+  shared_scripts <- sort(shared_scripts)
   lapply(shared_scripts, function(f) {
     source(f, local = env, chdir = TRUE)
     return()

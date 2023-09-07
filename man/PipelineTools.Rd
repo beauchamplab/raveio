@@ -40,6 +40,8 @@ Class definition for pipeline tools
 
 \item{\code{extdata_path}}{absolute path to the user-defined pipeline data folder}
 
+\item{\code{preference_path}}{directory to the pipeline preference folder}
+
 \item{\code{target_table}}{table of target names and their descriptions}
 
 \item{\code{result_table}}{summary of the results, including
@@ -383,8 +385,8 @@ and function behaviors might change under such condition (for example,
 clean all or part of the data store
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PipelineTools$clean(
-  destroy = c("all", "cloud", "local", "meta", "process", "progress", "objects",
-    "scratch", "workspaces"),
+  destroy = c("all", "cloud", "local", "meta", "process", "preferences", "progress",
+    "objects", "scratch", "workspaces"),
   ask = FALSE
 )}\if{html}{\out{</div>}}
 }
