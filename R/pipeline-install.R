@@ -336,7 +336,16 @@ pipeline_find <- function(name, root_path = pipeline_root()){
       if(file.exists(vpath)){
         # read version file
         v <- load_yaml(file.path(path, "versions.yaml"))
-        path <- file.path(path, v$Version)
+        spath <- file.path(path, v$Version)
+        # copy the pipeline out immediate
+        path <- file.path(temp_tensor_dir(), "pipelines", name)
+        if(!file.exists(file.path(path, "common.R"))) {
+          dir_create2(path)
+          fs <- list.files(spath, all.files = FALSE, recursive = FALSE, include.dirs = TRUE, full.names = TRUE)
+          for(f in fs) {
+            file.copy(fs, path, overwrite = TRUE, recursive = TRUE)
+          }
+        }
       }
       path <- activate_pipeline(path)
       return(path)
