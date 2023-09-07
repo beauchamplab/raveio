@@ -12,7 +12,7 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.15</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,6 +103,10 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
 
 <dt><code>extdata_path</code></dt>
 <dd><p>absolute path to the user-defined pipeline data folder</p></dd>
+
+
+<dt><code>preference_path</code></dt>
+<dd><p>directory to the pipeline preference folder</p></dd>
 
 
 <dt><code>target_table</code></dt>
@@ -479,8 +483,8 @@ and function behaviors might change under such condition (for example,
 <p>clean all or part of the data store</p><div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clean</span><span class="op">(</span></span>
-<span>  destroy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"cloud"</span>, <span class="st">"local"</span>, <span class="st">"meta"</span>, <span class="st">"process"</span>, <span class="st">"progress"</span>, <span class="st">"objects"</span>,</span>
-<span>    <span class="st">"scratch"</span>, <span class="st">"workspaces"</span><span class="op">)</span>,</span>
+<span>  destroy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"cloud"</span>, <span class="st">"local"</span>, <span class="st">"meta"</span>, <span class="st">"process"</span>, <span class="st">"preferences"</span>, <span class="st">"progress"</span>,</span>
+<span>    <span class="st">"objects"</span>, <span class="st">"scratch"</span>, <span class="st">"workspaces"</span><span class="op">)</span>,</span>
 <span>  ask <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
