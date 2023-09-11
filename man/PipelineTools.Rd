@@ -24,6 +24,8 @@ A new pipeline object based on the path given
 the saved file path
 
 the data if file is found or a default value
+
+A persistent map, see \code{\link[dipsaus]{rds_map}}
 }
 \description{
 Class definition for pipeline tools
@@ -72,6 +74,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
 \item \href{#method-PipelineTools-save_data}{\code{PipelineTools$save_data()}}
 \item \href{#method-PipelineTools-load_data}{\code{PipelineTools$load_data()}}
+\item \href{#method-PipelineTools-load_preferences}{\code{PipelineTools$load_preferences()}}
 \item \href{#method-PipelineTools-clone}{\code{PipelineTools$clone()}}
 }
 }
@@ -461,6 +464,37 @@ load data from pipeline data folder
 from the file extension}
 
 \item{\code{...}}{passed to loader functions}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-load_preferences"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-load_preferences}{}}}
+\subsection{Method \code{load_preferences()}}{
+load persistent preference settings from the pipeline.
+The preferences should not affect how pipeline is working, hence usually
+stores minor variables such as graphics. Changing preferences will not
+invalidate pipeline cache.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$load_preferences(
+  name,
+  ...,
+  .initial_prefs = list(),
+  .overwrite = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{preference name, must contain only letters, digits,
+underscore, and hyphen, will be coerced to lower case (case-insensitive)}
+
+\item{\code{..., .initial_prefs}}{key-value pairs of initial preference values}
+
+\item{\code{.overwrite}}{whether to overwrite the initial preference values
+if they exist.}
 }
 \if{html}{\out{</div>}}
 }

@@ -436,6 +436,40 @@ PipelineTools <- R6::R6Class(
                             error_if_missing = error_if_missing,
                             default_if_missing = default_if_missing,
                             pipe_dir = self$pipeline_path, ...)
+    },
+
+    #' @description load persistent preference settings from the pipeline.
+    #' The preferences should not affect how pipeline is working, hence usually
+    #' stores minor variables such as graphics. Changing preferences will not
+    #' invalidate pipeline cache.
+    #' @param name preference name, must contain only letters, digits,
+    #' underscore, and hyphen, will be coerced to lower case (case-insensitive)
+    #' @param ...,.initial_prefs key-value pairs of initial preference values
+    #' @param .overwrite whether to overwrite the initial preference values
+    #' if they exist.
+    #' @returns A persistent map, see \code{\link[dipsaus]{rds_map}}
+    load_preferences = function(name, ..., .initial_prefs = list(), .overwrite = FALSE) {
+      stopifnot2(
+        grepl(pattern = "^[a-zA-Z0-9_-]+$",
+              x = name),
+        msg = "preference `name` must only contain letters (a-z), digits (0-9), underscore (_), and hyphen (-)"
+      )
+      name <- tolower(name)
+      preference <- dipsaus::rds_map(
+        file.path(self$preference_path, name)
+      )
+      default_vals <- c(list(...), .initial_prefs)
+      nms <- names(default_vals)
+      if(length(nms)) {
+        nms <- nms[nms != ""]
+      }
+      if(!.overwrite && length(nms)) {
+        nms <- nms[!preference$has(nms)]
+      }
+      if(length(nms)) {
+        preference$mset(.list = default_vals[nms])
+      }
+      preference
     }
 
 
