@@ -10,7 +10,8 @@ PipelineTools <- R6::R6Class(
     .pipeline_name = character(),
     .settings_file = character(),
     .settings = NULL,
-    .settings_external_inputs = list()
+    .settings_external_inputs = list(),
+    .preferences = NULL
   ),
 
   public = list(
@@ -36,6 +37,7 @@ PipelineTools <- R6::R6Class(
       private$.pipeline_path <- pipeline_find(pipeline_name, root_path = pipeline_root(paths, temporary = temporary))
       private$.pipeline_name <- attr(private$.pipeline_path, "target_name")
       private$.settings_file <- settings_file
+      private$.preferences <- dipsaus::fastmap2()
 
       pipeline_settings_path <- file.path(
         private$.pipeline_path,
@@ -455,9 +457,15 @@ PipelineTools <- R6::R6Class(
         msg = "preference `name` must only contain letters (a-z), digits (0-9), underscore (_), and hyphen (-)"
       )
       name <- tolower(name)
-      preference <- dipsaus::rds_map(
-        file.path(self$preference_path, name)
-      )
+
+      if(name %in% names(private$.preferences)) {
+        preference <- private$.preferences[[name]]
+      } else {
+        preference <- dipsaus::rds_map(
+          file.path(self$preference_path, name)
+        )
+        private$.preferences[[name]] <- preference
+      }
       default_vals <- c(list(...), .initial_prefs)
       nms <- names(default_vals)
       if(length(nms)) {
