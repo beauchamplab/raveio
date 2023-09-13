@@ -241,7 +241,7 @@ rave_export.rave_prepare_power <- function(x, path, zip = FALSE, ...) {
     path <- file.path(x$subject$rave_path, "exports",
                       "rave-repository", "power-epoched")
   }
-  root_path <- file.path(path, strftime(Sys.time(), "export-voltage-%y%m%d-%H%M%S"))
+  root_path <- file.path(path, strftime(Sys.time(), "export-power-%y%m%d-%H%M%S"))
   data_path <- file.path(root_path, "data")
   dir_create2(data_path, check = TRUE)
 
