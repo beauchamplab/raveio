@@ -80,12 +80,29 @@ normalize_commandline_path <- function(
 #' @export
 cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
 
+  path_found <- FALSE
   path <- normalize_commandline_path(
     raveio_getopt("dcm2niix_path", default = Sys.which("dcm2niix")),
     type = "dcm2niix",
     unset = unset
   )
   if( length(path) != 1 || is.na(path) || !isTRUE(file.exists(path)) ) {
+    path <- c(
+      file.path(rpymat::env_path(), "bin", "dcm2niix"),
+      file.path(rpymat::env_path(), "Scripts", "dcm2niix.exe"))
+    path <- path[file.exists(path)]
+    if(length(path)) {
+      path <- path[[1]]
+      path_found <- TRUE
+    }
+
+  } else {
+    path_found <- TRUE
+  }
+
+  if( path_found ) {
+    path <- normalizePath(path, winslash = "/")
+  } else {
     if( error_on_missing ) {
       stop("Cannot find binary command `dcm2niix`. ",
            "Please go to the following website to install it:\n\n",
@@ -93,9 +110,9 @@ cmd_dcm2niix <- function(error_on_missing = TRUE, unset = NA) {
            "If you have installed `dcm2niix`, please use\n\n",
            '  raveio::raveio_setopt("dcm2niix_path", <path to dcm2niix>)\n\n',
            "to set the path. Remember to replace and quote <path to dcm2niix>")
+    } else {
+      path <- unset
     }
-  } else {
-    path <- normalizePath(path, winslash = "/")
   }
   return(path)
 
