@@ -11,7 +11,7 @@ compose_channel(
   weights = rep(1/length(from), length(from)),
   normalize = FALSE,
   force = FALSE,
-  label = sprintf("Composed-\%s", dipsaus::deparse_svec(from)),
+  label = sprintf("Composed-\%s", number),
   signal_type = c("auto", "LFP", "Spike", "EKG", "Audio", "Photodiode", "Unknown")
 )
 }

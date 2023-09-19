@@ -245,6 +245,40 @@ RAVEPreprocessSettings <- R6::R6Class(
       save_yaml(list(preprocess = as.list(self$data),
                      preprocess_signature = self$data$signature),
                 self$backup_path)
+    },
+
+    #' @description get weights of each composed channels
+    #' @param flat whether to flatten the data frame; default is true
+    #' @returns \code{NULL} when no channel is composed.
+    #' When \code{flat} is \code{TRUE}, a data frame of weights with
+    #' the columns composing electrode channel numbers, composed channel
+    #' number, and corresponding weights; if \code{flat} is \code{FALSE},
+    #' then a weight matrix;
+    get_compose_weights = function(flat = TRUE) {
+      elec <- sort(self$electrodes)
+      if(!length(elec)) { return( NULL ) }
+      mat <- dipsaus::drop_nulls(lapply(elec, function(e) {
+        item <- self$data[[e]]
+        if( isTRUE(is.list(item) && isTRUE(item$composed) && is.list(item$composed_params)) ) {
+          o <- order(item$composed_params$from)
+          return(data.frame(
+            Source = item$composed_params$from[o],
+            Target = e,
+            Weight = item$composed_params$weights[o]
+          ))
+        } else { return(NULL) }
+      }))
+      if(!length(mat)) { return( NULL ) }
+      mat <- do.call("rbind", mat)
+      if(!flat) {
+        mat <- sapply(split(mat, mat$Target), function(sub) {
+          re <- rep(0.0, length(elec))
+          re[elec %in% sub$Source] <- sub$Weight
+          re
+        }, simplify = TRUE, USE.NAMES = TRUE)
+        row.names(mat) <- elec
+      }
+      mat
     }
   ),
   active = list(
@@ -372,6 +406,18 @@ RAVEPreprocessSettings <- R6::R6Class(
       vapply(all_elec, function(e){
         isTRUE(self$data[[as.character(e)]]$locked)
       }, FUN.VALUE = FALSE)
+    },
+
+    #' @field electrode_composed composed electrode channels, not actual
+    #' physically contacts, but is generated from those physically ones
+    electrode_composed = function() {
+      elec <- self$electrodes
+      if(!length(elec)) { return(NULL) }
+      sel <- vapply(elec, function(e) {
+        item <- self$data[[e]]
+        isTRUE(is.list(item) && isTRUE(item$composed) && is.list(item$composed_params))
+      }, FALSE)
+      elec[sel]
     },
 
     #' @field wavelet_params wavelet parameters

@@ -5,6 +5,12 @@
 \title{Defines preprocess configurations}
 \value{
 list of electrode type, number, etc.
+
+\code{NULL} when no channel is composed.
+When \code{flat} is \code{TRUE}, a data frame of weights with
+the columns composing electrode channel numbers, composed channel
+number, and corresponding weights; if \code{flat} is \code{FALSE},
+then a weight matrix;
 }
 \description{
 \code{R6} class definition
@@ -74,6 +80,9 @@ locked}
 
 \item{\code{electrode_locked}}{whether electrode is imported and locked}
 
+\item{\code{electrode_composed}}{composed electrode channels, not actual
+physically contacts, but is generated from those physically ones}
+
 \item{\code{wavelet_params}}{wavelet parameters}
 
 \item{\code{notch_params}}{Notch filter parameters}
@@ -108,6 +117,7 @@ some projects}
 \item \href{#method-RAVEPreprocessSettings-migrate}{\code{RAVEPreprocessSettings$migrate()}}
 \item \href{#method-RAVEPreprocessSettings-electrode_info}{\code{RAVEPreprocessSettings$electrode_info()}}
 \item \href{#method-RAVEPreprocessSettings-save}{\code{RAVEPreprocessSettings$save()}}
+\item \href{#method-RAVEPreprocessSettings-get_compose_weights}{\code{RAVEPreprocessSettings$get_compose_weights()}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -257,5 +267,22 @@ save settings to hard disk
 \if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$save()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RAVEPreprocessSettings-get_compose_weights"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEPreprocessSettings-get_compose_weights}{}}}
+\subsection{Method \code{get_compose_weights()}}{
+get weights of each composed channels
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVEPreprocessSettings$get_compose_weights(flat = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{flat}}{whether to flatten the data frame; default is true}
+}
+\if{html}{\out{</div>}}
+}
 }
 }

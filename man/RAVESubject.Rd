@@ -96,6 +96,9 @@ no path exists, values will be \code{NA}}
 \item{\code{notch_filtered}}{whether electrodes are Notch-filtered}
 
 \item{\code{electrode_types}}{electrode signal types}
+
+\item{\code{electrode_composed}}{composed electrode channels, not actual
+physically contacts, but is generated from those physically ones}
 }
 \if{html}{\out{</div>}}
 }

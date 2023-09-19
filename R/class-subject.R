@@ -706,6 +706,12 @@ RAVESubject <- R6::R6Class(
     #' @field electrode_types electrode signal types
     electrode_types = function(){
       private$.preprocess$electrode_types
+    },
+
+    #' @field electrode_composed composed electrode channels, not actual
+    #' physically contacts, but is generated from those physically ones
+    electrode_composed = function() {
+      private$.preprocess$electrode_composed
     }
   )
 )
