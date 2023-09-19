@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.20</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.21</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +55,13 @@
     
 
 <p>list of electrode type, number, etc.</p>
+
+
+<p><code>NULL</code> when no channel is composed.
+When <code>flat</code> is <code>TRUE</code>, a data frame of weights with
+the columns composing electrode channel numbers, composed channel
+number, and corresponding weights; if <code>flat</code> is <code>FALSE</code>,
+then a weight matrix;</p>
     </div>
     <div class="section level2">
     <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>
@@ -129,6 +136,11 @@ locked</p></dd>
 <dd><p>whether electrode is imported and locked</p></dd>
 
 
+<dt><code>electrode_composed</code></dt>
+<dd><p>composed electrode channels, not actual
+physically contacts, but is generated from those physically ones</p></dd>
+
+
 <dt><code>wavelet_params</code></dt>
 <dd><p>wavelet parameters</p></dd>
 
@@ -184,6 +196,7 @@ some projects</p></dd>
 <li><p><a href="#method-RAVEPreprocessSettings-migrate"><code>RAVEPreprocessSettings$migrate()</code></a></p></li>
 <li><p><a href="#method-RAVEPreprocessSettings-electrode_info"><code>RAVEPreprocessSettings$electrode_info()</code></a></p></li>
 <li><p><a href="#method-RAVEPreprocessSettings-save"><code>RAVEPreprocessSettings$save()</code></a></p></li>
+<li><p><a href="#method-RAVEPreprocessSettings-get_compose_weights"><code>RAVEPreprocessSettings$get_compose_weights()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-RAVEPreprocessSettings-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>constructor</p><div class="section">
@@ -329,6 +342,22 @@ with the same signal type must have the same sample rate.</p></dd>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEPreprocessSettings</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+
+</div><p></p><hr><a id="method-RAVEPreprocessSettings-get_compose_weights"></a><div class="section">
+<h3 id="method-get-compose-weights-">Method <code>get_compose_weights()</code><a class="anchor" aria-label="anchor" href="#method-get-compose-weights-"></a></h3>
+<p>get weights of each composed channels</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEPreprocessSettings</span><span class="op">$</span><span class="fu">get_compose_weights</span><span class="op">(</span>flat <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>flat</code></dt>
+<dd><p>whether to flatten the data frame; default is true</p></dd>
+
+
+</dl><p></p></div>
+</div>
 
 </div>
 
