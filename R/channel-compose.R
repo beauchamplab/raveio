@@ -260,6 +260,7 @@ compose_channel <- function(
         tbl$Reference[sel] <- "noref"
         tbl$Type[sel] <- "noref"
       } else {
+        tbl <- tbl[, c("Electrode", "Group", "Reference", "Type")]
         tbl <- rbind(tbl, data.frame(
           Electrode = number,
           Group = "Composed",
@@ -268,7 +269,9 @@ compose_channel <- function(
         ))
       }
       safe_write_csv(x = tbl, file = file.path(subject$meta_path, sprintf("reference_%s.csv", ref_name)), row.names = FALSE)
-    }, error = warning)
+    }, error = function(e) {
+      catgl("Cannot update reference table {ref_name} due to the following warning: ", e$message, level = "WARNING")
+    })
   })
   cref <- file.path(subject$cache_path, "cached_reference.csv")
   if(file.exists(cref)) {
@@ -278,19 +281,33 @@ compose_channel <- function(
         sel <- tbl$Electrode == number
         tbl$Reference[sel] <- "noref"
       } else {
+        tbl <- tbl[, c("Electrode", "Reference")]
         tbl <- rbind(tbl, data.frame(
           Electrode = number,
           Reference = "noref"
         ))
       }
       safe_write_csv(x = tbl, file = cref, row.names = FALSE)
-    }, error = warning)
+    }, error = function(e) {
+      catgl("Cannot update cached_reference.csv table due to the following warning: ", e$message, level = "WARNING")
+    })
   }
 
   # electrodes.csv
   elec_path <- file.path(subject$meta_path, "electrodes.csv")
   if(file.exists(elec_path)) {
     electrode_table <- safe_read_csv(elec_path)
+
+    nms <- names(electrode_table)
+    if(all(c("x", "electrode") %in% tolower(nms))) {
+      idx1 <- which(tolower(nms) == "x")[[1]]
+      idx2 <- which(tolower(nms) == "electrode")[[1]]
+      if(idx1 < idx2) {
+        nms <- nms[-idx1]
+      }
+      electrode_table <- electrode_table[, nms]
+    }
+
     if(!number %in% electrode_table$Electrode) {
       row <- electrode_table[which(electrode_table$Electrode %in% from)[[1]],, drop = FALSE]
       append <- TRUE
@@ -363,7 +380,7 @@ compose_channel <- function(
       SignalType = stype
     )
   }
-  safe_write_csv(electrode_table, file = elec_path)
+  safe_write_csv(electrode_table, file = elec_path, row.names = FALSE)
 
   pdata[[number]] <- list(
     sample_rate = sample_rate,
