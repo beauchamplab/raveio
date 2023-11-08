@@ -3,10 +3,13 @@
 \name{read-brainvision-eeg}
 \alias{read-brainvision-eeg}
 \alias{read_eeg_header}
+\alias{read_eeg_marker}
 \alias{read_eeg_data}
 \title{Load from 'BrainVision' file}
 \usage{
 read_eeg_header(file)
+
+read_eeg_marker(file)
 
 read_eeg_data(header, path = NULL)
 }

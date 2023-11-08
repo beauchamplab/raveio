@@ -200,8 +200,14 @@ read_eeg_header <- function(file) {
     markers = markers,
     root_path = root,
     channel_counts = as.integer(common$NumberOfChannels),
-    sample_rate = as.numeric(common$SamplingInterval)
+    sample_rate = 1e6 / as.numeric(common$SamplingInterval)
   ))
+}
+
+#' @rdname read-brainvision-eeg
+#' @export
+read_eeg_marker <- function(file) {
+  read_vmrk(file)
 }
 
 #' @rdname read-brainvision-eeg
