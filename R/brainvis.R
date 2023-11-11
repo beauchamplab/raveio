@@ -29,7 +29,7 @@ read_vmrk <- function(file) {
   )
 
   # don't know the last two columns, remove them
-  markers <- markers[, seq_len(6)]
+  markers <- markers[, seq_len(6), drop = FALSE]
   colnames(markers) <- c('MarkerNumber', 'Type', 'Description', 'StartPosition', 'Size', 'Channel')
 
   markers <- as.data.frame(markers)
