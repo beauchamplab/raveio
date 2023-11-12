@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.27</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,8 +83,10 @@
 <span>  <span class="va">electrodes</span>,</span>
 <span>  <span class="va">reference_name</span>,</span>
 <span>  <span class="va">blocks</span>,</span>
+<span>  raw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  signal_type <span class="op">=</span> <span class="st">"LFP"</span>,</span>
-<span>  time_frequency <span class="op">=</span> <span class="va">signal_type</span> <span class="op">==</span> <span class="st">"LFP"</span>,</span>
+<span>  time_frequency <span class="op">=</span> <span class="op">(</span><span class="op">!</span><span class="va">raw</span> <span class="op">&amp;&amp;</span> <span class="va">signal_type</span> <span class="op">==</span> <span class="st">"LFP"</span><span class="op">)</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="va">raw</span>,</span>
 <span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  repository_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -192,6 +194,11 @@ time; need to pass the validation <code><a href="validate_time_window.html">vali
 
 <dt>blocks</dt>
 <dd><p>one or more session blocks to load</p></dd>
+
+
+<dt>raw</dt>
+<dd><p>whether to load from original (before processing) data; if true,
+then time-frequency data will not be loaded.</p></dd>
 
 
 <dt>signal_type</dt>
