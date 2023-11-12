@@ -15,6 +15,8 @@
 #' @param blocks one or more session blocks to load
 #' @param time_frequency whether to load time-frequency data when preparing
 #' block data
+#' @param raw whether to load from original (before processing) data; if true,
+#' then time-frequency data will not be loaded.
 #' @param env environment to evaluate
 #' @param repository_id used internally
 #' @param verbose whether to show progress

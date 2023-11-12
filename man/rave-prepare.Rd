@@ -48,8 +48,10 @@ prepare_subject_with_blocks(
   electrodes,
   reference_name,
   blocks,
+  raw = FALSE,
   signal_type = "LFP",
-  time_frequency = signal_type == "LFP",
+  time_frequency = (!raw && signal_type == "LFP"),
+  quiet = raw,
   env = parent.frame(),
   repository_id = NULL,
   ...
@@ -136,6 +138,9 @@ time; need to pass the validation \code{\link{validate_time_window}}}
 \item{env}{environment to evaluate}
 
 \item{blocks}{one or more session blocks to load}
+
+\item{raw}{whether to load from original (before processing) data; if true,
+then time-frequency data will not be loaded.}
 
 \item{signal_type}{electrode signal type (length of one) to be considered;
 default is 'LFP'. This option rarely needs to change unless you really want

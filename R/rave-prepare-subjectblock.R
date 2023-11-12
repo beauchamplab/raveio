@@ -1,20 +1,30 @@
 
 #' @rdname rave-prepare
 #' @export
-prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blocks, signal_type = "LFP", time_frequency = signal_type == "LFP", env = parent.frame(), repository_id = NULL, ...){
+prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blocks, raw = FALSE, signal_type = "LFP", time_frequency = (!raw && signal_type == "LFP"), quiet = raw, env = parent.frame(), repository_id = NULL, ...){
 
-  # subject <- "automated/PAV004__block005"
-  # electrodes <- " 14:20"
+  # DIPSAUS DEBUG START
+  # subject <- "test/Walker"
+  # electrodes <- " 1:16"
   # time_frequency <- TRUE
   # signal_type <- "LFP"
+  # raw <- TRUE
 
   if(!isTRUE(signal_type %in% SIGNAL_TYPES)) {
     stop("`prepare_subject_with_blocks`: signal type must be a string of length 1, and must be from the following list: ", paste(SIGNAL_TYPES, collapse = ", "))
   }
 
+  raw <- as.logical(raw)
+
   re <- dipsaus::fastmap2()
   re$signal_type <- signal_type
+  re$raw_signal <- raw
   subject <- as_rave_subject(subject)
+
+  if( raw && time_frequency ) {
+    message("Loading raw voltage traces, time-frequency data will not be loaded.")
+    time_frequency <- FALSE
+  }
 
   # ----- project -----
   re$project <- subject$project
@@ -48,13 +58,20 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
   }
 
   # check reference_name
-  if(missing(reference_name)) {
-    reference_name <- subject$get_default(
-      "reference_name", default_if_missing = "No reference")
-    message("No reference table specified, loading default reference: ", paste(reference_name, collapse = ", "))
-  }
-  if(length(reference_name)) {
-    reference_name <- reference_name[reference_name %in% subject$reference_names]
+  if( raw ) {
+    if( !missing(reference_name) ) {
+      message("Raw signal is to be loaded, reference is ignored.")
+    }
+    reference_name <- "noref"
+  } else {
+    if(missing(reference_name)) {
+      reference_name <- subject$get_default(
+        "reference_name", default_if_missing = "No reference")
+      message("No reference table specified, loading default reference: ", paste(reference_name, collapse = ", "))
+    }
+    if(length(reference_name)) {
+      reference_name <- reference_name[reference_name %in% subject$reference_names]
+    }
   }
   if(!length(reference_name)) {
     catgl("The signal will be as-is with no reference.", level = "DEFAULT")
@@ -66,7 +83,6 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
       Type = "No Reference"
     )
   } else {
-    print(reference_name)
     reference_name <- reference_name[[1]]
     re$reference_name <- reference_name
     re$reference_table <- subject$get_reference(reference_name)
@@ -96,9 +112,13 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
 
   e <- subject$electrodes[subject$electrodes %in% electrodes &
                             subject$preprocess_settings$data_imported][[1]]
-  elec <- new_electrode(subject = subject, number = e)
+  elec <- new_electrode(subject = subject, number = e, quiet = quiet)
   voltage_ntimepoints <- structure(lapply(blocks, function(block) {
-    dat <- load_h5(elec$voltage_file, sprintf("raw/voltage/%s", block), ram = FALSE)
+    if( raw ) {
+      dat <- load_h5(elec$preprocess_file, sprintf("raw/%s", block), ram = FALSE)
+    } else {
+      dat <- load_h5(elec$voltage_file, sprintf("raw/voltage/%s", block), ram = FALSE)
+    }
     length(dat)
   }), names = blocks)
 
@@ -112,21 +132,27 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
   re$electrode_table$isLoaded <- re$electrode_table$Electrode %in% electrodes
 
   # create reference instances
-  ref_names <- unique(re$reference_table$Reference)
-  ref_names <- ref_names[!ref_names %in% c("noref", "")]
-  if(length(ref_names)) {
-    refs <- structure(lapply(ref_names, function(ref_name) {
-      new_reference(subject = subject, number = ref_name)
-    }), names = ref_names)
-  } else {
+  if( raw ) {
+    ref_names <- "noref"
     refs <- list()
+  } else {
+    ref_names <- unique(re$reference_table$Reference)
+    ref_names <- ref_names[!ref_names %in% c("noref", "")]
+    if(length(ref_names)) {
+      refs <- structure(lapply(ref_names, function(ref_name) {
+        new_reference(subject = subject, number = ref_name)
+      }), names = ref_names)
+    } else {
+      refs <- list()
+    }
   }
+
   re$reference_instances <- refs
 
   # load electrode data
   electrode_instances <- structure(lapply(electrodes, function(e) {
-    re <- new_electrode(subject = subject, number = e)
-    if(is.data.frame(ref_table) && nrow(ref_table)) {
+    re <- new_electrode(subject = subject, number = e, quiet = quiet)
+    if(!raw && is.data.frame(ref_table) && nrow(ref_table)) {
       sel <- ref_table$Electrode == e
       if(length(sel) && any(sel)) {
         ref_name <- ref_table$Reference[sel][[1]]
@@ -144,7 +170,7 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
   wavelet_params <- subject$preprocess_settings$wavelet_params
 
   # get sample rates
-  if(length(wavelet_params$downsample_to)) {
+  if(is.list(wavelet_params) && length(wavelet_params$downsample_to)) {
     wavelet_srate <- wavelet_params$downsample_to
   } else {
     wavelet_srate <- 100
@@ -164,7 +190,12 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
     block_data <- dipsaus::fastmap2()
 
     voltage_ntps <- voltage_ntimepoints[[block]]
-    voltage_filebase <- file.path(cache_root_path, block, "voltage")
+    if( raw ) {
+      voltage_filebase <- file.path(cache_root_path, block, "raw-voltage")
+    } else {
+      voltage_filebase <- file.path(cache_root_path, block, "voltage")
+    }
+
     voltage_dnames <- list(
       Time = seq(0, by = 1 / voltage_srate, length.out = voltage_ntps),
       Electrode = subject$electrodes
@@ -176,7 +207,8 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
       block_number = block,
       block_length = voltage_ntps,
       voltage_dnames = voltage_dnames,
-      voltage_srate = voltage_srate
+      voltage_srate = voltage_srate,
+      raw_signals = raw
     ))
 
     voltage_array <- filearray::filearray_load_or_create(
@@ -188,7 +220,10 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
       partition_size = 1L,
       signature = voltage_signature,
       on_missing = function(arr) {
-        dimnames(arr) <- voltage_dnames
+        dimnames(arr) <- list(
+          Time = NULL,
+          Electrode = subject$electrodes
+        )
         arr
       }
     )
@@ -260,7 +295,11 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
     voltage_more <- lapply_async(
       electrode_instances[sprintf("e_%d", voltage_more)],
       function(inst) {
-        s <- inst$load_blocks(blocks = blocks, type = "voltage", simplify = FALSE)
+        if( raw ) {
+          s <- inst$load_blocks(blocks = blocks, type = "raw-voltage", simplify = FALSE)
+        } else {
+          s <- inst$load_blocks(blocks = blocks, type = "voltage", simplify = FALSE)
+        }
         for(block in blocks) {
           block_data[[block]]$voltage$data[, subject_electrodes == inst$number] <- s[[block]]
         }
@@ -312,7 +351,8 @@ prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blo
     electrodes = re$electrode_list,
     signal_type = re$signal_type,
     blocks = re$blocks,
-    time_frequency = time_frequency
+    time_frequency = time_frequency,
+    raw = raw
   )
   digest_string <- dipsaus::digest(digest_key)
   re$signature <- structure(digest_string, contents = names(digest_key))
