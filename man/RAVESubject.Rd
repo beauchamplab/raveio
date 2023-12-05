@@ -61,6 +61,8 @@ otherwise returns a table.
 
 \item{\code{meta_path}}{meta data directory for current subject}
 
+\item{\code{imaging_path}}{root path to imaging processing folder}
+
 \item{\code{freesurfer_path}}{'FreeSurfer' directory for current subject. If
 no path exists, values will be \code{NA}}
 

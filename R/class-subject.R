@@ -150,8 +150,7 @@ RAVESubject <- R6::R6Class(
 
       if(include_freesurfer){
         if(is.na(self$freesurfer_path) || !dir.exists(self$freesurfer_path)){
-          path <- as.character(file.path(self$preprocess_settings$raw_path, 'rave-imaging'))
-          dir_create2(path)
+          dir_create2(self$imaging_path)
         }
       }
     },
@@ -588,6 +587,11 @@ RAVESubject <- R6::R6Class(
     #' @field meta_path meta data directory for current subject
     meta_path = function(){
       private$.dirs$meta_path
+    },
+
+    #' @field imaging_path root path to imaging processing folder
+    imaging_path = function() {
+      as.character(file.path(self$preprocess_settings$raw_path, 'rave-imaging'))
     },
 
     #' @field freesurfer_path 'FreeSurfer' directory for current subject. If
