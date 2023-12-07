@@ -18,6 +18,21 @@ get_os <- function(){
   return('unknown')
 }
 
+normalize_path <- function(path, must_work = NA) {
+  path <- unlist(lapply(path, function(p) {
+    if(!file.exists(p)) {
+      dname <- dirname(p)
+      dname <- normalizePath(dname, winslash = "/", mustWork = must_work)
+      p <- file.path(dname, basename(p), fsep = "/")
+    } else {
+      p <- normalizePath(p, winslash = "/", mustWork = must_work)
+    }
+    p
+  }))
+
+  gsub("[/|\\\\]+", "/", path)
+}
+
 safe_system <- function(cmd, ..., intern = TRUE, ignore.stderr = TRUE,
                         minimized = TRUE, invisible = TRUE, show.output.on.console = TRUE){
   suppressWarnings({
