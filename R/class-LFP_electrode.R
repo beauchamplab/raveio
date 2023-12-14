@@ -358,7 +358,12 @@ LFP_electrode <- R6::R6Class(
           if( !is.numeric(self$number) ){
             stop("Cannot find the voltage signal for calculated reference signal: ", self$number, ". Please generate the reference first.")
           } else {
-            h5_name <- sprintf('/notch/%s', b)
+            # Load notch filtered signals, or simply raw
+            if(isTRUE(self$subject$notch_filtered[self$subject$electrodes %in% self$number])) {
+              h5_name <- sprintf('/notch/%s', b)
+            } else {
+              h5_name <- sprintf('/raw/%s', b)
+            }
             block_data <- load_h5(file = self$preprocess_file, name = h5_name, ram = HDF5_EAGERLOAD)
           }
         }

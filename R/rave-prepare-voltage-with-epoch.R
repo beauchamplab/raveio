@@ -141,9 +141,9 @@ prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, 
 
   # ----- DIPSAUS: DEBUG START--------
   # devtools::load_all()
-  # subject <- "devel/PAV007"
+  # subject <- "devel/subHUP064"
   # electrodes <- c(14,15)
-  # epoch_name <- "stimulation"
+  # epoch_name <- "subHUP064_seizure"
   # time_windows <- c(-1,2)
   # quiet = TRUE
   # repository_id <- NULL
@@ -154,6 +154,10 @@ prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, 
 
   re <- dipsaus::fastmap2()
   subject <- as_rave_subject(subject)
+
+  if(!all(subject$notch_filtered)) {
+    message("No Notch filter has been applied (though highly recommended), raw signals will be loaded.")
+  }
 
   # ----- project -----
   re$project <- subject$project
