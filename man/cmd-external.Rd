@@ -9,6 +9,7 @@
 \alias{cmd_run_dcm2niix}
 \alias{cmd_run_flirt}
 \alias{cmd_run_recon_all}
+\alias{cmd_run_yael_preprocess_t1}
 \alias{cmd_run_recon_all_clinical}
 \title{External shell commands for 'RAVE'}
 \usage{
@@ -75,6 +76,16 @@ cmd_run_recon_all(
   mri_path,
   args = c("-all", "-autorecon1", "-autorecon2", "-autorecon3", "-autorecon2-cp",
     "-autorecon2-wm", "-autorecon2-pial"),
+  work_path = NULL,
+  overwrite = FALSE,
+  command_path = NULL,
+  dry_run = FALSE,
+  verbose = dry_run
+)
+
+cmd_run_yael_preprocess_t1(
+  subject,
+  mri_path,
   work_path = NULL,
   overwrite = FALSE,
   command_path = NULL,
