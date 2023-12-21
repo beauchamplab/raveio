@@ -16,7 +16,7 @@ machines, please use the 'WSL2' system."><!-- mathjax --><script src="https://cd
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.30</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.31</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,6 +123,16 @@ machines, please use the 'WSL2' system.</p>
 <span>  <span class="va">mri_path</span>,</span>
 <span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-all"</span>, <span class="st">"-autorecon1"</span>, <span class="st">"-autorecon2"</span>, <span class="st">"-autorecon3"</span>, <span class="st">"-autorecon2-cp"</span>,</span>
 <span>    <span class="st">"-autorecon2-wm"</span>, <span class="st">"-autorecon2-pial"</span><span class="op">)</span>,</span>
+<span>  work_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  command_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">dry_run</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cmd_run_yael_preprocess_t1</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  <span class="va">mri_path</span>,</span>
 <span>  work_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  command_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
