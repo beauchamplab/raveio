@@ -340,7 +340,7 @@ PipelineCollections <- R6::R6Class(
         collection_root_path = "../../",
         error_action = error
       )
-      scheduler$run(scheduler = .scheduler, type = .type, as_promise = .as_promise, async = .async, ...)
+      scheduler$eval()
     },
 
     #' @description Get \code{scheduler} object

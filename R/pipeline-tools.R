@@ -19,7 +19,8 @@ load_targets <- function(..., env = NULL){
   do.call("c", targets)
 }
 
-activate_pipeline <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
+activate_pipeline <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+                              debug = FALSE) {
   if(!dir.exists(pipe_dir)){
     stop("`pipe_dir` must be the directory of pipeline files.")
   }
@@ -39,13 +40,17 @@ activate_pipeline <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
   parent_frame <- parent.frame()
   current <- Sys.getenv("TAR_PROJECT", "main")
   wd <- normalizePath(getwd())
-  do.call(
-    on.exit, list(bquote({
-      setwd(.(wd))
-      Sys.setenv("TAR_PROJECT" = .(current))
-    }), add = TRUE, after = TRUE),
-    envir = parent_frame
-  )
+  if( debug ) {
+    warning(sprintf("Debugging a pipeline. Current working directory has been altered. Please run the following script once debug is finished.\n  setwd('%s');Sys.setenv('TAR_PROJECT' = '%s')", wd, current))
+  } else {
+    do.call(
+      on.exit, list(bquote({
+        setwd(.(wd))
+        Sys.setenv("TAR_PROJECT" = .(current))
+      }), add = TRUE, after = TRUE),
+      envir = parent_frame
+    )
+  }
   setwd(pipe_dir)
 
   tmpenv <- new.env(parent = globalenv())
@@ -173,8 +178,18 @@ pipeline_debug <- function(
 pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
                           pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
                           settings_path = file.path(pipe_dir, "settings.yaml")) {
+
   force(env)
   pipe_dir <- activate_pipeline(pipe_dir)
+
+
+  # DIPSAUS DEBUG START
+  # self <- raveio::pipeline('import_lfp_native')
+  # env = new.env(parent = parent.frame())
+  # pipe_dir = self$pipeline_path
+  # settings_path = file.path(pipe_dir, "settings.yaml")
+  # pipe_dir <- activate_pipeline(pipe_dir, debug = TRUE)
+  # names <- NULL
 
   # find targets that are not in the main
   script <- attr(pipe_dir, "target_script")
@@ -184,6 +199,9 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
 
   nms <- names(all_targets)
   tnames <- unname(unlist(lapply(all_targets, function(t){ t$settings$name })))
+  if(is.null(names)) {
+    names <- tnames
+  }
   names <- names[names %in% tnames]
 
   # Load shared functions into env
@@ -192,9 +210,10 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   shared_libs <- sort(shared_libs)
 
   lapply(shared_libs, function(f) {
+    catgl(sprintf("Loading script - %s", gsub("^.*[/|\\\\]shared-", "shared-", f)), .envir = emptyenv(), level = "DEFAULT")
     source(file = f, local = env, chdir = TRUE)
+    return()
   })
-
 
   # if(dir.exists(file.path(pipe_dir, "py"))) {
   #   pipeline_py_module(pipe_dir = pipe_dir,
@@ -202,6 +221,7 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   # }
 
   if(file.exists(settings_path)) {
+    catgl(sprintf("Loading inputs from [%s]", filenames(settings_path)), .envir = emptyenv(), level = "DEFAULT")
     input_settings <- yaml::read_yaml(settings_path)
     input_settings <- input_settings[names(input_settings) %in% tnames]
     if(length(input_settings)) {
@@ -212,21 +232,19 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   }
   # print(ls(env))
 
-  missing_names <- tnames[!tnames %in% c(names, attr(as.list(env), "names"))]
-  if(length(missing_names)) {
-    list2env(
-      pipeline_read(var_names = missing_names),
-      envir = env
-    )
-  }
+  matured_targets <- attr(as.list(env), "names")
+  missing_names <- tnames[!tnames %in% c(names, matured_targets)]
 
   w <- getOption("width", 80)
-
   all_starts <- Sys.time()
 
-  lapply(names, function(name) {
+  missing_key <- new.env()
 
+  eval_target <- function(name) {
+
+    # determine the name
     ii <- which(tnames == name)
+    tar_obj <- all_targets[[ii]]
     if(length(nms) < ii || nms[[ii]] == ""){
       nm <- sprintf("[%s]", name)
     } else {
@@ -235,27 +253,91 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
       nm <- paste(nm, collapse = " ")
       nm <- sprintf("[%s] (%s)", name, nm)
     }
+    readable_name <- nm
 
-    nm <- paste(c(
-      sprintf(" (%.2f s) ", dipsaus::time_delta(all_starts, Sys.time())),
-      rep("-", 2), " ", nm, "\n"), collapse = "")
-    catgl(nm, level = "INFO")
+    if( name %in% missing_names ) {
+      v <- pipeline_read(var_names = name, ifnotfound = missing_key)
+      if(!identical(v, missing_key)) {
+        env[[name]] <- v
+        matured_targets <<- c(matured_targets, name)
+        catgl(sprintf("Loaded - %s", readable_name), .envir = emptyenv(), level = "DEFAULT")
+        return()
+      }
+    }
 
-    tar_obj <- all_targets[[ii]]
+    deps <- tar_obj$command$deps
+    deps <- deps[!deps %in% matured_targets]
+    if( length(deps) ) {
+      lapply(deps, eval_target)
+    }
+
+    if( name %in% matured_targets ) { return() }
+
     started <- Sys.time()
+    catgl(sprintf("Starting - %s ...", readable_name), .envir = emptyenv(), level = "DEFAULT")
     v <- eval(tar_obj$command$expr, new.env(parent = env))
     assign(name, v, envir = env)
+    matured_targets <<- c(matured_targets, name)
+
     ended <- Sys.time()
 
     msg <- sprintf(
-      "%s [%.2f sec, %s] - %s",
+      "Evaluated - %s [%.2f sec, %s] - %s",
       name, dipsaus::time_delta(started, ended, units = "secs"),
       dipsaus::to_ram_size(utils::object.size(v)),
       paste(class(v), collapse = ", ")
     )
     catgl(msg, .envir = emptyenv(), level = "DEFAULT")
-    NULL
-  })
+
+    return()
+
+  }
+
+  lapply(names, eval_target)
+#
+#   if(length(missing_names)) {
+#     list2env(
+#       pipeline_read(var_names = missing_names),
+#       envir = env
+#     )
+#   }
+#
+#   w <- getOption("width", 80)
+#
+#   all_starts <- Sys.time()
+#
+#   lapply(names, function(name) {
+#
+#     ii <- which(tnames == name)
+#     if(length(nms) < ii || nms[[ii]] == ""){
+#       nm <- sprintf("[%s]", name)
+#     } else {
+#       nm <- strsplit(nms[[ii]], "_")[[1]]
+#       nm[[1]] <- stringr::str_to_sentence(nm[[1]])
+#       nm <- paste(nm, collapse = " ")
+#       nm <- sprintf("[%s] (%s)", name, nm)
+#     }
+#
+#     nm <- paste(c(
+#       sprintf(" (%.2f s) ", dipsaus::time_delta(all_starts, Sys.time())),
+#       rep("-", 2), " ", nm, "\n"), collapse = "")
+#     catgl(nm, level = "INFO")
+#
+#     tar_obj <- all_targets[[ii]]
+#     started <- Sys.time()
+#     v <- eval(tar_obj$command$expr, new.env(parent = env))
+#     assign(name, v, envir = env)
+#     ended <- Sys.time()
+#
+#     msg <- sprintf(
+#       "%s [%.2f sec, %s] - %s",
+#       name, dipsaus::time_delta(started, ended, units = "secs"),
+#       dipsaus::to_ram_size(utils::object.size(v)),
+#       paste(class(v), collapse = ", ")
+#     )
+#     catgl(msg, .envir = emptyenv(), level = "DEFAULT")
+#     NULL
+#   })
   env
 }
 

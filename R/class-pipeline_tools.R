@@ -242,6 +242,9 @@ PipelineTools <- R6::R6Class(
       #   source(file = f, local = envir, chdir = TRUE)
       # })
       # list2env(self$get_settings(), envir = envir)
+      if(missing(names)) {
+        names <- self$target_table$Names
+      }
       pipeline_eval(names = names, env = envir, pipe_dir = private$.pipeline_path,
                     settings_path = self$settings_path)
     },
