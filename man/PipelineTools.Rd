@@ -222,7 +222,7 @@ does not use the \code{targets} infrastructure, hence the pipeline
 results will not be stored, and the order of \code{names} will be
 respected.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$eval(names, env = parent.frame(), clean = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$eval(names, env = parent.frame(), clean = TRUE, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -233,6 +233,8 @@ respected.
 \item{\code{env}}{environment to evaluate and store the results}
 
 \item{\code{clean}}{whether to evaluate without polluting \code{env}}
+
+\item{\code{...}}{passed to \code{\link{pipeline_eval}}}
 }
 \if{html}{\out{</div>}}
 }

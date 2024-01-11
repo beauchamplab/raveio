@@ -87,7 +87,8 @@ pipeline_eval(
   names,
   env = new.env(parent = parent.frame()),
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-  settings_path = file.path(pipe_dir, "settings.yaml")
+  settings_path = file.path(pipe_dir, "settings.yaml"),
+  shortcut = FALSE
 )
 
 pipeline_visualize(
@@ -234,12 +235,12 @@ up-to-date; only used when \code{quick=TRUE}. If missing, then
 \item{settings_path}{path to settings file
 name within subject's pipeline path}
 
+\item{shortcut}{whether to display shortcut targets}
+
 \item{glimpse}{whether to hide network status when visualizing the pipelines}
 
 \item{targets_only}{whether to return the variable table for targets only;
 default is true}
-
-\item{shortcut}{whether to display shortcut targets}
 
 \item{zoom_speed}{zoom speed when visualizing the pipeline dependence}
 
