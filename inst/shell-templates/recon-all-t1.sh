@@ -104,14 +104,14 @@ SUBJECTS_DIR="$wdir_fs/rave-imaging"
 
 if [ -d "$SUBJECTS_DIR/fs/mri" ]; then
   # Use existing FreeSurfer directory to continue analysis
-  recon-all -sd "$SUBJECTS_DIR" -sid fs --conform-dc {{ paste(c(args, ""), collapse = " ") }}| tee -a "$log_file"
+  recon-all -sd "$SUBJECTS_DIR" -sid fs {{ paste(c(args, ""), collapse = " ") }}| tee -a "$log_file"
 else
   # Copy Nifti input
   cp "$mri_path" "$wdir_fs/$input_name"
   if [ -d "$SUBJECTS_DIR/fs" ]; then
     rm -r "$SUBJECTS_DIR/fs"
   fi
-  recon-all -sd "$SUBJECTS_DIR" -sid fs --conform-dc -i "$wdir_fs/$input_name" {{ paste(c(args, ""), collapse = " ") }}| tee -a "$log_file"
+  recon-all -sd "$SUBJECTS_DIR" -sid fs -i "$wdir_fs/$input_name" {{ paste(c(args, ""), collapse = " ") }}| tee -a "$log_file"
 fi
 
 # Convert T1.mgz to T1.nii so users can choose to use T1.nii to coregister
