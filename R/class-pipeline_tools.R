@@ -227,7 +227,8 @@ PipelineTools <- R6::R6Class(
     #' @param names pipeline variable names to calculate; must be specified
     #' @param env environment to evaluate and store the results
     #' @param clean whether to evaluate without polluting \code{env}
-    eval = function(names, env = parent.frame(), clean = TRUE) {
+    #' @param ... passed to \code{\link{pipeline_eval}}
+    eval = function(names, env = parent.frame(), clean = TRUE, ...) {
       if(clean) {
         envir <- new.env(parent = env)
       } else {
@@ -246,7 +247,7 @@ PipelineTools <- R6::R6Class(
         names <- self$target_table$Names
       }
       pipeline_eval(names = names, env = envir, pipe_dir = private$.pipeline_path,
-                    settings_path = self$settings_path)
+                    settings_path = self$settings_path, ...)
     },
 
     #' @description run the pipeline shared library in scripts starting with
