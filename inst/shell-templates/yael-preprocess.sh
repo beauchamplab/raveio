@@ -109,14 +109,14 @@ SUBJECTS_DIR="$wdir_fs/rave-imaging"
 
 if [ -d "$SUBJECTS_DIR/fs/mri" ]; then
   # Use existing FreeSurfer directory to continue analysis
-  recon-all -sd "$SUBJECTS_DIR" -sid fs -all | tee -a "$log_file"
+  recon-all -sd "$SUBJECTS_DIR" -sid fs -all --conform-dc | tee -a "$log_file"
 else
   # Copy Nifti input
   cp "$mri_path" "$wdir_fs/$input_name"
   if [ -d "$SUBJECTS_DIR/fs" ]; then
     rm -r "$SUBJECTS_DIR/fs"
   fi
-  recon-all -sd "$SUBJECTS_DIR" -sid fs -i "$wdir_fs/$input_name" -all | tee -a "$log_file"
+  recon-all -sd "$SUBJECTS_DIR" -sid fs -i "$wdir_fs/$input_name" -all --conform-dc | tee -a "$log_file"
 fi
 
 # Copy raw MRI to FreeSurfer folder so 3D viewer can recognize it
