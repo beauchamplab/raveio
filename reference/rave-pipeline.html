@@ -16,7 +16,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.32</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.35</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,7 +117,8 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  <span class="va">names</span>,</span>
 <span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
-<span>  settings_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pipe_dir</span>, <span class="st">"settings.yaml"</span><span class="op">)</span></span>
+<span>  settings_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pipe_dir</span>, <span class="st">"settings.yaml"</span><span class="op">)</span>,</span>
+<span>  shortcut <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pipeline_visualize</span><span class="op">(</span></span>
@@ -304,6 +305,10 @@ up-to-date; only used when <code>quick=TRUE</code>. If missing, then
 name within subject's pipeline path</p></dd>
 
 
+<dt>shortcut</dt>
+<dd><p>whether to display shortcut targets</p></dd>
+
+
 <dt>glimpse</dt>
 <dd><p>whether to hide network status when visualizing the pipelines</p></dd>
 
@@ -311,10 +316,6 @@ name within subject's pipeline path</p></dd>
 <dt>targets_only</dt>
 <dd><p>whether to return the variable table for targets only;
 default is true</p></dd>
-
-
-<dt>shortcut</dt>
-<dd><p>whether to display shortcut targets</p></dd>
 
 
 <dt>zoom_speed</dt>
