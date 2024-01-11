@@ -118,8 +118,16 @@ pipeline_run <- function(
               msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
 
               if(startsWith(msg, "Error running targets::tar_make")) {
-                msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
-                e$message <- msg
+                msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last (error|error message):[\n \t]{0,1}", "", msg)
+                msg <- gsub("Last error traceback:.*$", "", msg)
+                e$message <- trimws(msg)
+              }
+
+              if(startsWith(msg, "Error running targets::tar_make")) {
+                err_table <- targets::tar_meta(fields = "error", complete_only = TRUE)
+                if(length(err_table$error)) {
+                  e$message <- sprintf("Potential issue: %s", paste(err_table$error, collapse = "; "))
+                }
               }
             }
 
@@ -322,8 +330,16 @@ pipeline_run_bare <- function(
             msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
 
             if(startsWith(msg, "Error running targets::tar_make")) {
-              msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last error:[\n \t]{0,1}", "", msg)
-              e$message <- msg
+              msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last (error|error message):[\n \t]{0,1}", "", msg)
+              msg <- gsub("Last error traceback:.*$", "", msg)
+              e$message <- trimws(msg)
+            }
+
+            if(startsWith(msg, "Error running targets::tar_make")) {
+              err_table <- targets::tar_meta(fields = "error", complete_only = TRUE)
+              if(length(err_table$error)) {
+                e$message <- sprintf("Potential issue: %s", paste(err_table$error, collapse = "; "))
+              }
             }
           }
 
