@@ -177,7 +177,8 @@ pipeline_debug <- function(
 #' @export
 pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
                           pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
-                          settings_path = file.path(pipe_dir, "settings.yaml")) {
+                          settings_path = file.path(pipe_dir, "settings.yaml"),
+                          shortcut = FALSE) {
 
   force(env)
   pipe_dir <- activate_pipeline(pipe_dir)
@@ -220,20 +221,26 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   #                      convert = FALSE)
   # }
 
+  input_names <- NULL
   if(file.exists(settings_path)) {
     catgl(sprintf("Loading inputs from [%s]", filenames(settings_path)), .envir = emptyenv(), level = "DEFAULT")
     input_settings <- yaml::read_yaml(settings_path)
     input_settings <- input_settings[names(input_settings) %in% tnames]
     if(length(input_settings)) {
-      lapply(names(input_settings), function(nm) {
+      input_names <- names(input_settings)
+      lapply(input_names, function(nm) {
         env[[nm]] <- resolve_pipeline_settings_value( input_settings[[nm]], pipe_dir = pipe_dir )
       })
     }
   }
   # print(ls(env))
 
-  matured_targets <- attr(as.list(env), "names")
-  missing_names <- tnames[!tnames %in% c(names, matured_targets)]
+  if( shortcut ) {
+    matured_targets <- attr(as.list(env), "names")
+  } else {
+    matured_targets <- NULL
+  }
+  missing_names <- tnames[!tnames %in% c(names, matured_targets, input_names)]
 
   w <- getOption("width", 80)
   all_starts <- Sys.time()
@@ -255,7 +262,7 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
     }
     readable_name <- nm
 
-    if( name %in% missing_names ) {
+    if( shortcut && name %in% missing_names ) {
       v <- pipeline_read(var_names = name, ifnotfound = missing_key)
       if(!identical(v, missing_key)) {
         env[[name]] <- v
