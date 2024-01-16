@@ -112,26 +112,7 @@ pipeline_run <- function(
             }
           },
           error = function( e ) {
-
-            if(inherits(e, "tar_condition_run")) {
-              # remove ANSI code
-              msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
-
-              if(startsWith(msg, "Error running targets::tar_make")) {
-                msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last (error|error message):[\n \t]{0,1}", "", msg)
-                msg <- gsub("Last error traceback:.*$", "", msg)
-                e$message <- trimws(msg)
-              }
-
-              if(startsWith(msg, "Error running targets::tar_make")) {
-                err_table <- targets::tar_meta(fields = "error", complete_only = TRUE)
-                if(length(err_table$error)) {
-                  e$message <- sprintf("Potential issue: %s", paste(err_table$error, collapse = "; "))
-                }
-              }
-            }
-
-            stop(e)
+            stop(sanitize_target_error(e))
           }
         )
       })
@@ -234,6 +215,35 @@ pipeline_clean <- function(
   invisible()
 }
 
+
+sanitize_target_error <- function(e) {
+  if(inherits(e, "tar_condition_run")) {
+    # remove ANSI code
+    msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
+
+    if(startsWith(msg, "Error running targets::tar_make")) {
+      msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last (error|error message):[\n \t]{0,1}", "", msg)
+      msg <- gsub("Last error traceback:.*$", "", msg)
+      e$message <- trimws(msg)
+    }
+
+    if(startsWith(msg, "Error running targets::tar_make")) {
+      tar_warn <- Sys.getenv("TAR_WARN", unset = "N/A")
+      Sys.setenv("TAR_WARN" = "false")
+      if(!identical(tar_warn, "N/A")) {
+        on.exit({
+          Sys.setenv("TAR_WARN" = tar_warn)
+        })
+      }
+      err_table <- targets::tar_meta(fields = "error", complete_only = TRUE)
+      if(length(err_table$error)) {
+        e$message <- sprintf("Potential issue: %s", paste(err_table$error, collapse = "; "))
+      }
+    }
+  }
+  e
+}
+
 #' @rdname rave-pipeline
 #' @export
 pipeline_run_bare <- function(
@@ -324,26 +334,7 @@ pipeline_run_bare <- function(
           }
         },
         error = function( e ) {
-
-          if(inherits(e, "tar_condition_run")) {
-            # remove ANSI code
-            msg <- trimws(dipsaus::ansi_strip(e$message), which = "left")
-
-            if(startsWith(msg, "Error running targets::tar_make")) {
-              msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last (error|error message):[\n \t]{0,1}", "", msg)
-              msg <- gsub("Last error traceback:.*$", "", msg)
-              e$message <- trimws(msg)
-            }
-
-            if(startsWith(msg, "Error running targets::tar_make")) {
-              err_table <- targets::tar_meta(fields = "error", complete_only = TRUE)
-              if(length(err_table$error)) {
-                e$message <- sprintf("Potential issue: %s", paste(err_table$error, collapse = "; "))
-              }
-            }
-          }
-
-          stop(e)
+          stop(sanitize_target_error(e))
         }
       )
     })
