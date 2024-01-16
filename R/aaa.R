@@ -622,3 +622,42 @@ install_cran <- function(pkgs, upgrade = FALSE, lib = guess_libpath(), ...) {
                         lib = lib, ...)
 
 }
+
+is_from_namespace <- function(x, check_dipsaus = TRUE) {
+  if( check_dipsaus ) {
+    is_from_namespace_impl <- asNamespace("dipsaus")[["is_from_namespace"]]
+    if(is.function(is_from_namespace_impl)) {
+      return( is_from_namespace_impl(x) )
+    }
+  }
+
+  if(!is.environment(x)) {
+    x <- environment(x)
+  }
+  if(!is.environment(x)) { return(FALSE) }
+  if(isNamespace(x)) { return(TRUE) }
+  if(identical(x, baseenv())) { return(TRUE) }
+  if(identical(x, emptyenv())) { return(FALSE) }
+  if(identical(x, globalenv())) { return(FALSE) }
+  return(is_from_namespace(parent.env(x), check_dipsaus = FALSE))
+}
+
+
+
+#' @export
+print.raveio_digest_expression <- function(x, ..., max_nvars = 5) {
+  vnames <- names(attr(x, "global_vars"))
+
+  if(length(vnames) > max_nvars) {
+    vnames <- c(vnames[seq_len(max_nvars)], "...")
+  }
+  cat(sprintf("<Digest from code + variables>\n  variable names: %s\n  MD5: %s\n",
+              paste(vnames, collapse = ", "), x))
+  invisible(x)
+}
+
+#' @export
+format.raveio_digest_expression <- function(x, ...) {
+  attributes(x) <- NULL
+  x
+}
