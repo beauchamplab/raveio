@@ -309,7 +309,7 @@ PipelineResult <- R6::R6Class(
 
     #' @description get results
     #' @param names the target names to read
-    #' @param ... passed to code{link{pipeline_read}}
+    #' @param ... passed to \code{\link{pipeline_read}}
     get_values = function(names = NULL, ...){
       self$validate()
       if(!length(names)){

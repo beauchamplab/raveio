@@ -192,7 +192,7 @@ get results
 \describe{
 \item{\code{names}}{the target names to read}
 
-\item{\code{...}}{passed to code{link{pipeline_read}}}
+\item{\code{...}}{passed to \code{\link{pipeline_read}}}
 }
 \if{html}{\out{</div>}}
 }
