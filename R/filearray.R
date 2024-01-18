@@ -32,7 +32,8 @@ filearray_create2 <- function(filebase, ..., dimnames = NULL){
 #' Generate and automatically cache a file array
 #' @description
 #' Avoid repeating yourself
-#' @param expr expression that should result in a matrix or an array
+#' @param fun function that can be called with no mandatory arguments; the
+#' result should be in a matrix or an array
 #' @param filebase where to store the array
 #' @param dimension what is the supposed dimension, default is automatically
 #' calculated from array. If specified explicitly and the file array dimension
@@ -44,12 +45,8 @@ filearray_create2 <- function(filebase, ..., dimnames = NULL){
 #' set it to \code{NA} to generate it automatically. Notice inconsistent
 #' partition size will not trigger calculation if the key variables remain
 #' the same
-#' @param quoted whether \code{expr} has been quoted; default is false
-#' @param env environment where to evaluate \code{expr}; the evaluation will
-#' be clean, meaning that intermediate variables in the expression will not
-#' be available in \code{env}.
 #' @param globals names of variables such that any changes
-#' should trigger a new evaluation of \code{expr}. This argument is highly
+#' should trigger a new evaluation of \code{fun}. This argument is highly
 #' recommended to be set explicitly (with atomic variables) though the
 #' function automatically calculates the global variables
 #' @param verbose whether to verbose debug information
@@ -61,30 +58,30 @@ filearray_create2 <- function(filebase, ..., dimnames = NULL){
 #' b <- list(d = matrix(1:9,3))
 #' filebase <- tempfile()
 #'
-#' expr <- quote({
+#' f <- function() {
 #'   message("New calculation")
 #'   re <- c + b$d
 #'   dimnames(re) <- list(A=1:3, B = 11:13)
+#'
+#'   # `extra` attribute will be saved
+#'   attr(re, "extra") <- "extra meta data"
 #'   re
-#' })
+#' }
 #'
 #' # first time running
-#' arr <- filearray_from_expr(
-#'   expr, quoted = TRUE,
-#'   filebase = filebase
-#' )
+#' arr <- cache_to_filearray( f, filebase = filebase )
 #'
 #' # cached, no re-run
-#' arr <- filearray_from_expr(
-#'   expr, quoted = TRUE,
-#'   filebase = filebase
-#' )
+#' arr <- cache_to_filearray( f, filebase = filebase )
 #'
 #' # file array object
 #' arr
 #'
 #' # read into memory
 #' arr[]
+#'
+#' # read extra data
+#' arr$get_header("extra")
 #'
 #' # get digest results
 #' arr$get_header("raveio::filearray_cache")
@@ -93,30 +90,29 @@ filearray_create2 <- function(filebase, ..., dimnames = NULL){
 #' unlink(filebase, recursive = TRUE)
 #'
 #' @export
-filearray_from_expr <- function(
-    expr, filebase, globals, dimension, type = "auto", partition_size = 1L,
-    quoted = FALSE, env = parent.frame(),
-    verbose = FALSE, ...
+cache_to_filearray <- function(
+    fun, filebase, globals, dimension, type = "auto",
+    partition_size = 1L, verbose = FALSE, ...
 ) {
   # DIPSAUS DEBUG START
   # a <- new.env(); with(a, {a <- function(){c}}); a$c <- 2
   # b <- list(a = matrix(1:9,3))
-  # expr <- quote({print(a$a()+b$a)})
+  # fun <- function(){print(a$a()+b$a)}
   # filebase <- tempfile()
   # dimension <- c(3,3)
   # type = "auto"
   # partition_size <- NA
-  # quoted <- TRUE
-  # env = parent.frame()
   # verbose = TRUE
   # cache_as_filearray(expr, filebase)
 
-  if(!quoted) {
-    expr <- substitute(expr)
-  }
-  expr_digest <- dipsaus::digest(deparse1(expr, collapse = "\n"))
+  fun <- utils::removeSource(fun)
+  env <- environment(fun)
+  expr_digest <- dipsaus::digest(c(
+    deparse1(fun, collapse = "\n"),
+    deparse1(cache_to_filearray, collapse = "\n")
+  ))
   if(missing(globals)) {
-    globals <- globals::findGlobals(expr = expr, envir = env, substitute = FALSE, ...)
+    globals <- globals::findGlobals(expr = fun, envir = env, substitute = FALSE, ...)
   }
   globals <- sort(globals)
   global_vars <- structure(
@@ -136,7 +132,7 @@ filearray_from_expr <- function(
   )
 
   if( verbose ) {
-    cat("Calculated digest results:\n")
+    catgl("Calculated digest results:", level = "default")
     print(digest_results, max_nvars = 10)
   }
 
@@ -164,7 +160,7 @@ filearray_from_expr <- function(
           if( verbose ) {
             # check expression
             if(!identical(attr(digest_results, "expr_digest"), attr(cache_info, "expr_digest"))) {
-              stop("Expression that generates the cache has changed, need recache")
+              stop("Function that generates the cache has changed, need recache")
             }
             # check variable names
             gvars_old <- attr(cache_info, "global_vars")
@@ -197,7 +193,7 @@ filearray_from_expr <- function(
   }
 
   # cache not exists or need to re-cache
-  array_data <- eval(expr, envir = list(), enclos = env)
+  array_data <- fun()
   dm <- dim(array_data)
   if(length(dm) < 2) {
     dm <- c(length(array_data), 1L)
@@ -233,6 +229,10 @@ filearray_from_expr <- function(
   )
   arr$.mode <- "readwrite"
   arr[] <- array_data
+  extra <- attr(array_data, "extra")
+  if(!is.null(extra)) {
+    arr$set_header("extra", extra)
+  }
   dimnames(arr) <- dimnames(array_data)
 
   # save signatures

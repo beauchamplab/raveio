@@ -538,6 +538,7 @@ def rave_unserialize(x, path, name):
     'source("common.R", local = TRUE, chdir = TRUE)',
 
     '._._env_._. <- environment()',
+    '._._env_._.$pipeline <- pipeline_from_path(".")',
     'lapply(sort(list.files(',
     '  "R/", ignore.case = TRUE,',
     '  pattern = "^shared-.*\\\\.R", ',
@@ -623,6 +624,7 @@ pipeline_setup_rmd <- function(
 
   module_path <- file.path(project_path, "modules", module_id)
 
+  env$pipeline <- pipeline_from_path(module_path)
   shared_scripts <- list.files(
     file.path(module_path, "R"),
     pattern = "^shared-.*\\.R$",

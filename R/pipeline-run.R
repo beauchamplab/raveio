@@ -77,6 +77,7 @@ pipeline_run <- function(
     }
 
     # Load shared functions into envir
+    args$envir$pipeline <- pipeline_from_path(.(pipe_dir))
     shared_libs <- list.files(file.path(.(pipe_dir), "R"), pattern = "^shared-.*\\.R",
                               full.names = TRUE, ignore.case = TRUE)
     lapply(sort(shared_libs), function(f) {
@@ -301,6 +302,7 @@ pipeline_run_bare <- function(
   )
 
   # Load shared functions into envir
+  args$envir$pipeline <- pipeline_from_path(pipe_dir)
   shared_libs <- list.files(file.path(pipe_dir, "R"), pattern = "^shared-.*\\.R",
                             full.names = TRUE, ignore.case = TRUE)
   lapply(sort(shared_libs), function(f) {

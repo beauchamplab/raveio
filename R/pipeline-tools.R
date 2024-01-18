@@ -206,6 +206,7 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   names <- names[names %in% tnames]
 
   # Load shared functions into env
+  env$pipeline <- pipeline_from_path(pipe_dir)
   shared_libs <- list.files(file.path(pipe_dir, "R"), pattern = "^shared-.*\\.R",
                             full.names = TRUE, ignore.case = TRUE)
   shared_libs <- sort(shared_libs)

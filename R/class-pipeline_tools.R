@@ -553,6 +553,7 @@ PipelineTools <- R6::R6Class(
 #' @param paths the paths to search for the pipeline, usually the parent
 #' directory of the pipeline; default is \code{\link{pipeline_root}}, which
 #' only search for pipelines that are installed or in current working directory.
+#' @param path the pipeline folder
 #' @returns A \code{\link{PipelineTools}} instance
 #' @examples
 #'
@@ -612,6 +613,16 @@ pipeline <- function(pipeline_name,
   PipelineTools$new(pipeline_name, settings_file, paths, temporary = temporary)
 }
 
+#' @rdname pipeline
+#' @export
+pipeline_from_path <- function(path, settings_file = "settings.yaml") {
+  if(!dir.exists(path)) { stop("pipeline_from_path: `path` is not a valid directory.") }
+  path <- normalize_path(path)
+  root_path <- dirname(path)
+
+  re <- pipeline(pipeline_name = basename(path), paths = root_path, temporary = TRUE, settings_file = settings_file)
+  re
+}
 
 #' @export
 `[.PipelineTools` <- function(x, ...) {

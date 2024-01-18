@@ -2,6 +2,7 @@
 % Please edit documentation in R/class-pipeline_tools.R
 \name{pipeline}
 \alias{pipeline}
+\alias{pipeline_from_path}
 \title{Creates 'RAVE' pipeline instance}
 \usage{
 pipeline(
@@ -10,6 +11,8 @@ pipeline(
   paths = pipeline_root(),
   temporary = FALSE
 )
+
+pipeline_from_path(path, settings_file = "settings.yaml")
 }
 \arguments{
 \item{pipeline_name}{the name of the pipeline, usually title field in the
@@ -24,6 +27,8 @@ directory of the pipeline; default is \code{\link{pipeline_root}}, which
 only search for pipelines that are installed or in current working directory.}
 
 \item{temporary}{see \code{\link{pipeline_root}}}
+
+\item{path}{the pipeline folder}
 }
 \value{
 A \code{\link{PipelineTools}} instance
