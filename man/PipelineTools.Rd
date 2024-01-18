@@ -483,7 +483,8 @@ invalidate pipeline cache.
   name,
   ...,
   .initial_prefs = list(),
-  .overwrite = FALSE
+  .overwrite = FALSE,
+  .verbose = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -497,6 +498,9 @@ underscore, and hyphen, will be coerced to lower case (case-insensitive)}
 
 \item{\code{.overwrite}}{whether to overwrite the initial preference values
 if they exist.}
+
+\item{\code{.verbose}}{whether to verbose the preferences to be saved; default
+is false; turn on for debug use}
 }
 \if{html}{\out{</div>}}
 }
