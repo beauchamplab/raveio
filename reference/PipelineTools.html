@@ -599,7 +599,8 @@ invalidate pipeline cache.</p><div class="section">
 <span>  <span class="va">name</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  .initial_prefs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  .overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  .overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -617,6 +618,11 @@ underscore, and hyphen, will be coerced to lower case (case-insensitive)</p></dd
 <dt><code>.overwrite</code></dt>
 <dd><p>whether to overwrite the initial preference values
 if they exist.</p></dd>
+
+
+<dt><code>.verbose</code></dt>
+<dd><p>whether to verbose the preferences to be saved; default
+is false; turn on for debug use</p></dd>
 
 
 </dl><p></p></div>
