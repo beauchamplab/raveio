@@ -446,8 +446,8 @@ PipelineTools <- R6::R6Class(
 
     #' @description load persistent preference settings from the pipeline.
     #' The preferences should not affect how pipeline is working, hence usually
-    #' stores minor variables such as graphics. Changing preferences will not
-    #' invalidate pipeline cache.
+    #' stores minor variables such as graphic options. Changing preferences
+    #' will not invalidate pipeline cache.
     #' @param name preference name, must contain only letters, digits,
     #' underscore, and hyphen, will be coerced to lower case (case-insensitive)
     #' @param ...,.initial_prefs key-value pairs of initial preference values
@@ -470,6 +470,71 @@ PipelineTools <- R6::R6Class(
         preference <- private$.preferences[[name]]
       } else {
         preference <- dipsaus::rds_map(pref_path)
+        private$.preferences[[name]] <- preference
+      }
+
+      # avoid evaluating dots
+      dot_names <- ...names()
+      list_names <- names(.initial_prefs)
+      nms <- c(dot_names, list_names)
+      nms <- nms[!nms %in% ""]
+      if(!length(nms)) { return( preference ) }
+      if(!.overwrite) {
+        nms <- nms[ !nms %in% preference$keys() ]
+        if(!length(nms)) { return( preference ) }
+      }
+
+      if( .verbose ) {
+        catgl("Initializing the following preference(s): \n{ paste(nms, collapse = '\n') }", level = "DEBUG")
+      }
+
+      default_vals <- as.list(.initial_prefs[list_names %in% nms])
+      nms <- nms[nms %in% dot_names]
+      if(length(nms)) {
+        for(nm in nms) {
+          default_vals[[nm]] <- ...elt(which(dot_names == nm))
+        }
+      }
+
+      preference$mset(.list = default_vals)
+      preference
+    },
+
+    #' @description load persistent global preference settings that can be
+    #' accessed across modules, pipelines, and R sessions.
+    #' The preferences should not affect how pipeline is working, hence usually
+    #' stores minor variables such as graphic options. Changing preferences
+    #' will not invalidate pipeline cache. Developers should
+    #' maintain and check the preferences at their own risks.
+    #' @param name preference name, must contain only letters, digits,
+    #' underscore, and hyphen, will be coerced to lower case (case-insensitive)
+    #' @param ...,.initial_prefs key-value pairs of initial preference values
+    #' @param .overwrite whether to overwrite the initial preference values
+    #' if they exist.
+    #' @param .verbose whether to verbose the preferences to be saved; default
+    #' is false; turn on for debug use
+    #' @returns A persistent map, see \code{\link[dipsaus]{rds_map}}
+    load_global_preferences = function(name, ..., .initial_prefs = list(), .overwrite = FALSE, .verbose = FALSE) {
+      stopifnot2(
+        grepl(pattern = "^[a-zA-Z0-9_-]+$",
+              x = name),
+        msg = "preference `name` must only contain letters (a-z), digits (0-9), underscore (_), and hyphen (-)"
+      )
+      name <- tolower(name)
+
+      pref_path <- file.path(R_user_dir("raveio", which = "config"), "pipeline_global_preferences", name)
+
+      if(name %in% names(private$.preferences)) {
+        preference <- private$.preferences[[name]]
+      } else {
+        preference <- tryCatch({
+          dipsaus::rds_map(pref_path)
+        }, error = function(e) {
+          if(file.exists(pref_path)) {
+            unlink(pref_path, unlink(TRUE))
+          }
+          dipsaus::rds_map(pref_path)
+        })
         private$.preferences[[name]] <- preference
       }
 
