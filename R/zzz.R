@@ -768,3 +768,97 @@ install_modules <- function(modules, dependencies = FALSE) {
   }, silent = TRUE)
 }
 
+
+#' Global preferences for pipelines and modules
+#' @description load persistent global preference settings that can be
+#' accessed across modules, pipelines, and R sessions.
+#' @details
+#' The preferences should not affect how pipeline is working, hence usually
+#' stores minor variables such as graphic options. Changing preferences
+#' will not invalidate pipeline cache.
+#'
+#' Developers should maintain and check the preferences at their own risks.
+#' For example, the preferences may not be available. In case of broken files,
+#' please use try-catch clause when trying to access the items.
+#'
+#' To avoid performance hit, please do not save functions, environments, only
+#' save atomic items within \code{1 MB}. Though not implemented at this moment,
+#' this restriction will be rigidly enforced in the future.
+#'
+#' @param name preference name, must contain only letters, digits,
+#' underscore, and hyphen, will be coerced to lower case (case-insensitive)
+#' @param ...,.initial_prefs key-value pairs of initial preference values
+#' @param .overwrite whether to overwrite the initial preference values
+#' if they exist.
+#' @param .verbose whether to verbose the preferences to be saved; default
+#' is false; turn on for debug use
+#' @returns A persistent map, see \code{\link[dipsaus]{rds_map}}
+#'
+#' @examples
+#'
+#' if( interactive() ) {
+#'   preference <- global_preferences(
+#'     name = "my_list",
+#'     item1 = "A"
+#'   )
+#'
+#'   # get items wrapped in tryCatch
+#'   get_my_preference <- function(name, default = NULL) {
+#'     tryCatch({
+#'       preference$get(name, missing_default = default)
+#'     }, error = function(e) {
+#'       default
+#'     })
+#'   }
+#'
+#'   get_my_preference("item1", "missing")
+#'   get_my_preference("item2", "missing")
+#'
+#' }
+#'
+#' @export
+global_preferences = function(name, ..., .initial_prefs = list(), .overwrite = FALSE, .verbose = FALSE) {
+  stopifnot2(
+    grepl(pattern = "^[a-zA-Z0-9_-]+$",
+          x = name),
+    msg = "preference `name` must only contain letters (a-z), digits (0-9), underscore (_), and hyphen (-)"
+  )
+  name <- tolower(name)
+
+  pref_path <- file.path(R_user_dir("raveio", which = "config"), "pipeline_global_preferences", name)
+
+  preference <- tryCatch({
+    dipsaus::rds_map(pref_path)
+  }, error = function(e) {
+    if(file.exists(pref_path)) {
+      unlink(pref_path, unlink(TRUE))
+    }
+    dipsaus::rds_map(pref_path)
+  })
+
+  # avoid evaluating dots
+  dot_names <- ...names()
+  list_names <- names(.initial_prefs)
+  nms <- c(dot_names, list_names)
+  nms <- nms[!nms %in% ""]
+  if(!length(nms)) { return( preference ) }
+  if(!.overwrite) {
+    nms <- nms[ !nms %in% preference$keys() ]
+    if(!length(nms)) { return( preference ) }
+  }
+
+  if( .verbose ) {
+    catgl("Initializing the following preference(s): \n{ paste(nms, collapse = '\n') }", level = "DEBUG")
+  }
+
+  default_vals <- as.list(.initial_prefs[list_names %in% nms])
+  nms <- nms[nms %in% dot_names]
+  if(length(nms)) {
+    for(nm in nms) {
+      default_vals[[nm]] <- ...elt(which(dot_names == nm))
+    }
+  }
+
+  preference$mset(.list = default_vals)
+  preference
+}

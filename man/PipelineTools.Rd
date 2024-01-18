@@ -26,8 +26,6 @@ the saved file path
 the data if file is found or a default value
 
 A persistent map, see \code{\link[dipsaus]{rds_map}}
-
-A persistent map, see \code{\link[dipsaus]{rds_map}}
 }
 \description{
 Class definition for pipeline tools
@@ -77,7 +75,6 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-save_data}{\code{PipelineTools$save_data()}}
 \item \href{#method-PipelineTools-load_data}{\code{PipelineTools$load_data()}}
 \item \href{#method-PipelineTools-load_preferences}{\code{PipelineTools$load_preferences()}}
-\item \href{#method-PipelineTools-load_global_preferences}{\code{PipelineTools$load_global_preferences()}}
 \item \href{#method-PipelineTools-clone}{\code{PipelineTools$clone()}}
 }
 }
@@ -483,43 +480,6 @@ stores minor variables such as graphic options. Changing preferences
 will not invalidate pipeline cache.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{PipelineTools$load_preferences(
-  name,
-  ...,
-  .initial_prefs = list(),
-  .overwrite = FALSE,
-  .verbose = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{preference name, must contain only letters, digits,
-underscore, and hyphen, will be coerced to lower case (case-insensitive)}
-
-\item{\code{..., .initial_prefs}}{key-value pairs of initial preference values}
-
-\item{\code{.overwrite}}{whether to overwrite the initial preference values
-if they exist.}
-
-\item{\code{.verbose}}{whether to verbose the preferences to be saved; default
-is false; turn on for debug use}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PipelineTools-load_global_preferences"></a>}}
-\if{latex}{\out{\hypertarget{method-PipelineTools-load_global_preferences}{}}}
-\subsection{Method \code{load_global_preferences()}}{
-load persistent global preference settings that can be
-accessed across modules, pipelines, and R sessions.
-The preferences should not affect how pipeline is working, hence usually
-stores minor variables such as graphic options. Changing preferences
-will not invalidate pipeline cache. Developers should
-maintain and check the preferences at their own risks.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$load_global_preferences(
   name,
   ...,
   .initial_prefs = list(),
