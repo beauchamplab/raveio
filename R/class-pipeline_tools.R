@@ -453,8 +453,10 @@ PipelineTools <- R6::R6Class(
     #' @param ...,.initial_prefs key-value pairs of initial preference values
     #' @param .overwrite whether to overwrite the initial preference values
     #' if they exist.
+    #' @param .verbose whether to verbose the preferences to be saved; default
+    #' is false; turn on for debug use
     #' @returns A persistent map, see \code{\link[dipsaus]{rds_map}}
-    load_preferences = function(name, ..., .initial_prefs = list(), .overwrite = FALSE) {
+    load_preferences = function(name, ..., .initial_prefs = list(), .overwrite = FALSE, .verbose = FALSE) {
       stopifnot2(
         grepl(pattern = "^[a-zA-Z0-9_-]+$",
               x = name),
@@ -462,25 +464,39 @@ PipelineTools <- R6::R6Class(
       )
       name <- tolower(name)
 
+      pref_path <- file.path(self$preference_path, name)
+
       if(name %in% names(private$.preferences)) {
         preference <- private$.preferences[[name]]
       } else {
-        preference <- dipsaus::rds_map(
-          file.path(self$preference_path, name)
-        )
+        preference <- dipsaus::rds_map(pref_path)
         private$.preferences[[name]] <- preference
       }
-      default_vals <- c(list(...), .initial_prefs)
-      nms <- names(default_vals)
+
+      # avoid evaluating dots
+      dot_names <- ...names()
+      list_names <- names(.initial_prefs)
+      nms <- c(dot_names, list_names)
+      nms <- nms[!nms %in% ""]
+      if(!length(nms)) { return( preference ) }
+      if(!.overwrite) {
+        nms <- nms[ !nms %in% preference$keys() ]
+        if(!length(nms)) { return( preference ) }
+      }
+
+      if( .verbose ) {
+        catgl("Initializing the following preference(s): \n{ paste(nms, collapse = '\n') }", level = "DEBUG")
+      }
+
+      default_vals <- as.list(.initial_prefs[list_names %in% nms])
+      nms <- nms[nms %in% dot_names]
       if(length(nms)) {
-        nms <- nms[nms != ""]
+        for(nm in nms) {
+          default_vals[[nm]] <- ...elt(which(dot_names == nm))
+        }
       }
-      if(!.overwrite && length(nms)) {
-        nms <- nms[!preference$has(nms)]
-      }
-      if(length(nms)) {
-        preference$mset(.list = default_vals[nms])
-      }
+
+      preference$mset(.list = default_vals)
       preference
     }
 
