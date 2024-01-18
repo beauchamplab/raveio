@@ -12,7 +12,7 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.38</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.39</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,6 +95,10 @@ Class definition for pipeline tools"><!-- mathjax --><script src="https://cdnjs.
 <p>A persistent map, see <code><a href="https://dipterix.org/dipsaus/reference/map.html" class="external-link">rds_map</a></code></p>
 
 
+
+<p>A persistent map, see <code><a href="https://dipterix.org/dipsaus/reference/map.html" class="external-link">rds_map</a></code></p>
+
+
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -156,6 +160,7 @@ signatures of data and commands</p></dd>
 <li><p><a href="#method-PipelineTools-save_data"><code>PipelineTools$save_data()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-load_data"><code>PipelineTools$load_data()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-load_preferences"><code>PipelineTools$load_preferences()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-load_global_preferences"><code>PipelineTools$load_global_preferences()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-clone"><code>PipelineTools$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-PipelineTools-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -592,8 +597,8 @@ from the file extension</p></dd>
 <h3 id="method-load-preferences-">Method <code>load_preferences()</code><a class="anchor" aria-label="anchor" href="#method-load-preferences-"></a></h3>
 <p>load persistent preference settings from the pipeline.
 The preferences should not affect how pipeline is working, hence usually
-stores minor variables such as graphics. Changing preferences will not
-invalidate pipeline cache.</p><div class="section">
+stores minor variables such as graphic options. Changing preferences
+will not invalidate pipeline cache.</p><div class="section">
 <h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">load_preferences</span><span class="op">(</span></span>
 <span>  <span class="va">name</span>,</span>
@@ -628,15 +633,57 @@ is false; turn on for debug use</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-PipelineTools-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-PipelineTools-load_global_preferences"></a><div class="section">
+<h3 id="method-load-global-preferences-">Method <code>load_global_preferences()</code><a class="anchor" aria-label="anchor" href="#method-load-global-preferences-"></a></h3>
+<p>load persistent global preference settings that can be
+accessed across modules, pipelines, and R sessions.
+The preferences should not affect how pipeline is working, hence usually
+stores minor variables such as graphic options. Changing preferences
+will not invalidate pipeline cache. Developers should
+maintain and check the preferences at their own risks.</p><div class="section">
 <h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">load_global_preferences</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .initial_prefs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  .overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-16">Arguments<a class="anchor" aria-label="anchor" href="#arguments-16"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>name</code></dt>
+<dd><p>preference name, must contain only letters, digits,
+underscore, and hyphen, will be coerced to lower case (case-insensitive)</p></dd>
+
+
+<dt><code>..., .initial_prefs</code></dt>
+<dd><p>key-value pairs of initial preference values</p></dd>
+
+
+<dt><code>.overwrite</code></dt>
+<dd><p>whether to overwrite the initial preference values
+if they exist.</p></dd>
+
+
+<dt><code>.verbose</code></dt>
+<dd><p>whether to verbose the preferences to be saved; default
+is false; turn on for debug use</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-PipelineTools-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-17">Arguments<a class="anchor" aria-label="anchor" href="#arguments-17"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
