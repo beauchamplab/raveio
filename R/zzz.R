@@ -797,22 +797,33 @@ install_modules <- function(modules, dependencies = FALSE) {
 #' @examples
 #'
 #' if( interactive() ) {
-#'   preference <- global_preferences(
-#'     name = "my_list",
-#'     item1 = "A"
-#'   )
 #'
-#'   # get items wrapped in tryCatch
-#'   get_my_preference <- function(name, default = NULL) {
-#'     tryCatch({
-#'       preference$get(name, missing_default = default)
-#'     }, error = function(e) {
-#'       default
-#'     })
-#'   }
 #'
-#'   get_my_preference("item1", "missing")
-#'   get_my_preference("item2", "missing")
+#' # high-level method
+#' get_my_preference <- use_global_preferences(
+#'   name = "my_list",
+#'   item1 = "A"
+#' )
+#' get_my_preference("item1", "missing")
+#' get_my_preference("item2", "missing")
+#'
+#' # Low-level implementation
+#' preference <- global_preferences(
+#'   name = "my_list",
+#'   item1 = "A"
+#' )
+#'
+#' # get items wrapped in tryCatch
+#' get_my_preference <- function(name, default = NULL) {
+#'   tryCatch({
+#'     preference$get(name, missing_default = default)
+#'   }, error = function(e) {
+#'     default
+#'   })
+#' }
+#'
+#' get_my_preference("item1", "missing")
+#' get_my_preference("item2", "missing")
 #'
 #' }
 #'
@@ -861,4 +872,21 @@ global_preferences = function(name, ..., .initial_prefs = list(), .overwrite = F
 
   preference$mset(.list = default_vals)
   preference
+}
+
+#' @rdname global_preferences
+#' @export
+use_global_preferences <- function(name, ...) {
+
+  preference <- raveio::global_preferences(
+    name = name,
+    ...
+  )
+  function(key, default = NULL) {
+    tryCatch({
+      preference$get(key, missing_default = default)
+    }, error = function(e) {
+      default
+    })
+  }
 }

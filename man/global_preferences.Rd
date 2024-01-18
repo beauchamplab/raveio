@@ -2,6 +2,7 @@
 % Please edit documentation in R/zzz.R
 \name{global_preferences}
 \alias{global_preferences}
+\alias{use_global_preferences}
 \title{Global preferences for pipelines and modules}
 \usage{
 global_preferences(
@@ -11,6 +12,8 @@ global_preferences(
   .overwrite = FALSE,
   .verbose = FALSE
 )
+
+use_global_preferences(name, ...)
 }
 \arguments{
 \item{name}{preference name, must contain only letters, digits,
@@ -47,22 +50,33 @@ this restriction will be rigidly enforced in the future.
 \examples{
 
 if( interactive() ) {
-  preference <- global_preferences(
-    name = "my_list",
-    item1 = "A"
-  )
 
-  # get items wrapped in tryCatch
-  get_my_preference <- function(name, default = NULL) {
-    tryCatch({
-      preference$get(name, missing_default = default)
-    }, error = function(e) {
-      default
-    })
-  }
 
-  get_my_preference("item1", "missing")
-  get_my_preference("item2", "missing")
+# high-level method
+get_my_preference <- use_global_preferences(
+  name = "my_list",
+  item1 = "A"
+)
+get_my_preference("item1", "missing")
+get_my_preference("item2", "missing")
+
+# Low-level implementation
+preference <- global_preferences(
+  name = "my_list",
+  item1 = "A"
+)
+
+# get items wrapped in tryCatch
+get_my_preference <- function(name, default = NULL) {
+  tryCatch({
+    preference$get(name, missing_default = default)
+  }, error = function(e) {
+    default
+  })
+}
+
+get_my_preference("item1", "missing")
+get_my_preference("item2", "missing")
 
 }
 
