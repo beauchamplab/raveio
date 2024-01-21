@@ -113,7 +113,7 @@ pipeline_run <- function(
             }
           },
           error = function( e ) {
-            stop(sanitize_target_error(e))
+            stop(ns$sanitize_target_error(e))
           }
         )
       })
