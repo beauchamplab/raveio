@@ -358,7 +358,10 @@ PipelineTools <- R6::R6Class(
         asNamespace("htmlwidgets")
         print(widget)
       }, error = function(e) {
-        do.call(pipeline_visualize, args)
+        re <- do.call(pipeline_visualize, args)
+        if(inherits(re, "htmlwidget")) {
+          print(re)
+        }
       })
       return(invisible())
     },

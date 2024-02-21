@@ -489,7 +489,7 @@ pipeline_dependency_graph <- function(pipeline_path, targets_only = TRUE, shortc
       target_script <- attr(pipeline_path, "target_script")
       # load & combine pipelines
       target <- raveio$load_targets(target_script)
-      target <- targets$tar_as_pipeline(target)
+      target <- targets$pipeline_init(target)
 
       store <- targets$tar_config_get("store")
       names <- targets$pipeline_get_names(target)
