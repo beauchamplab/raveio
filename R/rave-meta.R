@@ -52,7 +52,8 @@ save_meta2 <- function(data, meta_type, project_name, subject_code){
 
 load_electrodes_csv <- function(file) {
   tbl <- safe_read_csv(file)
-  if(!'Label' %in% names(tbl)){
+  tbl_names <- names(tbl)
+  if(!'Label' %in% tbl_names){
     tbl$Label <- NA
   }
   na_labels <- is.na(tbl$Label)
@@ -60,7 +61,11 @@ load_electrodes_csv <- function(file) {
     tbl$Label[na_labels] <- paste0('Unlabeled', seq_len(sum(na_labels)))
   }
 
-  if(!'LocationType' %in% names(tbl)){
+  if(!"LabelPrefix" %in% tbl_names) {
+    tbl$LabelPrefix <- gsub("[ 0-9_-]+$", "", tbl$Label)
+  }
+
+  if(!'LocationType' %in% tbl_names){
     tbl$LocationType <- "iEEG"
   }
   if(any(!tbl$LocationType %in% c(LOCATION_TYPES, ""))){
