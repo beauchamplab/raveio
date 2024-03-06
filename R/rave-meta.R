@@ -28,6 +28,7 @@ save_meta2 <- function(data, meta_type, project_name, subject_code){
     if(!"LocationType" %in% names(data)){
       data$LocationType <- "iEEG"
     }
+    data$SubjectCode <- subject_code
 
     safe_write_csv(data, file = file.path(meta_dir, 'electrodes.csv'), row.names = FALSE)
   }else if(meta_type == 'time_points'){
