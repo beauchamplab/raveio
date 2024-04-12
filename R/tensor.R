@@ -1006,7 +1006,7 @@ dimnames.Tensor <- function(x){
   #                  varnames = c('Trial', 'Frequency', 'Time', 'Electrode'))
 }
 
-
+#' @exportS3Method raveio::content
 content.Tensor <- function(obj, ...){
   obj$get_data()
 }
