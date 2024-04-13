@@ -13,7 +13,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
@@ -23,6 +23,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install brew packages on OSX
+        if: runner.os == 'macOS'
+        run: |
+          brew install fftw glpk pkgconfig hdf5
 
       - uses: r-lib/actions/setup-pandoc@v2
 
