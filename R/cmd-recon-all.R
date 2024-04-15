@@ -116,32 +116,54 @@ cmd_run_recon_all <- function(
   # cmd_run_recon_all(subject = "devel/YCQ", mri_path = "/Volumes/PennRAID/Dropbox (PENN Neurotrauma)/BeauchampServe/rave_data/raw/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii", args = "-autorecon1", verbose = TRUE)
 }
 
-#' @rdname cmd-external
+#' @rdname yael_preprocess
+#' @param command_path \code{'FreeSurfer'} path, if the default automatic
+#' detection fails
+#' @param dry_run whether to dry-run the script and check if error exists before
+#' actually execute the scripts.
 #' @export
-cmd_run_yael_preprocess_t1 <- function(
-    subject, mri_path, work_path = NULL,
-    overwrite = FALSE, command_path = NULL,
-    dry_run = FALSE, verbose = dry_run) {
+cmd_run_yael_preprocess <- function(
+    subject_code,
+    t1w_path,
+    ct_path = NULL,
+    t2w_path = NULL,
+    fgatir_path = NULL,
+    preopct_path = NULL,
+    flair_path = NULL,
+    t1w_contrast_path = NULL,
+    register_reversed = FALSE,
+    command_path = NULL,
+    dry_run = FALSE, verbose = TRUE) {
   # DIPSAUS DEBUG START
-  # subject <- as_rave_subject("devel/mayo", strict = FALSE)
-  # mri_path <- "~/rave_data/raw_dir/mayo/rave-imaging/coregistration/T1_defaced.nii.gz"
-  # command_path = NULL
-  # overwrite <- FALSE
-  # list2env(list(subject = "devel/mayo",
-  #               overwrite = FALSE, dry_run = TRUE, verbose = FALSE,
-  #               command_path = NULL), globalenv())
+  # subject_code = "testtest3"
+  # t1w_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-preop_desc-preproc_acq-ax_T1w.nii"
+  # ct_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-postop_desc-preproc_CT.nii"
+  # t2w_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-preop_desc-preproc_acq-iso_T2w.nii"
+  # fgatir_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-preop_desc-preproc_acq-ax_FGATIR.nii"
+  # preopct_path = NULL
+  # verbose <- TRUE
+  # register_reversed = FALSE
+  # flair_path=NULL;t1w_contrast_path=NULL
 
-  if(missing(mri_path) || length(mri_path) != 1 || is.na(mri_path) || !file.exists(mri_path) ||
-     dir.exists(mri_path)) {
-    stop("`cmd_run_recon_all`: `mri_path` is not a valid path.")
+  if(missing(t1w_path) || length(t1w_path) != 1 || is.na(t1w_path) || !file.exists(t1w_path) ||
+     dir.exists(t1w_path)) {
+    stop("`cmd_run_yael_preprocess`: `t1w_path` is not a valid path.")
   }
-  mri_path <- normalizePath(mri_path, winslash = "/")
+  t1w_path <- normalizePath(t1w_path, winslash = "/", mustWork = TRUE)
+  register_reversed <- isTRUE(as.logical(register_reversed))
 
-  if(!grepl("\\.nii($|\\.gz$)", mri_path, ignore.case = TRUE)) {
-    stop("`cmd_run_recon_all`: `mri_path` is not a valid NifTi file.")
+  if(!grepl("\\.nii($|\\.gz$)", t1w_path, ignore.case = TRUE)) {
+    stop("`cmd_run_yael_preprocess`: `t1w_path` is not a valid NifTi file.")
   }
 
-  subject <- restore_subject_instance(subject, strict = FALSE)
+  if(length(ct_path)) { ct_path <- normalizePath(ct_path, winslash = "/", mustWork = TRUE) } else { ct_path <- "" }
+  if(length(t2w_path)) { t2w_path <- normalizePath(t2w_path, winslash = "/", mustWork = TRUE) } else { t2w_path <- "" }
+  if(length(fgatir_path)) { fgatir_path <- normalizePath(fgatir_path, winslash = "/", mustWork = TRUE) } else { fgatir_path <- "" }
+  if(length(preopct_path)) { preopct_path <- normalizePath(preopct_path, winslash = "/", mustWork = TRUE) } else { preopct_path <- "" }
+  if(length(flair_path)) { flair_path <- normalizePath(flair_path, winslash = "/", mustWork = TRUE) } else { flair_path <- "" }
+  if(length(t1w_contrast_path)) { t1w_contrast_path <- normalizePath(t1w_contrast_path, winslash = "/", mustWork = TRUE) } else { t1w_contrast_path <- "" }
+
+  subject <- RAVESubject$new(project_name = "YAEL", subject_code = subject_code, strict = FALSE)
 
   default_fs_path <- cmd_freesurfer_home(error_on_missing = FALSE)
   freesurfer_home <- tryCatch({
@@ -171,13 +193,8 @@ cmd_run_yael_preprocess_t1 <- function(
   log_file <- strftime(Sys.time(), "log-yael-preprocess-%y%m%d-%H%M%S.log")
 
   # Always use a temporary working path since the target directory might contain spaces
-  if(length(work_path) != 1 || is.na(work_path) || !dir.exists(work_path)) {
-    work_path_symlink <- file.path(R_user_dir("raveio", which = "cache"), "FreeSurfer",
-                                   subject$subject_code, fsep = "/")
-  } else {
-    work_path_symlink <- file.path(work_path, subject$subject_code, fsep = "/")
-  }
-
+  work_path_symlink <- file.path(R_user_dir("raveio", which = "cache"), "FreeSurfer",
+                                 subject$subject_code, fsep = "/")
   work_path_actual <- subject$preprocess_settings$raw_path
 
   template <- c(readLines(system.file('shell-templates/yael-preprocess.sh', package = "raveio")), "")
@@ -197,7 +214,7 @@ cmd_run_yael_preprocess_t1 <- function(
     dry_run = dry_run,
     freesurfer_home = freesurfer_home,
     log_file = file.path(log_path, log_file, fsep = "/"),
-    src_path = mri_path,
+    src_path = t1w_path,
     dest_path = file.path(work_path_actual, "rave-imaging", "fs", fsep = "/"),
     execute = execute,
     command = "bash"

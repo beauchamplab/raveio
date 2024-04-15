@@ -7,14 +7,14 @@
 # template_path = "/Users/dipterix/rave_data/others/three_brain/templates/mni_icbm152_nlin_asym_09b/T1.nii.gz"
 # self <- YAELProcess$new(subject_code)
 # private <- self$.__enclos_env__$private
-# self$set_input_image(mr_path, "T1w")
-# self$set_input_image(ct_path, "CT")
 # verbose=T
 # native_type = 'T1w'
 # template_name = c("mni_icbm152_nlin_asym_09a"); template_name2 <- camel_template_name(template_name)
 # native_ras = rnorm(90)
 NULL
 
+# self$set_input_image(mr_path, "T1w")
+# self$set_input_image(ct_path, "CT")
 
 # dipsaus::rs_exec({
 #   self <- raveio:::YAELProcess$new(subject_code)
@@ -85,8 +85,9 @@ YAELProcess <- R6::R6Class(
     #' how should this error be reported; choices are \code{'warning'} (default),
     #' \code{'error'} (throw error and abort), or \code{'ignore'}.
     #' @returns whether the image has been set (or replaced)
-    set_input_image = function(path, type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
-                         overwrite = FALSE, on_error = c("warning", "error", "ignore") ) {
+    set_input_image = function(
+      path, type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+      overwrite = FALSE, on_error = c("warning", "error", "ignore") ) {
       path <- normalize_path(path, must_work = TRUE)
       type <- match.arg(type)
       on_error <- match.arg(on_error)
@@ -94,6 +95,14 @@ YAELProcess <- R6::R6Class(
       dir_create2(self$work_path)
       tryCatch({
         yael_py$set_image(path = path, type = type, overwrite = isTRUE(overwrite))
+        if( type == "T1w" ) {
+          path <- self$get_input_image("T1w")
+          if(length(path)) {
+            mri_dir <- file.path(self$work_path, "inputs", "MRI")
+            dir_create2(mri_dir)
+            file.copy(path, to = file.path(mri_dir, "MRI_RAW.nii.gz"), overwrite = TRUE)
+          }
+        }
         TRUE
       }, error = function(e) {
         switch(
@@ -109,7 +118,7 @@ YAELProcess <- R6::R6Class(
     #' @description Get image path
     #' @param type type of the image
     #' @returns Absolute path if the image
-    get_input_image = function(type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD")) {
+    get_input_image = function(type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR")) {
       type <- match.arg(type)
       yael_py <- private$.impl()
       call_rpyants("to_r", yael_py$input_image_path(type))
@@ -131,12 +140,32 @@ YAELProcess <- R6::R6Class(
     #' true, then the \code{'T1'} 'MRI' will become the moving image
     #' @param verbose whether to print out the process; default is true
     #' @returns Nothing
-    register_to_T1w = function(image_type = c("CT", "T2w", "FLAIR", "DWI", "BOLD"), reverse = FALSE, verbose = TRUE) {
+    register_to_T1w = function(image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), reverse = FALSE, verbose = TRUE) {
       image_type <- match.arg(image_type)
       reverse <- isTRUE(reverse)
       verbose <- isTRUE(verbose)
       yael_py <- private$.impl()
       yael_py$register_to_T1w(type = image_type, reverse = reverse, verbose = verbose)
+      if( image_type == "CT" ) {
+        # write down extras for YAEL localization module
+        mapping <- self$get_native_mapping(
+          image_type = "CT", relative = FALSE)
+        file.copy(
+          from = mapping$CT_path,
+          to = file.path(mapping$work_path, "coregistration", "CT_RAW.nii.gz"),
+          overwrite = TRUE
+        )
+        file.copy(
+          from = mapping$T1w_path,
+          to = file.path(mapping$work_path, "coregistration", "MRI_reference.nii.gz"),
+          overwrite = TRUE
+        )
+        file.copy(
+          from = mapping$mappings$vox2ras,
+          to = file.path(mapping$work_path, "coregistration", "CT_IJK_to_MR_RAS.txt"),
+          overwrite = TRUE
+        )
+      }
       invisible()
     },
 
@@ -145,10 +174,10 @@ YAELProcess <- R6::R6Class(
     #' @param relative whether to use relative path (to the \code{work_path} field)
     #' @returns A list of moving and fixing images, with rigid transformations
     #' from different formats.
-    get_native_mapping = function(image_type = c("CT", "T2w", "FLAIR", "DWI", "BOLD"), relative = FALSE) {
+    get_native_mapping = function(image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), relative = FALSE) {
       image_type <- match.arg(image_type)
       yael_py <- private$.impl()
-      return( call_rpyants("to_r", yael_py$get_native_mappings(image_type, relative = isTRUE(relative))) )
+      return( call_rpyants("to_r", yael_py$get_native_mapping(image_type, relative = isTRUE(relative))) )
     },
 
     #' @description Normalize native brain to \code{'MNI152'} template
@@ -162,7 +191,7 @@ YAELProcess <- R6::R6Class(
                  template_name = c(
                    "mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"
                  ),
-                 native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+                 native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
                  verbose = TRUE){
       native_type <- match.arg(native_type)
       template_name <- match.arg(template_name)
@@ -172,14 +201,15 @@ YAELProcess <- R6::R6Class(
       template_folder <- call_rpyants("ensure_template", template_name)
       template_path <- normalize_path(file.path(template_folder, "T1.nii.gz"))
       template_mask <- normalize_path(file.path(template_folder, "T1_brainmask.nii.gz"))
+      if(!file.exists(template_mask)) { template_mask <- NULL }
       verbose <- isTRUE(verbose)
       yael_py <- private$.impl()
       yael_py$map_to_template(
         template_path = template_path,
         template_name = template_name2,
         native_type = native_type,
-        template_mask = call_rpyants("as_ANTsImage", template_mask, strict = FALSE),
-        native_mask = NULL,
+        template_mask_path = template_mask,
+        native_mask_path = NULL,
         verbose = verbose
       )
       return (invisible(
@@ -199,7 +229,7 @@ YAELProcess <- R6::R6Class(
     #' transform files (usually two \code{'Affine'} with one displacement field)
     get_template_mapping = function(
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"), relative = FALSE
+      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), relative = FALSE
     ) {
       template_name <- match.arg(template_name)
       template_name2 <- camel_template_name(template_name)
@@ -227,7 +257,7 @@ YAELProcess <- R6::R6Class(
     transform_image_from_template = function(
       template_roi_path,
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
       interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline", "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc", "lanczosWindowedSinc", "genericLabel"), verbose = TRUE
     ) {
       stopifnot(file.exists(template_roi_path))
@@ -324,7 +354,7 @@ YAELProcess <- R6::R6Class(
     #' invalid rows will be filled with \code{NA})
     transform_points_to_template = function(
       native_ras, template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"), verbose = TRUE
+      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), verbose = TRUE
     ) {
       template_name <- match.arg(template_name)
       template_name2 <- camel_template_name(template_name)
@@ -367,7 +397,7 @@ YAELProcess <- R6::R6Class(
     #' invalid rows will be filled with \code{NA})
     transform_points_from_template = function(
       template_ras, template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"), verbose = TRUE
+      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), verbose = TRUE
     ) {
       template_name <- match.arg(template_name)
       template_name2 <- camel_template_name(template_name)
@@ -402,107 +432,160 @@ YAELProcess <- R6::R6Class(
     #' @description
     #' Create a reconstruction folder (as an alternative option) that
     #' is generated from template brain to facilitate the '3D' viewer.
-    #' The surface is not accurate.
+    #' Please make sure method \code{map_to_template} is called before using
+    #' this method (or the program will fail)
     #' @param template_name template to use for mapping
     #' @param add_surfaces whether to create surfaces that is morphed from
     #' template to local; default is \code{TRUE}. Please enable this option
     #' only if the cortical surfaces are not critical (for example,
     #' you are studying the deep brain structures). Always use
     #' \code{'FreeSurfer'} if cortical information is used.
-    #' @param overwrite whether to overwrite existing files; default is yes
     construct_ants_folder_from_template = function(
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      add_surfaces = TRUE, overwrite = TRUE
+      add_surfaces = TRUE
     ) {
       template_name <- match.arg(template_name)
+      template_path <- call_rpyants("ensure_template", name = template_name)
       ants_dir <- file.path(self$work_path, "ants")
       mri_dir <- file.path(ants_dir, "mri")
       surf_dir <- file.path(ants_dir, "surf")
 
-      if(dir.exists(ants_dir) && !isTRUE(overwrite)) {
-        if(is.na(overwrite)) {
-          warning("The `ants` folder already exists. Existing files will NOT be overwritten. Please set `overwrite=TRUE` if you would like to overwrite them.")
-        } else {
-          stop("The following folder already exists. Please set `overwrite=TRUE` if you would like to overwrite it.")
-        }
-        overwrite <- FALSE
+      mr_path <- self$get_input_image("T1w")
+      if(length(mr_path) != 1 || is.na(mr_path) || !file.exists(mr_path)) {
+        stop("T1w image is not set. Please set the input image via\n\tself$set_input_image('/path/to/T1-weighted/MRI.nii.gz', type = 'T1w')")
       }
 
-      # Raw MRI image
-      mr_dst <- file.path(mri_dir, "rave_slices.nii.gz")
-      if(overwrite || !file.exists(mr_dst)) {
-        mr_path <- self$get_input_image("T1w")
-        if(length(mr_path) != 1 || is.na(mr_path) || !file.exists(mr_path)) {
-          stop("T1w image is not set. Please set the input image via\n\tself$set_input_image('/path/to/T1-weighted/MRI.nii.gz', type = 'T1w')")
-        }
-        dir_create2(mri_dir)
-        file.copy(mr_path, mr_dst, overwrite = TRUE)
-      }
+      dir_create2(mri_dir)
 
-      t1_mgz_path <- file.path(mri_dir, "T1.mgz")
-      if(overwrite || !file.exists(t1_mgz_path)) {
-        t1_img <- threeBrain::read_volume(mr_dst)
-        freesurferformats::write.fs.mgh(
-          filepath = file.path(mri_dir, "T1.mgz"),
-          data = t1_img$data,
-          vox2ras_matrix = t1_img$Norig
+      # T1.mgz
+      t1_img <- threeBrain::read_volume(mr_path)
+      freesurferformats::write.fs.mgh(
+        filepath = file.path(mri_dir, "T1.mgz"),
+        data = t1_img$data,
+        vox2ras_matrix = t1_img$Norig
+      )
+      rm(t1_img)
+
+      # brainmask
+      brainmask_dst <- file.path(mri_dir, "brainmask.nii.gz")
+      template_mask <- file.path(template_path, "T1_brainmask.nii.gz")
+      if(file.exists(template_mask)) {
+        mask <- self$transform_image_from_template(
+          template_roi_path = template_mask,
+          template_name = template_name,
+          native_type = "T1w",
+          interpolator = "nearestNeighbor",
+          verbose = FALSE
         )
-        rm(t1_img)
+        mask$to_file(normalize_path(brainmask_dst, must_work = FALSE))
+      } else {
+        mask <- NULL
       }
+
+      # intensity normalization & skull strip
+      nu <- rpyANTs::correct_intensity(image = mr_path, mask = mask)
+      nu$to_file(normalize_path(file.path(mri_dir, "nu.nii.gz"), must_work = FALSE))
+
+      # skull-strip
+      if(length(mask)) {
+        skullstrip <- nu * mask
+        # normalize to 0-255
+        arr <- skullstrip[]
+        arr[arr < 0] <- 0
+        skullstrip <- skullstrip$astype("uint8")
+        skullstrip[] <- floor(arr / max(arr) * 255)
+        skullstrip$to_file(normalize_path(file.path(mri_dir, "brain.finalsurfs.nii.gz"),
+                                          must_work = FALSE))
+      } else {
+        nu$to_file(normalize_path(file.path(mri_dir, "brain.finalsurfs.nii.gz"), must_work = FALSE))
+      }
+
+      # write down transforms
+      suppressWarnings({
+
+        tryCatch({
+          mapping <- self$get_template_mapping(template_name = template_name,
+                                               native_type = "T1w",
+                                               relative = FALSE)
+          n2t <- mapping$native_to_template$transformlist
+          affine_path <- n2t[[length(n2t)]]
+          if(length(affine_path) && file.exists(affine_path)) {
+            # extract the affine transform (native to MNI152)
+            transform <- rpyANTs::as_ANTsTransform(affine_path)[]
+            scan_ras_to_mni305 <- solve(MNI305_to_MNI152) %*% transform
+            transform_dir <- dir_create2(file.path(mri_dir, "transforms"))
+
+            writeLines(
+              con = file.path(transform_dir, "talairach.xfm"),
+              sep = "\n",
+              c(
+                "MNI Transform File",
+                "% avi2talxfm", "",
+                "Transform_Type = Linear;",
+                "Linear_Transform = ",
+                paste(sprintf("%.6f", scan_ras_to_mni305[1, ]), collapse = " "),
+                paste(sprintf("%.6f", scan_ras_to_mni305[2, ]), collapse = " "),
+                sprintf("%s;", paste(sprintf("%.6f", scan_ras_to_mni305[3, ]), collapse = " "))
+              )
+            )
+          }
+        }, error = function(e) {
+        })
+
+      })
+
       native_brain <- threeBrain::threeBrain(path = ants_dir, subject_code = self$subject_code)
 
       # surfaces
       lh_pial_dst <- file.path(surf_dir, "lh.pial.T1")
       rh_pial_dst <- file.path(surf_dir, "rh.pial.T1")
       if( add_surfaces ) {
-        if(overwrite || !file.exists(lh_pial_dst) || !file.exists(rh_pial_dst)) {
-          template_path <- call_rpyants("ensure_template", name = template_name)
-          template_brain <- threeBrain::threeBrain(path = file.path(template_path, "fs"), subject_code = template_name)
-          if(!is.null(template_brain) && length(template_brain$surfaces$pial)) {
+        template_brain <- threeBrain::threeBrain(path = file.path(template_path, "fs"),
+                                                 subject_code = template_name)
+        if(!is.null(template_brain) && length(template_brain$surfaces$pial)) {
 
-            # Left hemisphere
-            surf_file <- file.path(template_brain$base_path, "surf", c("lh.pial.T1", "lh.pial"))
-            surf_file <- surf_file[file.exists(surf_file)]
-            if(length(surf_file)) {
-              surf_file <- surf_file[[1]]
-              surface <- threeBrain::read.fs.surface(surf_file)
-              # apply transform template tkr -> scanner
-              scan_ras <- ( template_brain$Norig %*% solve(template_brain$Torig) ) %*% t(cbind(surface$vertices, 1))
-              # apply transforms template scanner to native scanner
-              native_ras <- self$transform_points_from_template(
-                template_ras = t(scan_ras[seq_len(3), , drop = FALSE]),
-                template_name = template_name,
-                native_type = "T1w",
-                verbose = FALSE
-              )
-              # native scanner to native tkr
-              native_ras <- ( native_brain$Torig %*% solve(native_brain$Norig) ) %*% t(cbind(native_ras, 1))
-              dir_create2(surf_dir)
-              threeBrain::write.fs.surface(filepath = lh_pial_dst, vertex_coords = t(native_ras[seq_len(3), , drop = FALSE]), faces = surface$faces)
-            }
-
-            # Right hemisphere
-            surf_file <- file.path(template_brain$base_path, "surf", c("rh.pial.T1", "rh.pial"))
-            surf_file <- surf_file[file.exists(surf_file)]
-            if(length(surf_file)) {
-              surf_file <- surf_file[[1]]
-              surface <- threeBrain::read.fs.surface(surf_file)
-              # apply transform template tkr -> scanner
-              scan_ras <- ( template_brain$Norig %*% solve(template_brain$Torig) ) %*% t(cbind(surface$vertices, 1))
-              # apply transforms template scanner to native scanner
-              native_ras <- self$transform_points_from_template(
-                template_ras = t(scan_ras[seq_len(3), , drop = FALSE]),
-                template_name = template_name,
-                native_type = "T1w",
-                verbose = FALSE
-              )
-              # native scanner to native tkr
-              native_ras <- ( native_brain$Torig %*% solve(native_brain$Norig) ) %*% t(cbind(native_ras, 1))
-              dir_create2(surf_dir)
-              threeBrain::write.fs.surface(filepath = rh_pial_dst, vertex_coords = t(native_ras[seq_len(3), , drop = FALSE]), faces = surface$faces)
-            }
-
+          # Left hemisphere
+          surf_file <- file.path(template_brain$base_path, "surf", c("lh.pial.T1", "lh.pial"))
+          surf_file <- surf_file[file.exists(surf_file)]
+          if(length(surf_file)) {
+            surf_file <- surf_file[[1]]
+            surface <- threeBrain::read.fs.surface(surf_file)
+            # apply transform template tkr -> scanner
+            scan_ras <- ( template_brain$Norig %*% solve(template_brain$Torig) ) %*% t(cbind(surface$vertices, 1))
+            # apply transforms template scanner to native scanner
+            native_ras <- self$transform_points_from_template(
+              template_ras = t(scan_ras[seq_len(3), , drop = FALSE]),
+              template_name = template_name,
+              native_type = "T1w",
+              verbose = FALSE
+            )
+            # native scanner to native tkr
+            native_ras <- ( native_brain$Torig %*% solve(native_brain$Norig) ) %*% t(cbind(native_ras, 1))
+            dir_create2(surf_dir)
+            threeBrain::write.fs.surface(filepath = lh_pial_dst, vertex_coords = t(native_ras[seq_len(3), , drop = FALSE]), faces = surface$faces)
           }
+
+          # Right hemisphere
+          surf_file <- file.path(template_brain$base_path, "surf", c("rh.pial.T1", "rh.pial"))
+          surf_file <- surf_file[file.exists(surf_file)]
+          if(length(surf_file)) {
+            surf_file <- surf_file[[1]]
+            surface <- threeBrain::read.fs.surface(surf_file)
+            # apply transform template tkr -> scanner
+            scan_ras <- ( template_brain$Norig %*% solve(template_brain$Torig) ) %*% t(cbind(surface$vertices, 1))
+            # apply transforms template scanner to native scanner
+            native_ras <- self$transform_points_from_template(
+              template_ras = t(scan_ras[seq_len(3), , drop = FALSE]),
+              template_name = template_name,
+              native_type = "T1w",
+              verbose = FALSE
+            )
+            # native scanner to native tkr
+            native_ras <- ( native_brain$Torig %*% solve(native_brain$Norig) ) %*% t(cbind(native_ras, 1))
+            dir_create2(surf_dir)
+            threeBrain::write.fs.surface(filepath = rh_pial_dst, vertex_coords = t(native_ras[seq_len(3), , drop = FALSE]), faces = surface$faces)
+          }
+
         }
 
         writeLines(con = file.path(ants_dir, "README.txt"), text = c(

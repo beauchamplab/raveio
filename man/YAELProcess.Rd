@@ -89,7 +89,7 @@ Set the raw input for different image types
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$set_input_image(
   path,
-  type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+  type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   overwrite = FALSE,
   on_error = c("warning", "error", "ignore")
 )}\if{html}{\out{</div>}}
@@ -119,7 +119,7 @@ how should this error be reported; choices are \code{'warning'} (default),
 Get image path
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_input_image(
-  type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD")
+  type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR")
 )}\if{html}{\out{</div>}}
 }
 
@@ -157,7 +157,7 @@ Get 'RAVE' subject instance
 Register other images to 'T1' weighted 'MRI'
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$register_to_T1w(
-  image_type = c("CT", "T2w", "FLAIR", "DWI", "BOLD"),
+  image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   reverse = FALSE,
   verbose = TRUE
 )}\if{html}{\out{</div>}}
@@ -185,7 +185,7 @@ true, then the \code{'T1'} 'MRI' will become the moving image}
 Get the mapping configurations used by \code{register_to_T1w}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_native_mapping(
-  image_type = c("CT", "T2w", "FLAIR", "DWI", "BOLD"),
+  image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   relative = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -209,7 +209,7 @@ Normalize native brain to \code{'MNI152'} template
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$map_to_template(
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   verbose = TRUE
 )}\if{html}{\out{</div>}}
 }
@@ -237,7 +237,7 @@ Get configurations used for normalization
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_template_mapping(
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   relative = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -266,7 +266,7 @@ on template to native space
   template_roi_path,
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline",
     "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc",
     "lanczosWindowedSinc", "genericLabel"),
@@ -338,7 +338,7 @@ Transform points from native images to template
   native_ras,
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   verbose = TRUE
 )}\if{html}{\out{</div>}}
 }
@@ -369,7 +369,7 @@ Transform points from template images to native
   template_ras,
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "DWI", "BOLD"),
+  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
   verbose = TRUE
 )}\if{html}{\out{</div>}}
 }
@@ -396,13 +396,13 @@ coordinate system.}
 \subsection{Method \code{construct_ants_folder_from_template()}}{
 Create a reconstruction folder (as an alternative option) that
 is generated from template brain to facilitate the '3D' viewer.
-The surface is not accurate.
+Please make sure method \code{map_to_template} is called before using
+this method (or the program will fail)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$construct_ants_folder_from_template(
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  add_surfaces = TRUE,
-  overwrite = TRUE
+  add_surfaces = TRUE
 )}\if{html}{\out{</div>}}
 }
 
@@ -416,8 +416,6 @@ template to local; default is \code{TRUE}. Please enable this option
 only if the cortical surfaces are not critical (for example,
 you are studying the deep brain structures). Always use
 \code{'FreeSurfer'} if cortical information is used.}
-
-\item{\code{overwrite}}{whether to overwrite existing files; default is yes}
 }
 \if{html}{\out{</div>}}
 }

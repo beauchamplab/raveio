@@ -23,21 +23,31 @@ r_script="{{ raveio:::rscript_path(winslash = '/') }}"
 # directories contain spaces
 wdir_actual="{{ work_path_actual }}"
 wdir_fs="{{ work_path_symlink }}"
-mri_path="{{ mri_path }}"
-input_name="{{ gsub('.*\\.(nii|nii\\.gz)$', 'MRI.\\1', mri_path) }}"
-mri_ext="{{ ifelse(grepl('gz$', mri_path, ignore.case = TRUE), '.nii.gz', '.nii') }}"
+
+# Stage 1: import images
+scode="{{ subject_code }}"
+t1w_path="{{ t1w_path }}"
+ct_path="{{ ct_path }}"
+t2w_path="{{ t2w_path }}"
+fgatir_path="{{ fgatir_path }}"
+preopct_path="{{ preopct_path }}"
+flair_path="{{ flair_path }}"
+t1w_contrast_path="{{ t1w_contrast_path }}"
+register_reversed="{{ register_reversed }}"
+
+# Coregistration + normalization
+$r_script -e "raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=c('mni_icbm152_nlin_asym_09a','mni_icbm152_nlin_asym_09b','mni_icbm152_nlin_asym_09c'), normalize_back='mni_icbm152_nlin_asym_09b')"
+
+# Prepare for the FreeSurfer
+mri_path="$wdir_actual/rave-imaging/inputs/MRI/MRI_RAW.nii.gz"
 derivative_path="$wdir_actual/rave-imaging/derivative"
-mri_backup="$wdir_actual/rave-imaging/derivative/MRI_RAW$mri_ext"
+mri_backup="$wdir_actual/rave-imaging/derivative/MRI_RAW.nii.gz"
 
 # Make sure the actual working directory exists
-fresh_start={{ ifelse(overwrite, 1, 0) }}
-if [[ "$fresh_start" -eq 1 && -d "$wdir_actual/rave-imaging/fs" ]]; then
+if [[ -d "$wdir_actual/rave-imaging/fs" ]]; then
   rm -r "$wdir_actual/rave-imaging/fs"
 fi
 mkdir -p "$wdir_actual/rave-imaging/derivative"
-
-# Map T1 to templates
-$r_script -e "rpyANTs::t1_preprocess(t1_path = \"$mri_path\", templates = 'mni_icbm152_nlin_asym_09a', work_path = \"$wdir_actual/rave-imaging\", verbose = TRUE)"
 
 # Back up original MRI file to derivative folder
 cp -f "$mri_path" "$mri_backup"
@@ -48,12 +58,12 @@ profile: YAEL T1 Preprocessing
 work_path: \"$wdir_actual/rave-imaging\"
 timestamp: \"$timestamp\"
 command:
-  execute: \"ants+recon-all\"
+  execute: \"YAEL+ants+recon-all\"
   arguments: \"-all\"
 input_image:
   type: nifti
   path: \"$mri_path\"
-  backup: ./derivative/MRI_RAW$mri_ext
+  backup: ./derivative/MRI_RAW.nii.gz
   comment: original MRI image file
 outputs:
   fs_folder:
@@ -119,20 +129,20 @@ else
   recon-all -sd "$SUBJECTS_DIR" -sid fs -i "$wdir_fs/$input_name" -all | tee -a "$log_file"
 fi
 
-# Copy raw MRI to FreeSurfer folder so 3D viewer can recognize it
-cp -f "$mri_path" "$SUBJECTS_DIR/fs/mri/rave_slices$mri_ext"
-
-# Convert T1.mgz to T1.nii so users can choose to use T1.nii to coregister
-mri_convert --in_type mgz --out_type nii "$SUBJECTS_DIR/fs/mri/T1.mgz" "$SUBJECTS_DIR/fs/mri/T1.nii"
-
-cp -f "$SUBJECTS_DIR/fs/mri/T1.nii" "$derivative_path/T1.nii"
-
-# Generate transform matrices
-mri_info --vox2ras "$derivative_path/T1.nii" > "$derivative_path/transform-Norig.tsv"
-mri_info --vox2ras-tkr "$derivative_path/T1.nii" > "$derivative_path/transform-Torig.tsv"
-
 # Removing temporary fs root
 rm -r "$wdir_fs"
+
+# Copy so 3D viewer can recognize it
+cp -f "$wdir_actual/rave-imaging/ants/mri/brain.finalsurfs.nii.gz" "$wdir_actual/rave-imaging/fs/mri/rave_slices.nii.gz"
+
+# # Convert T1.mgz to T1.nii so users can choose to use T1.nii to coregister
+# mri_convert --in_type mgz --out_type nii "$SUBJECTS_DIR/fs/mri/T1.mgz" "$SUBJECTS_DIR/fs/mri/T1.nii"
+#
+# cp -f "$SUBJECTS_DIR/fs/mri/T1.nii" "$derivative_path/T1.nii"
+#
+# Generate transform matrices
+mri_info --vox2ras "$wdir_actual/rave-imaging/fs/mri/T1.mgz" > "$derivative_path/transform-Norig.tsv"
+mri_info --vox2ras-tkr "$wdir_actual/rave-imaging/fs/mri/T1.mgz" > "$derivative_path/transform-Torig.tsv"
 
 echo "Done." | tee -a "$log_file"
 

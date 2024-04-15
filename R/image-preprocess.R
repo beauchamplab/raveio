@@ -1,509 +1,264 @@
-#' @name yael-image-processing
-#' @title 'YAEL' imaging processing
+#' Process brain images for \code{'YAEL'}
 #' @description
-#' For preliminary process, aligns 'T1' to template image, performs 'FreeSurfer'
-#' reconstruction (if supported), register 'MRI' to 'CT'; for post-process,
-#' calculate the electrode coordinates in template coordinate system, and
-#' map atlases or 'ROI' to native brain.
-#' @param subject_code 'RAVE' subject ID or subject code (default project will
-#' be \code{'YAEL'})
-#' @param t1_path path to 'T1' image
-#' @param ct_path path to 'CT' image
-#' @param templates template image to align 'T1'; currently supports
-#' \code{'mni_icbm152_nlin_asym_09a'} and \code{'mni_icbm152_nlin_asym_09b'}
-#' @param freesurfer whether to run 'FreeSurfer' command, default is
-#' automatically determined; will enable on 'Linux' and 'OSX' and when the
-#' image directory is empty, and disable on 'Windows' or the 'FreeSurfer' folder
-#' has been previously generated.
-#' @param verbose whether to verbose the progress; default is true
-#' @param launch_rave whether to launch 'RAVE' after process
-#' @param wait_recon whether to wait for 'FreeSurfer' reconstruction to finish
-#' before launching 'RAVE'
-#' @param roi_folder 'ROI' or atlas folder in template
-#' @param parallel whether to run registration and 'T1' processing at the same
-#' time; default is false. Turn it on to save time, but only available when
-#' running in 'RStudio'
-#' @returns \code{yael_preprocess_t1} and \code{yael_preprocess} returns 'bash'
-#' command if 'FreeSurfer' is not available, or launches 'FreeSurfer' in the
-#' background if available.
+#' Aligns \code{'T1w'} with other image types; normalizes \code{'T1w'}
+#' 'MRI' to 'MNI152' templates via symmetric non-linear morphs. Create brain
+#' custom atlases from templates.
+#' @param subject_code 'RAVE' subject code
+#' @param t1w_path (required) 'T1' weighted 'MRI' path
+#' @param ct_path (optional in general but mandatory for electrode localization)
+#' post-surgery 'CT' path
+#' @param t1w_contrast_path (optional) 'T1' weighted 'MRI' with contrast
+#' (usually used to show the blood vessels)
+#' @param fgatir_path (optional) 'fGATIR' (fast gray-matter acquisition 'T1'
+#' inversion recovery) image path
+#' @param preopct_path (optional) pre-surgery 'CT' path
+#' @param t2w_path (optional) 'T2' weighted 'MRI' path
+#' @param flair_path (optional) 'FLAIR' (fluid-attenuated inversion recovery)
+#' image path
+#' @param register_policy whether images should be registered with \code{'T1w'}
+#' image; default is \code{"auto"}: automatically run registration algorithm
+#' if missing; alternative is \code{"all"}: force the registration algorithm
+#' even if mapping files exist
+#' @param register_reversed direction of the registration; \code{FALSE}
+#' (default) registers other images (such as post-surgery 'CT' to 'T1');
+#' set to \code{FALSE} if you would like the \code{'T1'} to be registered into
+#' other images. Since 'YAEL' does not re-sample the images, there is no
+#' essential difference on the final registration results
+#' @param normalize_template names of the templates which the native 'T1' images
+#' will be normalized into
+#' @param normalize_policy normalization policy; similar to
+#' \code{register_policy} but is applied to normalization. Default is
+#' \code{"auto"}: automatically run normalization when the mapping is missing,
+#' and skip if exists; alternative is \code{"all"}: force to run the
+#' normalization.
+#' @param normalize_back length of one (select from \code{normalize_template}),
+#' which template is to be used to generate native brain mask and transform
+#' matrices
+#' @param atlases a named list: the names must be template names from
+#' \code{normalize_template} and the values must be directories of atlases of
+#' the corresponding templates (see 'Examples').
+#' @param add_surfaces Whether to add surfaces for the subject; default is
+#' \code{FALSE}. The surfaces are created by reversing the normalization from
+#' template brain, hence the results will not be accurate. Enable this option
+#' only if cortical surface estimation is not critical.
+#' @param verbose whether to print out the progress; default is \code{TRUE}
+#' @returns Nothing, a subject imaging folder will be created under 'RAVE'
+#' raw folder
 #' @examples
 #'
 #' \dontrun{
 #'
-#' library(raveio)
+#'
+#' # For T1 preprocessing only
 #' yael_preprocess(
-#'   subject_code = "YAB",
-#'   t1_path = "~/YAB_T1.nii",
-#'   ct_path = "~/YAB_CT.nii",
-#'   templates = "mni_icbm152_nlin_asym_09a",
-#'   launch_rave = TRUE
+#'   subject_code = "patient01",
+#'   t1w_path = "/path/to/T1.nii or T1.nii.gz",
+#'
+#'   # normalize T1 to all 2009 MNI152-Asym brains (a,b,c)
+#'   normalize_template = c(
+#'     "mni_icbm152_nlin_asym_09a",
+#'     "mni_icbm152_nlin_asym_09b",
+#'     "mni_icbm152_nlin_asym_09c"
+#'   ),
+#'
+#'   # only normalize if not exists
+#'   normalize_policy = "auto",
+#'
+#'   # use MNI152b to create native processing folder
+#'   normalize_back = "mni_icbm152_nlin_asym_09b",
+#'
+#'   # Atlases generated from different templates have different
+#'   # coordinates, hence both folder path and template names must be
+#'   # provided
+#'   atlases = list(
+#'     mni_icbm152_nlin_asym_09b = "/path/to/atlas/folder1",
+#'     mni_icbm152_nlin_asym_09c = "/path/to/atlas/folder2"
+#'   )
+#'
 #' )
 #'
-#' # run after localization
-#' yael_postprocess(
-#'   subject_code = "YAB",
-#'   roi_folder = "~/template_roi/harvardox_amygdala_R_bin.nii.gz",
-#'   templates = "mni_icbm152_nlin_asym_09a"
+#' # For T1 and postop CT coregistration only
+#' yael_preprocess(
+#'   subject_code = "patient01",
+#'   t1w_path = "/path/to/T1.nii or T1.nii.gz",
+#'   ct_path = "/path/to/CT.nii or CT.nii.gz",
+#'
+#'   # No normalization
+#'   normalize_template = NULL,
+#'   normalize_back = NA
+#'
+#' )
+#'
+#' # For both T1 and postop CT coregistration and T1 normalization
+#' yael_preprocess(
+#'   subject_code = "patient01",
+#'   t1w_path = "/path/to/T1.nii or T1.nii.gz",
+#'   ct_path = "/path/to/CT.nii or CT.nii.gz",
+#'
+#'   normalize_template = c(
+#'     "mni_icbm152_nlin_asym_09a",
+#'     "mni_icbm152_nlin_asym_09b",
+#'     "mni_icbm152_nlin_asym_09c"
+#'   ),
+#'
+#'   normalize_policy = "auto",
+#'
+#'   normalize_back = "mni_icbm152_nlin_asym_09b",
+#'
+#'   atlases = list(
+#'     mni_icbm152_nlin_asym_09b = "/path/to/atlas/folder1",
+#'     mni_icbm152_nlin_asym_09c = "/path/to/atlas/folder2"
+#'   )
+#'
 #' )
 #'
 #'
 #' }
 #'
-NULL
-
-#' @rdname yael-image-processing
 #' @export
-yael_preprocess_t1 <- function(subject_code, t1_path, templates = "mni_icbm152_nlin_asym_09a", freesurfer = NA, verbose = TRUE) {
+yael_preprocess <- function(
+    subject_code, t1w_path, ct_path = NULL,
+    t2w_path = NULL, fgatir_path = NULL, preopct_path = NULL,
+    flair_path = NULL, t1w_contrast_path = NULL,
+    register_policy = c("auto", "all"), register_reversed = FALSE,
+    normalize_template = "mni_icbm152_nlin_asym_09a",
+    normalize_policy = c("auto", "all"),
+    normalize_back = ifelse(length(normalize_template) >= 1, normalize_template[[1]], NA),
+    atlases = list(),
+    add_surfaces = FALSE, verbose = TRUE
+) {
 
-  # DIPSAUS DEBUG START
-  # subject_code = "Liming"
-  # t1_path <- "~/rave_data/raw_dir/yael_demo_001/rave-imaging/derivative/MRI_reference.nii.gz"
-  # templates = "mni_icbm152_nlin_asym_09a"
-  # freesurfer=NA
-  # verbose = TRUE
-  # ct_path <- "~/rave_data/raw_dir/yael_demo_001/rave-imaging/derivative/CT_RAW.nii.gz"
+  register_policy <- match.arg(register_policy)
+  normalize_policy <- match.arg(normalize_policy)
 
-  additional_commands <- NULL
-
-  if(!grepl("/", subject_code)) {
-    subject_code <- sprintf("YAEL/%s", subject_code)
-  }
-  subject <- restore_subject_instance(subject_code, strict = FALSE)
-  work_path <- subject$imaging_path
-
-  # Map T1 to templates
-  rpyANTs::t1_preprocess(t1_path = t1_path, templates = templates, work_path = work_path, verbose = verbose)
-
-  # Freesurfer
-  fs_path <- file.path(work_path, "fs")
-  fs_path_valid <- threeBrain::check_freesurfer_path(fs_path, autoinstall_template = FALSE, return_path = FALSE, check_volume = TRUE, check_surface = FALSE)
-
-  if(isTRUE(freesurfer)) {
-    fs_needed <- TRUE
-  } else if (isFALSE(freesurfer) || get_os() == "windows") {
-    fs_needed <- FALSE
-  } else {
-    fs_needed <- !fs_path_valid
-  }
-
-  if(fs_needed) {
-
-    fs_home <- cmd_freesurfer_home(error_on_missing = FALSE, unset = NA)
-    if(is.na(fs_home)) {
-      fs_home <- "recon-all"
-      dry_run <- TRUE
-    } else {
-      dry_run <- FALSE
-    }
-
-    if( dry_run ) {
-      overwrite <- TRUE
-    } else {
-      # run recon-all -autorecon1
-      fs_cmd <- cmd_run_recon_all(
-        subject = subject,
-        mri_path = t1_path,
-        overwrite = TRUE,
-        args = "-autorecon1",
-        dry_run = FALSE,
-        command_path = fs_home,
-        verbose = verbose
-      )
-      overwrite <- FALSE
-      if(is.list(fs_cmd) && length(fs_cmd$script_path) == 1 &&
-         file.exists(fs_cmd$script_path)) {
-        file.copy(fs_cmd$script_path,
-                  file.path(dirname(fs_cmd$script_path), "cmd-fs-autorecon1.sh"),
-                  overwrite = TRUE)
+  normalize_template <- normalize_template[normalize_template %in% c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c")]
+  # generate atlases
+  atlases <- as.list(atlases)
+  for(template_name in normalize_template) {
+    rpyANTs::ensure_template(template_name)
+    if(!length(atlases[[template_name]])) {
+      atlas_folder <- file.path(threeBrain::default_template_directory(), "templates", template_name, "atlases")
+      if(dir.exists(atlas_folder)) {
+        atlases[[template_name]] <- normalize_path(atlas_folder)
       }
     }
+  }
 
-    fs_cmd <- cmd_run_recon_all(
-      subject = subject,
-      mri_path = t1_path,
-      overwrite = overwrite,
-      args = "-all",
-      dry_run = TRUE,
-      command_path = fs_home,
-      verbose = FALSE
-    )
-    dir_create2(dirname(fs_cmd$script_path))
-    dir_create2(dirname(fs_cmd$log_file))
+  yael_process <- YAELProcess$new(subject_code = subject_code)
+  stopifnot2(
+    length(t1w_path) == 1 && file.exists(t1w_path),
+    msg = "Please specify T1w image path"
+  )
 
-    writeLines(fs_cmd$script, con = fs_cmd$script_path)
+  # DIPSAUS DEBUG START
+  # subject_code = "testtest2"
+  # t1w_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-preop_desc-preproc_acq-ax_T1w.nii"
+  # ct_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-postop_desc-preproc_CT.nii"
+  # t2w_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-preop_desc-preproc_acq-iso_T2w.nii"
+  # fgatir_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-preop_desc-preproc_acq-ax_FGATIR.nii"
+  # preopct_path = NULL
+  # verbose <- TRUE
+  # register_policy = "auto"
+  # normalize_policy = "auto"
+  # register_reversed = FALSE
+  # yael_process <- YAELProcess$new(subject_code = subject_code)
+  # normalize_template = c("mni_icbm152_nlin_asym_09a")
 
-    cmd <- sprintf("'bash' '%s'", normalize_path(fs_cmd$script_path))
-    if(dry_run || !dipsaus::rs_avail(child_ok = TRUE, shiny_ok = TRUE)) {
-      additional_commands <- cmd
-    } else {
-      check <- dipsaus::rs_exec(
-        name = sprintf("recon-all (%s)", subject$subject_code),
-        bquote({
-          system(.(cmd))
-        }),
-        quoted = TRUE,
-        rs = TRUE,
-        as_promise = FALSE,
-        wait = FALSE,
-        focus_on_console = TRUE,
-        nested_ok = TRUE
-      )
-      catgl("Started recon-all in the background. Please do NOT close RStudio", level = "info")
-
-      return(check)
-
+  logger <- function(..., level = "DEFAULT") {
+    if(verbose) {
+      catgl(..., level = level)
     }
   }
 
+  logger("Migrating T1w image: ", t1w_path)
+  yael_process$set_input_image(path = t1w_path, type = "T1w", overwrite = TRUE)
 
-  if(length(additional_commands)) {
-    catgl("Please run the following bash command to finish FreeSurfer recon-all:\n\n  {paste(additional_commands, collapse='\n')}", level = "info")
+  if(length(ct_path) && !is.na(ct_path) && nzchar(ct_path)) {
+    logger("Migrating CT image: ", ct_path)
+    yael_process$set_input_image(path = ct_path, type = "CT", overwrite = TRUE)
   }
 
-  invisible(additional_commands)
-}
-
-#' @rdname yael-image-processing
-#' @export
-yael_coregistration <- function(subject_code, ct_path, t1_path = NA, verbose = TRUE) {
-  if(!grepl("/", subject_code)) {
-    subject_code <- sprintf("YAEL/%s", subject_code)
+  if(length(t2w_path) && !is.na(t2w_path) && nzchar(t2w_path)) {
+    logger("Migrating T2w image: ", t2w_path)
+    yael_process$set_input_image(path = t2w_path, type = "T2w", overwrite = TRUE)
   }
-  subject <- restore_subject_instance(subject_code, strict = FALSE)
-  work_path <- subject$imaging_path
 
-  if(is.na(t1_path)) {
-    # try to determine the MRI
-    t1_path <- c(
-      file.path(work_path, "fs", "mri", "T1.mgz"),
-      file.path(work_path, "fs", "mri", "T1.nii.gz"),
-      file.path(work_path, "fs", "mri", "T1.nii"),
-      file.path(work_path, "ants", "mri", "T1.nii.gz"),
-      file.path(work_path, "inputs", "MRI", "MRI_RAW.nii.gz")
-    )
-    t1_path <- t1_path[file.exists(t1_path)]
-    if(!length(t1_path)) {
-      stop("Cannot find T1 image from this subject. Please explicitly specify the path to T1 image.")
+  if(length(fgatir_path) && !is.na(fgatir_path) && nzchar(fgatir_path)) {
+    logger("Migrating fGATIR image: ", fgatir_path)
+    yael_process$set_input_image(path = fgatir_path, type = "fGATIR", overwrite = TRUE)
+  }
+
+  if(length(preopct_path) && !is.na(preopct_path) && nzchar(preopct_path)) {
+    logger("Migrating preop-CT image: ", preopct_path)
+    yael_process$set_input_image(path = preopct_path, type = "preopCT", overwrite = TRUE)
+  }
+
+  if(length(flair_path) && !is.na(flair_path) && nzchar(flair_path)) {
+    logger("Migrating FLAIR image: ", flair_path)
+    yael_process$set_input_image(path = flair_path, type = "FLAIR", overwrite = TRUE)
+  }
+
+  if(length(t1w_contrast_path) && !is.na(t1w_contrast_path) && nzchar(t1w_contrast_path)) {
+    logger("Migrating T1w with contrast image: ", t1w_contrast_path)
+    yael_process$set_input_image(path = t1w_contrast_path, type = "T1wContrast", overwrite = TRUE)
+  }
+
+  # Coregistration
+  lapply(c("T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), function(native_type) {
+    impath <- yael_process$get_input_image(native_type)
+    if(!length(impath)) { return() }
+    logger("Co-registering [", native_type, "] image with [T1w] image.")
+    suppressWarnings({
+      pexists <- tryCatch({
+        conf <- yael_process$get_native_mapping(image_type = native_type)
+        length(conf$mappings) > 0
+      }, error = function(e){ FALSE })
+    })
+    if(!pexists || register_policy == "all") {
+      yael_process$register_to_T1w(image_type = native_type,
+                                   reverse = register_reversed,
+                                   verbose = verbose)
     }
-  }
-  t1_path <- normalize_path(t1_path[[1]], must_work = TRUE)
-  ct_path <- normalize_path(ct_path, must_work = TRUE)
+    return()
+  })
 
-  # back up CT
-  ct_dirpath <- dir_create2(file.path(work_path, "inputs", "CT"))
-  fname <- tolower(filenames(ct_path))
-  if(endsWith(fname, "gz")) {
-    fname <- "CT_RAW.nii.gz"
-  } else {
-    fname <- "CT_RAW.nii"
-  }
-  ct_path2 <- file.path(ct_dirpath, fname)
-  file.copy(ct_path, file.path(ct_dirpath, fname))
-  ct_path2 <- normalize_path(ct_path2)
+  # Normalization
+  lapply(normalize_template, function(template_name) {
+    logger("Normalizing [T1w] image to template [", template_name, "].")
+    suppressWarnings({
+      pexists <- tryCatch({
+        conf <- yael_process$get_template_mapping(template_name = template_name, native_type = "T1w")
+        length(conf) > 0
+      }, error = function(e){ FALSE })
+    })
+    if(!pexists || normalize_policy == "all") {
+      yael_process$map_to_template(template_name = template_name,
+                                   native_type = "T1w",
+                                   verbose = verbose)
+    }
+  })
 
-  rpyANTs::halpern_register_ct_mri(
-    fixed = ct_path,
-    moving = t1_path,
-    outprefix = file.path(work_path, "coregistration", "ct_mri_coreg_"),
-    fixed_is_ct = TRUE,
-    verbose = verbose
-  )
-
-  file.copy(
-    from = file.path(work_path, "coregistration", "ct_mri_coreg_orig_fixed.nii.gz"),
-    to = file.path(work_path, "coregistration", "CT_RAW.nii.gz"),
-    overwrite = TRUE
-  )
-  file.copy(
-    from = file.path(work_path, "coregistration", "ct_mri_coreg_orig_moving.nii.gz"),
-    to = file.path(work_path, "coregistration", "MRI_mov.nii.gz"),
-    overwrite = TRUE
-  )
-  file.copy(
-    from = file.path(work_path, "coregistration", "ct_mri_coreg_Warped.nii.gz"),
-    to = file.path(work_path, "coregistration", "t1_in_ct.nii.gz"),
-    overwrite = TRUE
-  )
-
-  deriv_path <- dir_create2(file.path(work_path, "derivative"))
-  file.copy(
-    from = file.path(work_path, "coregistration", "CT_RAW.nii.gz"),
-    to = file.path(deriv_path, "CT_RAW.nii.gz"),
-    overwrite = TRUE
-  )
-  file.copy(
-    from = file.path(work_path, "coregistration", "t1_in_ct.nii.gz"),
-    to = file.path(deriv_path, "t1_in_ct.nii.gz"),
-    overwrite = TRUE
-  )
-  file.copy(
-    from = file.path(work_path, "coregistration", "ct_mri_coreg_CT_IJK_to_MR_RAS.txt"),
-    to = file.path(deriv_path, "transform-ctIJK2mrRAS.txt"),
-    overwrite = TRUE
-  )
-  file.copy(
-    from = file.path(work_path, "coregistration", "ct_mri_coreg_CT_RAS_to_MR_RAS.txt"),
-    to = file.path(deriv_path, "transform-ctRAS2mrRAS.txt"),
-    overwrite = TRUE
-  )
-
-  # config <- yaml::read_yaml("~/rave_data/raw_dir/alexis/rave-imaging/derivative/conf-coregistration.yaml")
-  config <- list(
-    `Heads up` = "Do NOT edit this file",
-    profile = "MRI coregister to CT",
-    work_path = work_path,
-    timestamp = strftime(Sys.time(), "%a %b %d %H:%M:%S %Z %Y", tz = "UTC"),
-    command = list(
-      comment = "This is R function call using Halpern's pipeline. The MRI is coregistered into CT.",
-      execute = "raveio::t1_ct_coregistration"
-    ),
-    input_image = list(
-      type = "nifti",
-      path = ct_path2,
-      backup = c(
-        "./derivative/CT_RAW.nii.gz",
-        "./coregistration/CT_RAW.nii.gz"
-      ),
-      comment = "original CT image file as the fixing image"
-    ),
-    reference_image = list(
-      type = "nifti",
-      path = t1_path,
-      backup = "./coregistration/MRI_mov.nii.gz",
-      comment = "MR image file as the moving image"
-    ),
-    outputs = list(
-      t1_in_ct = list(
-        type = "nifti",
-        path = "./coregistration/t1_in_ct.nii.gz",
-        backup = "./derivative/t1_in_ct.nii.gz",
-        comment = "re-sampled MRI; the resolution is the same as fixing CT"
-      ),
-      CT_IJK_to_MR_RAS = list(
-        type = "transform",
-        dimension = "4x4",
-        path = "./coregistration/ct_mri_coreg_CT_IJK_to_MR_RAS.txt",
-        backup = "./coregistration/transform-ctIJK2mrRAS.txt",
-        transform_from = list(volume = "input_image", coordinate_system = "IJK"),
-        transform_to = list(
-          volume = "reference_image",
-          space = "scanner",
-          coordinate_system = "RAS"
-        ),
-        comment = "From voxel IJK coordinate to MRI scanner RAS coordinate"
-      ),
-      CT_RAS_to_MR_RAS = list(
-        type = "transform",
-        dimension = "4x4",
-        path = "./coregistration/ct_mri_coreg_CT_RAS_to_MR_RAS.txt",
-        backup = "./coregistration/transform-ctRAS2mrRAS.txt",
-        transform_from = list(
-          volume = "input_image",
-          space = "scanner (CT)",
-          coordinate_system = "RAS"
-        ),
-        transform_to = list(
-          volume = "reference_image",
-          space = "scanner",
-          coordinate_system = "RAS"
-        ),
-        comment = "From CT scanner RAS coordinate to MRI scanner RAS coordinate"
-      )
+  if( length(normalize_back) == 1 && !is.na(normalize_back) ) {
+    # Generate ANTs folder
+    yael_process$construct_ants_folder_from_template(
+      template_name = normalize_back,
+      add_surfaces = add_surfaces
     )
-  )
-
-  save_yaml(config, file.path(deriv_path, "conf-coregistration.yaml"))
-
-}
-
-
-#' @rdname yael-image-processing
-#' @export
-yael_preprocess <- function(subject_code, t1_path, ct_path, templates = "mni_icbm152_nlin_asym_09a", freesurfer = NA, verbose = TRUE, parallel = TRUE, launch_rave = FALSE, wait_recon = FALSE) {
-
-  rs_avail <- dipsaus::rs_avail(child_ok = TRUE, shiny_ok = TRUE)
-
-  if(!grepl("/", subject_code)) {
-    subject_code <- sprintf("YAEL/%s", subject_code)
   }
-  subject <- restore_subject_instance(subject_code, strict = FALSE)
 
-  if( parallel && rs_avail ) {
-    check1 <- dipsaus::rs_exec(
-      name = sprintf("YAEL coregistration (%s)", subject$subject_code),
-      wait = FALSE, quoted = TRUE, rs = TRUE, as_promise = FALSE,
-      focus_on_console = TRUE, nested_ok = TRUE,
-      bquote({
-        raveio <- asNamespace("raveio")
-        raveio$yael_coregistration(
-          .(subject$subject_id),
-          t1_path = .(t1_path),
-          ct_path = .(ct_path),
-          verbose = .(verbose)
+  for(template_name in names(atlases)) {
+    if(template_name != "") {
+      tryCatch({
+        yael_process$generate_atlas_from_template(
+          template_name = template_name,
+          atlas_folder = atlases[[template_name]],
+          verbose = verbose,
+          surfaces = TRUE
         )
+      }, error = function(e) {
+        warning(e)
       })
-    )
-    check2 <- yael_preprocess_t1(
-      subject_code = subject$subject_id,
-      t1_path = t1_path,
-      templates = templates,
-      freesurfer = freesurfer,
-      verbose = verbose
-    )
-    check1()
-  } else {
-    yael_coregistration(
-      subject$subject_id,
-      t1_path = t1_path,
-      ct_path = ct_path,
-      verbose = verbose
-    )
-    check2 <- yael_preprocess_t1(
-      subject_code = subject$subject_id,
-      t1_path = t1_path,
-      templates = templates,
-      freesurfer = freesurfer,
-      verbose = verbose
-    )
-  }
-
-  if( wait_recon && is.function(check2) ) {
-    check2()
-  }
-
-  if(launch_rave) {
-    try({
-      rave <- asNamespace("rave")
-      rave$start_rave2(as_job = TRUE)
-    }, silent = TRUE)
-  }
-
-  if(is.function(check2)) {
-    return(check2)
-  } else if ( is.character(check2) ) {
-    catgl("Please run the following bash command to finish FreeSurfer recon-all:\n\n  {paste(check2, collapse='\n')}", level = "info")
-  }
-
-}
-
-#' @rdname yael-image-processing
-#' @export
-yael_postprocess <- function(subject_code, roi_folder = NULL, templates = "mni_icbm152_nlin_asym_09a", verbose = TRUE) {
-  if(!grepl("/", subject_code)) {
-    subject_code <- sprintf("YAEL/%s", subject_code)
-  }
-  subject <- restore_subject_instance(subject_code, strict = FALSE)
-  work_path <- subject$imaging_path
-
-  available_templates <- list.dirs(file.path(work_path, "template_mapping"), full.names = FALSE, recursive = FALSE)
-  templates <- templates[templates %in% available_templates]
-
-  # Apply transforms to ROI from template to T1
-  if(length(roi_folder) && length(templates)) {
-    roi_folder <- roi_folder[file.exists(roi_folder)]
-    if(length(roi_folder)) {
-
-      lapply_async(templates, function(template_name) {
-        try({
-          template_mapping_prefix <- file.path(work_path, "template_mapping", template_name, sprintf("%s_", template_name))
-          rpyANTs::halpern_apply_transform_template_mri(
-            roi_folder = roi_folder,
-            outprefix = template_mapping_prefix,
-            verbose = FALSE
-          )
-          return(template_mapping_prefix)
-        })
-        return(NULL)
-      }, callback = function(template_name) {
-        sprintf("Morphing ROI from [%s]", template_name)
-      })
-
     }
   }
 
-  # calculate MNI coordinates (nonlinear)
-  template_urls <- asNamespace('rpyANTs')$template_urls
-  if(length(available_templates)) {
-    templates <- c(templates, available_templates)
-    templates <- templates[templates %in% names(template_urls)]
-  }
-  if(!length(templates)) { return(invisible()) }
-
-  template_name <- templates[[1]]
-  template_coord_sys <- template_urls[[template_name]]$coord_sys
-  template_mapping_prefix <- file.path(work_path, "template_mapping", template_name, sprintf("%s_", template_name))
-
-  transforms <- normalize_path(
-    sprintf(
-      "%s%s", template_mapping_prefix,
-      c(
-        "affine_0GenericAffine.mat",
-        "deformable_0GenericAffine.mat",
-        "deformable_1InverseWarp.nii.gz"
-      )),
-    must_work = TRUE
-  )
-
-  brain <- rave_brain(subject)
-  if(is.null(brain)) { return(invisible()) }
-  electrode_table <- brain$electrodes$raw_table
-  if(!nrow(electrode_table)) { return(invisible()) }
-
-  t1_ras <- electrode_table[, c("T1R", "T1A", "T1S")]
-  if(!length(t1_ras)) { return(invisible()) }
-
-  invalids <- rowSums(t1_ras^2) == 0
-
-  # ANTs uses LPS instead of RAS
-  t1_lps <- data.frame(
-    x = -t1_ras$T1R,
-    y = -t1_ras$T1A,
-    z = t1_ras$T1S
-  )
-
-  mni_lps <- rpyANTs::ants_apply_transforms_to_points(
-    dim = 3,
-    points = t1_lps,
-    transformlist = transforms,
-    whichtoinvert = c(TRUE, TRUE, FALSE),
-    verbose = verbose
-  )
-
-  mni_lps <- data.matrix(mni_lps)
-  mni_lps[invalids, ] <- 0
-
-  if(template_coord_sys == "MNI152") {
-    electrode_table$MNI152_x <- -mni_lps[,1]
-    electrode_table$MNI152_y <- -mni_lps[,2]
-    electrode_table$MNI152_z <- mni_lps[,3]
-
-    mni305 <- solve(raveio::MNI305_to_MNI152) %*% rbind(-mni_lps[,1], -mni_lps[,2], mni_lps[,3], 1)
-    electrode_table$MNI305_x <- mni305[1, ]
-    electrode_table$MNI305_y <- mni305[2, ]
-    electrode_table$MNI305_z <- mni305[3, ]
-  } else {
-    electrode_table$MNI305_x <- -mni_lps[,1]
-    electrode_table$MNI305_y <- -mni_lps[,2]
-    electrode_table$MNI305_z <- mni_lps[,3]
-
-    mni152 <- raveio::MNI305_to_MNI152 %*% rbind(-mni_lps[,1], -mni_lps[,2], mni_lps[,3], 1)
-    electrode_table$MNI152_x <- mni152[1, ]
-    electrode_table$MNI152_y <- mni152[2, ]
-    electrode_table$MNI152_z <- mni152[3, ]
-  }
-  brain$set_electrodes(electrode_table)
-
-  save_meta2(data = electrode_table, meta_type = "electrodes", project_name = subject$project_name, subject_code = subject$subject_code)
-
-
-  invisible(brain)
 }
-
-
-# raveio::yael_preprocess(
-#   subject_code = "Liming",
-#   t1_path = "~/rave_data/raw_dir/mayo/rave-imaging/coregistration/T1_defaced.nii.gz",
-#   ct_path = "~/rave_data/raw_dir/mayo/rave-imaging/coregistration/CT_defaced.nii.gz",
-#   templates = "mni_icbm152_nlin_asym_09a",
-#   launch_rave = TRUE
-# )

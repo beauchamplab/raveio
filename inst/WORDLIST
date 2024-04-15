@@ -22,7 +22,6 @@ Magnotti
 NSx
 Neurosynth
 Nifti
-OSX
 RAS
 ROI
 RStudio
@@ -33,12 +32,14 @@ affine
 cloneable
 csv
 doi
+fGATIR
 fst
 iEEG
 millivolt
 neuroimage
 neurophysiology
 neuroscientists
+pre
 preprocess
 waveforms
 yaml
