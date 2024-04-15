@@ -42,6 +42,7 @@ $r_script --no-save --no-restore -e "raveio::yael_preprocess(subject_code='${sco
 mri_path="$wdir_actual/rave-imaging/inputs/MRI/MRI_RAW.nii.gz"
 derivative_path="$wdir_actual/rave-imaging/derivative"
 mri_backup="$wdir_actual/rave-imaging/derivative/MRI_RAW.nii.gz"
+input_name="MRI.nii.gz"
 
 # Make sure the actual working directory exists
 if [[ -d "$wdir_actual/rave-imaging/fs" ]]; then
