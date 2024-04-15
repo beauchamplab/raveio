@@ -36,7 +36,7 @@ t1w_contrast_path="{{ t1w_contrast_path }}"
 register_reversed="{{ register_reversed }}"
 
 # Coregistration + normalization
-$r_script --no-save --no-restore -e "raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=c('mni_icbm152_nlin_asym_09a','mni_icbm152_nlin_asym_09b','mni_icbm152_nlin_asym_09c'), normalize_back='mni_icbm152_nlin_asym_09b')"
+$r_script --no-save --no-restore -e "raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=c('mni_icbm152_nlin_asym_09a','mni_icbm152_nlin_asym_09b','mni_icbm152_nlin_asym_09c'), normalize_back='mni_icbm152_nlin_asym_09b')" | tee -a "$log_file"
 
 # Prepare for the FreeSurfer
 mri_path="$wdir_actual/rave-imaging/inputs/MRI/MRI_RAW.nii.gz"
@@ -146,11 +146,11 @@ mri_info --vox2ras-tkr "$wdir_actual/rave-imaging/fs/mri/T1.mgz" > "$derivative_
 
 pial_path="$wdir_actual/rave-imaging/fs/surf/lh.pial"
 envelope_path="$wdir_actual/rave-imaging/fs/surf/lh.pial-outer-smoothed"
-$r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')"
+$r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')" | tee -a "$log_file"
 
 pial_path="$wdir_actual/rave-imaging/fs/surf/rh.pial"
 envelope_path="$wdir_actual/rave-imaging/fs/surf/rh.pial-outer-smoothed"
-$r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')"
+$r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')" | tee -a "$log_file"
 
 echo "Done." | tee -a "$log_file"
 
