@@ -67,6 +67,8 @@ custom atlases from templates.</p>
 <span>  flair_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  t1w_contrast_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  register_reversed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  normalize_template <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  run_recon_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  command_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -138,6 +140,16 @@ other images. Since 'YAEL' does not re-sample the images, there is no
 essential difference on the final registration results</p></dd>
 
 
+<dt>normalize_template</dt>
+<dd><p>names of the templates which the native 'T1' images
+will be normalized into</p></dd>
+
+
+<dt>run_recon_all</dt>
+<dd><p>whether to run <code>'FreeSurfer'</code> reconstruction;
+default is true</p></dd>
+
+
 <dt>command_path</dt>
 <dd><p><code>'FreeSurfer'</code> path, if the default automatic
 detection fails</p></dd>
@@ -157,11 +169,6 @@ actually execute the scripts.</p></dd>
 image; default is <code>"auto"</code>: automatically run registration algorithm
 if missing; alternative is <code>"all"</code>: force the registration algorithm
 even if mapping files exist</p></dd>
-
-
-<dt>normalize_template</dt>
-<dd><p>names of the templates which the native 'T1' images
-will be normalized into</p></dd>
 
 
 <dt>normalize_policy</dt>
