@@ -15,6 +15,8 @@ cmd_run_yael_preprocess(
   flair_path = NULL,
   t1w_contrast_path = NULL,
   register_reversed = FALSE,
+  normalize_template = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09c"),
+  run_recon_all = TRUE,
   command_path = NULL,
   dry_run = FALSE,
   verbose = TRUE
@@ -66,6 +68,12 @@ set to \code{FALSE} if you would like the \code{'T1'} to be registered into
 other images. Since 'YAEL' does not re-sample the images, there is no
 essential difference on the final registration results}
 
+\item{normalize_template}{names of the templates which the native 'T1' images
+will be normalized into}
+
+\item{run_recon_all}{whether to run \code{'FreeSurfer'} reconstruction;
+default is true}
+
 \item{command_path}{\code{'FreeSurfer'} path, if the default automatic
 detection fails}
 
@@ -78,9 +86,6 @@ actually execute the scripts.}
 image; default is \code{"auto"}: automatically run registration algorithm
 if missing; alternative is \code{"all"}: force the registration algorithm
 even if mapping files exist}
-
-\item{normalize_template}{names of the templates which the native 'T1' images
-will be normalized into}
 
 \item{normalize_policy}{normalization policy; similar to
 \code{register_policy} but is applied to normalization. Default is

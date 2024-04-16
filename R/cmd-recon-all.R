@@ -117,6 +117,8 @@ cmd_run_recon_all <- function(
 }
 
 #' @rdname yael_preprocess
+#' @param run_recon_all whether to run \code{'FreeSurfer'} reconstruction;
+#' default is true
 #' @param command_path \code{'FreeSurfer'} path, if the default automatic
 #' detection fails
 #' @param dry_run whether to dry-run the script and check if error exists before
@@ -132,6 +134,11 @@ cmd_run_yael_preprocess <- function(
     flair_path = NULL,
     t1w_contrast_path = NULL,
     register_reversed = FALSE,
+    normalize_template = c(
+      "mni_icbm152_nlin_asym_09a",
+      "mni_icbm152_nlin_asym_09c"
+    ),
+    run_recon_all = TRUE,
     command_path = NULL,
     dry_run = FALSE, verbose = TRUE) {
   # DIPSAUS DEBUG START
@@ -144,6 +151,8 @@ cmd_run_yael_preprocess <- function(
   # verbose <- TRUE
   # register_reversed = FALSE
   # flair_path=NULL;t1w_contrast_path=NULL
+
+  run_recon_all <- as.integer(isTRUE(as.logical(run_recon_all)))
 
   if(missing(t1w_path) || length(t1w_path) != 1 || is.na(t1w_path) || !file.exists(t1w_path) ||
      dir.exists(t1w_path)) {
@@ -164,6 +173,18 @@ cmd_run_yael_preprocess <- function(
   if(length(t1w_contrast_path)) { t1w_contrast_path <- normalizePath(t1w_contrast_path, winslash = "/", mustWork = TRUE) } else { t1w_contrast_path <- "" }
 
   subject <- RAVESubject$new(project_name = "YAEL", subject_code = subject_code, strict = FALSE)
+
+  if(length(normalize_template)) {
+    if("mni_icbm152_nlin_asym_09b" %in% normalize_template) {
+      normalize_template <- unique(c("mni_icbm152_nlin_asym_09b", normalize_template))
+    }
+    lapply(normalize_template, rpyANTs::ensure_template)
+    normalize_template_str <- sprintf(
+      "c(%s)", paste(sprintf("'%s'", normalize_template), collapse = ",")
+    )
+  } else {
+    normalize_template_str <- "NULL"
+  }
 
   default_fs_path <- cmd_freesurfer_home(error_on_missing = FALSE)
   freesurfer_home <- tryCatch({
