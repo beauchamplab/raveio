@@ -457,14 +457,8 @@ YAELProcess <- R6::R6Class(
 
       dir_create2(mri_dir)
 
-      # T1.mgz
-      t1_img <- threeBrain::read_volume(mr_path)
-      freesurferformats::write.fs.mgh(
-        filepath = file.path(mri_dir, "T1.mgz"),
-        data = t1_img$data,
-        vox2ras_matrix = t1_img$Norig
-      )
-      rm(t1_img)
+      # T1.mgz (freesurfer style so users don't need to have to re-localize)
+      threeBrain::conform_volume(mr_path, save_to = file.path(mri_dir, "T1.mgz"))
 
       # brainmask
       brainmask_dst <- file.path(mri_dir, "brainmask.nii.gz")

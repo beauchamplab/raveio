@@ -223,6 +223,12 @@ yael_preprocess <- function(
   })
 
   # Normalization
+  if( length(normalize_back) < 1 || is.na(normalize_back[[1]]) ) {
+    normalize_back <- NULL
+  } else {
+    normalize_back <- normalize_back[[1]]
+  }
+  normalize_template <- unique(c(normalize_back, normalize_template))
   lapply(normalize_template, function(template_name) {
     logger("Normalizing [T1w] image to template [", template_name, "].")
     suppressWarnings({
@@ -236,15 +242,14 @@ yael_preprocess <- function(
                                    native_type = "T1w",
                                    verbose = verbose)
     }
+    if( template_name %in% normalize_back ) {
+      # Generate ANTs folder
+      yael_process$construct_ants_folder_from_template(
+        template_name = normalize_back,
+        add_surfaces = add_surfaces
+      )
+    }
   })
-
-  if( length(normalize_back) == 1 && !is.na(normalize_back) ) {
-    # Generate ANTs folder
-    yael_process$construct_ants_folder_from_template(
-      template_name = normalize_back,
-      add_surfaces = add_surfaces
-    )
-  }
 
   for(template_name in names(atlases)) {
     if(template_name != "") {
