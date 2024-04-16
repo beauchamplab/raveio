@@ -444,8 +444,6 @@ YAELProcess <- R6::R6Class(
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
       add_surfaces = TRUE
     ) {
-      template_name <- match.arg(template_name)
-      template_path <- call_rpyants("ensure_template", name = template_name)
       ants_dir <- file.path(self$work_path, "ants")
       mri_dir <- file.path(ants_dir, "mri")
       surf_dir <- file.path(ants_dir, "surf")
@@ -459,6 +457,12 @@ YAELProcess <- R6::R6Class(
 
       # T1.mgz (freesurfer style so users don't need to have to re-localize)
       threeBrain::conform_volume(mr_path, save_to = file.path(mri_dir, "T1.mgz"))
+
+      if(!length(template_name)) {
+        return(invisible())
+      }
+      template_name <- match.arg(template_name)
+      template_path <- call_rpyants("ensure_template", name = template_name)
 
       # brainmask
       brainmask_dst <- file.path(mri_dir, "brainmask.nii.gz")

@@ -126,7 +126,7 @@ cmd_run_recon_all <- function(
 #' @export
 cmd_run_yael_preprocess <- function(
     subject_code,
-    t1w_path,
+    t1w_path = NULL,
     ct_path = NULL,
     t2w_path = NULL,
     fgatir_path = NULL,
@@ -153,18 +153,18 @@ cmd_run_yael_preprocess <- function(
   # flair_path=NULL;t1w_contrast_path=NULL
 
   run_recon_all <- as.integer(isTRUE(as.logical(run_recon_all)))
-
-  if(missing(t1w_path) || length(t1w_path) != 1 || is.na(t1w_path) || !file.exists(t1w_path) ||
-     dir.exists(t1w_path)) {
-    stop("`cmd_run_yael_preprocess`: `t1w_path` is not a valid path.")
-  }
-  t1w_path <- normalizePath(t1w_path, winslash = "/", mustWork = TRUE)
   register_reversed <- isTRUE(as.logical(register_reversed))
 
-  if(!grepl("\\.nii($|\\.gz$)", t1w_path, ignore.case = TRUE)) {
-    stop("`cmd_run_yael_preprocess`: `t1w_path` is not a valid NifTi file.")
-  }
+  yael_process <- YAELProcess$new(subject_code = subject_code)
 
+  if(length(t1w_path)) {
+    t1w_path <- normalizePath(t1w_path, winslash = "/", mustWork = TRUE)
+  } else {
+    if(!length(yael_process$get_input_image("T1w"))) {
+      stop("`cmd_run_yael_preprocess`: No `T1w` MRI specified. Please specify a valid file")
+    }
+    t1w_path <- ""
+  }
   if(length(ct_path)) { ct_path <- normalizePath(ct_path, winslash = "/", mustWork = TRUE) } else { ct_path <- "" }
   if(length(t2w_path)) { t2w_path <- normalizePath(t2w_path, winslash = "/", mustWork = TRUE) } else { t2w_path <- "" }
   if(length(fgatir_path)) { fgatir_path <- normalizePath(fgatir_path, winslash = "/", mustWork = TRUE) } else { fgatir_path <- "" }

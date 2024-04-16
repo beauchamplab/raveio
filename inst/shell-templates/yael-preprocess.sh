@@ -41,13 +41,21 @@ if [ "$run_recon_all" -eq "0" ]; then
   # Coregistration + normalization
   $r_script --no-save --no-restore -e "raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=${normalize_template}, add_surfaces=TRUE)" | tee -a "$log_file"
 
-  pial_path="$wdir_actual/rave-imaging/ants/surf/lh.pial"
-  envelope_path="$wdir_actual/rave-imaging/ants/surf/lh.pial-outer-smoothed"
-  $r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')" | tee -a "$log_file"
+  if [[ -d "$wdir_actual/rave-imaging/ants/surf" ]]; then
+    echo "Finalizing 1 of 2..." | tee -a "$log_file"
+    pial_path="$wdir_actual/rave-imaging/ants/surf/lh.pial"
+    envelope_path="$wdir_actual/rave-imaging/ants/surf/lh.pial-outer-smoothed"
+    if [[ -f "$pial_path" ]]; then
+      $r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')" | tee -a "$log_file"
+    fi
 
-  pial_path="$wdir_actual/rave-imaging/ants/surf/rh.pial"
-  envelope_path="$wdir_actual/rave-imaging/ants/surf/rh.pial-outer-smoothed"
-  $r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')" | tee -a "$log_file"
+    echo "Finalizing 2 of 2..." | tee -a "$log_file"
+    pial_path="$wdir_actual/rave-imaging/ants/surf/rh.pial"
+    envelope_path="$wdir_actual/rave-imaging/ants/surf/rh.pial-outer-smoothed"
+    if [[ -f "$pial_path" ]]; then
+      $r_script --no-save --no-restore -e "threeBrain::generate_smooth_envelope(surface_path = '${pial_path}', save_as = '${envelope_path}', inflate = 3, verbose = TRUE, save_format = 'bin')" | tee -a "$log_file"
+    fi
+  fi
 
 else
   $r_script --no-save --no-restore -e "raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=${normalize_template}, add_surfaces=FALSE)" | tee -a "$log_file"

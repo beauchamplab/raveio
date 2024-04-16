@@ -7,7 +7,7 @@
 \usage{
 cmd_run_yael_preprocess(
   subject_code,
-  t1w_path,
+  t1w_path = NULL,
   ct_path = NULL,
   t2w_path = NULL,
   fgatir_path = NULL,
@@ -24,7 +24,7 @@ cmd_run_yael_preprocess(
 
 yael_preprocess(
   subject_code,
-  t1w_path,
+  t1w_path = NULL,
   ct_path = NULL,
   t2w_path = NULL,
   fgatir_path = NULL,

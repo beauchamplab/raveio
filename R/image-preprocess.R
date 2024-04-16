@@ -117,7 +117,7 @@
 #'
 #' @export
 yael_preprocess <- function(
-    subject_code, t1w_path, ct_path = NULL,
+    subject_code, t1w_path = NULL, ct_path = NULL,
     t2w_path = NULL, fgatir_path = NULL, preopct_path = NULL,
     flair_path = NULL, t1w_contrast_path = NULL,
     register_policy = c("auto", "all"), register_reversed = FALSE,
@@ -144,12 +144,6 @@ yael_preprocess <- function(
     }
   }
 
-  yael_process <- YAELProcess$new(subject_code = subject_code)
-  stopifnot2(
-    length(t1w_path) == 1 && file.exists(t1w_path),
-    msg = "Please specify T1w image path"
-  )
-
   # DIPSAUS DEBUG START
   # subject_code = "testtest2"
   # t1w_path = "/Users/dipterix/rave_data/raw_dir/AnonSEEG/preprocessing/anat/sub-AnonSEEG_ses-preop_desc-preproc_acq-ax_T1w.nii"
@@ -170,8 +164,17 @@ yael_preprocess <- function(
     }
   }
 
-  logger("Migrating T1w image: ", t1w_path)
-  yael_process$set_input_image(path = t1w_path, type = "T1w", overwrite = TRUE)
+  yael_process <- YAELProcess$new(subject_code = subject_code)
+  if(length(t1w_path) && !is.na(t1w_path) && nzchar(t1w_path)) {
+    logger("Migrating T1w image: ", t1w_path)
+    yael_process$set_input_image(path = t1w_path, type = "T1w", overwrite = TRUE)
+  } else {
+    t1w_path <- yael_process$get_input_image("T1w")
+    stopifnot2(
+      length(t1w_path) == 1 && file.exists(t1w_path),
+      msg = "Please specify T1w image path"
+    )
+  }
 
   if(length(ct_path) && !is.na(ct_path) && nzchar(ct_path)) {
     logger("Migrating CT image: ", ct_path)
@@ -250,6 +253,15 @@ yael_preprocess <- function(
       )
     }
   })
+
+  # Make sure the Norig and Torig transforms are set to conformed image
+  t1_mgz <- file.path(yael_process$work_path, "ants", "T1.mgz")
+  if(!file.exists(t1_mgz)) {
+    yael_process$construct_ants_folder_from_template(
+      template_name = NULL,
+      add_surfaces = FALSE
+    )
+  }
 
   for(template_name in names(atlases)) {
     if(template_name != "") {
