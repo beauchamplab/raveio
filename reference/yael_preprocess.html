@@ -14,7 +14,7 @@ custom atlases from templates."><!-- mathjax --><script src="https://cdnjs.cloud
     
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.48</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.49</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ custom atlases from templates.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cmd_run_yael_preprocess</span><span class="op">(</span></span>
 <span>  <span class="va">subject_code</span>,</span>
-<span>  <span class="va">t1w_path</span>,</span>
+<span>  t1w_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ct_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  t2w_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fgatir_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -69,14 +69,13 @@ custom atlases from templates.</p>
 <span>  register_reversed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  normalize_template <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
 <span>  run_recon_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  command_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">yael_preprocess</span><span class="op">(</span></span>
 <span>  <span class="va">subject_code</span>,</span>
-<span>  <span class="va">t1w_path</span>,</span>
+<span>  t1w_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ct_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  t2w_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fgatir_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -148,11 +147,6 @@ will be normalized into</p></dd>
 <dt>run_recon_all</dt>
 <dd><p>whether to run <code>'FreeSurfer'</code> reconstruction;
 default is true</p></dd>
-
-
-<dt>command_path</dt>
-<dd><p><code>'FreeSurfer'</code> path, if the default automatic
-detection fails</p></dd>
 
 
 <dt>dry_run</dt>
