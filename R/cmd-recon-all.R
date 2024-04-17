@@ -119,8 +119,6 @@ cmd_run_recon_all <- function(
 #' @rdname yael_preprocess
 #' @param run_recon_all whether to run \code{'FreeSurfer'} reconstruction;
 #' default is true
-#' @param command_path \code{'FreeSurfer'} path, if the default automatic
-#' detection fails
 #' @param dry_run whether to dry-run the script and check if error exists before
 #' actually execute the scripts.
 #' @export
@@ -139,7 +137,6 @@ cmd_run_yael_preprocess <- function(
       "mni_icbm152_nlin_asym_09c"
     ),
     run_recon_all = TRUE,
-    command_path = NULL,
     dry_run = FALSE, verbose = TRUE) {
   # DIPSAUS DEBUG START
   # subject_code = "testtest3"
@@ -151,6 +148,7 @@ cmd_run_yael_preprocess <- function(
   # verbose <- TRUE
   # register_reversed = FALSE
   # flair_path=NULL;t1w_contrast_path=NULL
+  # run_recon_all <- FALSE
 
   run_recon_all <- as.integer(isTRUE(as.logical(run_recon_all)))
   register_reversed <- isTRUE(as.logical(register_reversed))
@@ -186,26 +184,26 @@ cmd_run_yael_preprocess <- function(
     normalize_template_str <- "NULL"
   }
 
-  default_fs_path <- cmd_freesurfer_home(error_on_missing = FALSE)
-  freesurfer_home <- tryCatch({
-    freesurfer <- normalize_commandline_path(
-      path = command_path,
-      unset = default_fs_path,
-      type = "freesurfer"
-    )
-    if(length(freesurfer) != 1 || is.na(freesurfer) || !isTRUE(dir.exists(freesurfer))) {
-      freesurfer <- NULL
-    } else if(!identical(default_fs_path, freesurfer)) {
-      raveio_setopt("freesurfer_path", freesurfer)
-    }
-    freesurfer
-  }, error = function(e){ NULL })
-
-  has_freesurfer <- !is.null(freesurfer_home)
-  if(has_freesurfer) {
-    freesurfer_home <- normalizePath(freesurfer_home, winslash = "/")
-  }
-  cmd_recon <- "recon-all"
+  # default_fs_path <- cmd_freesurfer_home(error_on_missing = FALSE)
+  # freesurfer_home <- tryCatch({
+  #   freesurfer <- normalize_commandline_path(
+  #     path = command_path,
+  #     unset = default_fs_path,
+  #     type = "freesurfer"
+  #   )
+  #   if(length(freesurfer) != 1 || is.na(freesurfer) || !isTRUE(dir.exists(freesurfer))) {
+  #     freesurfer <- NULL
+  #   } else if(!identical(default_fs_path, freesurfer)) {
+  #     raveio_setopt("freesurfer_path", freesurfer)
+  #   }
+  #   freesurfer
+  # }, error = function(e){ NULL })
+  #
+  # has_freesurfer <- !is.null(freesurfer_home)
+  # if(has_freesurfer) {
+  #   freesurfer_home <- normalizePath(freesurfer_home, winslash = "/")
+  # }
+  # cmd_recon <- "recon-all"
 
   log_path <- normalizePath(
     file.path(subject$preprocess_settings$raw_path, "rave-imaging", "log"),
@@ -214,31 +212,42 @@ cmd_run_yael_preprocess <- function(
   log_file <- strftime(Sys.time(), "log-yael-preprocess-%y%m%d-%H%M%S.log")
 
   # Always use a temporary working path since the target directory might contain spaces
-  work_path_symlink <- file.path(R_user_dir("raveio", which = "cache"), "FreeSurfer",
-                                 subject$subject_code, fsep = "/")
   work_path_actual <- subject$preprocess_settings$raw_path
 
-  template <- c(readLines(system.file('shell-templates/yael-preprocess.sh', package = "raveio")), "")
+  project_name <- "YAEL"
+
+  template <- c(readLines(system.file('shell-templates/yael-preprocess.R', package = "raveio")), "")
   cmd <- glue(paste(template, collapse = "\n"), .sep = "\n", .open = "{{", .close = "}}", .trim = FALSE)
 
+  if( run_recon_all ) {
+    script_name <- "cmd-yael-preprocess-full.R"
+  } else {
+    script_name <- "cmd-yael-preprocess-simple.R"
+  }
+
   script_path <- normalizePath(
-    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "scripts", "cmd-yael-preprocess.sh"),
+    file.path(subject$preprocess_settings$raw_path, "rave-imaging", "scripts", script_name),
     mustWork = FALSE, winslash = "/"
   )
   execute <- function(...) {
     initialize_imaging_paths(subject)
-    cmd_execute(script = cmd, script_path = script_path, command = "bash", ...)
+    dir_create2(log_path)
+    log_abspath <- normalizePath(file.path(log_path, log_file),
+                                 winslash = "/", mustWork = FALSE)
+    cmd_execute(script = cmd, script_path = script_path,
+                args = c("--no-save", "--no-restore"),
+                command = rscript_path(),
+                stdout = log_abspath, stderr = log_abspath, ...)
   }
   re <- list(
     script = cmd,
     script_path = script_path,
     dry_run = dry_run,
-    freesurfer_home = freesurfer_home,
     log_file = file.path(log_path, log_file, fsep = "/"),
     src_path = t1w_path,
-    dest_path = file.path(work_path_actual, "rave-imaging", "fs", fsep = "/"),
+    dest_path = file.path(work_path_actual, "rave-imaging", fsep = "/"),
     execute = execute,
-    command = "bash"
+    command = rscript_path()
   )
   if( verbose ) {
     message(cmd)
@@ -251,7 +260,6 @@ cmd_run_yael_preprocess <- function(
 
   return(invisible(re))
 
-  # cmd_run_recon_all(subject = "devel/YCQ", mri_path = "/Volumes/PennRAID/Dropbox (PENN Neurotrauma)/BeauchampServe/rave_data/raw/YCQ/rave-imaging/inputs/MRI/YCQ_MRI.nii", args = "-autorecon1", verbose = TRUE)
 }
 
 #' @rdname cmd-external

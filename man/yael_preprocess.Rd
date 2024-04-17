@@ -17,7 +17,6 @@ cmd_run_yael_preprocess(
   register_reversed = FALSE,
   normalize_template = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09c"),
   run_recon_all = TRUE,
-  command_path = NULL,
   dry_run = FALSE,
   verbose = TRUE
 )
@@ -73,9 +72,6 @@ will be normalized into}
 
 \item{run_recon_all}{whether to run \code{'FreeSurfer'} reconstruction;
 default is true}
-
-\item{command_path}{\code{'FreeSurfer'} path, if the default automatic
-detection fails}
 
 \item{dry_run}{whether to dry-run the script and check if error exists before
 actually execute the scripts.}
