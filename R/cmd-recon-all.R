@@ -78,7 +78,7 @@ cmd_run_recon_all <- function(
     work_path_symlink <- file.path(work_path, subject$subject_code, fsep = "/")
   }
 
-  work_path_actual <- subject$preprocess_settings$raw_path
+  work_path_actual <- normalize_path(subject$preprocess_settings$raw_path, must_work = FALSE)
 
   template <- c(readLines(system.file('shell-templates/recon-all-t1.sh', package = "raveio")), "")
   cmd <- glue(paste(template, collapse = "\n"), .sep = "\n", .open = "{{", .close = "}}", .trim = FALSE)
@@ -212,7 +212,7 @@ cmd_run_yael_preprocess <- function(
   log_file <- strftime(Sys.time(), "log-yael-preprocess-%y%m%d-%H%M%S.log")
 
   # Always use a temporary working path since the target directory might contain spaces
-  work_path_actual <- subject$preprocess_settings$raw_path
+  work_path_actual <- normalize_path(subject$preprocess_settings$raw_path, must_work = FALSE)
 
   project_name <- "YAEL"
 
