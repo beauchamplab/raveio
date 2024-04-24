@@ -34,6 +34,7 @@ normalize_commandline_path <- function(
       suppressWarnings({
         res <- system2(path, args = "--version",
                        wait = TRUE, stdout = TRUE, stderr = TRUE)
+        res <- paste(res, collapse = "\n")
         if(any(grepl("dcm2niix", res, ignore.case = TRUE))) {
           return(path)
         }
@@ -50,6 +51,7 @@ normalize_commandline_path <- function(
           )),
           wait = TRUE, stdout = TRUE, stderr = TRUE
         )
+        res <- paste(res, collapse = "\n")
         if(grepl("freesurfer", res, ignore.case = TRUE)) {
           return(path)
         }
