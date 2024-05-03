@@ -123,11 +123,11 @@ cp -f "$SUBJECTS_DIR/fs/mri/T1.nii" "$derivative_path/T1.nii"
 mri_info --vox2ras "$derivative_path/T1.nii" > "$derivative_path/transform-Norig.tsv"
 mri_info --vox2ras-tkr "$derivative_path/T1.nii" > "$derivative_path/transform-Torig.tsv"
 
-# Removing temporary fs root
-rm -r "$wdir_fs"
-
 # Copy raw MRI to FreeSurfer folder so 3D viewer can recognize it
 cp -f "$mri_path" "$SUBJECTS_DIR/fs/mri/rave_slices$mri_ext"
+
+# Removing temporary fs root
+rm -r "$wdir_fs"
 
 echo "Done." | tee -a "$log_file"
 
