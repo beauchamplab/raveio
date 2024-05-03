@@ -76,27 +76,20 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
     }
 
   } else {
-    if(recache){
-      if( clean_before_cache ){
-        fs <- list.files(file.path(fs_path, 'RAVE'), pattern = '\\.json$',
-                        all.files = FALSE, recursive = FALSE, full.names = TRUE,
-                        ignore.case = TRUE, include.dirs = FALSE, no.. = TRUE)
-        lapply(fs, unlink)
-      }
-      threeBrain::import_from_freesurfer(fs_path, subject_name = subject$subject_code)
-    }
+    # if(recache){
+    #   if( clean_before_cache ){
+    #     fs <- list.files(file.path(fs_path, 'RAVE'), pattern = '\\.json$',
+    #                     all.files = FALSE, recursive = FALSE, full.names = TRUE,
+    #                     ignore.case = TRUE, include.dirs = FALSE, no.. = TRUE)
+    #     lapply(fs, unlink)
+    #   }
+    #   threeBrain::import_from_freesurfer(fs_path, subject_name = subject$subject_code)
+    # }
 
-    brain <- tryCatch({
-      threeBrain <- asNamespace('threeBrain')
-      threeBrain$threeBrain(
-        path = fs_path, subject_code = subject$subject_code,
-        surface_types = surfaces
-      )
-    }, error = function(e) {
-      threeBrain::freesurfer_brain2(
-        fs_subject_folder = fs_path, subject_name = subject$subject_code,
-        surface_types = surfaces, use_141 = use_141)
-    })
+    brain <- threeBrain::threeBrain(
+      path = fs_path, subject_code = subject$subject_code,
+      surface_types = surfaces
+    )
 
 
     if(is.data.frame(electrode_table)) {
