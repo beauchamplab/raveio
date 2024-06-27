@@ -202,7 +202,13 @@
     <loc>/reference/module_registry.html</loc>
   </url>
   <url>
+    <loc>/reference/new_constraints.html</loc>
+  </url>
+  <url>
     <loc>/reference/new_electrode.html</loc>
+  </url>
+  <url>
+    <loc>/reference/new_variable_collection.html</loc>
   </url>
   <url>
     <loc>/reference/niftyreg_coreg.html</loc>
