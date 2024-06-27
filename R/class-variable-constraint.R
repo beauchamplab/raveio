@@ -213,10 +213,14 @@ RAVEVariable <- R6::R6Class(
         return(self)
       }
       old_v <- private$.value
+      old_validated_flag <- private$.validated
+      old_validation_error <- private$.validation_error
       suc <- FALSE
       on.exit({
         if(!suc) {
           private$.value <- old_v
+          private$.validated <- old_validated_flag
+          private$.validation_error <- old_validation_error
         }
       })
       private$.value <- x
