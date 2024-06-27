@@ -1,7 +1,7 @@
 Package: raveio
 Type: Package
 Title: File-System Toolbox for RAVE Project
-Version: 0.9.0.52
+Version: 0.9.0.53
 Language: en-US
 Authors@R: c(
     person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre", "cph")),
@@ -36,7 +36,6 @@ Imports:
     glue,
     globals,
     hdf5r (>= 1.3.4),
-    jsonlite (>= 1.7.0),
     R.matlab (>= 3.6.2),
     R6,
     stringr (>= 1.4.0),
@@ -47,8 +46,10 @@ Imports:
     promises (>= 1.2.0),
     threeBrain (>= 0.2.5),
     rpymat,
-    ravetools
+    ravetools,
+    checkmate (>= 2.3.1)
 Suggests:
+    jsonlite,
     visNetwork,
     testthat,
     knitr,

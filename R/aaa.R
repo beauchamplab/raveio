@@ -10,6 +10,7 @@
 #' @importFrom promises %...T>%
 #' @importFrom promises %...!%
 #' @importFrom promises %...T!%
+#' @importFrom checkmate makeAssertCollection
 NULL
 
 #' @name raveio-constants
@@ -86,7 +87,7 @@ verbose_levels <-
   )
 
 str2lang_alt <- function (s) {
-  s <- sprintf("quote(%s)", stringr::str_trim(s))
+  s <- sprintf("quote(%s)", trimws(s))
   eval(parse(text = s))
 }
 
@@ -244,7 +245,7 @@ get_namespace_function <- function(ns, func, on_missing) {
 #'
 #' @export
 catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture = FALSE){
-  level <- stringr::str_to_upper(level)
+  level <- toupper(level)
   opt_level <- raveio_getopt('verbose_level')
   args <- list(...)
   msg <- tryCatch({
@@ -639,7 +640,9 @@ is_from_namespace <- function(x, check_dipsaus = TRUE) {
   if(identical(x, baseenv())) { return(TRUE) }
   if(identical(x, emptyenv())) { return(FALSE) }
   if(identical(x, globalenv())) { return(FALSE) }
-  return(is_from_namespace(parent.env(x), check_dipsaus = FALSE))
+  penv <- parent.env(x)
+  if(identical(penv, x)) { return(FALSE) }
+  return(is_from_namespace(penv, check_dipsaus = FALSE))
 }
 
 
@@ -661,3 +664,9 @@ format.raveio_digest_expression <- function(x, ...) {
   attributes(x) <- NULL
   x
 }
+
+
+key_missing <- function () {
+  structure(list(), class = "key_missing")
+}
+
