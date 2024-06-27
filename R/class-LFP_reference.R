@@ -181,7 +181,7 @@ LFP_reference <- R6::R6Class(
       dimnames(arr) <- list(
         Frequency = freq$Frequency,
         Time = tidx / srate,
-        Trial = sort(epoch_tbl$Trial),
+        Trial = epoch_tbl$Trial,
         Electrode = self$number
       )
 
@@ -211,7 +211,7 @@ LFP_reference <- R6::R6Class(
           next
         }
 
-        trials <- epoch_tbl$Trial[sel]
+        trials <- which(sel)
         onsets <- epoch_tbl$Time[sel]
         tp <- sapply(onsets, function(o){
           idx <- round(o * srate)
@@ -302,7 +302,7 @@ LFP_reference <- R6::R6Class(
 
       dimnames(arr) <- list(
         Time = tidx / srate,
-        Trial = sort(epoch_tbl$Trial),
+        Trial = epoch_tbl$Trial,
         Electrode = self$number
       )
 
@@ -312,7 +312,7 @@ LFP_reference <- R6::R6Class(
           next
         }
 
-        trials <- epoch_tbl$Trial[sel]
+        trials <- which(sel)
         onsets <- epoch_tbl$Time[sel]
         tp <- sapply(onsets, function(o){
           idx <- round(o * srate)

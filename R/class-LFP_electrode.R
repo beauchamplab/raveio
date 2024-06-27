@@ -223,7 +223,7 @@ LFP_electrode <- R6::R6Class(
       dimnames(arr) <- list(
         Frequency = freq$Frequency,
         Time = tidx / srate,
-        Trial = sort(epoch_tbl$Trial),
+        Trial = epoch_tbl$Trial,
         Electrode = self$number
       )
 
@@ -253,7 +253,7 @@ LFP_electrode <- R6::R6Class(
           next
         }
 
-        trials <- epoch_tbl$Trial[sel]
+        trials <- which(sel)
         onsets <- epoch_tbl$Time[sel]
         tp <- sapply(onsets, function(o){
           idx <- round(o * srate)
@@ -329,7 +329,7 @@ LFP_electrode <- R6::R6Class(
 
       dimnames(arr) <- list(
         Time = tidx / srate,
-        Trial = sort(epoch_tbl$Trial),
+        Trial = epoch_tbl$Trial,
         Electrode = self$number
       )
 
@@ -339,7 +339,7 @@ LFP_electrode <- R6::R6Class(
           next
         }
 
-        trials <- epoch_tbl$Trial[sel]
+        trials <- which(sel)
         onsets <- epoch_tbl$Time[sel]
         tp <- sapply(onsets, function(o){
           idx <- round(o * srate)
@@ -555,7 +555,7 @@ LFP_electrode <- R6::R6Class(
         on_missing = function(arr) {
           dimnames(arr) <- list(
             Time = tidx / srate,
-            Trial = sort(epoch_tbl$Trial),
+            Trial = epoch_tbl$Trial,
             Electrode = self$number
           )
         }
@@ -564,7 +564,7 @@ LFP_electrode <- R6::R6Class(
         for(b in blocks) {
           sel <- epoch_tbl$Block == b
           if(!any(sel)){ next }
-          trials <- epoch_tbl$Trial[sel]
+          trials <- which(sel)
           onsets <- epoch_tbl$Time[sel]
           tp <- sapply(onsets, function(o){
             idx <- round(o * srate)
