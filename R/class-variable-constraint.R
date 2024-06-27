@@ -207,7 +207,7 @@ RAVEVariable <- R6::R6Class(
       invisible(self)
     },
 
-    set_value = function(x, validate = TRUE, ...) {
+    set_value = function(x, validate = TRUE, on_error = NULL) {
       if( !validate ) {
         private$.value <- x
         return(self)
@@ -224,8 +224,18 @@ RAVEVariable <- R6::R6Class(
         }
       })
       private$.value <- x
-      self$validate(...)
-      suc <- TRUE
+      tryCatch({
+        self$validate()
+        suc <- TRUE
+      }, error = function(e) {
+        if( is.function(on_error) ) {
+          private$.value <- on_error(e, old_v)
+          self$validate()
+          suc <- TRUE
+        } else {
+          stop(e)
+        }
+      })
       return(invisible())
     },
 
