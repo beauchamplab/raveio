@@ -105,7 +105,7 @@ along the search path will be returned</p>
 <span class="r-in"><span><span class="co"># root/cd/a     - missing</span></span></span>
 <span class="r-in"><span><span class="co"># root/a        - exists!</span></span></span>
 <span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cd/a'</span>, <span class="va">root</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpk4uNae/a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpo7KiaF/a"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ------ Case 2: priority -------</span></span></span>
 <span class="r-in"><span><span class="co"># Create two paths in root</span></span></span>
@@ -117,7 +117,7 @@ along the search path will be returned</p>
 <span class="r-in"><span><span class="co"># root/cd/a     - exists - returned</span></span></span>
 <span class="r-in"><span><span class="co"># root/a        - exists, but ignored</span></span></span>
 <span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpk4uNae/cc/a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpo7KiaF/cc/a"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ------ Case 3: find all -------</span></span></span>
 <span class="r-in"><span><span class="co"># Create two paths in root</span></span></span>
@@ -129,8 +129,8 @@ along the search path will be returned</p>
 <span class="r-in"><span><span class="co"># root/cd/a     - exists - returned</span></span></span>
 <span class="r-in"><span><span class="co"># root/a        - exists - returned</span></span></span>
 <span class="r-in"><span><span class="fu">find_path</span><span class="op">(</span><span class="st">'ins/cc/a'</span>, <span class="va">root</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpk4uNae/cc/a"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpk4uNae/a"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpo7KiaF/cc/a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/private/var/folders/b3/2xm02wpd21qgrpkck5q1c6k40000gn/T/Rtmpo7KiaF/a"   </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
