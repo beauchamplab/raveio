@@ -192,21 +192,41 @@ pipeline_install_github <- function(
   repo, to = c("default", "custom", "workdir", "tempdir"),
   upgrade = FALSE, force = FALSE, ...
 ) {
-  # # DEBUG starts
+  to <- match.arg(to)
+  args <- list(...)
+
+  # DIPSAUS DEBUG START
   # repo <- 'rave-ieeg/rave-pipelines'
   # to <- "default"
   # upgrade <- FALSE
   # force <- FALSE
-  # # DEBUG ends
-  to <- match.arg(to)
-  args <- list(...)
+  # args <- list()
+
   remote_argnames <- c("ref", "subdir", "auth_token", "sha", "host")
   remote_args <- args[names(args) %in% remote_argnames]
   remote_args$repo <- repo
   remote <- do.call(remotes::github_remote, remote_args)
   exdir <- tempfile()
-  tarball <- remotes::remote_download(remote)
+  timeout <- options(timeout = 3600)
+  res <- tryCatch({
+    message("Trying to use Github API")
+    tarball <- remotes::remote_download(remote)
+    tarball_format <- "tar.gz"
+  }, error = function(e) {
+    message("Unable to download the tarball. You might have been using the wrong Github API token/privilege or incorrect repository name.")
+    e
+  })
+  if(inherits(res, "error")) {
+    message("Falling back to normal downloading method (branch information is ignored).")
+    url <- sprintf("https://github.com/%s/%s/archive/refs/heads/main.zip",
+                   remote$username, remote$repo)
+    tarball <- tempfile(fileext = ".zip")
+    utils::download.file(url, destfile = tarball, cacheOK = FALSE)
+    tarball_format <- "zip"
+  }
+
   on.exit({
+    do.call(options, timeout)
     unlink(tarball)
     unlink(exdir, recursive = TRUE, force = TRUE)
   }, add = TRUE)
