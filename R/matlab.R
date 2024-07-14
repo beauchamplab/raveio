@@ -128,12 +128,7 @@ read_mat2 <- function(file, ram = TRUE, engine = c("r", "py")){
   } else {
     # use python
     rpymat::ensure_rpymat(verbose = FALSE, cache = TRUE)
-    mat73 <- tryCatch({
-      rpymat::import("mat73", convert = FALSE)
-    }, error = function(e) {
-      rpymat::add_packages("mat73")
-      rpymat::import("mat73", convert = FALSE)
-    })
+
     sio <- tryCatch({
       rpymat::import("scipy.io", convert = FALSE)
     }, error = function(e) {
@@ -142,9 +137,15 @@ read_mat2 <- function(file, ram = TRUE, engine = c("r", "py")){
     })
 
     dat <- tryCatch({
-      sio$loadmat(file_name = file)
+      sio$loadmat(file)
     }, error = function(e) {
-      mat73$loadmat(filename = file)
+      mat73 <- tryCatch({
+        rpymat::import("mat73", convert = FALSE)
+      }, error = function(e) {
+        rpymat::add_packages("mat73")
+        rpymat::import("mat73", convert = FALSE)
+      })
+      mat73$loadmat(file)
     })
     re <- dipsaus::fastmap2()
 
