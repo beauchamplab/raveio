@@ -487,6 +487,36 @@ tfmtreg_filearray <- function() {
   )
 }
 
+tfmtreg_constrained_vars <- function() {
+  target_format_register(
+    "constrained_vars",
+    read = function(path,
+                    target_export = NULL,
+                    target_expr = NULL,
+                    target_depends = NULL) {
+      data <- readRDS(path)
+      env <- new.env()
+
+      lapply(sort(list.files(
+        "R/", ignore.case = TRUE,
+        pattern = "^shared-.*\\.R",
+        full.names = TRUE
+      )), function(f) {
+        source(f, local = env, chdir = TRUE)
+      })
+
+      raveio <- asNamespace("raveio")
+      object <- raveio$restore_list(data, env = env)
+      return(object)
+    },
+    write = function(object, path, target_export = NULL) {
+      raveio <- asNamespace("raveio")
+      saveRDS(raveio$store_list(object), path)
+      return()
+    }
+  )
+}
+
 tfmtreg_rave_subject <- function() {
   target_format_register(
     "rave-subject",
@@ -929,45 +959,24 @@ target_format_register_onload <- function(verbose = TRUE) {
     }
   }
 
-  tryCatch({
-    tfmtreg_filearray()
-  }, error = on_exception, warning = on_exception)
+  lapply(list(
+    tfmtreg_filearray,
+    tfmtreg_constrained_vars,
+    tfmtreg_rave_subject,
+    tfmtreg_rave_repository,
+    tfmtreg_rave_prepare_power,
+    tfmtreg_rave_prepare_phase,
+    tfmtreg_rave_prepare_wavelet,
+    tfmtreg_rave_prepare_subject_voltage_with_epoch,
+    tfmtreg_rave_brain,
+    tfmtreg_user_defined_python,
+    tfmtreg_user_defined_r
+  ), function(tfmtreg_func) {
+    tryCatch({
+      tfmtreg_func()
+    }, error = on_exception, warning = on_exception)
+  })
 
-  tryCatch({
-    tfmtreg_rave_subject()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_rave_repository()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_rave_prepare_power()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_rave_prepare_phase()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_rave_prepare_wavelet()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_rave_prepare_subject_voltage_with_epoch()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_rave_brain()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_user_defined_python()
-  }, error = on_exception, warning = on_exception)
-
-  tryCatch({
-    tfmtreg_user_defined_r()
-  }, error = on_exception, warning = on_exception)
 
 
 }

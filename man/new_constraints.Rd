@@ -3,11 +3,14 @@
 \name{new_constraints}
 \alias{new_constraints}
 \alias{new_constrained_variable}
+\alias{new_constrained_binding}
 \title{Create \code{'RAVE'} constrained variables}
 \usage{
 new_constraints(type, assertions = NULL)
 
 new_constrained_variable(name, initial_value, constraints = NULL, ...)
+
+new_constrained_binding(name, expr, quoted = FALSE, constraints = NULL, ...)
 }
 \arguments{
 \item{type}{variable type; \code{checkmate::assert_*} will be automatically
@@ -37,6 +40,10 @@ assigned with an empty list with class name \code{'key_missing'}}
 \code{constraints} is a string, then \code{constraints} will be passed to
 \code{new_constraints} (see argument \code{type}), and \code{...} will be
 packed as assertion parameters (see \code{assertions})}
+
+\item{expr}{expression for binding}
+
+\item{quoted}{whether \code{expr} is quoted, default is false}
 }
 \description{
 Create a variable that automatically validates
@@ -81,13 +88,13 @@ analysis_range$use_constraints(
       ),
 
       # validator 2
-      "range" = function(x) {
+      "range" = quote({
         check <- FALSE
-        if(length(x) == 2) {
+        if(length(.x) == 2) {
           check <- sapply(time_window, function(w) {
             if(
-              x[[1]] >= w[[1]] &&
-              x[[2]] <= w[[2]]
+              .x[[1]] >= w[[1]] &&
+              .x[[2]] <= w[[2]]
             ) { return (TRUE) }
             return( FALSE )
           })
@@ -101,7 +108,7 @@ analysis_range$use_constraints(
           collapse = "] or ["
         )
         return(sprintf("Invalid range: must be [\%s]", valid_ranges))
-      }
+      })
     )
   )
 )
@@ -114,6 +121,13 @@ analysis_range$validate(on_error = "message")
 analysis_range$value <- c(0, 1)
 
 print(analysis_range)
+analysis_range[]
+
+# Change the context
+time_window <- validate_time_window(c(0, 0.5))
+
+# re-validate will error out
+analysis_range$validate(on_error = "message")
 
 
 }

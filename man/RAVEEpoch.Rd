@@ -68,6 +68,8 @@ head(epoch$table)
 \item{\code{n_trials}}{total number of trials}
 
 \item{\code{trials}}{trial numbers}
+
+\item{\code{available_events}}{available events other than trial onset}
 }
 \if{html}{\out{</div>}}
 }

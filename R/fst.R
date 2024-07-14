@@ -261,7 +261,7 @@ NULL
 #' @rdname read-write-fst
 #' @export
 save_fst <- function(x, path, ...){
-  catgl('Writing to path: {path}')
+  # catgl('Writing to path: {path}')
   dir <- dirname(path)
   if(!dir.exists(dir)){
     dir.create(dir, recursive = TRUE, showWarnings = FALSE)

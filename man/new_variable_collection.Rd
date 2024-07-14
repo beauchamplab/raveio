@@ -4,7 +4,7 @@
 \alias{new_variable_collection}
 \title{Create a collection of constraint variables}
 \usage{
-new_variable_collection(name = "", explicit = TRUE)
+new_variable_collection(name = "", explicit = TRUE, r6_def = NULL)
 }
 \arguments{
 \item{name}{collection name, default is empty}
@@ -12,9 +12,13 @@ new_variable_collection(name = "", explicit = TRUE)
 \item{explicit}{whether setting and getting variables should be explicit,
 default is \code{TRUE}, which means trying to get undefined variables
 will result in errors}
+
+\item{r6_def}{\code{R6} class generator; default is
+\code{\link{RAVEVariableCollection}}. This input is for class definitions
+that are child classes of \code{RAVEVariableCollection}.}
 }
 \value{
-A \code{RAVEVariableCollection} instance
+A \code{RAVEVariableCollectionWrapper} instance
 }
 \description{
 Create a collection of constraint variables
@@ -27,7 +31,7 @@ collection <- new_variable_collection()
 collection$add_variable(id = "title", "Voltage traces")
 
 # Add a variable with placeholder
-collection$add_variable(id = "baseline_window")
+collection$add_variable(id = "time_points")
 
 # Add variable with constraints
 collection$add_variable(
@@ -43,19 +47,31 @@ collection$add_variable(
   )
 )
 
-collection$use_constraints(function(x) {
-  missing_values <- vapply(x, inherits, FALSE, "key_missing")
-  missing_keys <- names(x)[ missing_values ]
-  if(!length(missing_keys)) { return(TRUE) }
-  sprintf("Variable [\%s] missing", paste(missing_keys, collapse = ","))
-})
+collection$use_constraints(quote({
+  # `x` is the list of values
+  time_range <- range(.x$time_points, na.rm = TRUE)
+  if(
+    .x$analysis_range[[1]] >= time_range[[1]] &&
+    .x$analysis_range[[2]] <= time_range[[2]]
+  ) {
+    # valid
+    re <- TRUE
+  } else {
+
+    # error message
+    re <- sprintf(
+      "Invalid analysis range, must be within [\%.2f, \%.2f]",
+      time_range[[1]], time_range[[2]]
+    )
+  }
+
+  re
+}))
 
 
-# validation will fail
-collection$validate(on_error = "message")
+collection$set_value("time_points", seq(-1, 10, by = 0.5))
 
-# Fix the issue
-collection$set_variable("baseline_window", c(-1,0))
+# validation will pass
 collection$validate()
 
 # Get variable values
@@ -63,23 +79,30 @@ collection$as_list()
 collection[]
 
 # get one variable
-collection[["baseline_window"]]
+collection$get_value("analysis_range")
 
-# get partial variables
-collection["baseline_window", "analysis_range"]
-collection[c("baseline_window", "analysis_range")]
+# get unregistered variable
+collection$get_value("unregistered_variable")
+
+# get partial variables with single `[`
+collection["title", "analysis_range"]
+collection[c("title", "analysis_range")]
+
+collection$set_value("analysis_range", c(-2, 5))
 
 \dontrun{
+collection$validate()
 
-# error out when explicit
-collection[["unregistered_variable"]]
-collection[["unregistered_variable"]] <- 1
+# error out when explicit, please either
+# set explicit=TRUE or register the variable via $add_variable
+collection$set_value("unregistered_variable", 1)
 
 }
 
 # turn off explicit variable option
 collection$explicit <- FALSE
-collection[["unregistered_variable"]]
-collection[["unregistered_variable"]] <- 1
+collection$set_value("unregistered_variable", 1)
+collection$get_value("unregistered_variable")
+
 
 }
