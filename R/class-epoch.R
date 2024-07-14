@@ -150,6 +150,14 @@ RAVEEpoch <- R6::R6Class(
     #' @field trials trial numbers
     trials = function(){
       sort(as.integer(names(self$data)))
+    },
+
+    #' @field available_events available events other than trial onset
+    available_events = function() {
+      cnames <- self$columns
+      cnames <- cnames[startsWith(cnames, "Event_")]
+      if(!length(cnames)) { return(cnames) }
+      gsub("^Event_", "", cnames)
     }
   )
 )
