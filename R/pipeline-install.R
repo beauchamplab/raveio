@@ -151,13 +151,16 @@ pipeline_install_directory <- function(
 #' @param upgrade whether to upgrade the dependence; default is \code{FALSE}
 #' for stability, however, it is highly recommended to upgrade your
 #' dependencies
+#' @param set_default whether to set current pipeline module folder as the
+#' default, will be automatically set when the pipeline is from the official
+#' 'Github' repository.
 #' @param force whether to force installing the pipelines
 #' @param ... other parameters not used
 #' @returns nothing
 #' @export
 pipeline_install_local <- function(
   src, to = c("default", "custom", "workdir", "tempdir"),
-  upgrade = FALSE, force = FALSE, ...
+  upgrade = FALSE, force = FALSE, set_default = NA, ...
 ) {
   src <- normalizePath(src, mustWork = TRUE)
   stopifnot2(dir.exists(src), msg = "`pipeline_install_local`: `src` must be a valid directory")
@@ -182,6 +185,19 @@ pipeline_install_local <- function(
     }
   )
 
+  if(isTRUE(set_default)) {
+    fs <- list.files(src, recursive = FALSE, full.names = TRUE, all.files = TRUE)
+    template_path <- file.path(R_user_dir('raveio', 'data'), "rave-pipelines")
+
+    if(dir.exists(template_path)) {
+      try({
+        unlink(template_path, recursive = TRUE)
+      })
+    }
+    dir_create2(template_path)
+    file.copy(from = fs, to = template_path, recursive = TRUE, copy.mode = FALSE, copy.date = TRUE, overwrite = TRUE)
+  }
+
   pipeline_install_directory(directory = src, dest = dest, upgrade = upgrade, force = force, ...)
 
 }
@@ -190,7 +206,7 @@ pipeline_install_local <- function(
 #' @export
 pipeline_install_github <- function(
   repo, to = c("default", "custom", "workdir", "tempdir"),
-  upgrade = FALSE, force = FALSE, ...
+  upgrade = FALSE, force = FALSE, set_default = NA, ...
 ) {
   to <- match.arg(to)
   args <- list(...)
@@ -264,21 +280,24 @@ pipeline_install_github <- function(
       }
 
     }
-    conf <- as.list(as.data.frame(read.dcf(conf_path)))
+    # conf <- as.list(as.data.frame(read.dcf(conf_path)))
   }
 
-  if(identical(repo, "rave-ieeg/rave-pipelines")) {
-    fs <- list.files(src, recursive = FALSE, full.names = TRUE, all.files = TRUE)
-    template_path <- file.path(R_user_dir('raveio', 'data'), "rave-pipelines")
-
-    if(dir.exists(template_path)) {
-      try({
-        unlink(template_path, recursive = TRUE)
-      })
-    }
-    dir_create2(template_path)
-    file.copy(from = fs, to = template_path, recursive = TRUE, copy.mode = FALSE, copy.date = TRUE, overwrite = TRUE)
+  if(is.na(set_default) && identical(repo, "rave-ieeg/rave-pipelines")) {
+    set_default <- TRUE
   }
+  # if(identical(repo, "rave-ieeg/rave-pipelines")) {
+  #   fs <- list.files(src, recursive = FALSE, full.names = TRUE, all.files = TRUE)
+  #   template_path <- file.path(R_user_dir('raveio', 'data'), "rave-pipelines")
+  #
+  #   if(dir.exists(template_path)) {
+  #     try({
+  #       unlink(template_path, recursive = TRUE)
+  #     })
+  #   }
+  #   dir_create2(template_path)
+  #   file.copy(from = fs, to = template_path, recursive = TRUE, copy.mode = FALSE, copy.date = TRUE, overwrite = TRUE)
+  # }
 
 
   args <- args[!names(args) %in% remote_argnames]
@@ -286,6 +305,7 @@ pipeline_install_github <- function(
   args$to <- to
   args$upgrade <- upgrade
   args$force <- force
+  args$set_default <- set_default
   do.call(pipeline_install_local, args)
 }
 

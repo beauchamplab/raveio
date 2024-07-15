@@ -11,6 +11,7 @@ pipeline_install_local(
   to = c("default", "custom", "workdir", "tempdir"),
   upgrade = FALSE,
   force = FALSE,
+  set_default = NA,
   ...
 )
 
@@ -19,6 +20,7 @@ pipeline_install_github(
   to = c("default", "custom", "workdir", "tempdir"),
   upgrade = FALSE,
   force = FALSE,
+  set_default = NA,
   ...
 )
 }
@@ -34,6 +36,10 @@ for stability, however, it is highly recommended to upgrade your
 dependencies}
 
 \item{force}{whether to force installing the pipelines}
+
+\item{set_default}{whether to set current pipeline module folder as the
+default, will be automatically set when the pipeline is from the official
+'Github' repository.}
 
 \item{...}{other parameters not used}
 
