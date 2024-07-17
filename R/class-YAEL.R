@@ -340,7 +340,6 @@ YAELProcess <- R6::R6Class(
         fname <- gsub("\\.(nii|nii\\.gz)$", '', basename(path), ignore.case = TRUE)
         sprintf("Generating surfaces|%s", fname)
       })
-      volume_to_surf
     },
 
     #' @description Transform points from native images to template
