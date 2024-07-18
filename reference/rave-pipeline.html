@@ -13,7 +13,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.57</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.59</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,6 +101,12 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  <span class="va">skip_names</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">pipeline_dep_targets</span><span class="op">(</span></span>
+<span>  <span class="va">names</span>,</span>
+<span>  skip_names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">pipeline_eval</span><span class="op">(</span></span>
 <span>  <span class="va">names</span>,</span>
 <span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -137,7 +143,10 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  <span class="va">var_names</span>,</span>
 <span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
 <span>  branches <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ifnotfound <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  ifnotfound <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dependencies <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"ancestors_only"</span>, <span class="st">"all"</span><span class="op">)</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pipeline_vartable</span><span class="op">(</span></span>
@@ -191,7 +200,10 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pipeline_shared</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pipeline_shared</span><span class="op">(</span></span>
+<span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  callr_function <span class="op">=</span> <span class="fu">callr</span><span class="fu">::</span><span class="va"><a href="https://callr.r-lib.org/reference/r.html" class="external-link">r</a></span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -347,6 +359,17 @@ default is false</p></dd>
 
 <dt id="arg-ifnotfound">ifnotfound<a class="anchor" aria-label="anchor" href="#arg-ifnotfound"></a></dt>
 <dd><p>default values to return if variable is not found</p></dd>
+
+
+<dt id="arg-dependencies">dependencies<a class="anchor" aria-label="anchor" href="#arg-dependencies"></a></dt>
+<dd><p>whether to load dependent targets, choices are
+<code>'none'</code> (default, only load targets specified by <code>names</code>),
+<code>'ancestors_only'</code> (load all but the ancestors targets), and
+<code>'all'</code> (both targets and ancestors)</p></dd>
+
+
+<dt id="arg-simplify">simplify<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
+<dd><p>whether to simplify the output</p></dd>
 
 
 <dt id="arg-complete-only">complete_only<a class="anchor" aria-label="anchor" href="#arg-complete-only"></a></dt>

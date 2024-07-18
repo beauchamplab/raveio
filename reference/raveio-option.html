@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.57</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.59</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,26 @@ options, setting <code>temp</code> to false will reveal the actual settings.</p>
 The values are persistent and shared across multiple sessions.
 There are some read-only keys such as <code>"session_string"</code>. Trying to
 set those keys will result in error.</p>
-<p><code>raveio_getopt</code> returns value corresponding to the keys. If key is
+<p>The following keys are reserved by 'RAVE':</p>
+<dl><dt><code>data_dir</code></dt>
+<dd><p>Directory path, where processed data are stored;
+default is at home directory, folder <code>~/rave_data/data_dir</code></p></dd>
+
+<dt><code>raw_data_dir</code></dt>
+<dd><p>Directory path, where raw data files are stored,
+mainly the original signal files and imaging files;
+default is at home directory, folder <code>~/rave_data/raw_dir</code></p></dd>
+
+<dt><code>max_worker</code></dt>
+<dd><p>Maximum number of CPU cores to use; default
+is one less than the total number of CPU cores</p></dd>
+
+<dt><code>mni_template_root</code></dt>
+<dd><p>Directory path, where 'MNI' templates
+are stored</p></dd>
+
+
+</dl><p><code>raveio_getopt</code> returns value corresponding to the keys. If key is
 missing, the whole option will be returned.</p>
 <p>If set <code>all=TRUE</code>, <code>raveio_resetopt</code> resets all keys including
 non-standard ones. However <code>"session_string"</code> will never reset.</p>
