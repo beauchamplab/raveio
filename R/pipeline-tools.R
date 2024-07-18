@@ -172,6 +172,55 @@ pipeline_debug <- function(
   }
 }
 
+#' @rdname rave-pipeline
+#' @export
+pipeline_dep_targets <- function(
+    names, skip_names = NULL,
+    pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
+
+  force(names)
+
+  pipe_dir <- activate_pipeline(pipe_dir)
+  # script <- attr(pipe_dir, "target_script")
+  # main_targets <- load_target(script)
+  all_targets <- load_target("make-main.R")
+
+  dep_env <- new.env(parent = emptyenv(), hash = TRUE)
+
+  tnames <- vapply(all_targets, function(target) {
+    target$settings$name
+  }, "", USE.NAMES = FALSE)
+
+  tparents <- structure(
+    lapply(all_targets, function(target) {
+      target$command$deps
+    }),
+    names = tnames
+  )
+
+  walk <- function(name) {
+    if(!is.null(dep_env[[name]])) {
+      dep_env[[name]] <- dep_env[[name]] + 1L
+      return()
+    }
+    dep_env[[name]] <- 1L
+    pa <- tparents[[name]]
+    lapply(pa, walk)
+    return()
+  }
+
+  lapply(names, walk)
+  re <- ls(dep_env, all.names = TRUE)
+
+  if(length(skip_names)) {
+    dep_env <- new.env(parent = emptyenv(), hash = TRUE)
+    lapply(skip_names, walk)
+    skipped_names <- ls(dep_env, all.names = TRUE)
+    re <- re[!re %in% skipped_names]
+    attr(re, "skipped") <- skipped_names
+  }
+  re
+}
 
 #' @rdname rave-pipeline
 #' @export
@@ -207,15 +256,18 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
 
   # Load shared functions into env
   env$pipeline <- pipeline_from_path(pipe_dir)
-  shared_libs <- list.files(file.path(pipe_dir, "R"), pattern = "^shared-.*\\.R",
-                            full.names = TRUE, ignore.case = TRUE)
-  shared_libs <- sort(shared_libs)
+  skip_load_shared_env <- isTRUE(get0(".is_raveio_pipeline_shared_env", envir = env, ifnotfound = FALSE))
+  if(!skip_load_shared_env) {
+    shared_libs <- list.files(file.path(pipe_dir, "R"), pattern = "^shared-.*\\.R",
+                              full.names = TRUE, ignore.case = TRUE)
+    shared_libs <- sort(shared_libs)
 
-  lapply(shared_libs, function(f) {
-    catgl(sprintf("Loading script - %s", gsub("^.*[/|\\\\]shared-", "shared-", f)), .envir = emptyenv(), level = "DEFAULT")
-    source(file = f, local = env, chdir = TRUE)
-    return()
-  })
+    lapply(shared_libs, function(f) {
+      catgl(sprintf("Loading script - %s", gsub("^.*[/|\\\\]shared-", "shared-", f)), .envir = emptyenv(), level = "DEFAULT")
+      source(file = f, local = env, chdir = TRUE)
+      return()
+    })
+  }
 
   # if(dir.exists(file.path(pipe_dir, "py"))) {
   #   pipeline_py_module(pipe_dir = pipe_dir,
@@ -237,7 +289,13 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   # print(ls(env))
 
   if( shortcut ) {
-    matured_targets <- attr(as.list(env), "names")
+    matured_targets <- ls(env, all.names = TRUE, sorted = FALSE)
+    if(!isTRUE(env$.is_raveio_pipeline_shared_env)) {
+      penv <- parent.env(env)
+      if(is.environment(penv) && isTRUE(penv$.is_raveio_pipeline_shared_env)) {
+        matured_targets <- c(matured_targets, ls(penv, all.names = TRUE, sorted = FALSE))
+      }
+    }
   } else {
     matured_targets <- NULL
   }
@@ -247,6 +305,8 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
   all_starts <- Sys.time()
 
   missing_key <- new.env()
+
+  meta <- targets::tar_meta(store = targets::tar_config_get("store"))
 
   eval_target <- function(name) {
 
@@ -264,7 +324,7 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
     readable_name <- nm
 
     if( shortcut && name %in% missing_names ) {
-      v <- pipeline_read(var_names = name, ifnotfound = missing_key)
+      v <- pipeline_read(var_names = name, ifnotfound = missing_key, meta = meta)
       if(!identical(v, missing_key)) {
         env[[name]] <- v
         matured_targets <<- c(matured_targets, name)
@@ -378,9 +438,10 @@ pipeline_run_interactive <- function(
       callr_function = NULL,
       envir = env, names = skip_names
     ))
-    for(nm in skip_names){
-      assign(nm, pipeline_read(nm, pipe_dir = pipe_dir), envir = env)
-    }
+    list2env(
+      pipeline_read(var_names = skip_names, pipe_dir = pipe_dir, simplify = FALSE),
+      envir = env
+    )
   }
 
   w <- getOption("width", 80)
@@ -641,25 +702,40 @@ pipeline_read <- function(
   var_names,
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
   branches = NULL,
-  ifnotfound = NULL
+  ifnotfound = NULL,
+  dependencies = c('none', 'ancestors_only', 'all'),
+  simplify = TRUE,
+  ...
 ) {
+  dependencies <- match.arg(dependencies)
+
+  if( dependencies != "none") {
+    dep_names <- pipeline_dep_targets(names = var_names, pipe_dir = pipe_dir)
+    if( dependencies == "ancestors_only" ) {
+      dep_names <- dep_names[!dep_names %in% var_names]
+    }
+    var_names <- dep_names
+    simplify <- FALSE
+  }
+
   pipe_dir <- activate_pipeline(pipe_dir)
-  if(length(var_names) > 1){
-    re <- structure(lapply(var_names, function(vn){
-      tryCatch({
-        do.call(targets::tar_read,
-                list(name = str2lang(vn), branches = branches))
-      }, error = function(e){
-        ifnotfound
-      })
-    }), names = var_names)
-  } else {
-    re <- tryCatch({
-      do.call(targets::tar_read,
-              list(name = str2lang(var_names), branches = branches))
+
+  args <- list(...)
+  meta <- args$meta
+  if(!is.data.frame(meta)) {
+    meta <- targets::tar_meta(store = targets::tar_config_get("store"))
+  }
+
+  re <- structure(lapply(var_names, function(vn){
+    tryCatch({
+      targets::tar_read_raw(name = vn, branches = branches, meta = meta)
     }, error = function(e){
       ifnotfound
     })
+  }), names = var_names)
+
+  if(simplify && length(var_names) == 1){
+    re <- re[[ 1 ]]
   }
   return(re)
 }
@@ -673,12 +749,15 @@ pipeline_vartable <- function(
   ...
 ) {
   pipe_dir <- activate_pipeline(pipe_dir)
+  tbl <- NULL
   tryCatch({
-    targets::tar_meta(..., targets_only = targets_only,
-                      complete_only = complete_only)
+    if( targets::tar_exist_meta() ) {
+      tbl <- targets::tar_meta(..., targets_only = targets_only,
+                               complete_only = complete_only)
+    }
   }, error = function(e){
-    NULL
   })
+  tbl
 }
 
 #' @rdname rave-pipeline
@@ -1128,49 +1207,59 @@ pipeline_save_extdata <- function(
 
 #' @rdname rave-pipeline
 #' @export
-pipeline_shared <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")) {
+pipeline_shared <- function(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+                            callr_function = callr::r) {
 
   pipe_dir <- normalizePath(pipe_dir, mustWork = TRUE)
 
-  # try to get environment from targets
-  env <- callr::r(
-    function(pipe_dir) {
-      shared_env <- new.env()
-      runtime_env <- new.env()
+  impl <- function(pipe_dir) {
+    shared_env <- new.env(parent = globalenv())
+    runtime_env <- new.env(parent = globalenv())
+    raveio <- asNamespace("raveio")
+    runtime_env$pipe_dir <- pipe_dir
+    runtime_env$shared_env <- shared_env
+
+    with(runtime_env, {
       raveio <- asNamespace("raveio")
-      runtime_env$pipe_dir <- pipe_dir
-      runtime_env$shared_env <- shared_env
+      pipe_dir <- raveio$activate_pipeline(pipe_dir)
+      target_script <- attr(pipe_dir, "target_script")
 
-      with(runtime_env, {
-        raveio <- asNamespace("raveio")
-        pipe_dir <- raveio$activate_pipeline(pipe_dir)
-        target_script <- attr(pipe_dir, "target_script")
+      # shared_libs <-
+      #   list.files(
+      #     file.path(pipe_dir, "R"),
+      #     pattern = "^shared-.*\\.R",
+      #     full.names = TRUE,
+      #     ignore.case = TRUE
+      #   )
+      #
+      #
+      # lapply(sort(shared_libs), function(f) {
+      #   source(file = f,
+      #          local = shared_env,
+      #          chdir = TRUE)
+      # })
 
-        # shared_libs <-
-        #   list.files(
-        #     file.path(pipe_dir, "R"),
-        #     pattern = "^shared-.*\\.R",
-        #     full.names = TRUE,
-        #     ignore.case = TRUE
-        #   )
-        #
-        #
-        # lapply(sort(shared_libs), function(f) {
-        #   source(file = f,
-        #          local = shared_env,
-        #          chdir = TRUE)
-        # })
+      # load & combine pipelines
+      raveio$load_targets(target_script, env = shared_env)
 
-        # load & combine pipelines
-        raveio$load_targets(target_script, env = shared_env)
+    })
 
-      })
+    return(shared_env)
+  }
 
-      return(shared_env)
-    },
-    args = list(pipe_dir = pipe_dir),
-    cmdargs = c("--slave", "--no-save", "--no-restore")
-  )
+  # try to get environment from targets
+  if(is.function(callr_function)) {
+    env <- callr_function(
+      impl,
+      args = list(pipe_dir = pipe_dir),
+      cmdargs = c("--slave", "--no-save", "--no-restore")
+    )
+  } else {
+    env <- impl(pipe_dir)
+  }
+
+  env$.is_raveio_pipeline_shared_env <- TRUE
+
   return( env )
 
 }

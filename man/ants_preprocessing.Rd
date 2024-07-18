@@ -29,5 +29,5 @@ here}
 Nothing. All images are saved to \code{work_path}
 }
 \description{
-Process 'T1' weighted 'MRI' using \code{ANTs}
+This function is soft-deprecated. Use \code{\link{yael_preprocess}} instead.
 }

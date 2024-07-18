@@ -1,3 +1,9 @@
+
+mni_template_path <- function(...) {
+  path <- raveio_getopt(key = "mni_template_root", default = file.path(threeBrain::default_template_directory(), "templates"))
+  normalize_path(file.path(path, ...), must_work = FALSE)
+}
+
 #' Process brain images for \code{'YAEL'}
 #' @description
 #' Aligns \code{'T1w'} with other image types; normalizes \code{'T1w'}
@@ -137,7 +143,8 @@ yael_preprocess <- function(
   for(template_name in normalize_template) {
     rpyANTs::ensure_template(template_name)
     if(!length(atlases[[template_name]])) {
-      atlas_folder <- file.path(threeBrain::default_template_directory(), "templates", template_name, "atlases")
+
+      atlas_folder <- mni_template_path(template_name, "atlases")
       if(dir.exists(atlas_folder)) {
         atlases[[template_name]] <- normalize_path(atlas_folder)
       }

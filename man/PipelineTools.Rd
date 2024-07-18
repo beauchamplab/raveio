@@ -19,6 +19,8 @@ A table of the progress
 
 Nothing
 
+ancestor target names (including \code{names})
+
 A new pipeline object based on the path given
 
 the saved file path
@@ -69,6 +71,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-progress}{\code{PipelineTools$progress()}}
 \item \href{#method-PipelineTools-attach}{\code{PipelineTools$attach()}}
 \item \href{#method-PipelineTools-visualize}{\code{PipelineTools$visualize()}}
+\item \href{#method-PipelineTools-target_ancestors}{\code{PipelineTools$target_ancestors()}}
 \item \href{#method-PipelineTools-fork}{\code{PipelineTools$fork()}}
 \item \href{#method-PipelineTools-with_activated}{\code{PipelineTools$with_activated()}}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
@@ -222,7 +225,13 @@ does not use the \code{targets} infrastructure, hence the pipeline
 results will not be stored, and the order of \code{names} will be
 respected.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$eval(names, env = parent.frame(), clean = TRUE, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$eval(
+  names,
+  env = parent.frame(),
+  shortcut = FALSE,
+  clean = TRUE,
+  ...
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -231,6 +240,13 @@ respected.
 \item{\code{names}}{pipeline variable names to calculate; must be specified}
 
 \item{\code{env}}{environment to evaluate and store the results}
+
+\item{\code{shortcut}}{logical or characters; default is \code{FALSE}, meaning
+\code{names} and all the dependencies (if missing from \code{env})
+will be evaluated; set to \code{TRUE} if only \code{names} are to be
+evaluated. When \code{shortcut} is a character vector, it should be
+a list of targets (including their ancestors) whose values can be assumed
+to be up-to-date, and the evaluation of those targets can be skipped.}
 
 \item{\code{clean}}{whether to evaluate without polluting \code{env}}
 
@@ -246,9 +262,20 @@ respected.
 run the pipeline shared library in scripts starting with
 path \code{R/shared}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$shared_env()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$shared_env(callr_function = callr::r)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{callr_function}}{either \code{callr::r} or \code{NULL}; when
+\code{callr::r}, the environment will be loaded in isolated R session
+and serialized back to the main session to avoid contaminating the
+main session environment; when \code{NULL}, the code will be sourced
+directly in current environment.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineTools-python_module"></a>}}
@@ -337,6 +364,28 @@ visualize pipeline target dependency graph
 \item{\code{node_size, label_size}}{size of nodes and node labels}
 
 \item{\code{...}}{passed to \code{\link{pipeline_visualize}}}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-target_ancestors"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-target_ancestors}{}}}
+\subsection{Method \code{target_ancestors()}}{
+a helper function to get target ancestors
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$target_ancestors(names, skip_names = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{names}}{targets whose ancestor targets need to be queried}
+
+\item{\code{skip_names}}{targets that are assumed to be up-to-date, hence
+will be excluded, notice this exclusion is
+recursive, that means not only \code{skip_names} are excluded,
+but also their ancestors will be excluded from the result.}
 }
 \if{html}{\out{</div>}}
 }

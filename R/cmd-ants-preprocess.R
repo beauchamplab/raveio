@@ -1,4 +1,7 @@
 #' @title Process 'T1' weighted 'MRI' using \code{ANTs}
+#' @description
+#' This function is soft-deprecated. Use \code{\link{yael_preprocess}} instead.
+#'
 #' @param work_path working directory, all intermediate images will be stored
 #' here
 #' @param image_path input image path
@@ -10,6 +13,7 @@
 #' @export
 ants_preprocessing <- function(work_path, image_path, resample = FALSE, verbose = TRUE,
          template_subject = raveio_getopt("threeBrain_template_subject")) {
+  warning("`ants_preprocessing`: This function is deprecated. Use `raveio::yael_preprocess` instead")
   # DIPSAUS DEBUG START
   # work_path <- "~/Desktop/junk2"
   # image_path <- "/Users/dipterix/Dropbox (PennNeurosurgery)/RAVE/Samples/raw/YAH/MRI/MRI_RAW.nii"

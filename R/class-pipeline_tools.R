@@ -226,9 +226,16 @@ PipelineTools <- R6::R6Class(
     #' respected.
     #' @param names pipeline variable names to calculate; must be specified
     #' @param env environment to evaluate and store the results
+    #' @param shortcut logical or characters; default is \code{FALSE}, meaning
+    #' \code{names} and all the dependencies (if missing from \code{env})
+    #' will be evaluated; set to \code{TRUE} if only \code{names} are to be
+    #' evaluated. When \code{shortcut} is a character vector, it should be
+    #' a list of targets (including their ancestors) whose values can be assumed
+    #' to be up-to-date, and the evaluation of those targets can be skipped.
     #' @param clean whether to evaluate without polluting \code{env}
     #' @param ... passed to \code{\link{pipeline_eval}}
-    eval = function(names, env = parent.frame(), clean = TRUE, ...) {
+    eval = function(names, env = parent.frame(),
+                    shortcut = FALSE, clean = TRUE, ...) {
       if(clean) {
         envir <- new.env(parent = env)
       } else {
@@ -246,15 +253,43 @@ PipelineTools <- R6::R6Class(
       if(missing(names)) {
         names <- self$target_table$Names
       }
+      if(is.character(shortcut)) {
+        # skip targets specified by `shortcut`
+
+        # These targets need to update to get `names`
+        queue_targets <- self$target_ancestors(names, skip_names = shortcut)
+
+        # Update `names` so the `eval` is explicit
+        names <- unique(c(queue_targets, names))
+
+        # These targets are assumed up-to-date
+        matured_targets <- attr(queue_targets, "skipped")
+
+        # Pipeline shared environment with data loaded
+        existing_names <- ls(env, all.names = TRUE, sorted = FALSE)
+        missing_names <- matured_targets[!matured_targets %in% existing_names]
+        if(length(missing_names)) {
+          list2env(
+            self$read(missing_names, simplify = FALSE),
+            envir = envir
+          )
+        }
+        shortcut <- TRUE
+      }
       pipeline_eval(names = names, env = envir, pipe_dir = private$.pipeline_path,
-                    settings_path = self$settings_path, ...)
+                    settings_path = self$settings_path, shortcut = shortcut, ...)
     },
 
     #' @description run the pipeline shared library in scripts starting with
     #' path \code{R/shared}
+    #' @param callr_function either \code{callr::r} or \code{NULL}; when
+    #' \code{callr::r}, the environment will be loaded in isolated R session
+    #' and serialized back to the main session to avoid contaminating the
+    #' main session environment; when \code{NULL}, the code will be sourced
+    #' directly in current environment.
     #' @returns An environment of shared variables
-    shared_env = function() {
-      env <- pipeline_shared(pipe_dir = private$.pipeline_path)
+    shared_env = function(callr_function = callr::r) {
+      env <- pipeline_shared(pipe_dir = private$.pipeline_path, callr_function = callr_function)
       return(env)
     },
 
@@ -364,6 +399,18 @@ PipelineTools <- R6::R6Class(
         }
       })
       return(invisible())
+    },
+
+    #' @description a helper function to get target ancestors
+    #' @param names targets whose ancestor targets need to be queried
+    #' @param skip_names targets that are assumed to be up-to-date, hence
+    #' will be excluded, notice this exclusion is
+    #' recursive, that means not only \code{skip_names} are excluded,
+    #' but also their ancestors will be excluded from the result.
+    #' @returns ancestor target names (including \code{names})
+    target_ancestors = function(names, skip_names = NULL) {
+      pipeline_dep_targets(names = names, skip_names = skip_names,
+                           pipe_dir = private$.pipeline_path)
     },
 
     #' @description fork (copy) the current pipeline to a new directory

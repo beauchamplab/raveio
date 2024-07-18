@@ -50,6 +50,20 @@ The values are persistent and shared across multiple sessions.
 There are some read-only keys such as \code{"session_string"}. Trying to
 set those keys will result in error.
 
+The following keys are reserved by 'RAVE':
+
+\describe{
+\item{\code{data_dir}}{Directory path, where processed data are stored;
+default is at home directory, folder \code{~/rave_data/data_dir}}
+\item{\code{raw_data_dir}}{Directory path, where raw data files are stored,
+mainly the original signal files and imaging files;
+default is at home directory, folder \code{~/rave_data/raw_dir}}
+\item{\code{max_worker}}{Maximum number of CPU cores to use; default
+is one less than the total number of CPU cores}
+\item{\code{mni_template_root}}{Directory path, where 'MNI' templates
+are stored}
+}
+
 \code{raveio_getopt} returns value corresponding to the keys. If key is
 missing, the whole option will be returned.
 

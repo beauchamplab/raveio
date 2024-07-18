@@ -30,6 +30,11 @@
 #' @param return_values whether to return pipeline target values; default is
 #' true; only works in \code{pipeline_run_bare} and will be ignored by
 #' \code{pipeline_run}
+#' @param dependencies whether to load dependent targets, choices are
+#' \code{'none'} (default, only load targets specified by \code{names}),
+#' \code{'ancestors_only'} (load all but the ancestors targets), and
+#' \code{'all'} (both targets and ancestors)
+#' @param simplify whether to simplify the output
 #' @param method how the progress should be presented; choices are
 #' \code{"summary"}, \code{"details"}, \code{"custom"}. If custom method is
 #' chosen, then \code{func} will be called

@@ -13,6 +13,7 @@
 \alias{load_targets}
 \alias{pipeline_target_names}
 \alias{pipeline_debug}
+\alias{pipeline_dep_targets}
 \alias{pipeline_eval}
 \alias{pipeline_visualize}
 \alias{pipeline_progress}
@@ -83,6 +84,12 @@ pipeline_debug(
   skip_names
 )
 
+pipeline_dep_targets(
+  names,
+  skip_names = NULL,
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", ".")
+)
+
 pipeline_eval(
   names,
   env = new.env(parent = parent.frame()),
@@ -119,7 +126,10 @@ pipeline_read(
   var_names,
   pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
   branches = NULL,
-  ifnotfound = NULL
+  ifnotfound = NULL,
+  dependencies = c("none", "ancestors_only", "all"),
+  simplify = TRUE,
+  ...
 )
 
 pipeline_vartable(
@@ -173,7 +183,10 @@ pipeline_save_extdata(
   ...
 )
 
-pipeline_shared(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
+pipeline_shared(
+  pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+  callr_function = callr::r
+)
 }
 \arguments{
 \item{root_path}{the root directory for pipeline templates}
@@ -264,6 +277,13 @@ default is false}
 \item{branches}{branch to read from; see \code{\link[targets]{tar_read}}}
 
 \item{ifnotfound}{default values to return if variable is not found}
+
+\item{dependencies}{whether to load dependent targets, choices are
+\code{'none'} (default, only load targets specified by \code{names}),
+\code{'ancestors_only'} (load all but the ancestors targets), and
+\code{'all'} (both targets and ancestors)}
+
+\item{simplify}{whether to simplify the output}
 
 \item{complete_only}{whether only to show completed and up-to-date target
 variables; default is false}
