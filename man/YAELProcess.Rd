@@ -20,7 +20,9 @@ See method \code{get_template_mapping}
 A list of input, output images, with forward and inverse
 transform files (usually two \code{'Affine'} with one displacement field)
 
-Nothing
+transformed image in 'ANTs' format
+
+transformed image in 'ANTs' format
 
 Nothing
 
@@ -56,6 +58,7 @@ to native brain. See examples at \code{\link{as_yael_process}}
 \item \href{#method-YAELProcess-map_to_template}{\code{YAELProcess$map_to_template()}}
 \item \href{#method-YAELProcess-get_template_mapping}{\code{YAELProcess$get_template_mapping()}}
 \item \href{#method-YAELProcess-transform_image_from_template}{\code{YAELProcess$transform_image_from_template()}}
+\item \href{#method-YAELProcess-transform_image_to_template}{\code{YAELProcess$transform_image_to_template()}}
 \item \href{#method-YAELProcess-generate_atlas_from_template}{\code{YAELProcess$generate_atlas_from_template()}}
 \item \href{#method-YAELProcess-transform_points_to_template}{\code{YAELProcess$transform_points_to_template()}}
 \item \href{#method-YAELProcess-transform_points_from_template}{\code{YAELProcess$transform_points_from_template()}}
@@ -277,8 +280,47 @@ on template to native space
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{template_roi_path}}{path the a folder in which the atlases will be
+\item{\code{template_roi_path}}{path to the template image file which will be
 transformed into individuals' image}
+
+\item{\code{template_name}}{templates to use}
+
+\item{\code{native_type}}{which type of native image to use for calculating
+the coordinates (default \code{'T1w'})}
+
+\item{\code{interpolator}}{how to interpolate the \code{'voxels'}; default is
+\code{"auto"}: \code{'linear'} for probabilistic map and \code{'nearestNeighbor'}
+otherwise.}
+
+\item{\code{verbose}}{whether the print out the progress}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-YAELProcess-transform_image_to_template"></a>}}
+\if{latex}{\out{\hypertarget{method-YAELProcess-transform_image_to_template}{}}}
+\subsection{Method \code{transform_image_to_template()}}{
+Apply transform to images (usually an atlas or 'ROI')
+from native space to template
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$transform_image_to_template(
+  native_roi_path,
+  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
+    "mni_icbm152_nlin_asym_09c"),
+  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+  interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline",
+    "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc",
+    "lanczosWindowedSinc", "genericLabel"),
+  verbose = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{native_roi_path}}{path to the native image file that will be
+transformed into template}
 
 \item{\code{template_name}}{templates to use}
 

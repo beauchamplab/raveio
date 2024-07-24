@@ -244,7 +244,7 @@ YAELProcess <- R6::R6Class(
 
     #' @description Apply transform from images (usually an atlas or 'ROI')
     #' on template to native space
-    #' @param template_roi_path path the a folder in which the atlases will be
+    #' @param template_roi_path path to the template image file which will be
     #' transformed into individuals' image
     #' @param template_name templates to use
     #' @param native_type which type of native image to use for calculating
@@ -253,7 +253,7 @@ YAELProcess <- R6::R6Class(
     #' \code{"auto"}: \code{'linear'} for probabilistic map and \code{'nearestNeighbor'}
     #' otherwise.
     #' @param verbose whether the print out the progress
-    #' @returns Nothing
+    #' @returns transformed image in 'ANTs' format
     transform_image_from_template = function(
       template_roi_path,
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
@@ -284,6 +284,58 @@ YAELProcess <- R6::R6Class(
         )
       }
 
+    },
+
+    #' @description Apply transform to images (usually an atlas or 'ROI')
+    #' from native space to template
+    #' @param native_roi_path path to the native image file that will be
+    #' transformed into template
+    #' @param template_name templates to use
+    #' @param native_type which type of native image to use for calculating
+    #' the coordinates (default \code{'T1w'})
+    #' @param interpolator how to interpolate the \code{'voxels'}; default is
+    #' \code{"auto"}: \code{'linear'} for probabilistic map and \code{'nearestNeighbor'}
+    #' otherwise.
+    #' @param verbose whether the print out the progress
+    #' @returns transformed image in 'ANTs' format
+    transform_image_to_template = function(
+      native_roi_path,
+      template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
+      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+      interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline", "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc", "lanczosWindowedSinc", "genericLabel"), verbose = TRUE
+    ) {
+      stopifnot(file.exists(native_roi_path))
+      native_roi_path <- normalize_path(native_roi_path)
+      native_type <- match.arg(native_type)
+      interpolator <- match.arg(interpolator)
+      template_name <- match.arg(template_name)
+      template_name2 <- camel_template_name(template_name)
+      yael_py <- private$.impl()
+
+      # native_roi_path <- "/Volumes/BeauchampServe/rave_data/raw/PAV038/rave-imaging/fs/mri/rave_slices.nii.gz"
+      # template_name <- "mni_icbm152_nlin_asym_09a"
+      # native_type <- "T1w"
+      # interpolator <- "auto"
+      # self <- raveio::as_yael_process(subject = "PAV038"); yael_py <- self$.__enclos_env__$private$.impl()
+      # template_name2 <- raveio:::camel_template_name(template_name)
+      # verbose <- T
+
+      if( interpolator == "auto" ) {
+        yael_py$transform_image_to_template(
+          path = native_roi_path,
+          template_name = template_name2,
+          native_type = native_type,
+          verbose = isTRUE(verbose)
+        )
+      } else {
+        yael_py$transform_image_from_template(
+          path = template_roi_path,
+          template_name = template_name2,
+          native_type = native_type,
+          interpolator = interpolator,
+          verbose = isTRUE(verbose)
+        )
+      }
     },
 
     #' @description Generate atlas maps from template and morph to native brain
@@ -340,6 +392,7 @@ YAELProcess <- R6::R6Class(
         fname <- gsub("\\.(nii|nii\\.gz)$", '', basename(path), ignore.case = TRUE)
         sprintf("Generating surfaces|%s", fname)
       })
+      invisible()
     },
 
     #' @description Transform points from native images to template
