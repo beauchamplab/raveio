@@ -309,28 +309,33 @@ YAELProcess <- R6::R6Class(
       native_type <- match.arg(native_type)
       interpolator <- match.arg(interpolator)
       template_name <- match.arg(template_name)
+      template_folder <- call_rpyants("ensure_template", template_name)
+      template_path <- normalize_path(file.path(template_folder, "T1.nii.gz"))
       template_name2 <- camel_template_name(template_name)
       yael_py <- private$.impl()
 
-      # native_roi_path <- "/Volumes/BeauchampServe/rave_data/raw/PAV038/rave-imaging/fs/mri/rave_slices.nii.gz"
+      # native_roi_path <- "/Volumes/BeauchampServe/rave_data/raw/PAV042/rave-imaging/fs/mri/wmparc.mgz"
       # template_name <- "mni_icbm152_nlin_asym_09a"
       # native_type <- "T1w"
       # interpolator <- "auto"
-      # self <- raveio::as_yael_process(subject = "PAV038"); yael_py <- self$.__enclos_env__$private$.impl()
+      # self <- raveio::as_yael_process(subject = "PAV042"); yael_py <- self$.__enclos_env__$private$.impl()
       # template_name2 <- raveio:::camel_template_name(template_name)
       # verbose <- T
+      # template_path <- call_rpyants("ensure_template", name = template_name)
 
       if( interpolator == "auto" ) {
         yael_py$transform_image_to_template(
           path = native_roi_path,
           template_name = template_name2,
+          template_path = template_path,
           native_type = native_type,
           verbose = isTRUE(verbose)
         )
       } else {
-        yael_py$transform_image_from_template(
-          path = template_roi_path,
+        yael_py$transform_image_to_template(
+          path = native_roi_path,
           template_name = template_name2,
+          template_path = template_path,
           native_type = native_type,
           interpolator = interpolator,
           verbose = isTRUE(verbose)
