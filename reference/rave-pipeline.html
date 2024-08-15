@@ -13,7 +13,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.61</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.62</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,8 +133,9 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span><span class="fu">pipeline_fork</span><span class="op">(</span></span>
 <span>  src <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
 <span>  dest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"rave_pipeline_"</span><span class="op">)</span>,</span>
-<span>  filter_pattern <span class="op">=</span> <span class="va">PIPELINE_FORK_PATTERN</span>,</span>
-<span>  activate <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  policy <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  activate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pipeline_build</span><span class="op">(</span>pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span>
@@ -339,9 +340,10 @@ default is <code><a href="https://docs.ropensci.org/targets/reference/tar_progre
 <dd><p>pipeline folder to copy the pipeline script from and to</p></dd>
 
 
-<dt id="arg-filter-pattern">filter_pattern<a class="anchor" aria-label="anchor" href="#arg-filter-pattern"></a></dt>
-<dd><p>file name patterns used to filter the scripts to
-avoid copying data files; default is <code>PIPELINE_FORK_PATTERN</code></p></dd>
+<dt id="arg-policy">policy<a class="anchor" aria-label="anchor" href="#arg-policy"></a></dt>
+<dd><p>fork policy defined by module author, see text file
+'fork-policy' under the pipeline directory; if missing, then default to
+avoid copying <code>main.html</code> and <code>shared</code> folder</p></dd>
 
 
 <dt id="arg-activate">activate<a class="anchor" aria-label="anchor" href="#arg-activate"></a></dt>
