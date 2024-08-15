@@ -116,8 +116,9 @@ pipeline_progress(
 pipeline_fork(
   src = Sys.getenv("RAVE_PIPELINE", "."),
   dest = tempfile(pattern = "rave_pipeline_"),
-  filter_pattern = PIPELINE_FORK_PATTERN,
-  activate = FALSE
+  policy = "default",
+  activate = FALSE,
+  ...
 )
 
 pipeline_build(pipe_dir = Sys.getenv("RAVE_PIPELINE", "."))
@@ -266,8 +267,9 @@ default is \code{\link[targets]{tar_progress_summary}}}
 
 \item{src, dest}{pipeline folder to copy the pipeline script from and to}
 
-\item{filter_pattern}{file name patterns used to filter the scripts to
-avoid copying data files; default is \code{PIPELINE_FORK_PATTERN}}
+\item{policy}{fork policy defined by module author, see text file
+'fork-policy' under the pipeline directory; if missing, then default to
+avoid copying \code{main.html} and \code{shared} folder}
 
 \item{activate}{whether to activate the new pipeline folder from \code{dest};
 default is false}

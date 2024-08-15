@@ -41,8 +41,9 @@
 #' @param func function to call when reading customized pipeline progress;
 #' default is \code{\link[targets]{tar_progress_summary}}
 #' @param src,dest pipeline folder to copy the pipeline script from and to
-#' @param filter_pattern file name patterns used to filter the scripts to
-#' avoid copying data files; default is \code{PIPELINE_FORK_PATTERN}
+#' @param policy fork policy defined by module author, see text file
+#' 'fork-policy' under the pipeline directory; if missing, then default to
+#' avoid copying \code{main.html} and \code{shared} folder
 #' @param activate whether to activate the new pipeline folder from \code{dest};
 #' default is false
 #' @param var_names variable name to fetch or to check

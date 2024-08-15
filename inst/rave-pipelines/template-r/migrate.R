@@ -60,8 +60,7 @@ migrate <- function(project_name, subject_code, ..., overwrite = FALSE, backup =
     raveio::pipeline_fork(
       src = ".",
       dest = file.path(subject$pipeline_path, target_name),
-      activate = FALSE,
-      filter_pattern = "\\.(R|yaml|txt|csv|fst|conf)$"
+      activate = FALSE
     )
 
     # Modify the settings file of target pipeline

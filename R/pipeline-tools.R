@@ -654,9 +654,11 @@ pipeline_progress <- function(
 pipeline_fork <- function(
   src = Sys.getenv("RAVE_PIPELINE", "."),
   dest = tempfile(pattern = "rave_pipeline_"),
-  filter_pattern = PIPELINE_FORK_PATTERN,
-  activate = FALSE
+  policy = "default",
+  activate = FALSE,
+  ...
 ){
+
   if(!dir.exists(src)){
     stop("pipeline_fork: `src` must be a pipeline directory")
   }
@@ -667,13 +669,73 @@ pipeline_fork <- function(
     stop("pipeline_fork: `src/make-main.R` is missing")
   }
 
+  # search for fork-policy
+  fork_policy_path <- file.path(src, "fork-policy")
+  fork_policy_regexp <- c("^shared", "^main\\.html$")
+  if(file.exists(fork_policy_path)) {
+    fork_policy <- readLines(fork_policy_path)
+    idx <- which(startsWith(fork_policy, "["))
+    if(length(idx)) {
+      sel <- which(tolower(trimws(fork_policy[idx])) == sprintf("[%s]", tolower(policy)))
+      if(length(sel)) {
+        sel <- sel[[1]]
+        if(sel == length(idx)) {
+          start <- idx[[sel]] + 1
+          end <- length(fork_policy)
+          if( start <= end ) {
+            fork_policy_regexp <- fork_policy[seq(start, end)]
+          }
+        } else {
+          start <- idx[[sel]] + 1
+          end <- idx[[sel + 1]] - 1
+          if( start <= end ) {
+            fork_policy_regexp <- fork_policy[seq(start, end)]
+          }
+        }
+      }
+    }
+  }
+  # clean up
+  fork_policy_regexp <- fork_policy_regexp[nzchar(trimws(fork_policy_regexp))]
 
-  fs <- list.files(src, include.dirs = TRUE, full.names = FALSE, pattern = filter_pattern, ignore.case = TRUE)
+  # ignore .files
+  fork_policy_regexp <- c(fork_policy_regexp, "(^\\.|/\\.)")
+
+  # list all the files
+  fs <- list.files(
+    src,
+    include.dirs = FALSE,
+    full.names = FALSE,
+    ignore.case = TRUE,
+    all.files = TRUE,
+    recursive = TRUE,
+    no.. = TRUE
+  )
+  # format backslashes
+  fs <- gsub("[/|\\\\]+", "/", fs)
+
+  ignore_files <- lapply(fork_policy_regexp, function(regexp) {
+    fs[grepl(regexp, x = fs, ignore.case = TRUE)]
+  })
+  ignore_files <- unique(unlist(ignore_files))
+  fs <- fs[!fs %in% ignore_files]
 
   dir_create2(dest)
   dest <- normalizePath(dest, mustWork = TRUE)
-  file.copy(from = file.path(src, fs), to = dest, overwrite = TRUE,
-            recursive = TRUE, copy.date = TRUE)
+
+  # Copy the files
+  lapply(fs, function(file) {
+    src_path <- file.path(src, file)
+    dst_path <- file.path(dest, file)
+    dir_create2(dirname(dst_path))
+    file.copy(
+      from = src_path,
+      to = dst_path,
+      overwrite = TRUE,
+      recursive = FALSE,
+      copy.date = TRUE
+    )
+  })
 
   if( activate ){
     pipeline_build(dest)

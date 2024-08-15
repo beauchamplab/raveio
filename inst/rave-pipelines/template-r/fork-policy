@@ -1,0 +1,3 @@
+[default]
+^shared
+^main\.html$

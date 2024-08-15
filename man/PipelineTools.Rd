@@ -396,7 +396,7 @@ but also their ancestors will be excluded from the result.}
 \subsection{Method \code{fork()}}{
 fork (copy) the current pipeline to a new directory
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork(path, filter_pattern = PIPELINE_FORK_PATTERN)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork(path, policy = "default")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -404,7 +404,9 @@ fork (copy) the current pipeline to a new directory
 \describe{
 \item{\code{path}}{path to the new pipeline, a folder will be created there}
 
-\item{\code{filter_pattern}}{file pattern to copy}
+\item{\code{policy}}{fork policy defined by module author, see text file
+'fork-policy' under the pipeline directory; if missing, then default to
+avoid copying \code{main.html} and \code{shared} folder}
 }
 \if{html}{\out{</div>}}
 }

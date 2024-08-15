@@ -415,13 +415,15 @@ PipelineTools <- R6::R6Class(
 
     #' @description fork (copy) the current pipeline to a new directory
     #' @param path path to the new pipeline, a folder will be created there
-    #' @param filter_pattern file pattern to copy
+    #' @param policy fork policy defined by module author, see text file
+    #' 'fork-policy' under the pipeline directory; if missing, then default to
+    #' avoid copying \code{main.html} and \code{shared} folder
     #' @returns A new pipeline object based on the path given
-    fork = function(path, filter_pattern = PIPELINE_FORK_PATTERN) {
+    fork = function(path, policy = "default") {
       pipeline_fork(
         src = self$pipeline_path,
         dest = path,
-        filter_pattern = filter_pattern,
+        policy = policy,
         activate = FALSE
       )
       pipeline(
