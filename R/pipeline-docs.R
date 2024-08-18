@@ -4,8 +4,8 @@
 #' internal development use. The infrastructure will be deployed to 'RAVE' in
 #' the future to facilitate the "self-expanding" aim. Please check the official
 #' 'RAVE' website.
-#' @param pipe_dir where the pipeline directory is; can be set via system
-#' environment \code{Sys.setenv("RAVE_PIPELINE"=...)}
+#' @param pipe_dir,.pipe_dir where the pipeline directory is; can be set via
+#' system environment \code{Sys.setenv("RAVE_PIPELINE"=...)}
 #' @param quick whether to skip finished targets to save time
 #' @param skip_names hint of target names to fast skip provided they are
 #' up-to-date; only used when \code{quick=TRUE}. If missing, then
@@ -27,6 +27,8 @@
 #' @param names the names of pipeline targets that are to be executed; default
 #' is \code{NULL}, which runs all targets; use \code{pipeline_target_names}
 #' to check all your available target names.
+#' @param keys preference keys
+#' @param validator \code{NULL} or function to validate values
 #' @param return_values whether to return pipeline target values; default is
 #' true; only works in \code{pipeline_run_bare} and will be ignored by
 #' \code{pipeline_run}
@@ -84,7 +86,8 @@
 #' @param error_if_missing,default_if_missing what to do if the extended data
 #' is not found
 #' @param data extended data to be saved
-#' @param ... other parameters, targets, etc.
+#' @param ...,.list other parameters, targets, etc.
+#' @param .preference_instance internally used
 #' @returns \describe{
 #' \item{\code{pipeline_root}}{the root directories of the pipelines}
 #' \item{\code{pipeline_list}}{the available pipeline names under \code{pipeline_root}}

@@ -783,77 +783,26 @@ install_modules <- function(modules, dependencies = FALSE) {
 }
 
 
-#' Global preferences for pipelines and modules
-#' @description load persistent global preference settings that can be
-#' accessed across modules, pipelines, and R sessions.
-#' @details
-#' The preferences should not affect how pipeline is working, hence usually
-#' stores minor variables such as graphic options. Changing preferences
-#' will not invalidate pipeline cache.
-#'
-#' Developers should maintain and check the preferences at their own risks.
-#' For example, the preferences may not be available. In case of broken files,
-#' please use try-catch clause when trying to access the items.
-#'
-#' To avoid performance hit, please do not save functions, environments, only
-#' save atomic items within \code{1 MB}. Though not implemented at this moment,
-#' this restriction will be rigidly enforced in the future.
-#'
-#' @param name preference name, must contain only letters, digits,
-#' underscore, and hyphen, will be coerced to lower case (case-insensitive)
-#' @param ...,.initial_prefs key-value pairs of initial preference values
-#' @param .overwrite whether to overwrite the initial preference values
-#' if they exist.
-#' @param .verbose whether to verbose the preferences to be saved; default
-#' is false; turn on for debug use
-#' @returns A persistent map, see \code{\link[dipsaus]{rds_map}}
-#'
-#' @examples
-#'
-#' if( interactive() ) {
-#'
-#'
-#' # high-level method
-#' get_my_preference <- use_global_preferences(
-#'   name = "my_list",
-#'   item1 = "A"
-#' )
-#' get_my_preference("item1", "missing")
-#' get_my_preference("item2", "missing")
-#'
-#' # Low-level implementation
-#' preference <- global_preferences(
-#'   name = "my_list",
-#'   item1 = "A"
-#' )
-#'
-#' # get items wrapped in tryCatch
-#' get_my_preference <- function(name, default = NULL) {
-#'   tryCatch({
-#'     preference$get(name, missing_default = default)
-#'   }, error = function(e) {
-#'     default
-#'   })
-#' }
-#'
-#' get_my_preference("item1", "missing")
-#' get_my_preference("item2", "missing")
-#'
-#' }
-#'
-#' @export
-global_preferences = function(name, ..., .initial_prefs = list(), .overwrite = FALSE, .verbose = FALSE) {
+global_preferences = function(name = "default", ..., .initial_prefs = list(),
+                              .prefix_whitelist = NULL, .type_whitelist = NULL,
+                              .overwrite = FALSE, .verbose = FALSE) {
   stopifnot2(
     grepl(pattern = "^[a-zA-Z0-9_-]+$",
           x = name),
     msg = "preference `name` must only contain letters (a-z), digits (0-9), underscore (_), and hyphen (-)"
   )
-  name <- tolower(name)
+  name <- trimws(tolower(name))
 
-  pref_path <- file.path(R_user_dir("raveio", which = "config"), "pipeline_global_preferences", name)
+  if(length(name) != 1 || is.na(name) || !nzchar(name) || grepl("(^\\.|[/\\\\])", name)) {
+    stop("Invalid preference name [", name, "]. Must be non-hidden file name")
+  }
+
+  pref_path <- file.path(R_user_dir("raveio", which = "config"), "preferences", name)
 
   preference <- tryCatch({
-    dipsaus::rds_map(pref_path)
+    preference <- dipsaus::rds_map(pref_path)
+    stopifnot(preference$is_valid)
+    preference
   }, error = function(e) {
     if(file.exists(pref_path)) {
       unlink(pref_path, unlink(TRUE))
@@ -861,46 +810,107 @@ global_preferences = function(name, ..., .initial_prefs = list(), .overwrite = F
     dipsaus::rds_map(pref_path)
   })
 
+  prefix_whitelist <- unlist(.prefix_whitelist)
+  type_whitelist <- unlist(.type_whitelist)
+
+  validate_names <- function(nms, expected_length) {
+    if(length(nms) != expected_length) {
+      stop("Preference names cannot be blank")
+    }
+    if(expected_length == 0) { return() }
+    if(any(nms == "")) {
+      stop("Preference names cannot be blank")
+    }
+    # nms <- c("global.graphics.cex", "power_explorer.graphics.cex", "global.graphics.use_ggplot", "power_explorer.export.default_format")
+
+    parsed <- t(sapply(nms, function(nm) {
+      item <- strsplit(nm, ".", fixed = TRUE)[[1]]
+      if(length(item) < 3) {
+        stop("Invalid preference name `", nm, "`. \nPreference must have syntax [global/<module ID>].[type].[key]. \nFor example: `global.graphics.use_ggplot`, `power_explorer.export.default_format`, ...")
+      }
+      item <- c(item[c(1, 2)], paste(item[-c(1, 2)], collapse = "."))
+
+      if(length(prefix_whitelist)) {
+        if(!item[[1]] %in% prefix_whitelist) {
+          stop(
+            "Cannot set preference `",
+            nm,
+            "`: invalid prefix. Allowed prefix choices are: ",
+            paste(sprintf("`%s`", prefix_whitelist), collapse = ", ")
+          )
+        }
+      }
+
+      if(length(type_whitelist)) {
+        if(!item[[2]] %in% type_whitelist) {
+          stop(
+            "Cannot set preference `",
+            nm,
+            "`: invalid type. Allowed type choices are: ",
+            paste(sprintf("`%s`", type_whitelist), collapse = ", ")
+          )
+        }
+      }
+
+      item
+    }))
+
+  }
+
+  re <- list(
+    get = preference$get,
+    mget = preference$mget,
+
+    set = function(key, value, signature) {
+      validate_names(key, 1)
+      if( missing(signature) ) {
+        preference$set(key, value)
+      } else {
+        preference$set(key, value, signature)
+      }
+    },
+    mset = function(..., .list = NULL) {
+      .list <- c(list(...), .list)
+      nms <- names(.list)
+      validate_names(nms, length(.list))
+      preference$mset(.list = .list)
+    },
+
+    keys = preference$keys,
+    has = preference$has,
+
+    size = preference$size,
+    remove = preference$remove,
+
+    reset = preference$reset,
+    destroy = preference$destroy
+  )
+
+
   # avoid evaluating dots
   dot_names <- ...names()
   list_names <- names(.initial_prefs)
   nms <- c(dot_names, list_names)
   nms <- nms[!nms %in% ""]
-  if(!length(nms)) { return( preference ) }
-  if(!.overwrite) {
-    nms <- nms[ !nms %in% preference$keys() ]
-    if(!length(nms)) { return( preference ) }
-  }
-
-  if( .verbose ) {
-    catgl("Initializing the following preference(s): \n{ paste(nms, collapse = '\n') }", level = "DEBUG")
-  }
-
-  default_vals <- as.list(.initial_prefs[list_names %in% nms])
-  nms <- nms[nms %in% dot_names]
   if(length(nms)) {
-    for(nm in nms) {
-      default_vals[[nm]] <- ...elt(which(dot_names == nm))
+    if( !.overwrite ) {
+      nms <- nms[ !nms %in% preference$keys() ]
+    }
+    if(length(nms)) {
+      if( .verbose ) {
+        catgl("Initializing the following preference(s): \n{ paste(nms, collapse = '\n') }", level = "DEBUG")
+      }
+
+      default_vals <- as.list(.initial_prefs[list_names %in% nms])
+      nms <- nms[nms %in% dot_names]
+
+      for(nm in nms) {
+        default_vals[[nm]] <- ...elt(which(dot_names == nm))
+      }
+      re$mset(.list = default_vals)
     }
   }
 
-  preference$mset(.list = default_vals)
-  preference
+  re
 }
 
-#' @rdname global_preferences
-#' @export
-use_global_preferences <- function(name, ...) {
-
-  preference <- raveio::global_preferences(
-    name = name,
-    ...
-  )
-  function(key, default = NULL) {
-    tryCatch({
-      preference$get(key, missing_default = default)
-    }, error = function(e) {
-      default
-    })
-  }
-}

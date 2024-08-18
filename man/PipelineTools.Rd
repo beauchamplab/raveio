@@ -27,12 +27,47 @@ the saved file path
 
 the data if file is found or a default value
 
-A persistent map, see \code{\link[dipsaus]{rds_map}}
+A list of key-value pairs
+
+A list of the preferences. If \code{simplify} is true and length
+if keys is 1, then returns the value of that preference
+
+logical whether the keys exist
 }
 \description{
 Class definition for pipeline tools
 
 Class definition for pipeline tools
+}
+\examples{
+
+## ------------------------------------------------
+## Method `PipelineTools$get_preferences`
+## ------------------------------------------------
+
+
+library(raveio)
+if(interactive() && length(pipeline_list()) > 0) {
+  pipeline <- pipeline("power_explorer")
+
+  # set dummy preference
+  pipeline$set_preferences("global.example.dummy_preference" = 1:3)
+
+  # get preference
+  pipeline$get_preferences("global.example.dummy_preference")
+
+  # get preference with validator to ensure the value length to be 1
+  pipeline$get_preferences(
+    "global.example.dummy_preference",
+    validator = function(value) {
+      stopifnot(length(value) == 1)
+    },
+    ifnotfound = 100
+  )
+
+  pipeline$has_preferences("global.example.dummy_preference")
+}
+
 }
 \seealso{
 \code{\link{pipeline}}
@@ -77,7 +112,9 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
 \item \href{#method-PipelineTools-save_data}{\code{PipelineTools$save_data()}}
 \item \href{#method-PipelineTools-load_data}{\code{PipelineTools$load_data()}}
-\item \href{#method-PipelineTools-load_preferences}{\code{PipelineTools$load_preferences()}}
+\item \href{#method-PipelineTools-set_preferences}{\code{PipelineTools$set_preferences()}}
+\item \href{#method-PipelineTools-get_preferences}{\code{PipelineTools$get_preferences()}}
+\item \href{#method-PipelineTools-has_preferences}{\code{PipelineTools$has_preferences()}}
 \item \href{#method-PipelineTools-clone}{\code{PipelineTools$clone()}}
 }
 }
@@ -522,36 +559,112 @@ from the file extension}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PipelineTools-load_preferences"></a>}}
-\if{latex}{\out{\hypertarget{method-PipelineTools-load_preferences}{}}}
-\subsection{Method \code{load_preferences()}}{
-load persistent preference settings from the pipeline.
+\if{html}{\out{<a id="method-PipelineTools-set_preferences"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-set_preferences}{}}}
+\subsection{Method \code{set_preferences()}}{
+set persistent preferences from the pipeline.
 The preferences should not affect how pipeline is working, hence usually
 stores minor variables such as graphic options. Changing preferences
 will not invalidate pipeline cache.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$load_preferences(
-  name,
-  ...,
-  .initial_prefs = list(),
-  .overwrite = FALSE,
-  .verbose = FALSE
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$set_preferences(..., .list = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{..., .list}}{key-value pairs of initial preference values. The keys
+must start with 'global' or the module ID, followed by dot and preference
+type and names. For example \code{'global.graphics.continuous_palette'}
+for setting palette colors for continuous heat-map; "global" means the
+settings should be applied to all 'RAVE' modules. The module-level
+preference, \code{'power_explorer.export.default_format'} sets the
+default format for power-explorer export dialogue.}
+
+\item{\code{name}}{preference name, must contain only letters, digits,
+underscore, and hyphen, will be coerced to lower case (case-insensitive)}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-get_preferences"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-get_preferences}{}}}
+\subsection{Method \code{get_preferences()}}{
+get persistent preferences from the pipeline.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$get_preferences(
+  keys,
+  simplify = TRUE,
+  ifnotfound = NULL,
+  validator = NULL,
+  ...
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{name}}{preference name, must contain only letters, digits,
-underscore, and hyphen, will be coerced to lower case (case-insensitive)}
+\item{\code{keys}}{characters to get the preferences}
 
-\item{\code{..., .initial_prefs}}{key-value pairs of initial preference values}
+\item{\code{simplify}}{whether to simplify the results when length of key is 1;
+default is true; set to false to always return a list of preferences}
 
-\item{\code{.overwrite}}{whether to overwrite the initial preference values
-if they exist.}
+\item{\code{ifnotfound}}{default value when the key is missing}
 
-\item{\code{.verbose}}{whether to verbose the preferences to be saved; default
-is false; turn on for debug use}
+\item{\code{validator}}{\code{NULL} or function to validate the values; see
+'Examples'}
+
+\item{\code{...}}{passed to \code{validator} if \code{validator} is a function}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{
+library(raveio)
+if(interactive() && length(pipeline_list()) > 0) {
+  pipeline <- pipeline("power_explorer")
+
+  # set dummy preference
+  pipeline$set_preferences("global.example.dummy_preference" = 1:3)
+
+  # get preference
+  pipeline$get_preferences("global.example.dummy_preference")
+
+  # get preference with validator to ensure the value length to be 1
+  pipeline$get_preferences(
+    "global.example.dummy_preference",
+    validator = function(value) {
+      stopifnot(length(value) == 1)
+    },
+    ifnotfound = 100
+  )
+
+  pipeline$has_preferences("global.example.dummy_preference")
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-has_preferences"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-has_preferences}{}}}
+\subsection{Method \code{has_preferences()}}{
+whether pipeline has preference keys
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$has_preferences(keys, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{keys}}{characters name of the preferences}
+
+\item{\code{...}}{passed to internal methods}
 }
 \if{html}{\out{</div>}}
 }

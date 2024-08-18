@@ -37,7 +37,11 @@ PipelineTools <- R6::R6Class(
       private$.pipeline_path <- pipeline_find(pipeline_name, root_path = pipeline_root(paths, temporary = temporary))
       private$.pipeline_name <- attr(private$.pipeline_path, "target_name")
       private$.settings_file <- settings_file
-      private$.preferences <- dipsaus::fastmap2()
+      private$.preferences <- global_preferences(
+        .prefix_whitelist = c("global", self$pipeline_name),
+        # TODO: add type-explicit
+        .type_whitelist = NULL
+      )
 
       pipeline_settings_path <- file.path(
         private$.pipeline_path,
@@ -496,60 +500,78 @@ PipelineTools <- R6::R6Class(
                             pipe_dir = self$pipeline_path, ...)
     },
 
-    #' @description load persistent preference settings from the pipeline.
+    #' @description set persistent preferences from the pipeline.
     #' The preferences should not affect how pipeline is working, hence usually
     #' stores minor variables such as graphic options. Changing preferences
     #' will not invalidate pipeline cache.
     #' @param name preference name, must contain only letters, digits,
     #' underscore, and hyphen, will be coerced to lower case (case-insensitive)
-    #' @param ...,.initial_prefs key-value pairs of initial preference values
-    #' @param .overwrite whether to overwrite the initial preference values
-    #' if they exist.
-    #' @param .verbose whether to verbose the preferences to be saved; default
-    #' is false; turn on for debug use
-    #' @returns A persistent map, see \code{\link[dipsaus]{rds_map}}
-    load_preferences = function(name, ..., .initial_prefs = list(), .overwrite = FALSE, .verbose = FALSE) {
-      stopifnot2(
-        grepl(pattern = "^[a-zA-Z0-9_-]+$",
-              x = name),
-        msg = "preference `name` must only contain letters (a-z), digits (0-9), underscore (_), and hyphen (-)"
+    #' @param ...,.list key-value pairs of initial preference values. The keys
+    #' must start with 'global' or the module ID, followed by dot and preference
+    #' type and names. For example \code{'global.graphics.continuous_palette'}
+    #' for setting palette colors for continuous heat-map; "global" means the
+    #' settings should be applied to all 'RAVE' modules. The module-level
+    #' preference, \code{'power_explorer.export.default_format'} sets the
+    #' default format for power-explorer export dialogue.
+    #' @returns A list of key-value pairs
+    set_preferences = function(..., .list = NULL) {
+      pipeline_set_preferences(..., .list = .list,
+                               .preference_instance = private$.preferences)
+    },
+
+    #' @description get persistent preferences from the pipeline.
+    #' @param keys characters to get the preferences
+    #' @param simplify whether to simplify the results when length of key is 1;
+    #' default is true; set to false to always return a list of preferences
+    #' @param ifnotfound default value when the key is missing
+    #' @param validator \code{NULL} or function to validate the values; see
+    #' 'Examples'
+    #' @param ... passed to \code{validator} if \code{validator} is a function
+    #' @returns A list of the preferences. If \code{simplify} is true and length
+    #' if keys is 1, then returns the value of that preference
+    #' @examples
+    #'
+    #' library(raveio)
+    #' if(interactive() && length(pipeline_list()) > 0) {
+    #'   pipeline <- pipeline("power_explorer")
+    #'
+    #'   # set dummy preference
+    #'   pipeline$set_preferences("global.example.dummy_preference" = 1:3)
+    #'
+    #'   # get preference
+    #'   pipeline$get_preferences("global.example.dummy_preference")
+    #'
+    #'   # get preference with validator to ensure the value length to be 1
+    #'   pipeline$get_preferences(
+    #'     "global.example.dummy_preference",
+    #'     validator = function(value) {
+    #'       stopifnot(length(value) == 1)
+    #'     },
+    #'     ifnotfound = 100
+    #'   )
+    #'
+    #'   pipeline$has_preferences("global.example.dummy_preference")
+    #' }
+    #'
+    get_preferences = function(keys, simplify = TRUE, ifnotfound = NULL,
+                               validator = NULL, ...) {
+      pipeline_get_preferences(
+        keys = keys,
+        simplify = simplify,
+        ifnotfound = ifnotfound,
+        validator = validator,
+        ...,
+        .preference_instance = private$.preferences
       )
-      name <- tolower(name)
+    },
 
-      pref_path <- file.path(self$preference_path, name)
-
-      if(name %in% names(private$.preferences)) {
-        preference <- private$.preferences[[name]]
-      } else {
-        preference <- dipsaus::rds_map(pref_path)
-        private$.preferences[[name]] <- preference
-      }
-
-      # avoid evaluating dots
-      dot_names <- ...names()
-      list_names <- names(.initial_prefs)
-      nms <- c(dot_names, list_names)
-      nms <- nms[!nms %in% ""]
-      if(!length(nms)) { return( preference ) }
-      if(!.overwrite) {
-        nms <- nms[ !nms %in% preference$keys() ]
-        if(!length(nms)) { return( preference ) }
-      }
-
-      if( .verbose ) {
-        catgl("Initializing the following preference(s): \n{ paste(nms, collapse = '\n') }", level = "DEBUG")
-      }
-
-      default_vals <- as.list(.initial_prefs[list_names %in% nms])
-      nms <- nms[nms %in% dot_names]
-      if(length(nms)) {
-        for(nm in nms) {
-          default_vals[[nm]] <- ...elt(which(dot_names == nm))
-        }
-      }
-
-      preference$mset(.list = default_vals)
-      preference
+    #' @description whether pipeline has preference keys
+    #' @param keys characters name of the preferences
+    #' @param ... passed to internal methods
+    #' @returns logical whether the keys exist
+    has_preferences = function(keys, ...) {
+      pipeline_has_preferences(keys = keys, ...,
+                               .preference_instance = private$.preferences)
     }
 
   ),

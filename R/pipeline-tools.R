@@ -1387,3 +1387,85 @@ pipeline_py_module <- function(
 
   py_module
 }
+
+
+#' @rdname rave-pipeline
+#' @export
+pipeline_set_preferences <- function(
+    ..., .list = NULL,
+    .pipe_dir = Sys.getenv("RAVE_PIPELINE", "."),
+    .preference_instance = NULL) {
+  prefs <- c(list(...), .list)
+  if(!length(prefs)) { return(invisible()) }
+  # preferences must be `global/module_id`.`type (graphics, ...)`.`key`.dtype
+  nms <- names(prefs)
+  if(length(nms) != length(prefs) || any(nms == "")) {
+    stop("All preferences must be named")
+  }
+
+  if(missing(.preference_instance) || is.null(.preference_instance)) {
+    pipe_dir <- activate_pipeline(.pipe_dir)
+    pipeline_name <- attr(pipe_dir, "target_name")
+    instance <- global_preferences(.prefix_whitelist = c("global", pipeline_name))
+  } else {
+    instance <- .preference_instance
+  }
+
+  instance$mset(.list = prefs)
+
+  invisible(prefs)
+
+}
+
+#' @rdname rave-pipeline
+#' @export
+pipeline_get_preferences <- function(
+    keys, simplify = TRUE, ifnotfound = NULL, validator = NULL, ...,
+    .preference_instance = NULL) {
+
+  if(missing(.preference_instance) || is.null(.preference_instance)) {
+    instance <- global_preferences()
+  } else {
+    instance <- .preference_instance
+  }
+
+
+  if(is.function(validator)) {
+    args <- list(...)
+    force(ifnotfound)
+    re <- structure(
+      names = keys,
+      lapply(keys, function(key) {
+        if(instance$has(key)) {
+          value <- instance$get(key, missing_default = ifnotfound)
+          tryCatch({
+            do.call(validator, c(list(value), args))
+            return(value)
+          }, error = function(e) {
+            ifnotfound
+          })
+        } else {
+          ifnotfound
+        }
+      })
+    )
+  } else {
+    re <- instance$mget(keys, missing_default = ifnotfound)
+  }
+  if(simplify && length(keys) == 1) {
+    re <- re[[1]]
+  }
+  return(re)
+}
+
+#' @rdname rave-pipeline
+#' @export
+pipeline_has_preferences <- function(keys, ..., .preference_instance = NULL) {
+  if(missing(.preference_instance) || is.null(.preference_instance)) {
+    instance <- global_preferences()
+  } else {
+    instance <- .preference_instance
+  }
+  instance$has(keys, ...)
+}
+
