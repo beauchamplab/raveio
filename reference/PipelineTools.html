@@ -9,7 +9,7 @@ Class definition for pipeline tools"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.62</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.63</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,10 @@ or <code>async</code> is true; otherwise a list of values for input <code>names<
 <p>A new pipeline object based on the path given</p>
 <p>the saved file path</p>
 <p>the data if file is found or a default value</p>
-<p>A persistent map, see <code><a href="https://dipterix.org/dipsaus/reference/map.html" class="external-link">rds_map</a></code></p>
+<p>A list of key-value pairs</p>
+<p>A list of the preferences. If <code>simplify</code> is true and length
+if keys is 1, then returns the value of that preference</p>
+<p>logical whether the keys exist</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -117,7 +120,9 @@ signatures of data and commands</p></dd>
 <li><p><a href="#method-PipelineTools-clean"><code>PipelineTools$clean()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-save_data"><code>PipelineTools$save_data()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-load_data"><code>PipelineTools$load_data()</code></a></p></li>
-<li><p><a href="#method-PipelineTools-load_preferences"><code>PipelineTools$load_preferences()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-set_preferences"><code>PipelineTools$set_preferences()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-get_preferences"><code>PipelineTools$get_preferences()</code></a></p></li>
+<li><p><a href="#method-PipelineTools-has_preferences"><code>PipelineTools$has_preferences()</code></a></p></li>
 <li><p><a href="#method-PipelineTools-clone"><code>PipelineTools$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-PipelineTools-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -602,41 +607,118 @@ from the file extension</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-PipelineTools-load_preferences"></a><div class="section">
-<h3 id="method-load-preferences-">Method <code>load_preferences()</code><a class="anchor" aria-label="anchor" href="#method-load-preferences-"></a></h3>
-<p>load persistent preference settings from the pipeline.
+</div><p></p><hr><a id="method-PipelineTools-set_preferences"></a><div class="section">
+<h3 id="method-set-preferences-">Method <code>set_preferences()</code><a class="anchor" aria-label="anchor" href="#method-set-preferences-"></a></h3>
+<p>set persistent preferences from the pipeline.
 The preferences should not affect how pipeline is working, hence usually
 stores minor variables such as graphic options. Changing preferences
 will not invalidate pipeline cache.</p><div class="section">
 <h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">load_preferences</span><span class="op">(</span></span>
-<span>  <span class="va">name</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  .initial_prefs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  .overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  .verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">set_preferences</span><span class="op">(</span><span class="va">...</span>, .list <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-17">Arguments<a class="anchor" aria-label="anchor" href="#arguments-17"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>name</code></dt>
+<p></p><div class="arguments"><dl><dt><code>..., .list</code></dt>
+<dd><p>key-value pairs of initial preference values. The keys
+must start with 'global' or the module ID, followed by dot and preference
+type and names. For example <code>'global.graphics.continuous_palette'</code>
+for setting palette colors for continuous heat-map; "global" means the
+settings should be applied to all 'RAVE' modules. The module-level
+preference, <code>'power_explorer.export.default_format'</code> sets the
+default format for power-explorer export dialogue.</p></dd>
+
+
+<dt><code>name</code></dt>
 <dd><p>preference name, must contain only letters, digits,
 underscore, and hyphen, will be coerced to lower case (case-insensitive)</p></dd>
 
 
-<dt><code>..., .initial_prefs</code></dt>
-<dd><p>key-value pairs of initial preference values</p></dd>
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-PipelineTools-get_preferences"></a><div class="section">
+<h3 id="method-get-preferences-">Method <code>get_preferences()</code><a class="anchor" aria-label="anchor" href="#method-get-preferences-"></a></h3>
+<p>get persistent preferences from the pipeline.</p><div class="section">
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">get_preferences</span><span class="op">(</span></span>
+<span>  <span class="va">keys</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ifnotfound <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  validator <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-18">Arguments<a class="anchor" aria-label="anchor" href="#arguments-18"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>keys</code></dt>
+<dd><p>characters to get the preferences</p></dd>
 
 
-<dt><code>.overwrite</code></dt>
-<dd><p>whether to overwrite the initial preference values
-if they exist.</p></dd>
+<dt><code>simplify</code></dt>
+<dd><p>whether to simplify the results when length of key is 1;
+default is true; set to false to always return a list of preferences</p></dd>
 
 
-<dt><code>.verbose</code></dt>
-<dd><p>whether to verbose the preferences to be saved; default
-is false; turn on for debug use</p></dd>
+<dt><code>ifnotfound</code></dt>
+<dd><p>default value when the key is missing</p></dd>
+
+
+<dt><code>validator</code></dt>
+<dd><p><code>NULL</code> or function to validate the values; see
+'Examples'</p></dd>
+
+
+<dt><code>...</code></dt>
+<dd><p>passed to <code>validator</code> if <code>validator</code> is a function</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://beauchamplab.github.io/raveio/" class="external-link">raveio</a></span><span class="op">)</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/rave-pipeline.html">pipeline_list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">pipeline</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pipeline.html">pipeline</a></span><span class="op">(</span><span class="st">"power_explorer"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># set dummy preference</span></span>
+<span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">set_preferences</span><span class="op">(</span><span class="st">"global.example.dummy_preference"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># get preference</span></span>
+<span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">get_preferences</span><span class="op">(</span><span class="st">"global.example.dummy_preference"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># get preference with validator to ensure the value length to be 1</span></span>
+<span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">get_preferences</span><span class="op">(</span></span>
+<span>    <span class="st">"global.example.dummy_preference"</span>,</span>
+<span>    validator <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>    <span class="op">}</span>,</span>
+<span>    ifnotfound <span class="op">=</span> <span class="fl">100</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">has_preferences</span><span class="op">(</span><span class="st">"global.example.dummy_preference"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-PipelineTools-has_preferences"></a><div class="section">
+<h3 id="method-has-preferences-">Method <code>has_preferences()</code><a class="anchor" aria-label="anchor" href="#method-has-preferences-"></a></h3>
+<p>whether pipeline has preference keys</p><div class="section">
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">has_preferences</span><span class="op">(</span><span class="va">keys</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-19">Arguments<a class="anchor" aria-label="anchor" href="#arguments-19"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>keys</code></dt>
+<dd><p>characters name of the preferences</p></dd>
+
+
+<dt><code>...</code></dt>
+<dd><p>passed to internal methods</p></dd>
 
 
 </dl><p></p></div>
@@ -645,12 +727,12 @@ is false; turn on for debug use</p></dd>
 </div><p></p><hr><a id="method-PipelineTools-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-18">Arguments<a class="anchor" aria-label="anchor" href="#arguments-18"></a></h4>
+<h4 id="arguments-20">Arguments<a class="anchor" aria-label="anchor" href="#arguments-20"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -662,6 +744,38 @@ is false; turn on for debug use</p></dd>
 
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `PipelineTools$get_preferences`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://beauchamplab.github.io/raveio/" class="external-link">raveio</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="rave-pipeline.html">pipeline_list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">pipeline</span> <span class="op">&lt;-</span> <span class="fu"><a href="pipeline.html">pipeline</a></span><span class="op">(</span><span class="st">"power_explorer"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># set dummy preference</span></span></span>
+<span class="r-in"><span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">set_preferences</span><span class="op">(</span><span class="st">"global.example.dummy_preference"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># get preference</span></span></span>
+<span class="r-in"><span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">get_preferences</span><span class="op">(</span><span class="st">"global.example.dummy_preference"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># get preference with validator to ensure the value length to be 1</span></span></span>
+<span class="r-in"><span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">get_preferences</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"global.example.dummy_preference"</span>,</span></span>
+<span class="r-in"><span>    validator <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span>,</span></span>
+<span class="r-in"><span>    ifnotfound <span class="op">=</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">pipeline</span><span class="op">$</span><span class="fu">has_preferences</span><span class="op">(</span><span class="st">"global.example.dummy_preference"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

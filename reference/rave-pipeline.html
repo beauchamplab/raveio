@@ -13,7 +13,7 @@ the future to facilitate the &quot;self-expanding&quot; aim. Please check the of
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.62</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.63</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -204,7 +204,25 @@ the future to facilitate the "self-expanding" aim. Please check the official
 <span><span class="fu">pipeline_shared</span><span class="op">(</span></span>
 <span>  pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
 <span>  callr_function <span class="op">=</span> <span class="fu">callr</span><span class="fu">::</span><span class="va"><a href="https://callr.r-lib.org/reference/r.html" class="external-link">r</a></span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_set_preferences</span><span class="op">(</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  .list <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .pipe_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"RAVE_PIPELINE"</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  .preference_instance <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_get_preferences</span><span class="op">(</span></span>
+<span>  <span class="va">keys</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ifnotfound <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  validator <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .preference_instance <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pipeline_has_preferences</span><span class="op">(</span><span class="va">keys</span>, <span class="va">...</span>, .preference_instance <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -225,9 +243,9 @@ from subject pipeline folders</p></dd>
 <dd><p>the pipeline name to create; usually also the folder</p></dd>
 
 
-<dt id="arg-pipe-dir">pipe_dir<a class="anchor" aria-label="anchor" href="#arg-pipe-dir"></a></dt>
-<dd><p>where the pipeline directory is; can be set via system
-environment <code>Sys.setenv("RAVE_PIPELINE"=...)</code></p></dd>
+<dt id="arg-pipe-dir-pipe-dir">pipe_dir, .pipe_dir<a class="anchor" aria-label="anchor" href="#arg-pipe-dir-pipe-dir"></a></dt>
+<dd><p>where the pipeline directory is; can be set via
+system environment <code>Sys.setenv("RAVE_PIPELINE"=...)</code></p></dd>
 
 
 <dt id="arg-scheduler">scheduler<a class="anchor" aria-label="anchor" href="#arg-scheduler"></a></dt>
@@ -277,7 +295,7 @@ true; only works in <code>pipeline_run_bare</code> and will be ignored by
 <code>pipeline_run</code></p></dd>
 
 
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dt id="arg--list">..., .list<a class="anchor" aria-label="anchor" href="#arg--list"></a></dt>
 <dd><p>other parameters, targets, etc.</p></dd>
 
 
@@ -413,6 +431,18 @@ is not found</p></dd>
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>extended data to be saved</p></dd>
+
+
+<dt id="arg--preference-instance">.preference_instance<a class="anchor" aria-label="anchor" href="#arg--preference-instance"></a></dt>
+<dd><p>internally used</p></dd>
+
+
+<dt id="arg-keys">keys<a class="anchor" aria-label="anchor" href="#arg-keys"></a></dt>
+<dd><p>preference keys</p></dd>
+
+
+<dt id="arg-validator">validator<a class="anchor" aria-label="anchor" href="#arg-validator"></a></dt>
+<dd><p><code>NULL</code> or function to validate values</p></dd>
 
 </dl></div>
     <div class="section level2">
