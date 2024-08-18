@@ -783,7 +783,7 @@ install_modules <- function(modules, dependencies = FALSE) {
 }
 
 
-global_preferences = function(name = "default", ..., .initial_prefs = list(),
+global_preferences <- function(name = "default", ..., .initial_prefs = list(),
                               .prefix_whitelist = NULL, .type_whitelist = NULL,
                               .overwrite = FALSE, .verbose = FALSE) {
   stopifnot2(
@@ -863,20 +863,48 @@ global_preferences = function(name = "default", ..., .initial_prefs = list(),
 
     set = function(key, value, signature) {
       validate_names(key, 1)
-      if( missing(signature) ) {
-        preference$set(key, value)
+      if(is.null(value)) {
+        # unset
+        preference$remove(key)
       } else {
-        preference$set(key, value, signature)
+        if( missing(signature) ) {
+          preference$set(key, value)
+        } else {
+          preference$set(key, value, signature)
+        }
       }
+      return(invisible(value))
     },
     mset = function(..., .list = NULL) {
       .list <- c(list(...), .list)
       nms <- names(.list)
       validate_names(nms, length(.list))
-      preference$mset(.list = .list)
+      is_null <- nms[sapply(nms, function(nm) { is.null(.list[[nm]]) })]
+      if(length(is_null)) {
+        preference$remove(is_null)
+        nms <- nms[!nms %in% is_null]
+      }
+      if(length(nms)) {
+        lapply(nms, function(nm){
+          preference$set(nm, .list[[nm]])
+        })
+      }
+      invisible(.list)
     },
 
-    keys = preference$keys,
+    keys = function(include_signatures = FALSE) {
+      if(include_signatures) {
+        re <- preference$keys(TRUE)
+        if(!length(re)) {
+          re <- array(character(0L), c(0L, 2L))
+        }
+        rownames(re) <- NULL
+        colnames(re) <- c("key", "signature")
+      } else {
+        re <- unname(preference$keys(FALSE))
+      }
+      re
+    },
     has = preference$has,
 
     size = preference$size,
