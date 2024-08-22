@@ -7,6 +7,8 @@
 character vector
 
 true or false whether subject is in the project
+
+A data table of pipeline timestamps and directories
 }
 \description{
 Definition for 'RAVE' project class
@@ -32,6 +34,7 @@ Definition for 'RAVE' project class
 \item \href{#method-RAVEProject-subjects}{\code{RAVEProject$subjects()}}
 \item \href{#method-RAVEProject-has_subject}{\code{RAVEProject$has_subject()}}
 \item \href{#method-RAVEProject-group_path}{\code{RAVEProject$group_path()}}
+\item \href{#method-RAVEProject-subject_pipelines}{\code{RAVEProject$subject_pipelines()}}
 \item \href{#method-RAVEProject-clone}{\code{RAVEProject$clone()}}
 }
 }
@@ -114,6 +117,27 @@ get group data path for 'rave' module
 
 \item{\code{must_work}}{whether the directory must exist; if not exists,
 should a new one be created?}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RAVEProject-subject_pipelines"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEProject-subject_pipelines}{}}}
+\subsection{Method \code{subject_pipelines()}}{
+list saved pipelines
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVEProject$subject_pipelines(pipeline_name, cache = FALSE, check = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pipeline_name}}{name of the pipeline}
+
+\item{\code{cache}}{whether to use cached registry}
+
+\item{\code{check}}{whether to check if the pipelines exist as directories}
 }
 \if{html}{\out{</div>}}
 }

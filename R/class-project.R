@@ -100,6 +100,23 @@ RAVEProject <- R6::R6Class(
         dir_create2(p, check = FALSE)
       }
       normalizePath(p, mustWork = FALSE)
+    },
+
+    #' @description list saved pipelines
+    #' @param pipeline_name name of the pipeline
+    #' @param cache whether to use cached registry
+    #' @param check whether to check if the pipelines exist as directories
+    #' @returns A data table of pipeline timestamps and directories
+    subject_pipelines = function(pipeline_name, cache = FALSE, check = TRUE) {
+      # pipeline_name <- "power_explorer"
+      # self <- raveio::as_rave_project("demo")
+      # check = FALSE
+      subjects <- self$subjects()
+      re <- lapply(subjects, function(subject_code) {
+        subject <- RAVESubject$new(project_name = self$name, subject_code = subject_code, strict = FALSE)
+        subject$list_pipelines(pipeline_name = pipeline_name, check = check)
+      })
+      data.table::rbindlist(re)
     }
 
   ),

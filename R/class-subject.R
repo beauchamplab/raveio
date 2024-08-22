@@ -548,6 +548,93 @@ RAVESubject <- R6::R6Class(
         return(frequency_table$Frequency)
       }
       frequency_table
+    },
+
+
+    #' @description list saved pipelines
+    #' @param pipeline_name pipeline ID
+    #' @param cache whether to use cache registry to speed up
+    #' @param check whether to check if the pipelines exist
+    #' @returns A table of pipeline registry
+    list_pipelines = function(pipeline_name, cache = FALSE, check = TRUE) {
+
+      if( cache ) {
+        # use cached registry
+        registry_path <- file.path(self$pipeline_path, "pipeline-registry.csv")
+        if(file.exists(registry_path)) {
+          registry <- tryCatch({
+            registry <- data.table::fread(
+              registry_path,
+              stringsAsFactors = FALSE,
+              colClasses = c(
+                project = "character",
+                subject = "character",
+                pipeline_name = "character",
+                timestamp = "POSIXct",
+                label = "character",
+                directory = "character"
+              )
+            )
+            stopifnot(all(c("project", "subject", "pipeline_name", "timestamp", "label", "directory") %in% names(registry)))
+            registry
+          }, error = function(...) { NULL })
+          if(nrow(registry)) {
+            if(check) {
+              registry <- registry[registry$pipeline_name == pipeline_name, ]
+              registry <- registry[dir.exists(file.path(self$pipeline_path, registry$pipeline_name, registry$directory)), ]
+            }
+            return(registry)
+          }
+        }
+      }
+
+      pipeline_paths <- file.path(self$pipeline_path, pipeline_name)
+      prefix <- sprintf("^%s-", pipeline_name)
+      re <- list.files(
+        pipeline_paths,
+        pattern = prefix,
+        include.dirs = TRUE,
+        all.files = FALSE,
+        ignore.case = TRUE,
+        no.. = TRUE,
+        recursive = FALSE,
+        full.names = FALSE
+      )
+      if( check && length(re) ) {
+        re <- re[dir.exists(file.path(pipeline_paths, re))]
+      }
+      re <- lapply(re, function(name) {
+        tryCatch({
+          item <- strsplit(gsub(prefix, "", name, ignore.case = TRUE), "-", fixed = TRUE)[[1]]
+          idx <- length(item)
+          timestamp <- as.POSIXct(strptime(paste(item[idx], collapse = "-"), "%Y%m%dT%H%M%S"))
+          label <- paste(item[-idx], collapse = "-")
+          list(
+            project = self$project_name,
+            subject = self$subject_code,
+            pipeline_name = pipeline_name,
+            timestamp = timestamp,
+            label = label,
+            directory = name
+          )
+        }, error = function(...) { NULL })
+      })
+
+      data.table::rbindlist(re)
+    },
+
+    #' @description load saved pipeline
+    #' @param directory pipeline directory name
+    #' @returns A \code{PipelineTools} instance
+    load_pipeline = function(directory) {
+
+      # directory <- "power_explorer-NA-20240822T184419"
+      pipeline_name <- strsplit(directory, "-", fixed = TRUE)[[1]][[1]]
+      pipeline_path <- file.path(self$pipeline_path, pipeline_name, directory)
+      if(!file.exists(pipeline_path)) {
+        stop("Unable to find pipeline [", directory, "] from subject ", self$subject_id)
+      }
+      pipeline_from_path(pipeline_path)
     }
 
   ),

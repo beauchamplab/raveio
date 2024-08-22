@@ -36,6 +36,10 @@ subset and only rows with electrodes to be loaded will be kept.
 
 If \code{simplify} is true, returns a vector of frequencies;
 otherwise returns a table.
+
+A table of pipeline registry
+
+A \code{PipelineTools} instance
 }
 \description{
 \code{R6} class definition
@@ -119,6 +123,8 @@ physically contacts, but is generated from those physically ones}
 \item \href{#method-RAVESubject-get_reference}{\code{RAVESubject$get_reference()}}
 \item \href{#method-RAVESubject-get_electrode_table}{\code{RAVESubject$get_electrode_table()}}
 \item \href{#method-RAVESubject-get_frequency}{\code{RAVESubject$get_frequency()}}
+\item \href{#method-RAVESubject-list_pipelines}{\code{RAVESubject$list_pipelines()}}
+\item \href{#method-RAVESubject-load_pipeline}{\code{RAVESubject$load_pipeline()}}
 \item \href{#method-RAVESubject-clone}{\code{RAVESubject$clone()}}
 }
 }
@@ -386,6 +392,44 @@ decomposition is needed.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{simplify}}{whether to simplify as vector}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RAVESubject-list_pipelines"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-list_pipelines}{}}}
+\subsection{Method \code{list_pipelines()}}{
+list saved pipelines
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$list_pipelines(pipeline_name, cache = FALSE, check = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pipeline_name}}{pipeline ID}
+
+\item{\code{cache}}{whether to use cache registry to speed up}
+
+\item{\code{check}}{whether to check if the pipelines exist}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RAVESubject-load_pipeline"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVESubject-load_pipeline}{}}}
+\subsection{Method \code{load_pipeline()}}{
+load saved pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$load_pipeline(directory)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{directory}}{pipeline directory name}
 }
 \if{html}{\out{</div>}}
 }

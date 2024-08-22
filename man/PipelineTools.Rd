@@ -23,6 +23,8 @@ ancestor target names (including \code{names})
 
 A new pipeline object based on the path given
 
+A new pipeline object based on the path given
+
 the saved file path
 
 the data if file is found or a default value
@@ -108,6 +110,7 @@ signatures of data and commands}
 \item \href{#method-PipelineTools-visualize}{\code{PipelineTools$visualize()}}
 \item \href{#method-PipelineTools-target_ancestors}{\code{PipelineTools$target_ancestors()}}
 \item \href{#method-PipelineTools-fork}{\code{PipelineTools$fork()}}
+\item \href{#method-PipelineTools-fork_to_subject}{\code{PipelineTools$fork_to_subject()}}
 \item \href{#method-PipelineTools-with_activated}{\code{PipelineTools$with_activated()}}
 \item \href{#method-PipelineTools-clean}{\code{PipelineTools$clean()}}
 \item \href{#method-PipelineTools-save_data}{\code{PipelineTools$save_data()}}
@@ -440,6 +443,29 @@ fork (copy) the current pipeline to a new directory
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{path}}{path to the new pipeline, a folder will be created there}
+
+\item{\code{policy}}{fork policy defined by module author, see text file
+'fork-policy' under the pipeline directory; if missing, then default to
+avoid copying \code{main.html} and \code{shared} folder}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineTools-fork_to_subject"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineTools-fork_to_subject}{}}}
+\subsection{Method \code{fork_to_subject()}}{
+fork (copy) the current pipeline to a 'RAVE' subject
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork_to_subject(subject, label = "NA", policy = "default")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{subject}}{subject ID or instance in which pipeline will be saved}
+
+\item{\code{label}}{pipeline label describing the pipeline}
 
 \item{\code{policy}}{fork policy defined by module author, see text file
 'fork-policy' under the pipeline directory; if missing, then default to

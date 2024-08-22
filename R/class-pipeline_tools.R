@@ -437,6 +437,70 @@ PipelineTools <- R6::R6Class(
       )
     },
 
+    #' @description fork (copy) the current pipeline to a 'RAVE' subject
+    #' @param subject subject ID or instance in which pipeline will be saved
+    #' @param label pipeline label describing the pipeline
+    #' @param policy fork policy defined by module author, see text file
+    #' 'fork-policy' under the pipeline directory; if missing, then default to
+    #' avoid copying \code{main.html} and \code{shared} folder
+    #' @returns A new pipeline object based on the path given
+    fork_to_subject = function(subject, label = "NA", policy = "default") {
+      subject <- restore_subject_instance(subject, strict = TRUE)
+      label <- paste(label, collapse = "")
+      label_cleaned <- gsub("[^a-zA-Z0-9_.-]+", "_", label)
+
+      timestamp <- Sys.time()
+      name <- sprintf(
+        "%s-%s-%s",
+        self$pipeline_name,
+        label_cleaned,
+        format(timestamp, "%Y%m%dT%H%M%S")
+      )
+      path <- file.path(
+        subject$pipeline_path,
+        self$pipeline_name,
+        name
+      )
+      # make sure parent folder exists
+      dir_create2(dirname(path))
+      re <- self$fork(path = path, policy = policy)
+      # register
+      registry_path <- file.path(subject$pipeline_path, "pipeline-registry.csv")
+      if(file.exists(registry_path)) {
+        registry <- tryCatch({
+          registry <- data.table::fread(registry_path, stringsAsFactors = FALSE, colClasses = c(
+            project = "character",
+            subject = "character",
+            pipeline_name = "character",
+            timestamp = "POSIXct",
+            label = "character",
+            directory = "character"
+          ))
+          stopifnot(all(c("project", "subject", "pipeline_name", "timestamp", "label", "directory") %in% names(registry)))
+          registry
+        }, error = function(...) { NULL })
+      } else {
+        registry <- NULL
+      }
+      registry <- rbind(
+        data.table::data.table(
+          project = subject$project_name,
+          subject = subject$subject_code,
+          pipeline_name = self$pipeline_name,
+          timestamp = timestamp,
+          label = label,
+          directory = name,
+          keep.rownames = FALSE, stringsAsFactors = FALSE
+        ),
+        registry
+      )
+      tf <- tempfile()
+      on.exit({ unlink(tf) })
+      data.table::fwrite(registry, tf, row.names = FALSE, col.names = TRUE)
+      file.copy(tf, to = registry_path, overwrite = TRUE, recursive = FALSE, copy.date = TRUE)
+      re
+    },
+
     #' @description run code with pipeline activated, some environment variables
     #' and function behaviors might change under such condition (for example,
     #' \code{targets} package functions)

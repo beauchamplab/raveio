@@ -90,6 +90,8 @@ no path exists, values will be \code{NA}}
 <li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_note_summary"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_note_summary'><code>raveio::RAVESubject$get_note_summary()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_reference"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_reference'><code>raveio::RAVESubject$get_reference()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="initialize_paths"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-initialize_paths'><code>raveio::RAVESubject$initialize_paths()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="list_pipelines"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-list_pipelines'><code>raveio::RAVESubject$list_pipelines()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="load_pipeline"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-load_pipeline'><code>raveio::RAVESubject$load_pipeline()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="set_default"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-set_default'><code>raveio::RAVESubject$set_default()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="valid_electrodes"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-valid_electrodes'><code>raveio::RAVESubject$valid_electrodes()</code></a></span></li>
 </ul>
