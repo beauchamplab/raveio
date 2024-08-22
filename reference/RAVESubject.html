@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.64</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.66</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,6 +64,8 @@ returns a table. If <code>subset</code> is true, then the table will be
 subset and only rows with electrodes to be loaded will be kept.</p>
 <p>If <code>simplify</code> is true, returns a vector of frequencies;
 otherwise returns a table.</p>
+<p>A table of pipeline registry</p>
+<p>A <code>PipelineTools</code> instance</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -199,6 +201,8 @@ physically contacts, but is generated from those physically ones</p></dd>
 <li><p><a href="#method-RAVESubject-get_reference"><code>RAVESubject$get_reference()</code></a></p></li>
 <li><p><a href="#method-RAVESubject-get_electrode_table"><code>RAVESubject$get_electrode_table()</code></a></p></li>
 <li><p><a href="#method-RAVESubject-get_frequency"><code>RAVESubject$get_frequency()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-list_pipelines"><code>RAVESubject$list_pipelines()</code></a></p></li>
+<li><p><a href="#method-RAVESubject-load_pipeline"><code>RAVESubject$load_pipeline()</code></a></p></li>
 <li><p><a href="#method-RAVESubject-clone"><code>RAVESubject$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-RAVESubject-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
@@ -488,15 +492,55 @@ decomposition is needed.</p><div class="section">
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-RAVESubject-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-RAVESubject-list_pipelines"></a><div class="section">
+<h3 id="method-list-pipelines-">Method <code>list_pipelines()</code><a class="anchor" aria-label="anchor" href="#method-list-pipelines-"></a></h3>
+<p>list saved pipelines</p><div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">list_pipelines</span><span class="op">(</span><span class="va">pipeline_name</span>, cache <span class="op">=</span> <span class="cn">FALSE</span>, check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>pipeline_name</code></dt>
+<dd><p>pipeline ID</p></dd>
+
+
+<dt><code>cache</code></dt>
+<dd><p>whether to use cache registry to speed up</p></dd>
+
+
+<dt><code>check</code></dt>
+<dd><p>whether to check if the pipelines exist</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-RAVESubject-load_pipeline"></a><div class="section">
+<h3 id="method-load-pipeline-">Method <code>load_pipeline()</code><a class="anchor" aria-label="anchor" href="#method-load-pipeline-"></a></h3>
+<p>load saved pipeline</p><div class="section">
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">load_pipeline</span><span class="op">(</span><span class="va">directory</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-13">Arguments<a class="anchor" aria-label="anchor" href="#arguments-13"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>directory</code></dt>
+<dd><p>pipeline directory name</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-RAVESubject-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVESubject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-14">Arguments<a class="anchor" aria-label="anchor" href="#arguments-14"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

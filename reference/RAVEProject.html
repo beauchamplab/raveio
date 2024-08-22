@@ -9,7 +9,7 @@ Definition for 'RAVE' project class"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.64</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.66</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,7 @@ Definition for 'RAVE' project class"></head><body>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>character vector</p>
 <p>true or false whether subject is in the project</p>
+<p>A data table of pipeline timestamps and directories</p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
@@ -73,6 +74,7 @@ Definition for 'RAVE' project class"></head><body>
 <li><p><a href="#method-RAVEProject-subjects"><code>RAVEProject$subjects()</code></a></p></li>
 <li><p><a href="#method-RAVEProject-has_subject"><code>RAVEProject$has_subject()</code></a></p></li>
 <li><p><a href="#method-RAVEProject-group_path"><code>RAVEProject$group_path()</code></a></p></li>
+<li><p><a href="#method-RAVEProject-subject_pipelines"><code>RAVEProject$subject_pipelines()</code></a></p></li>
 <li><p><a href="#method-RAVEProject-clone"><code>RAVEProject$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-RAVEProject-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
@@ -155,15 +157,39 @@ should a new one be created?</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-RAVEProject-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-RAVEProject-subject_pipelines"></a><div class="section">
+<h3 id="method-subject-pipelines-">Method <code>subject_pipelines()</code><a class="anchor" aria-label="anchor" href="#method-subject-pipelines-"></a></h3>
+<p>list saved pipelines</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEProject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEProject</span><span class="op">$</span><span class="fu">subject_pipelines</span><span class="op">(</span><span class="va">pipeline_name</span>, cache <span class="op">=</span> <span class="cn">FALSE</span>, check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>pipeline_name</code></dt>
+<dd><p>name of the pipeline</p></dd>
+
+
+<dt><code>cache</code></dt>
+<dd><p>whether to use cached registry</p></dd>
+
+
+<dt><code>check</code></dt>
+<dd><p>whether to check if the pipelines exist as directories</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-RAVEProject-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEProject</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
