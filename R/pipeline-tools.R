@@ -715,7 +715,7 @@ pipeline_fork <- function(
   fs <- gsub("[/|\\\\]+", "/", fs)
 
   ignore_files <- lapply(fork_policy_regexp, function(regexp) {
-    fs[grepl(regexp, x = fs, ignore.case = TRUE)]
+    fs[grepl(regexp, x = fs, ignore.case = TRUE, perl = TRUE)]
   })
   ignore_files <- unique(unlist(ignore_files))
   fs <- fs[!fs %in% ignore_files]
