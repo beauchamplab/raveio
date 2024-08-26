@@ -5,6 +5,21 @@
 \title{Definition for epoch class}
 \value{
 \code{self$table}
+
+If \code{event} is one of \code{"trial onset"},
+\code{"default"}, \code{""}, or \code{NULL}, then the result will be
+\code{"Time"} column; if the event is found, then return will be the
+corresponding event column. When the event is not found and
+\code{missing} is \code{"error"}, error will be raised; default is
+to return \code{"Time"} column, as it's trial onset and is mandatory.
+
+If \code{condition_type} is one of
+\code{"default"}, \code{""}, or \code{NULL}, then the result will be
+\code{"Condition"} column; if the condition type is found, then return
+will be the corresponding condition type column. When the condition type
+is not found and \code{missing} is \code{"error"}, error will be raised;
+default is to return \code{"Condition"} column, as it's the default
+and is mandatory.
 }
 \description{
 Trial epoch, contains the following information: \code{Block}
@@ -70,6 +85,9 @@ head(epoch$table)
 \item{\code{trials}}{trial numbers}
 
 \item{\code{available_events}}{available events other than trial onset}
+
+\item{\code{available_condition_type}}{available condition type other than
+the default}
 }
 \if{html}{\out{</div>}}
 }
@@ -80,6 +98,8 @@ head(epoch$table)
 \item \href{#method-RAVEEpoch-trial_at}{\code{RAVEEpoch$trial_at()}}
 \item \href{#method-RAVEEpoch-update_table}{\code{RAVEEpoch$update_table()}}
 \item \href{#method-RAVEEpoch-set_trial}{\code{RAVEEpoch$set_trial()}}
+\item \href{#method-RAVEEpoch-get_event_colname}{\code{RAVEEpoch$get_event_colname()}}
+\item \href{#method-RAVEEpoch-get_condition_colname}{\code{RAVEEpoch$get_condition_colname()}}
 \item \href{#method-RAVEEpoch-clone}{\code{RAVEEpoch$clone()}}
 }
 }
@@ -153,6 +173,56 @@ set one trial
 \item{\code{Condition}}{character, trial condition}
 
 \item{\code{...}}{other key-value pairs corresponding to other optional columns}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RAVEEpoch-get_event_colname"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEEpoch-get_event_colname}{}}}
+\subsection{Method \code{get_event_colname()}}{
+Get epoch column name that represents the desired event
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVEEpoch$get_event_colname(
+  event = "",
+  missing = c("warning", "error", "none")
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{event}}{a character string of the event, see
+\code{$available_events} for all available events; set to
+\code{"trial onset"}, \code{"default"}, or blank to use the default}
+
+\item{\code{missing}}{what to do if event is missing; default is to warn}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-RAVEEpoch-get_condition_colname"></a>}}
+\if{latex}{\out{\hypertarget{method-RAVEEpoch-get_condition_colname}{}}}
+\subsection{Method \code{get_condition_colname()}}{
+Get condition column name that represents the desired
+condition type
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{RAVEEpoch$get_condition_colname(
+  condition_type,
+  missing = c("warning", "error", "none")
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{condition_type}}{a character string of the condition type, see
+\code{$available_condition_type} for all available condition types;
+set to \code{"default"} or blank to use the default}
+
+\item{\code{missing}}{what to do if condition type is missing; default is to
+warn if the condition column is not found.}
 }
 \if{html}{\out{</div>}}
 }

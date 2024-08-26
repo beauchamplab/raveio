@@ -132,6 +132,75 @@ RAVEEpoch <- R6::R6Class(
         self$.columns <- c(self$.columns, more_cols)
       }
       self$trial_at(Trial)
+    },
+
+    #' @description Get epoch column name that represents the desired event
+    #' @param event a character string of the event, see
+    #' \code{$available_events} for all available events; set to
+    #' \code{"trial onset"}, \code{"default"}, or blank to use the default
+    #' @param missing what to do if event is missing; default is to warn
+    #' @returns If \code{event} is one of \code{"trial onset"},
+    #' \code{"default"}, \code{""}, or \code{NULL}, then the result will be
+    #' \code{"Time"} column; if the event is found, then return will be the
+    #' corresponding event column. When the event is not found and
+    #' \code{missing} is \code{"error"}, error will be raised; default is
+    #' to return \code{"Time"} column, as it's trial onset and is mandatory.
+    get_event_colname = function(event = "",
+                                 missing = c("warning", "error", "none")) {
+      missing <- match.arg(missing)
+      event <- trimws(tolower(paste(event, collapse = " ")))
+      if(event %in% c("trial onset", "", "default")) {
+        return("Time")
+      }
+      cname <- sprintf(c("Event_%s", "Event%s"), event)
+      cnames <- self$columns
+      re <- cnames[tolower(cnames) %in% tolower(cname)]
+      if( length(re) ) {
+        return(re[[1]])
+      }
+      msg <- sprintf("Cannot find event `%s`. Returning default `Time`.", event)
+      switch(
+        missing,
+        "warning" = warning(msg),
+        "error" = stop(msg)
+      )
+      return("Time")
+    },
+
+    #' @description Get condition column name that represents the desired
+    #' condition type
+    #' @param condition_type a character string of the condition type, see
+    #' \code{$available_condition_type} for all available condition types;
+    #' set to \code{"default"} or blank to use the default
+    #' @param missing what to do if condition type is missing; default is to
+    #' warn if the condition column is not found.
+    #' @returns If \code{condition_type} is one of
+    #' \code{"default"}, \code{""}, or \code{NULL}, then the result will be
+    #' \code{"Condition"} column; if the condition type is found, then return
+    #' will be the corresponding condition type column. When the condition type
+    #' is not found and \code{missing} is \code{"error"}, error will be raised;
+    #' default is to return \code{"Condition"} column, as it's the default
+    #' and is mandatory.
+    get_condition_colname = function(condition_type, missing = c("warning", "error", "none")) {
+      stopifnot(length(condition_type) == 1)
+      missing <- match.arg(missing)
+      condition_type <- tolower(condition_type)
+      if( condition_type %in% c("", "default") ) {
+        return("Condition")
+      }
+      cname <- sprintf(c("Condition_%s", "Condition%s"), condition_type)
+      cnames <- self$columns
+      re <- cnames[tolower(cnames) %in% tolower(cname)]
+      if( length(re) ) {
+        return(re[[1]])
+      }
+      msg <- sprintf("Cannot find condition type `%s`. Returning default `Condition`", condition_type)
+      switch(
+        missing,
+        "warning" = warning(msg),
+        "error" = stop(msg)
+      )
+      return("Condition")
     }
 
   ),
@@ -155,9 +224,18 @@ RAVEEpoch <- R6::R6Class(
     #' @field available_events available events other than trial onset
     available_events = function() {
       cnames <- self$columns
-      cnames <- cnames[startsWith(cnames, "Event_")]
-      if(!length(cnames)) { return(cnames) }
-      gsub("^Event_", "", cnames)
+      cnames <- cnames[startsWith(cnames, "Event")]
+      if(!length(cnames)) { return("") }
+      unique(c("", gsub("^Event[_]{0,1}", "", cnames)))
+    },
+
+    #' @field available_condition_type available condition type other than
+    #' the default
+    available_condition_type = function() {
+      cnames <- self$columns
+      cnames <- cnames[startsWith(cnames, "Condition")]
+      if(!length(cnames)) { return("") }
+      unique(c("", gsub("^Condition[_]{0,1}", "", cnames)))
     }
   )
 )
