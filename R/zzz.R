@@ -33,6 +33,19 @@ normalize_path <- function(path, must_work = NA) {
   gsub("[/|\\\\]+", "/", path)
 }
 
+file_move <- function(from, to) {
+  if(dipsaus::package_installed("fs")) {
+    fs <- asNamespace("fs")
+    impl <- fs$file_move
+    if(is.function(impl)) {
+      impl(path = from, new_path = to)
+      return(invisible(to))
+    }
+  }
+  file.rename(from = from, to = to)
+  return(invisible(to))
+}
+
 safe_system <- function(cmd, ..., intern = TRUE, ignore.stderr = TRUE,
                         minimized = TRUE, invisible = TRUE, show.output.on.console = TRUE){
   suppressWarnings({

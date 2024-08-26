@@ -289,7 +289,7 @@ backup_file <- function(path, remove = FALSE, quiet = FALSE) {
   path2 <- file.path(dname, bname2)
 
   if( remove ) {
-    file.rename(from = path, to = path2)
+    file_move(from = path, to = path2)
   } else {
     if(is_dir) {
       dir_create2(path2)

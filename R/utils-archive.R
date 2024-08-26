@@ -386,7 +386,7 @@ archive_subject <- function(
     if(file.exists(path)) {
       backup_file(path, remove = TRUE)
     }
-    file.rename(zipfile_name, path)
+    file_move(zipfile_name, path)
   } else {
     path <- zipfile_name
   }
@@ -545,7 +545,7 @@ install_subject <- function(
 
       if( backup ) {
         new_path <- backup_file(subject$preprocess_settings$raw_path, remove = TRUE)
-        file.rename(subject$path, file.path(dirname(subject$path), filenames(new_path)))
+        file_move(subject$path, file.path(dirname(subject$path), filenames(new_path)))
       }
     }
   }

@@ -408,7 +408,7 @@ tfmtreg_filearray <- function() {
                     copy.date = TRUE, recursive = TRUE,
                     overwrite = TRUE)
           orig_name <- basename(filebase_orig)
-          file.rename(
+          file_move(
             file.path(filebase_dir, orig_name),
             filebase
           )

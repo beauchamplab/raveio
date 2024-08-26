@@ -60,7 +60,7 @@ cmd_execute <- function(script, script_path, command = "bash", dry_run = FALSE, 
       if(file.exists(to_path)) {
         unlink(backup_path)
       } else {
-        file.rename(backup_path, to_path)
+        file_move(backup_path, to_path)
       }
     }
   }

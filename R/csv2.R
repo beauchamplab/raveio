@@ -170,7 +170,7 @@ export_table <- function(x, file, format = c("auto", "csv", "csv.zip", "h5", "fs
       })
       data.table::fwrite(x = x, file = tf, ...)
       utils::zip(zipfile = zf, files = tf, extras='-j')
-      file.rename(zf, file)
+      file_move(zf, file)
     },
     "fst" = {
       fst::write_fst(x = x, path = file, compress = 99)
@@ -211,7 +211,7 @@ export_table <- function(x, file, format = c("auto", "csv", "csv.zip", "h5", "fs
       # save meta information
       save_h5(x = jsonlite::serializeJSON(meta), file = h5file, name = "__meta__", replace = TRUE, ctype = "character", quiet = TRUE)
 
-      file.rename(h5file, file)
+      file_move(h5file, file)
     },
     "rds" = {
       saveRDS(object = x, file = file, ...)

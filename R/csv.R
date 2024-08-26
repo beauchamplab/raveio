@@ -27,7 +27,7 @@ safe_write_csv <- function(x, file, ..., quiet = FALSE){
     if(!quiet){
       catgl('Renaming file {file}\n  >> {oldfile}')
     }
-    file.rename(file, oldfile)
+    file_move(file, oldfile)
   }
   args <- list(...)
   rn <- args$row.names
