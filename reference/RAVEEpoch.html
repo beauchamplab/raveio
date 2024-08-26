@@ -15,7 +15,7 @@ https://openwetware.org/wiki/RAVE:Epoching or more details.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.67</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.68</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,19 @@ columns are <code>Event_xxx</code> (starts with "Event"). See
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>self$table</code></p>
+<p>If <code>event</code> is one of <code>"trial onset"</code>,
+<code>"default"</code>, <code>""</code>, or <code>NULL</code>, then the result will be
+<code>"Time"</code> column; if the event is found, then return will be the
+corresponding event column. When the event is not found and
+<code>missing</code> is <code>"error"</code>, error will be raised; default is
+to return <code>"Time"</code> column, as it's trial onset and is mandatory.</p>
+<p>If <code>condition_type</code> is one of
+<code>"default"</code>, <code>""</code>, or <code>NULL</code>, then the result will be
+<code>"Condition"</code> column; if the condition type is found, then return
+will be the corresponding condition type column. When the condition type
+is not found and <code>missing</code> is <code>"error"</code>, error will be raised;
+default is to return <code>"Condition"</code> column, as it's the default
+and is mandatory.</p>
     </div>
     <div class="section level2">
     <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>
@@ -96,6 +109,11 @@ columns are <code>Event_xxx</code> (starts with "Event"). See
 <dd><p>available events other than trial onset</p></dd>
 
 
+<dt><code>available_condition_type</code></dt>
+<dd><p>available condition type other than
+the default</p></dd>
+
+
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -108,6 +126,8 @@ columns are <code>Event_xxx</code> (starts with "Event"). See
 <li><p><a href="#method-RAVEEpoch-trial_at"><code>RAVEEpoch$trial_at()</code></a></p></li>
 <li><p><a href="#method-RAVEEpoch-update_table"><code>RAVEEpoch$update_table()</code></a></p></li>
 <li><p><a href="#method-RAVEEpoch-set_trial"><code>RAVEEpoch$set_trial()</code></a></p></li>
+<li><p><a href="#method-RAVEEpoch-get_event_colname"><code>RAVEEpoch$get_event_colname()</code></a></p></li>
+<li><p><a href="#method-RAVEEpoch-get_condition_colname"><code>RAVEEpoch$get_condition_colname()</code></a></p></li>
 <li><p><a href="#method-RAVEEpoch-clone"><code>RAVEEpoch$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-RAVEEpoch-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -190,15 +210,67 @@ folder</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-RAVEEpoch-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-RAVEEpoch-get_event_colname"></a><div class="section">
+<h3 id="method-get-event-colname-">Method <code>get_event_colname()</code><a class="anchor" aria-label="anchor" href="#method-get-event-colname-"></a></h3>
+<p>Get epoch column name that represents the desired event</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEEpoch</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEEpoch</span><span class="op">$</span><span class="fu">get_event_colname</span><span class="op">(</span></span>
+<span>  event <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warning"</span>, <span class="st">"error"</span>, <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>event</code></dt>
+<dd><p>a character string of the event, see
+<code>$available_events</code> for all available events; set to
+<code>"trial onset"</code>, <code>"default"</code>, or blank to use the default</p></dd>
+
+
+<dt><code>missing</code></dt>
+<dd><p>what to do if event is missing; default is to warn</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-RAVEEpoch-get_condition_colname"></a><div class="section">
+<h3 id="method-get-condition-colname-">Method <code>get_condition_colname()</code><a class="anchor" aria-label="anchor" href="#method-get-condition-colname-"></a></h3>
+<p>Get condition column name that represents the desired
+condition type</p><div class="section">
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEEpoch</span><span class="op">$</span><span class="fu">get_condition_colname</span><span class="op">(</span></span>
+<span>  <span class="va">condition_type</span>,</span>
+<span>  missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"warning"</span>, <span class="st">"error"</span>, <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>condition_type</code></dt>
+<dd><p>a character string of the condition type, see
+<code>$available_condition_type</code> for all available condition types;
+set to <code>"default"</code> or blank to use the default</p></dd>
+
+
+<dt><code>missing</code></dt>
+<dd><p>what to do if condition type is missing; default is to
+warn if the condition column is not found.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-RAVEEpoch-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEEpoch</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
