@@ -9,7 +9,8 @@ archive_subject(
   path,
   includes = c("orignal_signals", "processed_data", "rave_imaging", "pipelines", "notes",
     "user_generated"),
-  config = list()
+  config = list(),
+  work_path = NULL
 )
 }
 \arguments{
@@ -24,6 +25,11 @@ notes, and user-generated exports)}
 
 \item{config}{a list of configurations, including changing subject code,
 project name, or to exclude cache data; see examples}
+
+\item{work_path}{temporary working path where files are copied; default is
+temporary path. Set this variable explicitly when temporary path is
+on external drives (for example, users have limited storage on local
+drives and cannot hold the entire subject)}
 }
 \description{
 Archive and share a subject

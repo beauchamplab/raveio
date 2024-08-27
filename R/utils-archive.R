@@ -7,6 +7,10 @@
 #' notes, and user-generated exports)
 #' @param config a list of configurations, including changing subject code,
 #' project name, or to exclude cache data; see examples
+#' @param work_path temporary working path where files are copied; default is
+#' temporary path. Set this variable explicitly when temporary path is
+#' on external drives (for example, users have limited storage on local
+#' drives and cannot hold the entire subject)
 #'
 #' @examples
 #'
@@ -50,8 +54,11 @@
 #'
 #' @export
 archive_subject <- function(
-    subject, path, includes = c("orignal_signals", "processed_data", "rave_imaging", "pipelines", "notes", "user_generated"),
-    config = list()
+    subject, path,
+    includes = c("orignal_signals", "processed_data", "rave_imaging",
+                 "pipelines", "notes", "user_generated"),
+    config = list(),
+    work_path = NULL
 ) {
 
   # DIPSAUS DEBUG START
@@ -105,7 +112,13 @@ archive_subject <- function(
   }
 
 
-  root_dir <- file.path(tempdir(check = TRUE), "archive", subject$project_name, subject$subject_code, "archive")
+  if(length(work_path) != 1 || !is.character(work_path) || is.na(work_path) ||
+     !dir.exists(work_path)) {
+    root_dir <- file.path(tempdir(check = TRUE), "archive", subject$project_name, subject$subject_code, "archive")
+  } else {
+    root_dir <- file.path(work_path, "archive")
+  }
+
   if(file.exists(root_dir)) {
     unlink(root_dir, recursive = TRUE, force = TRUE)
   }
@@ -483,6 +496,9 @@ install_subject <- function(
     }
     if(!dir.exists(extract_path)) {
       utils::unzip(path, overwrite = TRUE, exdir = extract_path)
+      on.exit({
+        unlink(extract_path, recursive = TRUE, force = TRUE)
+      })
     }
     path <- extract_path
   }
