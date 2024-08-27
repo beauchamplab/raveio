@@ -9,7 +9,7 @@ Class definition for pipeline tools"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.69</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.70</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,11 @@ if keys is 1, then returns the value of that preference</p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
-    <p></p><div class="r6-active-bindings"><dl><dt><code>settings_path</code></dt>
+    <p></p><div class="r6-active-bindings"><dl><dt><code>description</code></dt>
+<dd><p>pipeline description</p></dd>
+
+
+<dt><code>settings_path</code></dt>
 <dd><p>absolute path to the settings file</p></dd>
 
 
@@ -487,7 +491,13 @@ avoid copying <code>main.html</code> and <code>shared</code> folder</p></dd>
 <h3 id="method-fork-to-subject-">Method <code>fork_to_subject()</code><a class="anchor" aria-label="anchor" href="#method-fork-to-subject-"></a></h3>
 <p>fork (copy) the current pipeline to a 'RAVE' subject</p><div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">fork_to_subject</span><span class="op">(</span><span class="va">subject</span>, label <span class="op">=</span> <span class="st">"NA"</span>, policy <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">PipelineTools</span><span class="op">$</span><span class="fu">fork_to_subject</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  label <span class="op">=</span> <span class="st">"NA"</span>,</span>
+<span>  policy <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  delete_old <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  sanitize <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -504,6 +514,17 @@ avoid copying <code>main.html</code> and <code>shared</code> folder</p></dd>
 <dd><p>fork policy defined by module author, see text file
 'fork-policy' under the pipeline directory; if missing, then default to
 avoid copying <code>main.html</code> and <code>shared</code> folder</p></dd>
+
+
+<dt><code>delete_old</code></dt>
+<dd><p>whether to delete old pipelines with the same label
+default is false</p></dd>
+
+
+<dt><code>sanitize</code></dt>
+<dd><p>whether to sanitize the registry at save. This will
+remove missing folders and import manually copied pipelines to the
+registry (only for the pipelines with the same name)</p></dd>
 
 
 </dl><p></p></div>

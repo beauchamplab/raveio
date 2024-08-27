@@ -9,7 +9,7 @@ Definition for 'RAVE' project class"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.69</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.70</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@ Definition for 'RAVE' project class"></head><body>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>character vector</p>
 <p>true or false whether subject is in the project</p>
-<p>A data table of pipeline timestamps and directories</p>
+<p>A data table of pipeline time-stamps and directories</p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
@@ -161,7 +161,12 @@ should a new one be created?</p></dd>
 <h3 id="method-subject-pipelines-">Method <code>subject_pipelines()</code><a class="anchor" aria-label="anchor" href="#method-subject-pipelines-"></a></h3>
 <p>list saved pipelines</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEProject</span><span class="op">$</span><span class="fu">subject_pipelines</span><span class="op">(</span><span class="va">pipeline_name</span>, cache <span class="op">=</span> <span class="cn">FALSE</span>, check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEProject</span><span class="op">$</span><span class="fu">subject_pipelines</span><span class="op">(</span></span>
+<span>  <span class="va">pipeline_name</span>,</span>
+<span>  cache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  check <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  all <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -176,6 +181,11 @@ should a new one be created?</p></dd>
 
 <dt><code>check</code></dt>
 <dd><p>whether to check if the pipelines exist as directories</p></dd>
+
+
+<dt><code>all</code></dt>
+<dd><p>whether to list all pipelines; default is false; pipelines
+with the same label but older time-stamps will be hidden</p></dd>
 
 
 </dl><p></p></div>
