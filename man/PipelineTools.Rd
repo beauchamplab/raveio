@@ -77,6 +77,8 @@ if(interactive() && length(pipeline_list()) > 0) {
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{description}}{pipeline description}
+
 \item{\code{settings_path}}{absolute path to the settings file}
 
 \item{\code{extdata_path}}{absolute path to the user-defined pipeline data folder}
@@ -457,7 +459,13 @@ avoid copying \code{main.html} and \code{shared} folder}
 \subsection{Method \code{fork_to_subject()}}{
 fork (copy) the current pipeline to a 'RAVE' subject
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork_to_subject(subject, label = "NA", policy = "default")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineTools$fork_to_subject(
+  subject,
+  label = "NA",
+  policy = "default",
+  delete_old = FALSE,
+  sanitize = TRUE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -470,6 +478,13 @@ fork (copy) the current pipeline to a 'RAVE' subject
 \item{\code{policy}}{fork policy defined by module author, see text file
 'fork-policy' under the pipeline directory; if missing, then default to
 avoid copying \code{main.html} and \code{shared} folder}
+
+\item{\code{delete_old}}{whether to delete old pipelines with the same label
+default is false}
+
+\item{\code{sanitize}}{whether to sanitize the registry at save. This will
+remove missing folders and import manually copied pipelines to the
+registry (only for the pipelines with the same name)}
 }
 \if{html}{\out{</div>}}
 }

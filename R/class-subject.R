@@ -555,9 +555,12 @@ RAVESubject <- R6::R6Class(
     #' @param pipeline_name pipeline ID
     #' @param cache whether to use cache registry to speed up
     #' @param check whether to check if the pipelines exist
+    #' @param all whether to list all pipelines; default is false; pipelines
+    #' with the same label but older time-stamps will be hidden
     #' @returns A table of pipeline registry
-    list_pipelines = function(pipeline_name, cache = FALSE, check = TRUE) {
+    list_pipelines = function(pipeline_name, cache = FALSE, check = TRUE, all = FALSE) {
 
+      registry <- NULL
       if( cache ) {
         # use cached registry
         registry_path <- file.path(self$pipeline_path, "pipeline-registry.csv")
@@ -573,9 +576,17 @@ RAVESubject <- R6::R6Class(
                 timestamp = "POSIXct",
                 label = "character",
                 directory = "character"
-              )
+              ), na.strings = "n/a"
             )
             stopifnot(all(c("project", "subject", "pipeline_name", "timestamp", "label", "directory") %in% names(registry)))
+            if(nrow(registry)) {
+              if(!length(registry$policy)) {
+                registry$policy <- "default"
+              }
+              if(!length(registry$version)) {
+                registry$version <- "0.0.0.9000"
+              }
+            }
             registry
           }, error = function(...) { NULL })
           if(nrow(registry)) {
@@ -583,44 +594,67 @@ RAVESubject <- R6::R6Class(
               registry <- registry[registry$pipeline_name == pipeline_name, ]
               registry <- registry[dir.exists(file.path(self$pipeline_path, registry$pipeline_name, registry$directory)), ]
             }
-            return(registry)
           }
         }
       }
 
-      pipeline_paths <- file.path(self$pipeline_path, pipeline_name)
-      prefix <- sprintf("^%s-", pipeline_name)
-      re <- list.files(
-        pipeline_paths,
-        pattern = prefix,
-        include.dirs = TRUE,
-        all.files = FALSE,
-        ignore.case = TRUE,
-        no.. = TRUE,
-        recursive = FALSE,
-        full.names = FALSE
-      )
-      if( check && length(re) ) {
-        re <- re[dir.exists(file.path(pipeline_paths, re))]
-      }
-      re <- lapply(re, function(name) {
-        tryCatch({
-          item <- strsplit(gsub(prefix, "", name, ignore.case = TRUE), "-", fixed = TRUE)[[1]]
-          idx <- length(item)
-          timestamp <- as.POSIXct(strptime(paste(item[idx], collapse = "-"), "%Y%m%dT%H%M%S"))
-          label <- paste(item[-idx], collapse = "-")
-          list(
-            project = self$project_name,
-            subject = self$subject_code,
-            pipeline_name = pipeline_name,
-            timestamp = timestamp,
-            label = label,
-            directory = name
-          )
-        }, error = function(...) { NULL })
-      })
+      if(!is.data.frame(registry) || nrow(registry) == 0) {
+        pipeline_paths <- file.path(self$pipeline_path, pipeline_name)
+        prefix <- sprintf("^%s-", pipeline_name)
+        re <- list.files(
+          pipeline_paths,
+          pattern = prefix,
+          include.dirs = TRUE,
+          all.files = FALSE,
+          ignore.case = TRUE,
+          no.. = TRUE,
+          recursive = FALSE,
+          full.names = FALSE
+        )
+        if( check && length(re) ) {
+          re <- re[dir.exists(file.path(pipeline_paths, re))]
+        }
+        re <- lapply(re, function(name) {
+          tryCatch({
+            item <- strsplit(gsub(prefix, "", name, ignore.case = TRUE), "-", fixed = TRUE)[[1]]
+            idx <- length(item)
+            timestamp <- as.POSIXct(strptime(paste(item[idx], collapse = "-"), "%Y%m%dT%H%M%S"))
+            label <- paste(item[-idx], collapse = "-")
+            # check fork policy
+            path_fork_info <- file.path(pipeline_paths, name, "_fork_info")
+            if(file.exists(path_fork_info)) {
+              info <- readRDS(path_fork_info)
+            } else {
+              info <- list(
+                policy = "default",
+                version = "0.0.0.9000"
+              )
+            }
+            list(
+              project = self$project_name,
+              subject = self$subject_code,
+              pipeline_name = pipeline_name,
+              timestamp = timestamp,
+              label = label,
+              directory = name,
+              policy = info$policy,
+              version = info$version
+            )
+          }, error = function(...) { NULL })
+        })
 
-      data.table::rbindlist(re)
+        registry <- data.table::rbindlist(re)
+      }
+
+      if(!all && is.data.frame(registry) && nrow(registry) > 0) {
+        # remove duplicated labels
+        registry <- registry[order(registry$label, registry$timestamp, decreasing = TRUE, na.last = TRUE), ]
+        registry <- data.table::rbindlist(lapply(split(registry, registry$label), function(sub) {
+          sub[1, ]
+        }), use.names = FALSE)
+      }
+
+      registry
     },
 
     #' @description load saved pipeline

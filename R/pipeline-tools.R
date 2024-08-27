@@ -737,6 +737,21 @@ pipeline_fork <- function(
     )
   })
 
+  # gather fork information
+  fork_info <- tryCatch({
+    descr <- get_module_description(dest)
+    list(
+      policy = policy,
+      version = descr$Version
+    )
+  }, error = function(e) {
+    list(
+      policy = policy,
+      version = "0.0.0.9000"
+    )
+  })
+  saveRDS(fork_info, file.path(dest, "_fork_info"))
+
   if( activate ){
     pipeline_build(dest)
     Sys.setenv("RAVE_PIPELINE" = dest)

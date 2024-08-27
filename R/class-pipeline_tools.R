@@ -11,6 +11,7 @@ PipelineTools <- R6::R6Class(
     .settings_file = character(),
     .settings = NULL,
     .settings_external_inputs = list(),
+    .description = NULL,
     .preferences = NULL
   ),
 
@@ -59,6 +60,37 @@ PipelineTools <- R6::R6Class(
         settings[[nm]] <- resolve_pipeline_settings_value( settings[[nm]], pipe_dir = private$.pipeline_path )
       })
       private$.settings <- settings
+
+      # also assign version
+      descr <- tryCatch({
+        get_module_description(private$.pipeline_path)
+      }, error = function(...) {
+        structure(
+          list(
+            Package = private$.pipeline_name,
+            Type = "rave-pipeline",
+            Title = "No Title",
+            Version = "0.0.0.9000",
+            Language = "en-US",
+            Encoding = "UTF-8",
+            License = "Unlicensed",
+            Description = "No description found in this pipeline",
+            Imports = "",
+            Author = structure(list(
+              list(
+                given = "NA",
+                family = "NA",
+                role = c("aut", "cre"),
+                email = "NA",
+                comment = NULL
+              )
+            ), class = "person")
+          ),
+          class = "raveModuleDescription"
+        )
+      })
+
+      private$.description <- descr
 
     },
 
@@ -443,8 +475,14 @@ PipelineTools <- R6::R6Class(
     #' @param policy fork policy defined by module author, see text file
     #' 'fork-policy' under the pipeline directory; if missing, then default to
     #' avoid copying \code{main.html} and \code{shared} folder
+    #' @param delete_old whether to delete old pipelines with the same label
+    #' default is false
+    #' @param sanitize whether to sanitize the registry at save. This will
+    #' remove missing folders and import manually copied pipelines to the
+    #' registry (only for the pipelines with the same name)
     #' @returns A new pipeline object based on the path given
-    fork_to_subject = function(subject, label = "NA", policy = "default") {
+    fork_to_subject = function(subject, label = "NA", policy = "default",
+                               delete_old = FALSE, sanitize = TRUE) {
       subject <- restore_subject_instance(subject, strict = TRUE)
       label <- paste(label, collapse = "")
       label_cleaned <- gsub("[^a-zA-Z0-9_.-]+", "_", label)
@@ -464,6 +502,7 @@ PipelineTools <- R6::R6Class(
       # make sure parent folder exists
       dir_create2(dirname(path))
       re <- self$fork(path = path, policy = policy)
+
       # register
       registry_path <- file.path(subject$pipeline_path, "pipeline-registry.csv")
       if(file.exists(registry_path)) {
@@ -475,25 +514,73 @@ PipelineTools <- R6::R6Class(
             timestamp = "POSIXct",
             label = "character",
             directory = "character"
-          ))
-          stopifnot(all(c("project", "subject", "pipeline_name", "timestamp", "label", "directory") %in% names(registry)))
+          ), na.strings = "n/a")
+          nms <- names(registry)
+          stopifnot(all(c("project", "subject", "pipeline_name", "timestamp", "label", "directory") %in% nms))
+          if(!"policy" %in% nms) {
+            registry$policy <- "default"
+          }
+          if(!"version" %in% nms) {
+            registry$version <- "0.0.0.9000"
+          }
           registry
         }, error = function(...) { NULL })
       } else {
         registry <- NULL
       }
-      registry <- rbind(
-        data.table::data.table(
-          project = subject$project_name,
-          subject = subject$subject_code,
-          pipeline_name = self$pipeline_name,
-          timestamp = timestamp,
-          label = label,
-          directory = name,
-          keep.rownames = FALSE, stringsAsFactors = FALSE
-        ),
-        registry
-      )
+
+      if( sanitize ) {
+        # use subject's pipeline list
+        new_registry <- subject$list_pipelines(pipeline_name = self$pipeline_name, cache = FALSE, check = TRUE, all = TRUE)
+        if(length(registry)) {
+          registry <- rbind(
+            new_registry,
+            registry[registry$pipeline_name != self$pipeline_name, ],
+            fill = TRUE
+          )
+        } else {
+          registry <- new_registry
+        }
+
+      } else {
+        registry <- rbind(
+          data.table::data.table(
+            project = subject$project_name,
+            subject = subject$subject_code,
+            pipeline_name = self$pipeline_name,
+            timestamp = timestamp,
+            label = label,
+            directory = name,
+            policy = policy,
+            version = self$description$Version,
+            keep.rownames = FALSE, stringsAsFactors = FALSE
+          ),
+          registry
+        )
+      }
+
+      registry$policy[is.na(registry$policy)] <- "default"
+      registry$version[is.na(registry$version)] <- "0.0.0.9000"
+
+      # also delete old pipelines
+      if( delete_old ) {
+        sel <- (
+          registry$pipeline_name == self$pipeline_name &
+            registry$label == label &
+            registry$directory != name
+        )
+        if( any(sel) ) {
+          sub <- registry[sel, ]
+          dirs <- file.path(
+            subject$pipeline_path,
+            self$pipeline_name,
+            sub$directory
+          )
+          unlink(dirs, recursive = TRUE)
+          registry <- registry[!sel, ]
+        }
+      }
+
       tf <- tempfile()
       on.exit({ unlink(tf) })
       data.table::fwrite(registry, tf, row.names = FALSE, col.names = TRUE)
@@ -640,6 +727,11 @@ PipelineTools <- R6::R6Class(
 
   ),
   active = list(
+
+    #' @field description pipeline description
+    description = function(){
+      private$.description
+    },
 
     #' @field settings_path absolute path to the settings file
     settings_path = function() {

@@ -8,7 +8,7 @@ character vector
 
 true or false whether subject is in the project
 
-A data table of pipeline timestamps and directories
+A data table of pipeline time-stamps and directories
 }
 \description{
 Definition for 'RAVE' project class
@@ -127,7 +127,12 @@ should a new one be created?}
 \subsection{Method \code{subject_pipelines()}}{
 list saved pipelines
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEProject$subject_pipelines(pipeline_name, cache = FALSE, check = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEProject$subject_pipelines(
+  pipeline_name,
+  cache = FALSE,
+  check = TRUE,
+  all = FALSE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -138,6 +143,9 @@ list saved pipelines
 \item{\code{cache}}{whether to use cached registry}
 
 \item{\code{check}}{whether to check if the pipelines exist as directories}
+
+\item{\code{all}}{whether to list all pipelines; default is false; pipelines
+with the same label but older time-stamps will be hidden}
 }
 \if{html}{\out{</div>}}
 }

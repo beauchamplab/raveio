@@ -106,15 +106,17 @@ RAVEProject <- R6::R6Class(
     #' @param pipeline_name name of the pipeline
     #' @param cache whether to use cached registry
     #' @param check whether to check if the pipelines exist as directories
-    #' @returns A data table of pipeline timestamps and directories
-    subject_pipelines = function(pipeline_name, cache = FALSE, check = TRUE) {
+    #' @param all whether to list all pipelines; default is false; pipelines
+    #' with the same label but older time-stamps will be hidden
+    #' @returns A data table of pipeline time-stamps and directories
+    subject_pipelines = function(pipeline_name, cache = FALSE, check = TRUE, all = FALSE) {
       # pipeline_name <- "power_explorer"
       # self <- raveio::as_rave_project("demo")
       # check = FALSE
       subjects <- self$subjects()
       re <- lapply(subjects, function(subject_code) {
         subject <- RAVESubject$new(project_name = self$name, subject_code = subject_code, strict = FALSE)
-        subject$list_pipelines(pipeline_name = pipeline_name, check = check)
+        subject$list_pipelines(pipeline_name = pipeline_name, check = check, all = all)
       })
       data.table::rbindlist(re)
     }

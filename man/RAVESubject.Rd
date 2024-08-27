@@ -402,7 +402,12 @@ decomposition is needed.
 \subsection{Method \code{list_pipelines()}}{
 list saved pipelines
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$list_pipelines(pipeline_name, cache = FALSE, check = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVESubject$list_pipelines(
+  pipeline_name,
+  cache = FALSE,
+  check = TRUE,
+  all = FALSE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -413,6 +418,9 @@ list saved pipelines
 \item{\code{cache}}{whether to use cache registry to speed up}
 
 \item{\code{check}}{whether to check if the pipelines exist}
+
+\item{\code{all}}{whether to list all pipelines; default is false; pipelines
+with the same label but older time-stamps will be hidden}
 }
 \if{html}{\out{</div>}}
 }
