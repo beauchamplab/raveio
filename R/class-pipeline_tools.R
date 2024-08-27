@@ -576,7 +576,7 @@ PipelineTools <- R6::R6Class(
             self$pipeline_name,
             sub$directory
           )
-          unlink(dirs, recursive = TRUE)
+          lapply(dirs, unlink, recursive = TRUE)
           registry <- registry[!sel, ]
         }
       }
