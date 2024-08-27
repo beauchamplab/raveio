@@ -10,7 +10,8 @@ archive_subject(
   includes = c("orignal_signals", "processed_data", "rave_imaging", "pipelines", "notes",
     "user_generated"),
   config = list(),
-  work_path = NULL
+  work_path = NULL,
+  zip_flags = NULL
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ project name, or to exclude cache data; see examples}
 temporary path. Set this variable explicitly when temporary path is
 on external drives (for example, users have limited storage on local
 drives and cannot hold the entire subject)}
+
+\item{zip_flags}{\code{\link[utils]{zip}} flags}
 }
 \description{
 Archive and share a subject

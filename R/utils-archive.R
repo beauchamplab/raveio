@@ -11,6 +11,7 @@
 #' temporary path. Set this variable explicitly when temporary path is
 #' on external drives (for example, users have limited storage on local
 #' drives and cannot hold the entire subject)
+#' @param zip_flags \code{\link[utils]{zip}} flags
 #'
 #' @examples
 #'
@@ -58,7 +59,8 @@ archive_subject <- function(
     includes = c("orignal_signals", "processed_data", "rave_imaging",
                  "pipelines", "notes", "user_generated"),
     config = list(),
-    work_path = NULL
+    work_path = NULL,
+    zip_flags = NULL
 ) {
 
   # DIPSAUS DEBUG START
@@ -390,7 +392,13 @@ archive_subject <- function(
   # zip
   setwd(dirname(root_dir))
   zipfile_name <- sprintf("./%s.zip", rand_string(10))
-  utils::zip(zipfile = zipfile_name, files = "./archive")
+
+  if(length(zip_flags)) {
+    utils::zip(zipfile = zipfile_name, files = "./archive", flags = zip_flags)
+  } else {
+    utils::zip(zipfile = zipfile_name, files = "./archive")
+  }
+
   zipfile_name <- normalizePath(zipfile_name)
 
   setwd(current_wd)
