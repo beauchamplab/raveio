@@ -204,9 +204,7 @@ sanitize_target_error <- function(e) {
       msg <- gsub("^Error running targets::tar_make.*help\\.html[\n \t]{0,}Last (error|error message):[\n \t]{0,1}", "", msg)
       msg <- gsub("Last error traceback:.*$", "", msg)
       e$message <- trimws(msg)
-    }
-
-    if(startsWith(msg, "Error running targets::tar_make")) {
+    } else {
       tar_warn <- Sys.getenv("TAR_WARN", unset = "N/A")
       Sys.setenv("TAR_WARN" = "false")
       if(!identical(tar_warn, "N/A")) {
@@ -214,10 +212,13 @@ sanitize_target_error <- function(e) {
           Sys.setenv("TAR_WARN" = tar_warn)
         })
       }
-      err_table <- targets::tar_meta(fields = "error", complete_only = TRUE)
-      if(length(err_table$error)) {
-        e$message <- sprintf("Potential issue: %s", paste(err_table$error, collapse = "; "))
-      }
+      tryCatch({
+        err_table <- targets::tar_meta(fields = "error", complete_only = TRUE)
+        if(length(err_table$error)) {
+          e$message <- sprintf("Possible issue: %s", paste(err_table$error, collapse = "; "))
+        }
+      }, error = function(...){})
+
     }
   }
   e
