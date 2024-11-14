@@ -95,6 +95,15 @@ pipeline_run <- function(
     }
     make <- function(fun, use_local = TRUE) {
       suppressWarnings({
+
+        # Make sure temporary folder exists before running pipelines
+        if(!dir.exists(tempdir())) {
+          tryCatch({
+            dir_create2(tempdir())
+          }, error = function(e) {})
+        }
+
+        # Make sure the temporary folder exists
         tryCatch(
           expr = {
             ns$pipeline_clean(destroy = "process")
