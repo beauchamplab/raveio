@@ -43,18 +43,20 @@ normalize_commandline_path <- function(
     `freesurfer` = {
       recon_all <- file.path(path, "bin", "recon-all")
       if(file.exists(recon_all)){
-        res <- system2(
-          command = recon_all,
-          args = "--version",
-          env = c(sprintf(
-            "FREESURFER_HOME=%s", shQuote(path, type = "cmd")
-          )),
-          wait = TRUE, stdout = TRUE, stderr = TRUE
-        )
-        res <- paste(res, collapse = "\n")
-        if(grepl("freesurfer", res, ignore.case = TRUE)) {
-          return(path)
-        }
+        try({
+          res <- system2(
+            command = recon_all,
+            args = "--version",
+            env = c(sprintf(
+              "FREESURFER_HOME=%s", shQuote(path, type = "cmd")
+            )),
+            wait = TRUE, stdout = TRUE, stderr = TRUE
+          )
+          res <- paste(res, collapse = "\n")
+          if(grepl("freesurfer", res, ignore.case = TRUE)) {
+            return(path)
+          }
+        })
       }
     },
     `fsl` = {
