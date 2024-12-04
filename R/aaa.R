@@ -53,6 +53,14 @@ MNI305_to_MNI152 <- matrix(
   nrow = 4L, byrow = FALSE
 )
 
+#' @rdname raveio-constants
+#' @export
+YAEL_IMAGE_TYPES <- c(
+  # Pre-op
+  "T1w", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR",
+  "postopT1w", "postopT2w", "postopFLAIR", "CT"
+)
+
 HDF5_EAGERLOAD <- TRUE
 
 RAVEIO_FILEARRAY_VERSION <- 1L

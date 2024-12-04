@@ -6,6 +6,7 @@
 \alias{SIGNAL_TYPES}
 \alias{LOCATION_TYPES}
 \alias{MNI305_to_MNI152}
+\alias{YAEL_IMAGE_TYPES}
 \alias{PIPELINE_FORK_PATTERN}
 \title{The constant variables}
 \format{
@@ -15,6 +16,8 @@ An object of class \code{character} of length 5.
 
 An object of class \code{matrix} (inherits from \code{array}) with 4 rows and 4 columns.
 
+An object of class \code{character} of length 10.
+
 An object of class \code{character} of length 1.
 }
 \usage{
@@ -23,6 +26,8 @@ SIGNAL_TYPES
 LOCATION_TYPES
 
 MNI305_to_MNI152
+
+YAEL_IMAGE_TYPES
 
 PIPELINE_FORK_PATTERN
 }

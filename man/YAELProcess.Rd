@@ -42,6 +42,8 @@ to native brain. See examples at \code{\link{as_yael_process}}
 \describe{
 \item{\code{subject_code}}{'RAVE' subject code}
 
+\item{\code{image_types}}{allowed image types}
+
 \item{\code{work_path}}{Working directory ('RAVE' imaging path)}
 }
 \if{html}{\out{</div>}}
@@ -73,13 +75,19 @@ to native brain. See examples at \code{\link{as_yael_process}}
 \subsection{Method \code{new()}}{
 Constructor to instantiate the class
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$new(subject_code)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$new(subject_code, image_types)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{subject_code}}{character code representing the subject}
+
+\item{\code{image_types}}{vector of image types, such as \code{'T1w'},
+\code{'CT'}, \code{'fGATIR'}. All images except \code{'CT'} will be
+considered \code{'preop'} (before electrode implantation). Please
+use \code{'postop'} to indicate if an image is taken after the
+implantation (for example, \code{'postopT1w'})}
 }
 \if{html}{\out{</div>}}
 }
@@ -92,7 +100,7 @@ Set the raw input for different image types
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$set_input_image(
   path,
-  type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+  type = YAEL_IMAGE_TYPES,
   overwrite = FALSE,
   on_error = c("warning", "error", "ignore")
 )}\if{html}{\out{</div>}}
@@ -121,9 +129,7 @@ how should this error be reported; choices are \code{'warning'} (default),
 \subsection{Method \code{get_input_image()}}{
 Get image path
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_input_image(
-  type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_input_image(type = YAEL_IMAGE_TYPES)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -159,11 +165,7 @@ Get 'RAVE' subject instance
 \subsection{Method \code{register_to_T1w()}}{
 Register other images to 'T1' weighted 'MRI'
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$register_to_T1w(
-  image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
-  reverse = FALSE,
-  verbose = TRUE
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$register_to_T1w(image_type = "CT", reverse = FALSE, verbose = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -187,10 +189,7 @@ true, then the \code{'T1'} 'MRI' will become the moving image}
 \subsection{Method \code{get_native_mapping()}}{
 Get the mapping configurations used by \code{register_to_T1w}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_native_mapping(
-  image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
-  relative = FALSE
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_native_mapping(image_type = YAEL_IMAGE_TYPES, relative = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -212,8 +211,10 @@ Normalize native brain to \code{'MNI152'} template
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$map_to_template(
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
-  verbose = TRUE
+  use_images = c("T1w", "T2w", "T1wContrast", "fGATIR", "preopCT"),
+  native_type = "T1w",
+  verbose = TRUE,
+  ...
 )}\if{html}{\out{</div>}}
 }
 
@@ -223,10 +224,18 @@ Normalize native brain to \code{'MNI152'} template
 \item{\code{template_name}}{which template to use, choices are \code{'mni_icbm152_nlin_asym_09a'},
 \code{'mni_icbm152_nlin_asym_09b'}, \code{'mni_icbm152_nlin_asym_09c'}.}
 
+\item{\code{use_images}}{a vector of image types to use for normalization;
+default types are \code{'T1w'}, \code{'T2w'}, \code{'T1wContrast'},
+\code{'fGATIR'}, and \code{'preopCT'}. To use all available images
+for normalization, use wildcard \code{"all"}}
+
 \item{\code{native_type}}{which type of image should be used to map to template;
 default is \code{'T1w'}}
 
 \item{\code{verbose}}{whether to print out the process; default is true}
+
+\item{\code{...}}{additional tuning parameters passed to internal 'Python'
+code.}
 }
 \if{html}{\out{</div>}}
 }
@@ -240,7 +249,7 @@ Get configurations used for normalization
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_template_mapping(
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+  native_type = "T1w",
   relative = FALSE
 )}\if{html}{\out{</div>}}
 }
@@ -269,7 +278,7 @@ on template to native space
   template_roi_path,
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+  native_type = "T1w",
   interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline",
     "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc",
     "lanczosWindowedSinc", "genericLabel"),
@@ -308,7 +317,7 @@ from native space to template
   native_roi_path,
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+  native_type = "T1w",
   interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline",
     "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc",
     "lanczosWindowedSinc", "genericLabel"),
@@ -380,7 +389,7 @@ Transform points from native images to template
   native_ras,
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+  native_type = "T1w",
   verbose = TRUE
 )}\if{html}{\out{</div>}}
 }
@@ -411,7 +420,7 @@ Transform points from template images to native
   template_ras,
   template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
     "mni_icbm152_nlin_asym_09c"),
-  native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+  native_type = "T1w",
   verbose = TRUE
 )}\if{html}{\out{</div>}}
 }

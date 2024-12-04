@@ -59,20 +59,62 @@ YAELProcess <- R6::R6Class(
   classname = "YAELProcess",
   private = list(
     .subject_code = character(),
+    .image_types = character(),
     .impl = function() {
       rpyants <- call_rpyants("load_rpyants")
-      rpyants$registration$YAELPreprocess(private$.subject_code, self$work_path)
+      if(length(formals(rpyants$registration$YAELPreprocess)) >= 3) {
+        rpyants$registration$YAELPreprocess(
+          private$.subject_code, self$work_path, as.list(self$image_types)
+        )
+      } else {
+        rpyants$registration$YAELPreprocess(
+          private$.subject_code, self$work_path
+        )
+      }
     }
   ),
   public = list(
     #' @description
     #' Constructor to instantiate the class
     #' @param subject_code character code representing the subject
-    initialize = function(subject_code) {
+    #' @param image_types vector of image types, such as \code{'T1w'},
+    #' \code{'CT'}, \code{'fGATIR'}. All images except \code{'CT'} will be
+    #' considered \code{'preop'} (before electrode implantation). Please
+    #' use \code{'postop'} to indicate if an image is taken after the
+    #' implantation (for example, \code{'postopT1w'})
+    initialize = function(subject_code, image_types) {
       stopifnot2(length(subject_code) == 1 && is.character(subject_code) &&
                    !is.na(subject_code) && nzchar(subject_code),
                  msg = "Please enter a valid subject code (with combinations of letter and digits)")
       private$.subject_code <- subject_code
+
+      if(missing(image_types)) {
+        image_types <- YAEL_IMAGE_TYPES
+      }
+
+      existing_modalities <- NULL
+
+      input_path <- file.path(self$work_path, "inputs", "anat")
+      if(dir.exists(input_path)) {
+        input_images <- list.files(
+          input_path,
+          all.files = FALSE,
+          full.names = FALSE,
+          recursive = FALSE,
+          include.dirs = FALSE,
+          ignore.case = TRUE,
+          pattern = "\\.(nii|nii\\.gz)$"
+        )
+        existing_modalities <- unlist(lapply(input_images, function(fname) {
+          fname <- strsplit(fname, "_", fixed = TRUE)[[1]]
+          fname <- fname[[length(fname)]]
+          gsub(pattern = "\\.(nii|nii\\.gz)$", "", x = fname, ignore.case = TRUE)
+        }))
+      }
+
+      image_types <- unique(c(image_types, existing_modalities))
+      image_types <- unname(image_types[!is.na(image_types)])
+      private$.image_types <- as.character(image_types)
     },
 
     #' @description
@@ -86,13 +128,19 @@ YAELProcess <- R6::R6Class(
     #' \code{'error'} (throw error and abort), or \code{'ignore'}.
     #' @returns whether the image has been set (or replaced)
     set_input_image = function(
-      path, type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+      path, type = YAEL_IMAGE_TYPES,
       overwrite = FALSE, on_error = c("warning", "error", "ignore") ) {
       path <- normalize_path(path, must_work = TRUE)
-      type <- match.arg(type)
+      if(length(type) != 1) {
+        type <- match.arg(type)
+      }
       on_error <- match.arg(on_error)
       yael_py <- private$.impl()
       dir_create2(self$work_path)
+      if(!type %in% private$.image_types) {
+        private$.image_types <- c(private$.image_types, type)
+      }
+
       tryCatch({
         yael_py$set_image(path = path, type = type, overwrite = isTRUE(overwrite))
         if( type == "T1w" ) {
@@ -118,8 +166,10 @@ YAELProcess <- R6::R6Class(
     #' @description Get image path
     #' @param type type of the image
     #' @returns Absolute path if the image
-    get_input_image = function(type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR")) {
-      type <- match.arg(type)
+    get_input_image = function(type = YAEL_IMAGE_TYPES) {
+      if(length(type) != 1) {
+        type <- match.arg(type)
+      }
       yael_py <- private$.impl()
       call_rpyants("to_r", yael_py$input_image_path(type))
     },
@@ -140,8 +190,7 @@ YAELProcess <- R6::R6Class(
     #' true, then the \code{'T1'} 'MRI' will become the moving image
     #' @param verbose whether to print out the process; default is true
     #' @returns Nothing
-    register_to_T1w = function(image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), reverse = FALSE, verbose = TRUE) {
-      image_type <- match.arg(image_type)
+    register_to_T1w = function(image_type = "CT", reverse = FALSE, verbose = TRUE) {
       reverse <- isTRUE(reverse)
       verbose <- isTRUE(verbose)
       yael_py <- private$.impl()
@@ -174,8 +223,10 @@ YAELProcess <- R6::R6Class(
     #' @param relative whether to use relative path (to the \code{work_path} field)
     #' @returns A list of moving and fixing images, with rigid transformations
     #' from different formats.
-    get_native_mapping = function(image_type = c("CT", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), relative = FALSE) {
-      image_type <- match.arg(image_type)
+    get_native_mapping = function(image_type = YAEL_IMAGE_TYPES, relative = FALSE) {
+      if(length(image_type) != 1) {
+        image_type <- match.arg(image_type)
+      }
       yael_py <- private$.impl()
       return( call_rpyants("to_r", yael_py$get_native_mapping(image_type, relative = isTRUE(relative))) )
     },
@@ -185,15 +236,21 @@ YAELProcess <- R6::R6Class(
     #' \code{'mni_icbm152_nlin_asym_09b'}, \code{'mni_icbm152_nlin_asym_09c'}.
     #' @param native_type which type of image should be used to map to template;
     #' default is \code{'T1w'}
+    #' @param use_images a vector of image types to use for normalization;
+    #' default types are \code{'T1w'}, \code{'T2w'}, \code{'T1wContrast'},
+    #' \code{'fGATIR'}, and \code{'preopCT'}. To use all available images
+    #' for normalization, use wildcard \code{"all"}
     #' @param verbose whether to print out the process; default is true
+    #' @param ... additional tuning parameters passed to internal 'Python'
+    #' code.
     #' @returns See method \code{get_template_mapping}
     map_to_template = function(
-                 template_name = c(
-                   "mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"
-                 ),
-                 native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
-                 verbose = TRUE){
-      native_type <- match.arg(native_type)
+        template_name = c(
+          "mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"
+        ),
+        use_images = c("T1w", "T2w", "T1wContrast", "fGATIR", "preopCT"),
+        native_type = "T1w",
+        verbose = TRUE, ...){
       template_name <- match.arg(template_name)
       # camel version for BIDS
       template_info <- call_rpyants("template_urls")[[template_name]]
@@ -202,6 +259,12 @@ YAELProcess <- R6::R6Class(
       template_path <- normalize_path(file.path(template_folder, "T1.nii.gz"))
       template_mask <- normalize_path(file.path(template_folder, "T1_brainmask.nii.gz"))
       if(!file.exists(template_mask)) { template_mask <- NULL }
+      use_images <- unique(use_images)
+      if(any(use_images %in% "all")) {
+        use_images <- "all"
+      } else {
+        use_images <- unname(as.list(use_images))
+      }
       verbose <- isTRUE(verbose)
       yael_py <- private$.impl()
       yael_py$map_to_template(
@@ -210,7 +273,9 @@ YAELProcess <- R6::R6Class(
         native_type = native_type,
         template_mask_path = template_mask,
         native_mask_path = NULL,
-        verbose = verbose
+        use_images = use_images,
+        verbose = verbose,
+        ...
       )
       return (invisible(
         call_rpyants("to_r", yael_py$get_template_mapping(
@@ -228,12 +293,15 @@ YAELProcess <- R6::R6Class(
     #' @returns A list of input, output images, with forward and inverse
     #' transform files (usually two \code{'Affine'} with one displacement field)
     get_template_mapping = function(
-      template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), relative = FALSE
+      template_name = c(
+        "mni_icbm152_nlin_asym_09a",
+        "mni_icbm152_nlin_asym_09b",
+        "mni_icbm152_nlin_asym_09c"
+      ),
+      native_type = "T1w", relative = FALSE
     ) {
       template_name <- match.arg(template_name)
       template_name2 <- camel_template_name(template_name)
-      native_type <- match.arg(native_type)
       yael_py <- private$.impl()
       return(call_rpyants("to_r", yael_py$get_template_mapping(
         template_name = template_name2,
@@ -257,7 +325,7 @@ YAELProcess <- R6::R6Class(
     transform_image_from_template = function(
       template_roi_path,
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+      native_type = "T1w",
       interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline", "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc", "lanczosWindowedSinc", "genericLabel"), verbose = TRUE
     ) {
       stopifnot(file.exists(template_roi_path))
@@ -301,7 +369,7 @@ YAELProcess <- R6::R6Class(
     transform_image_to_template = function(
       native_roi_path,
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"),
+      native_type = "T1w",
       interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline", "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc", "lanczosWindowedSinc", "genericLabel"), verbose = TRUE
     ) {
       stopifnot(file.exists(native_roi_path))
@@ -411,11 +479,10 @@ YAELProcess <- R6::R6Class(
     #' invalid rows will be filled with \code{NA})
     transform_points_to_template = function(
       native_ras, template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), verbose = TRUE
+      native_type = "T1w", verbose = TRUE
     ) {
       template_name <- match.arg(template_name)
       template_name2 <- camel_template_name(template_name)
-      native_type <- match.arg(native_type)
 
       if(is.vector(native_ras)) {
         native_ras <- matrix(native_ras, ncol = 3, byrow = TRUE)
@@ -454,11 +521,13 @@ YAELProcess <- R6::R6Class(
     #' invalid rows will be filled with \code{NA})
     transform_points_from_template = function(
       template_ras, template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
-      native_type = c("T1w", "T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), verbose = TRUE
+      native_type = "T1w", verbose = TRUE
     ) {
       template_name <- match.arg(template_name)
       template_name2 <- camel_template_name(template_name)
-      native_type <- match.arg(native_type)
+      if(length(native_type) != 1) {
+        native_type <- match.arg(native_type)
+      }
 
       if(is.vector(template_ras)) {
         template_ras <- matrix(template_ras, ncol = 3, byrow = TRUE)
@@ -696,6 +765,16 @@ YAELProcess <- R6::R6Class(
     #' @field subject_code 'RAVE' subject code
     subject_code = function() {
       private$.subject_code
+    },
+
+    #' @field image_types allowed image types
+    image_types = function(v) {
+      if(!missing(v) && length(v)) {
+        image_types <- c(private$.image_types, as.character(unlist(v)))
+        image_types <- unname(unlist(image_types))
+        private$.image_types <- image_types
+      }
+      private$.image_types
     },
 
     #' @field work_path Working directory ('RAVE' imaging path)
