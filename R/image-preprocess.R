@@ -214,7 +214,9 @@ yael_preprocess <- function(
   }
 
   # Coregistration
-  lapply(c("T2w", "CT", "FLAIR", "preopCT", "T1wContrast", "fGATIR"), function(native_type) {
+  image_types <- unique(yael_process$image_types)
+  image_types <- image_types[!tolower(image_types) %in% "t1w"]
+  lapply(image_types, function(native_type) {
     impath <- yael_process$get_input_image(native_type)
     if(!length(impath)) { return() }
     logger("Co-registering [", native_type, "] image with [T1w] image.")
@@ -240,7 +242,7 @@ yael_preprocess <- function(
   }
   normalize_template <- unique(c(normalize_back, normalize_template))
   lapply(normalize_template, function(template_name) {
-    logger("Normalizing [T1w] image to template [", template_name, "].")
+    logger("Normalizing [T1w] image to template [", template_name, "].", level = "INFO")
     suppressWarnings({
       pexists <- tryCatch({
         conf <- yael_process$get_template_mapping(template_name = template_name, native_type = "T1w")
