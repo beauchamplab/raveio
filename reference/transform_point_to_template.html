@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.77</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.78</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,16 @@
 <span>  space <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scannerRAS"</span>, <span class="st">"tkrRAS"</span><span class="op">)</span>,</span>
 <span>  mapping_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"volumetric"</span>, <span class="st">"surface"</span><span class="op">)</span>,</span>
 <span>  flip_hemisphere <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">transform_thinfilm_to_mni152</span><span class="op">(</span></span>
+<span>  <span class="va">subject</span>,</span>
+<span>  flip_hemisphere <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  interpolator <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  n_segments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fl">16</span><span class="op">)</span>,</span>
+<span>  group_labels <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -79,6 +88,10 @@ is 'FreeSurfer' surface coordinate (or <code>'tkrRAS'</code>)</p></dd>
 <code>FALSE</code></p></dd>
 
 
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>whether to verbose the mapping progress; default is true</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>passed to other inner functions. For volume mapping, additional
 arguments include <code>method</code> with choices <code>'auto'</code> (default),
@@ -88,7 +101,27 @@ with default <code>'pial'</code>; <code>template</code> (which template to use f
 calculating 'MNI' coordinates) with a default template 'FreeSurfer'
 'MNI' brain <code>'cvs_avg35_inMNI152'</code></p></dd>
 
+
+<dt id="arg-interpolator">interpolator<a class="anchor" aria-label="anchor" href="#arg-interpolator"></a></dt>
+<dd><p>whether the transform lean towards volume mapping
+(<code>interpolator=0</code>) or surface mapping (<code>interpolator=1</code>)</p></dd>
+
+
+<dt id="arg-n-segments">n_segments<a class="anchor" aria-label="anchor" href="#arg-n-segments"></a></dt>
+<dd><p>positive integers with length of two: resolution of the
+mapping; default segments the thin-film array into 16 by 16 segments</p></dd>
+
+
+<dt id="arg-group-labels">group_labels<a class="anchor" aria-label="anchor" href="#arg-group-labels"></a></dt>
+<dd><p><code>NULL</code> (default) or a character vector indicating
+the group labels of thin-film electrodes;
+default assumes that all contacts are from thin-film electrodes.</p></dd>
+
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A table of electrode 'MNI' coordinates.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
