@@ -125,11 +125,7 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
 }
 
 
-transform_point_to_template_surface <- function(subject, scan_ras_mat, hemisphere, use_surface = "pial", template = NA, flip_hemisphere = FALSE, ...) {
-  # subject <- "YAEL/Precision003"
-  # scan_ras_mat <- c(1,1,1)
-  # hemisphere <- "r"
-  # template <- NA
+transform_point_to_template_surface <- function(subject, scan_ras_mat, hemisphere, use_surface = "pial", template = NA, flip_hemisphere = FALSE, verbose = TRUE, ...) {
 
   if(length(template) != 1 || is.na(template) || !nzchar(template)) {
     template <- "cvs_avg35_inMNI152"
@@ -148,6 +144,11 @@ transform_point_to_template_surface <- function(subject, scan_ras_mat, hemispher
   native_brain <- rave_brain(subject, surfaces = c("pial", "pial.T1", "sphere.reg", use_surface))
   template_brain <- threeBrain::merge_brain(template_subject = template)
   template_brain <- template_brain$template_object
+
+  if(verbose) {
+    catgl("Using `{use_surface}` surface and template `{template}` to transform points to MNI152 space",
+          level = "INFO")
+  }
 
   if(length(scan_ras_mat) == 3) {
     scan_ras_mat <- matrix(scan_ras_mat, ncol = 3)
@@ -332,9 +333,6 @@ transform_point_to_template_surface <- function(subject, scan_ras_mat, hemispher
 
 
 transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method = c("auto", "affine", "nonlinear"), flip_hemisphere = FALSE, verbose = TRUE, ...) {
-  # subject <- "YAEL/Precision003"
-  # scan_ras_mat <- c(1,1,1)
-  # method <- "auto"
 
   method <- match.arg(method)
 
@@ -393,7 +391,7 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
 
   if( method == "nonlinear") {
     if(verbose) {
-      catgl("Using non-linear mapping to transform points to MNI152 space",
+      catgl("Using non-linear volumetric mapping to transform points to MNI152 space",
             level = "INFO")
     }
 
@@ -408,14 +406,14 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
     }
     mni152_ras <- yael$transform_points_to_template(native_ras = scan_ras_selected,
                                                     template_name = template_name,
-                                                    verbose = verbose)
+                                                    verbose = FALSE)
     tmp <- scan_ras_mat
     tmp[valid_positions, ] <- mni152_ras[seq_len(sum(valid_positions)), ]
     tmp[!valid_positions, ] <- NA_real_
     mni152_ras <- tmp
   } else {
     if(verbose) {
-      catgl("Using affine matrix for mapping points to MNI152 space",
+      catgl("Using affine matrix (volumetric) for mapping points to MNI152 space",
             level = "INFO")
     }
     mni152_ras <- native_brain$electrodes$apply_transform_points(
@@ -455,6 +453,7 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
 #' \code{'surface'}; default is the former.
 #' @param flip_hemisphere whether to flip the hemisphere; default is
 #' \code{FALSE}
+#' @param verbose whether to verbose the mapping progress; default is true
 #' @param ... passed to other inner functions. For volume mapping, additional
 #' arguments include \code{method} with choices \code{'auto'} (default),
 #' \code{'affine'}, and \code{'nonlinear'}. For surface mapping, additional
@@ -462,6 +461,7 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
 #' with default \code{'pial'}; \code{template} (which template to use for
 #' calculating 'MNI' coordinates) with a default template 'FreeSurfer'
 #' 'MNI' brain \code{'cvs_avg35_inMNI152'}
+#' @returns A table of electrode 'MNI' coordinates.
 #' @examples
 #'
 #' if(interactive()) {
@@ -471,7 +471,7 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
 #' }
 #'
 #' @export
-transform_point_to_template <- function(subject, positions, space = c("scannerRAS", "tkrRAS"), mapping_method = c("volumetric", "surface"), flip_hemisphere = FALSE, ...) {
+transform_point_to_template <- function(subject, positions, space = c("scannerRAS", "tkrRAS"), mapping_method = c("volumetric", "surface"), flip_hemisphere = FALSE, verbose = TRUE, ...) {
 
   subject <- restore_subject_instance(subject, strict = FALSE)
   native_brain <- rave_brain(subject, usetemplateifmissing = FALSE)
@@ -502,11 +502,346 @@ transform_point_to_template <- function(subject, positions, space = c("scannerRA
 
   mapping_method <- match.arg(mapping_method)
   if(mapping_method == "volumetric") {
-    res <- transform_point_to_template_volumetric(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, ...)
+    res <- transform_point_to_template_volumetric(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, verbose = verbose, ...)
   } else {
-    res <- transform_point_to_template_surface(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, ...)
+    res <- transform_point_to_template_surface(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, verbose = verbose, ...)
   }
 
   return(res)
+
+}
+
+
+#' @rdname transform_point_to_template
+#' @param interpolator whether the transform lean towards volume mapping
+#' (\code{interpolator=0}) or surface mapping (\code{interpolator=1})
+#' @param n_segments positive integers with length of two: resolution of the
+#' mapping; default segments the thin-film array into 16 by 16 segments
+#' @param group_labels \code{NULL} (default) or a character vector indicating
+#' the group labels of thin-film electrodes;
+#' default assumes that all contacts are from thin-film electrodes.
+#' @export
+transform_thinfilm_to_mni152 <- function(subject, flip_hemisphere = FALSE, interpolator = 0.3, n_segments = c(16, 16), group_labels = NULL) {
+
+  subject <- restore_subject_instance(subject, strict = FALSE)
+
+  electrode_table <- subject$get_electrode_table()
+  if(!is.data.frame(electrode_table) || nrow(electrode_table) == 0) {
+    stop("No valid electrode table")
+  }
+
+  # brain objects
+  native_brain <- rave_brain(subject, usetemplateifmissing = FALSE)
+  if(is.null(native_brain)) {
+    stop("Unable to find the rave-imaging folder for subject ", subject$subject_id)
+  }
+  # MNI152 mapping uses cvs_avg35_inMNI152 template
+  template_file_path <- file.path(threeBrain::default_template_directory(), "cvs_avg35_inMNI152")
+  if(!dir.exists(template_file_path)) {
+    threeBrain::download_template_subject("cvs_avg35_inMNI152")
+  }
+  template <- threeBrain::merge_brain(native_brain, template_subject = "cvs_avg35_inMNI152")
+
+  # some variables being reused again and again
+  colnames_coordxyz <- sprintf("Coord_%s", c("x", "y", "z"))
+
+  # from tkr-RAS to scanner-RAS (native and template)
+  native_tkr2scan <- native_brain$Norig %*% solve(native_brain$Torig)
+  template_tkr2scan <- template$template_object$Norig %*% solve(template$template_object$Torig)
+
+  # from native tkr-RAS to MNI152 (only valid for this template)
+  native_tkr_to_template_tkr <- template_tkr2scan %*% solve(template$template_object$xfm) %*% native_brain$xfm %*% native_tkr2scan
+
+  # load pial surface of the template brain
+  template_pial_group <- template$template_object$surfaces$pial$group$group_data
+  template_dset_lh_pial <- sprintf("free_vertices_FreeSurfer Left Hemisphere - pial (%s)",
+                                   template$template_subject)
+  template_dset_rh_pial <- sprintf("free_vertices_FreeSurfer Right Hemisphere - pial (%s)",
+                                   template$template_subject)
+  template_lh_pial <- freesurferformats::read.fs.surface(template_pial_group[[template_dset_lh_pial]]$absolute_path)
+  template_rh_pial <- freesurferformats::read.fs.surface(template_pial_group[[template_dset_rh_pial]]$absolute_path)
+
+  template_lh_pial_scan_ras <- template_tkr2scan %*% t(cbind(template_lh_pial$vertices, 1))
+  template_lh_pial_face_index <- t(template_lh_pial$faces)
+  template_lh_pial_face_index <- template_lh_pial_face_index - min(template_lh_pial_face_index) + 1L
+
+  template_rh_pial_scan_ras <- template_tkr2scan %*% t(cbind(template_rh_pial$vertices, 1))
+  template_rh_pial_face_index <- t(template_rh_pial$faces)
+  template_rh_pial_face_index <- template_rh_pial_face_index - min(template_rh_pial_face_index) + 1L
+
+  # get geometry configurations
+  geometry_names_full <- sprintf("%s_%s", electrode_table$Prototype, electrode_table$LabelPrefix)
+  geometry_names <- unique(geometry_names_full)
+  if(length(group_labels)) {
+    geometry_names <- geometry_names[geometry_names %in% group_labels]
+  }
+  if(!length(geometry_names)) {
+    stop("No valid geometry object found. Please make sure the column `Prototype` and `LabelPrefix` are valid in electrodes.csv. Available group labels are: ", paste(sQuote(unique(geometry_names_full)), collapse = ", "))
+  }
+
+
+
+  # Do this for each electrode geometry
+  new_electrode_table <- lapply(geometry_names, function(geometry_name) {
+
+    # geometry_name <- geometry_names[[1]]
+    geometry <- native_brain$electrodes$geometries[[geometry_name]]
+
+    # get contact locations in surface coordinates
+    electrode_selection <- geometry_names_full == geometry_name
+    tkr_ras <- as.matrix(electrode_table[electrode_selection, colnames_coordxyz])
+
+    # get contact positions in model space
+    model_positions <- solve(geometry$transform) %*% t(cbind(tkr_ras, 1))
+
+    # get bounding box range at model space (only the first 2 dimensions as z is 0)
+    model_bounding_box <- apply(model_positions[c(1, 2), , drop = FALSE], 1, range)
+
+    # segment model_bounding_box into small boxes specified by `n_segments`
+    segment_spacing <- (model_bounding_box[2, ] - model_bounding_box[1, ]) / c(n_segments)
+
+    # construct iterator to iterate segments
+    segment_design <- expand.grid(
+      column = seq_len(n_segments[[1]] + 1),
+      row = seq_len(n_segments[[2]] + 1)
+    )
+
+    # matrix from segment index to model space
+    segment_to_model <- diag(c(segment_spacing, 0, 1))
+    segment_to_model[1:2, 4] <- model_bounding_box[1, 1:2] - segment_spacing
+
+    # get corner coordinates (model space) for each segment
+    # apply(segment_corners_model_ras,1,range)[, 1:2] should be model_bounding_box[, 1:2]
+    # ncol(segment_corners_model_ras) should be prod(n_segments + 1)
+    segment_corners_model_ras <- segment_to_model %*% t(cbind(as.matrix(segment_design), 1, 1))
+
+    segment_corners_tkr_ras <- geometry$transform %*% segment_corners_model_ras
+    segment_corners_tkr_ras_transposed <- t(segment_corners_tkr_ras[1:3, , drop = FALSE])
+
+    # calculate the corners in MNI152 (surface & volume)
+    segment_corners_mni152_surface <- as.data.frame(
+      transform_point_to_template(
+        subject = subject,
+        positions = segment_corners_tkr_ras_transposed,
+        space = "tkrRAS",
+        mapping_method = "surface",
+        flip_hemisphere = flip_hemisphere
+      )
+    )
+    segment_corners_mni152_volume <- as.data.frame(
+      transform_point_to_template(
+        subject = subject,
+        positions = segment_corners_tkr_ras_transposed,
+        space = "tkrRAS",
+        mapping_method = "volumetric",
+        method = "auto",
+        flip_hemisphere = flip_hemisphere
+      )
+    )
+
+    # interpolate the contacts - prepare the data in row-major matrix form
+    sc_mni152_surf_transposed <- t(as.matrix(segment_corners_mni152_surface[, c("MNI152_x", "MNI152_y", "MNI152_z")]))
+    sc_mni152_volu_transposed <- t(as.matrix(segment_corners_mni152_volume[, c("MNI152_x", "MNI152_y", "MNI152_z")]))
+
+    # interpolate the contacts - calculate MNI coordinates for each contact
+    # mni152_interpolated is a 6xn matrix with first 3 rows surface-registered
+    # locations and then volumetric locations
+    mni152_interpolated <- apply(model_positions, 2, function(model_pos) {
+      # model_pos <- model_positions[,278]
+      fct <- (model_pos[1:2] - model_bounding_box[1, 1:2]) / segment_spacing
+      if(any(fct < 0) || any(fct > n_segments)) {
+        return(c(0, 0, 0))
+      }
+
+      segment_id1 <- floor(fct)
+      segment_id2 <- ceiling(fct)
+
+      # segment_design[corner1_id, ]
+      corner1_id <- sum(segment_id1 * c(1, n_segments[[1]] + 1)) + 1
+      corner2_id <- sum(c(segment_id1[[1]], segment_id2[[2]]) * c(1, n_segments[[1]] + 1)) + 1
+      corner3_id <- sum(segment_id2 * c(1, n_segments[[1]] + 1)) + 1
+      corner4_id <- sum(c(segment_id2[[1]], segment_id1[[2]]) * c(1, n_segments[[1]] + 1)) + 1
+
+      interpolator <- fct - segment_id1
+
+      isomorphic_interpolation <- function(positions) {
+        vec1 <- (positions[, corner4_id] - positions[, corner1_id]) * interpolator[[1]]
+        vec2 <- (positions[, corner2_id] - positions[, corner1_id]) +
+          (positions[, corner3_id] - positions[, corner2_id]) * interpolator[[1]]
+        (vec2 - vec1) * interpolator[[2]] + vec1 + positions[, corner1_id]
+      }
+
+      # This should be c(0, 0)
+      # model_pos - isomorphic_interpolation(positions = model_control_points)
+
+      # contact MNI152, interpolated
+      mni_sur <- isomorphic_interpolation(sc_mni152_surf_transposed)
+      mni_vol <- isomorphic_interpolation(sc_mni152_volu_transposed)
+      # sphere_sur <- isomorphic_interpolation(sc_sphere_surf_transposed)
+
+      c(mni_sur, mni_vol) #, sphere_sur[[4]])
+    })
+
+
+    # Thinfilm ECoG model normals is 0,0,1, then to tkr then to MNI152
+    template_normals <- native_tkr_to_template_tkr %*% geometry$transform %*% c(0, 0, 1, 0)
+
+    # normalize so the length of vector `template_normals` is 1
+    template_normals <- template_normals[1:3] / sqrt(sum(template_normals[1:3])^2)
+
+    # Interpolate and raycast the contacts to surface
+    # interpolate: interpolator=0 is pure volumetric, interpolator=1 is pure surface
+    mni152_center <- interpolator * mni152_interpolated[1:3, , drop = FALSE] + (1 - interpolator) * mni152_interpolated[4:6, , drop = FALSE]
+
+    # calculate vector from volumetric to surface mapping
+    mni152_surf_vol_dir <- mni152_interpolated[4:6, , drop = FALSE] - mni152_interpolated[1:3, , drop = FALSE]
+
+    # Heuristic of how much offsets if the direction is inner (avoid mapping contacts to the sulci)
+    offsets <- abs(template_normals %*% mni152_surf_vol_dir)
+    offsets <- sort(offsets)
+    offset_length <- length(offsets)
+    offset_idx1 <- max(floor(0.2 * offset_length), 1)
+    offset_idx2 <- min(ceiling(0.8 * offset_length), offset_length)
+    shift_cap <- offsets[[offset_idx1]] * interpolator + offsets[[offset_idx2]] * (1 - interpolator)
+
+    # normalize mni152_surf_vol_dir
+    mni152_surf_vol_len <- sqrt(colSums(mni152_surf_vol_dir^2))
+    sel <- mni152_surf_vol_len > 0
+    mni152_surf_vol_dir[, sel] <- mni152_surf_vol_dir[, sel] / mni152_surf_vol_len[sel]
+
+    # raycast: smash contacts to the pial surface
+    if(isTRUE(mean(mni152_center[1, ], na.rm = TRUE) > 0)) {
+      electrode_hemisphere <- "right"
+      template_surface <- template_rh_pial
+      template_scan_ras <- template_rh_pial_scan_ras
+      template_face_index <- template_rh_pial_face_index
+    } else {
+      electrode_hemisphere <- "left"
+      template_surface <- template_lh_pial
+      template_scan_ras <- template_lh_pial_scan_ras
+      template_face_index <- template_lh_pial_face_index
+    }
+
+    # project direction, make sure the projection is "outwards" from inner brain to outer
+    # this is ensured by calculating inner prod with template_normals, since template_normals is
+    # always outwards
+    is_same_direction <- as.vector(template_normals %*% mni152_surf_vol_dir > 0)
+    mni152_surf_vol_dir[, !is_same_direction] <- -mni152_surf_vol_dir[, !is_same_direction]
+
+    # TODO: re-think if using `interpolator` is appropriate here
+    # if interpolator=0 (vol mapping), mapping projection is template_normals
+    ray_direction <- interpolator * mni152_surf_vol_dir + 2 * template_normals[1:3]
+    raycast <- ravetools::vcg_raycaster(
+      structure(
+        class = "mesh3d",
+        list(
+          vb = template_scan_ras[1:3, , drop = FALSE],
+          it = template_face_index - min(template_face_index) + 1L
+        )
+      ),
+      ray_origin = mni152_center,
+      ray_direction = ray_direction,
+      both_sides = TRUE
+    )
+
+    # ensure the raycaster distance is not too large
+    raycast$distance[raycast$distance < -shift_cap] <- -shift_cap
+
+    raycast_offset <- t(raycast$ray_direction) * raycast$distance
+
+    # pop the contacts to the surface by 0.8mm
+    # this is because the electrodes underneath the surface if rendered via phong/standard shaders
+    mni152_projected <- mni152_center + t(raycast_offset)# + template_normals * 0.8
+    mni152_projected[, !raycast$has_intersection] <- mni152_center[, !raycast$has_intersection]
+
+    # also calculate MNI305 position
+    mni305_interpolated <- template$template_object$xfm %*% rbind(
+      mni152_projected[1:3, , drop = FALSE], 1)
+
+
+    new_electrode_table <- electrode_table[electrode_selection, , drop = FALSE]
+    new_electrode_table$MNI305_x <- mni305_interpolated[1, ]
+    new_electrode_table$MNI305_y <- mni305_interpolated[2, ]
+    new_electrode_table$MNI305_z <- mni305_interpolated[3, ]
+    new_electrode_table$MNI152_x <- mni152_projected[1, ]
+    new_electrode_table$MNI152_y <- mni152_projected[2, ]
+    new_electrode_table$MNI152_z <- mni152_projected[3, ]
+    new_electrode_table$Radius <- geometry$contact_sizes
+
+    new_electrode_table
+  })
+
+  new_electrode_table <- do.call("rbind", new_electrode_table)
+
+  new_electrode_table <- new_electrode_table[order(new_electrode_table$Electrode), , drop = FALSE]
+
+  # scene <-
+  #   r3js::plot3js(
+  #     xlim = range(new_electrode_table$MNI152_x) + c(-1, 1),
+  #     ylim = range(new_electrode_table$MNI152_y) + c(-1, 1),
+  #     zlim = range(new_electrode_table$MNI152_z) + c(-1, 1),
+  #     label_axes = FALSE, draw_box = FALSE, draw_grid = FALSE,
+  #     aspect = c(1, 1, 1) # Maintain a constant aspect ratio
+  #   ) |>
+  #   r3js::light3js(
+  #     position = c(0, 0, 1),
+  #     type = "directional",
+  #     intensity = 1,
+  #     col = "white"
+  #   ) |>
+  #   r3js::light3js(type = "ambient",
+  #                  intensity = 0.2,
+  #                  col = "white") |>
+  #   r3js::shape3js(
+  #     vertices = t(template_lh_pial_scan_ras[1:3, , drop = FALSE]),
+  #     faces = t(template_lh_pial_face_index),
+  #     col = "gray",
+  #     # opacity = 0.6,
+  #     mat = "phong"
+  #   ) |>
+  #   r3js::shape3js(
+  #     vertices = t(template_rh_pial_scan_ras[1:3, , drop = FALSE]),
+  #     faces = t(template_rh_pial_face_index),
+  #     col = "gray",
+  #     # opacity = 0.6,
+  #     mat = "phong"
+  #   ) |>
+  #   r3js::points3js(
+  #     x = new_electrode_table$MNI152_x,
+  #     y = new_electrode_table$MNI152_y,
+  #     z = new_electrode_table$MNI152_z,
+  #     size = new_electrode_table$Radius * 5,
+  #     # opacity = rep(0.0, nrow(new_electrode_table)),
+  #     # col = dipsaus::col2hexStr(pal[color_index], alpha = 0.3),
+  #     col = "red",
+  #     geometry = FALSE
+  #   ) |>
+  #   # r3js::points3js(
+  #   #   x = sc_mni152_surf_transposed[1, ],
+  #   #   y = sc_mni152_surf_transposed[2, ],
+  #   #   z = sc_mni152_surf_transposed[3, ],
+  #   #   size = rep(1, ncol(sc_mni152_surf_transposed)),
+  #   #   # opacity = rep(0.0, nrow(new_electrode_table)),
+  #   #   # col = dipsaus::col2hexStr(pal[color_index], alpha = 0.3),
+  #   #   col = "blue",
+  #   #   geometry = FALSE
+  #   # ) |>
+  #   # r3js::arrows3js(
+  #   #   from = t(mni152_center),
+  #   #   to = as.matrix(new_electrode_table[, sprintf("MNI152_%s", c("x", "y", "z"))]),
+  #   #   lwd = 0.01, arrowhead_width = 0, arrowhead_length = 0,
+  #   #   col = "gray"
+  #   # ) |>
+  #   r3js::r3js(
+  #     rotation = c(0, 0, 0)
+  #   )
+  # print(scene)
+
+  return(new_electrode_table)
+
+  # native_brain$set_electrodes(new_electrode_table, priority = "sphere")
+  # native_brain$set_electrode_values(new_electrode_table)
+  # # brain$plot()
+  # template$plot()
 
 }

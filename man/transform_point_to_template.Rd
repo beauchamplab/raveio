@@ -2,6 +2,7 @@
 % Please edit documentation in R/threeBrain-instance.R
 \name{transform_point_to_template}
 \alias{transform_point_to_template}
+\alias{transform_thinfilm_to_mni152}
 \title{Calculate template 'MNI' coordinates for points on native brain}
 \usage{
 transform_point_to_template(
@@ -10,7 +11,16 @@ transform_point_to_template(
   space = c("scannerRAS", "tkrRAS"),
   mapping_method = c("volumetric", "surface"),
   flip_hemisphere = FALSE,
+  verbose = TRUE,
   ...
+)
+
+transform_thinfilm_to_mni152(
+  subject,
+  flip_hemisphere = FALSE,
+  interpolator = 0.3,
+  n_segments = c(16, 16),
+  group_labels = NULL
 )
 }
 \arguments{
@@ -30,6 +40,8 @@ is 'FreeSurfer' surface coordinate (or \code{'tkrRAS'})}
 \item{flip_hemisphere}{whether to flip the hemisphere; default is
 \code{FALSE}}
 
+\item{verbose}{whether to verbose the mapping progress; default is true}
+
 \item{...}{passed to other inner functions. For volume mapping, additional
 arguments include \code{method} with choices \code{'auto'} (default),
 \code{'affine'}, and \code{'nonlinear'}. For surface mapping, additional
@@ -37,6 +49,19 @@ arguments include \code{use_surface} (which surface to project to)
 with default \code{'pial'}; \code{template} (which template to use for
 calculating 'MNI' coordinates) with a default template 'FreeSurfer'
 'MNI' brain \code{'cvs_avg35_inMNI152'}}
+
+\item{interpolator}{whether the transform lean towards volume mapping
+(\code{interpolator=0}) or surface mapping (\code{interpolator=1})}
+
+\item{n_segments}{positive integers with length of two: resolution of the
+mapping; default segments the thin-film array into 16 by 16 segments}
+
+\item{group_labels}{\code{NULL} (default) or a character vector indicating
+the group labels of thin-film electrodes;
+default assumes that all contacts are from thin-film electrodes.}
+}
+\value{
+A table of electrode 'MNI' coordinates.
 }
 \description{
 Calculate template 'MNI' coordinates for points on native brain
