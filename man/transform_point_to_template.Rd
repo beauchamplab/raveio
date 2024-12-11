@@ -12,6 +12,8 @@ transform_point_to_template(
   mapping_method = c("volumetric", "surface"),
   flip_hemisphere = FALSE,
   verbose = TRUE,
+  project_surface = "pial",
+  volumetric_transform = c("auto", "affine", "nonlinear"),
   ...
 )
 
@@ -20,7 +22,9 @@ transform_thinfilm_to_mni152(
   flip_hemisphere = FALSE,
   interpolator = 0.3,
   n_segments = c(16, 16),
-  group_labels = NULL
+  group_labels = NULL,
+  project_surface = "pial",
+  volumetric_transform = c("auto", "affine", "nonlinear")
 )
 }
 \arguments{
@@ -42,13 +46,17 @@ is 'FreeSurfer' surface coordinate (or \code{'tkrRAS'})}
 
 \item{verbose}{whether to verbose the mapping progress; default is true}
 
-\item{...}{passed to other inner functions. For volume mapping, additional
-arguments include \code{method} with choices \code{'auto'} (default),
-\code{'affine'}, and \code{'nonlinear'}. For surface mapping, additional
-arguments include \code{use_surface} (which surface to project to)
-with default \code{'pial'}; \code{template} (which template to use for
-calculating 'MNI' coordinates) with a default template 'FreeSurfer'
-'MNI' brain \code{'cvs_avg35_inMNI152'}}
+\item{project_surface}{for surface mapping only, which surface to project
+electrodes onto; default is \code{'pial'} surface, other common choices
+are \code{'white'} for white-matter, or \code{'smoothwm'} for smoothed
+white matter}
+
+\item{volumetric_transform}{for volume mapping only, which type of transform
+to use; default is \code{'auto'} detecting and use non-linear deformation
+if exists, and fall back to 'affine' transform; other choices are
+\code{'affine'} or \code{'nonlinear'}}
+
+\item{...}{ignored}
 
 \item{interpolator}{whether the transform lean towards volume mapping
 (\code{interpolator=0}) or surface mapping (\code{interpolator=1})}

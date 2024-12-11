@@ -454,13 +454,15 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
 #' @param flip_hemisphere whether to flip the hemisphere; default is
 #' \code{FALSE}
 #' @param verbose whether to verbose the mapping progress; default is true
-#' @param ... passed to other inner functions. For volume mapping, additional
-#' arguments include \code{method} with choices \code{'auto'} (default),
-#' \code{'affine'}, and \code{'nonlinear'}. For surface mapping, additional
-#' arguments include \code{use_surface} (which surface to project to)
-#' with default \code{'pial'}; \code{template} (which template to use for
-#' calculating 'MNI' coordinates) with a default template 'FreeSurfer'
-#' 'MNI' brain \code{'cvs_avg35_inMNI152'}
+#' @param project_surface for surface mapping only, which surface to project
+#' electrodes onto; default is \code{'pial'} surface, other common choices
+#' are \code{'white'} for white-matter, or \code{'smoothwm'} for smoothed
+#' white matter
+#' @param volumetric_transform for volume mapping only, which type of transform
+#' to use; default is \code{'auto'} detecting and use non-linear deformation
+#' if exists, and fall back to 'affine' transform; other choices are
+#' \code{'affine'} or \code{'nonlinear'}
+#' @param ... ignored
 #' @returns A table of electrode 'MNI' coordinates.
 #' @examples
 #'
@@ -471,7 +473,13 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
 #' }
 #'
 #' @export
-transform_point_to_template <- function(subject, positions, space = c("scannerRAS", "tkrRAS"), mapping_method = c("volumetric", "surface"), flip_hemisphere = FALSE, verbose = TRUE, ...) {
+transform_point_to_template <- function(
+    subject, positions, space = c("scannerRAS", "tkrRAS"),
+    mapping_method = c("volumetric", "surface"), flip_hemisphere = FALSE,
+    verbose = TRUE, project_surface = "pial",
+    volumetric_transform = c("auto", "affine", "nonlinear"), ...) {
+
+  volumetric_transform <- match.arg(volumetric_transform)
 
   subject <- restore_subject_instance(subject, strict = FALSE)
   native_brain <- rave_brain(subject, usetemplateifmissing = FALSE)
@@ -502,9 +510,9 @@ transform_point_to_template <- function(subject, positions, space = c("scannerRA
 
   mapping_method <- match.arg(mapping_method)
   if(mapping_method == "volumetric") {
-    res <- transform_point_to_template_volumetric(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, verbose = verbose, ...)
+    res <- transform_point_to_template_volumetric(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, verbose = verbose, method = volumetric_transform, ...)
   } else {
-    res <- transform_point_to_template_surface(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, verbose = verbose, ...)
+    res <- transform_point_to_template_surface(subject = subject, scan_ras_mat = positions, flip_hemisphere = flip_hemisphere, verbose = verbose, use_surface = project_surface, ...)
   }
 
   return(res)
@@ -521,7 +529,12 @@ transform_point_to_template <- function(subject, positions, space = c("scannerRA
 #' the group labels of thin-film electrodes;
 #' default assumes that all contacts are from thin-film electrodes.
 #' @export
-transform_thinfilm_to_mni152 <- function(subject, flip_hemisphere = FALSE, interpolator = 0.3, n_segments = c(16, 16), group_labels = NULL) {
+transform_thinfilm_to_mni152 <- function(
+    subject, flip_hemisphere = FALSE, interpolator = 0.3,
+    n_segments = c(16, 16), group_labels = NULL, project_surface = "pial",
+    volumetric_transform = c("auto", "affine", "nonlinear")) {
+
+  volumetric_transform <- match.arg(volumetric_transform)
 
   subject <- restore_subject_instance(subject, strict = FALSE)
 
@@ -625,7 +638,8 @@ transform_thinfilm_to_mni152 <- function(subject, flip_hemisphere = FALSE, inter
         positions = segment_corners_tkr_ras_transposed,
         space = "tkrRAS",
         mapping_method = "surface",
-        flip_hemisphere = flip_hemisphere
+        flip_hemisphere = flip_hemisphere,
+        project_surface = project_surface
       )
     )
     segment_corners_mni152_volume <- as.data.frame(
@@ -634,8 +648,8 @@ transform_thinfilm_to_mni152 <- function(subject, flip_hemisphere = FALSE, inter
         positions = segment_corners_tkr_ras_transposed,
         space = "tkrRAS",
         mapping_method = "volumetric",
-        method = "auto",
-        flip_hemisphere = flip_hemisphere
+        flip_hemisphere = flip_hemisphere,
+        volumetric_transform = volumetric_transform
       )
     )
 
