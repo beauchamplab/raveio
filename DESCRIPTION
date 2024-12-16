@@ -1,7 +1,7 @@
 Package: raveio
 Type: Package
 Title: File-System Toolbox for RAVE Project
-Version: 0.9.0.79
+Version: 0.9.0.80
 Language: en-US
 Authors@R: c(
     person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre", "cph")),
@@ -16,10 +16,12 @@ Description: Includes multiple cross-platform read/write interfaces for
     neurophysiology data from/to 'RAVE' file structure, as well as several 
     popular formats including  'EDF(+)', 'Matlab', 'BIDS-iEEG', and 'HDF5', 
     etc. Documentation and examples about 'RAVE' project are provided at 
-    <https://openwetware.org/wiki/RAVE>, and the paper by John F. Magnotti, 
+    <https://rave.wiki>, and the paper by John F. Magnotti, 
     Zhengjia Wang, Michael S. Beauchamp (2020) 
-    <doi:10.1016/j.neuroimage.2020.117341>; see 'citation("raveio")' for 
-    details.
+    <doi:10.1016/j.neuroimage.2020.117341>. For applications such as electrode
+    localization, please check Zhengjia Wang, John F. Magnotti, Xiang Zhang,
+    Michael S. Beauchamp (2023) <doi:10.1523/ENEURO.0328-23.2023>, or see 
+    'citation("raveio")' for details.
 BugReports: https://github.com/beauchamplab/raveio/issues
 URL: https://beauchamplab.github.io/raveio/
 License: GPL-3
