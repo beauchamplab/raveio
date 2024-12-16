@@ -31,7 +31,7 @@ See \code{\link{new_constraints}} for constructor function.
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{n_validators}}{Number of validators}
+\item{\code{n_validators}}{Number of validation functions}
 
 \item{\code{isRAVEVariableConstraints}}{always true}
 

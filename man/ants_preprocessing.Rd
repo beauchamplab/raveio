@@ -2,7 +2,7 @@
 % Please edit documentation in R/cmd-ants-preprocess.R
 \name{ants_preprocessing}
 \alias{ants_preprocessing}
-\title{Process 'T1' weighted 'MRI' using \code{ANTs}}
+\title{Process 'T1' weighted 'MRI' using \code{'ANTs'}}
 \usage{
 ants_preprocessing(
   work_path,

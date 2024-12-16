@@ -1,4 +1,4 @@
-#' @title Process 'T1' weighted 'MRI' using \code{ANTs}
+#' @title Process 'T1' weighted 'MRI' using \code{'ANTs'}
 #' @description
 #' This function is soft-deprecated. Use \code{\link{yael_preprocess}} instead.
 #'
@@ -103,7 +103,7 @@ ants_preprocessing <- function(work_path, image_path, resample = FALSE, verbose 
   # Brain mask
   probability_mask <- rpyANTs::antspynet_brain_extraction(x = input_image, modality = "t1", verbose = verbose)
   brain_mask <- ants$threshold_image(probability_mask, 0.5, 1.0, 1L, 0L)
-  brain_mask = ants$morphology(brain_mask, "close", 6L)$iMath_fill_holes()
+  brain_mask <- ants$morphology(brain_mask, "close", 6L)$iMath_fill_holes()
   brain_mask$to_file(file.path(volume_path, "brain_mask.nii.gz"))
 
   # Skull-strip
@@ -124,7 +124,7 @@ ants_preprocessing <- function(work_path, image_path, resample = FALSE, verbose 
   template_brain <- rpyANTs::as_ANTsImage(template_subject_path)
   template_brain$to_file(file.path(transform_path, "template.nii.gz"))
 
-  registration = rpyANTs::ants_registration(
+  registration <- rpyANTs::ants_registration(
     fixed = template_brain,
     moving = skull_strip,
     type_of_transform = template_mapping,
@@ -144,7 +144,7 @@ ants_preprocessing <- function(work_path, image_path, resample = FALSE, verbose 
   }
 
   # morphed to MNI
-  preprocessed_image = rpyANTs::ants_apply_transforms(
+  preprocessed_image <- rpyANTs::ants_apply_transforms(
     fixed = template_brain,
     moving = skull_strip,
     verbose = verbose,
@@ -271,12 +271,12 @@ ants_preprocessing <- function(work_path, image_path, resample = FALSE, verbose 
 
   # pial
   pial_mask <- prob_images[2]$threshold_image(0.5, 1.0, 1L, 0L)
-  pial_mask_left = pial_mask$clone()
-  pial_mask_left[cortical_mask_left < 0.5] = 0
+  pial_mask_left <- pial_mask$clone()
+  pial_mask_left[cortical_mask_left < 0.5] <- 0
   # pial_mask_left <- pial_mask_left$morphology("close", 1L)$iMath_fill_holes()
 
-  pial_mask_right = pial_mask$clone()
-  pial_mask_right[cortical_mask_right < 0.5] = 0
+  pial_mask_right <- pial_mask$clone()
+  pial_mask_right[cortical_mask_right < 0.5] <- 0
   # pial_mask_right <- pial_mask_right$morphology("close", 1L)$iMath_fill_holes()
 
   pial_mask_left$to_file(file.path(volume_path, "mask_pial_left.nii.gz"))
@@ -285,11 +285,11 @@ ants_preprocessing <- function(work_path, image_path, resample = FALSE, verbose 
   # white matter
   white_matter <- prob_images[3]$threshold_image(0.5, 1.0, 1L, 0L)
 
-  white_matter_left = white_matter$clone()
-  white_matter_left[cortical_mask_left < 0.5] = 0
+  white_matter_left <- white_matter$clone()
+  white_matter_left[cortical_mask_left < 0.5] <- 0
 
-  white_matter_right = white_matter$clone()
-  white_matter_right[cortical_mask_right < 0.5] = 0
+  white_matter_right <- white_matter$clone()
+  white_matter_right[cortical_mask_right < 0.5] <- 0
 
   white_matter_left$to_file(file.path(volume_path, "mask_white_left.nii.gz"))
   white_matter_right$to_file(file.path(volume_path, "mask_white_right.nii.gz"))

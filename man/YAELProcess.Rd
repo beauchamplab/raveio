@@ -20,9 +20,9 @@ See method \code{get_template_mapping}
 A list of input, output images, with forward and inverse
 transform files (usually two \code{'Affine'} with one displacement field)
 
-transformed image in 'ANTs' format
+transformed image in \code{'ANTs'} format
 
-transformed image in 'ANTs' format
+transformed image in \code{'ANTs'} format
 
 Nothing
 

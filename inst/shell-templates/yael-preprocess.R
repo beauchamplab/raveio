@@ -7,21 +7,21 @@ if( !isTRUE(rpyANTs::ants_available()) ) {
 
 # Prepare working directory: FreeSurfer does not like it when
 # directories contain spaces
-wdir_actual="{{ work_path_actual }}"
+wdir_actual <- "{{ work_path_actual }}"
 
 # Stage 1: import images
 project_name <- "{{ project_name }}"
-subject_code="{{ subject_code }}"
-t1w_path="{{ t1w_path }}"
-ct_path="{{ ct_path }}"
-t2w_path="{{ t2w_path }}"
-fgatir_path="{{ fgatir_path }}"
-preopct_path="{{ preopct_path }}"
-flair_path="{{ flair_path }}"
-t1w_contrast_path="{{ t1w_contrast_path }}"
-register_reversed={{ register_reversed }}
-normalize_template={{ normalize_template_str }}
-run_recon_all={{ run_recon_all }}
+subject_code <- "{{ subject_code }}"
+t1w_path <- "{{ t1w_path }}"
+ct_path <- "{{ ct_path }}"
+t2w_path <- "{{ t2w_path }}"
+fgatir_path <- "{{ fgatir_path }}"
+preopct_path <- "{{ preopct_path }}"
+flair_path <- "{{ flair_path }}"
+t1w_contrast_path <- "{{ t1w_contrast_path }}"
+register_reversed <-{{ register_reversed }}
+normalize_template= <-{{ normalize_template_str }}
+run_recon_all <-{{ run_recon_all }}
 
 max_mem_size <- raveio::raveio_getopt("max_mem", default = 8)
 if(length(max_mem_size) == 1 && is.numeric(max_mem_size) && !is.na(max_mem_size) && isTRUE(max_mem_size < 12)) {
@@ -57,8 +57,8 @@ if( !run_recon_all ) {
   surf_path <- file.path(wdir_actual, "rave-imaging", "ants", "surf")
   if(dir.exists(surf_path)) {
     message("Finalizing 1 of 2...")
-    pial_path = file.path(surf_path, "lh.pial")
-    envelope_path = file.path(surf_path, "lh.pial-outer-smoothed")
+    pial_path <- file.path(surf_path, "lh.pial")
+    envelope_path <- file.path(surf_path, "lh.pial-outer-smoothed")
     if(file.exists(pial_path) && !file.exists(envelope_path)) {
       threeBrain::generate_smooth_envelope(
         surface_path = pial_path,
@@ -70,8 +70,8 @@ if( !run_recon_all ) {
     }
 
     message("Finalizing 2 of 2...")
-    pial_path = file.path(surf_path, "rh.pial")
-    envelope_path = file.path(surf_path, "rh.pial-outer-smoothed")
+    pial_path <- file.path(surf_path, "rh.pial")
+    envelope_path <- file.path(surf_path, "rh.pial-outer-smoothed")
     if(file.exists(pial_path) && !file.exists(envelope_path)) {
       threeBrain::generate_smooth_envelope(
         surface_path = pial_path,
@@ -132,8 +132,8 @@ if( !run_recon_all ) {
   surf_path <- file.path(wdir_actual, "rave-imaging", "fs", "surf")
   if(dir.exists(surf_path)) {
     message("Finalizing 1 of 2...")
-    pial_path = file.path(surf_path, "lh.pial")
-    envelope_path = file.path(surf_path, "lh.pial-outer-smoothed")
+    pial_path <- file.path(surf_path, "lh.pial")
+    envelope_path <- file.path(surf_path, "lh.pial-outer-smoothed")
     if(file.exists(pial_path) && !file.exists(envelope_path)) {
       threeBrain::generate_smooth_envelope(
         surface_path = pial_path,
@@ -145,8 +145,8 @@ if( !run_recon_all ) {
     }
 
     message("Finalizing 2 of 2...")
-    pial_path = file.path(surf_path, "rh.pial")
-    envelope_path = file.path(surf_path, "rh.pial-outer-smoothed")
+    pial_path <- file.path(surf_path, "rh.pial")
+    envelope_path <- file.path(surf_path, "rh.pial-outer-smoothed")
     if(file.exists(pial_path) && !file.exists(envelope_path)) {
       threeBrain::generate_smooth_envelope(
         surface_path = pial_path,

@@ -301,7 +301,7 @@ RAVEVariableConstraints <- R6::R6Class(
 
   ),
   active = list(
-    #' @field n_validators Number of validators
+    #' @field n_validators Number of validation functions
     n_validators = function() {
       length(private$validators)
     },
@@ -493,7 +493,7 @@ RAVEVariable <- R6::R6Class(
       env = parent.frame(),
       on_error = c("error", "warning", "message", "muffle")
     ) {
-      on_error = match.arg(on_error)
+      on_error <- match.arg(on_error)
 
       collection <- checkmate::makeAssertCollection()
 
@@ -655,7 +655,7 @@ RAVEVariableBinding <- R6::R6Class(
       env = parent.frame(),
       on_error = c("error", "warning", "message", "muffle")
     ) {
-      on_error = match.arg(on_error)
+      on_error <- match.arg(on_error)
 
       collection <- checkmate::makeAssertCollection()
 

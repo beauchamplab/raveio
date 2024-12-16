@@ -321,7 +321,7 @@ YAELProcess <- R6::R6Class(
     #' \code{"auto"}: \code{'linear'} for probabilistic map and \code{'nearestNeighbor'}
     #' otherwise.
     #' @param verbose whether the print out the progress
-    #' @returns transformed image in 'ANTs' format
+    #' @returns transformed image in \code{'ANTs'} format
     transform_image_from_template = function(
       template_roi_path,
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
@@ -365,7 +365,7 @@ YAELProcess <- R6::R6Class(
     #' \code{"auto"}: \code{'linear'} for probabilistic map and \code{'nearestNeighbor'}
     #' otherwise.
     #' @param verbose whether the print out the progress
-    #' @returns transformed image in 'ANTs' format
+    #' @returns transformed image in \code{'ANTs'} format
     transform_image_to_template = function(
       native_roi_path,
       template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),

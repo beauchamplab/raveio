@@ -176,7 +176,7 @@ export_table <- function(x, file, format = c("auto", "csv", "csv.zip", "h5", "fs
       fst::write_fst(x = x, path = file, compress = 99)
     },
     "h5" = {
-      h5file = tempfile(fileext = '.h5')
+      h5file <- tempfile(fileext = '.h5')
       on.exit({
         unlink(h5file)
       })
