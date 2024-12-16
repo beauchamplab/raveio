@@ -611,7 +611,7 @@ lapply_async <- function(
   }
 
   restore_future <- FALSE
-  plan <- getOption("raveio.auto.parallel", default = TRUE)
+  auto_parallel <- getOption("raveio.auto.parallel", default = TRUE)
   current_plan <- "sequential"
 
   on.exit({
@@ -620,7 +620,7 @@ lapply_async <- function(
     }
   })
 
-  if(isTRUE(plan)) {
+  if(isTRUE(auto_parallel)) {
     if( ncores == 1 ) {
       future$plan("sequential")
     } else {
@@ -632,7 +632,7 @@ lapply_async <- function(
       restore_future <- TRUE
     }
   } else {
-    restore_future <- TRUE
+    restore_future <- FALSE
     current_plan <- future$plan("list")
   }
 
