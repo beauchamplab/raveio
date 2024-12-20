@@ -18,3 +18,4 @@ inst/rave-pipelines/builtins/*
 ^ui\.R$
 ^_pkgdown\.yml$
 ^pkgdown$
+^LICENSE\.md$

@@ -1,10 +1,12 @@
 Package: raveio
 Type: Package
 Title: File-System Toolbox for RAVE Project
-Version: 0.9.0.80
+Version: 0.9.0.81
 Language: en-US
 Authors@R: c(
     person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre", "cph")),
+    person("John", "Magnotti", email = "john.magnotti@pennmedicine.upenn.edu", role = c("aut")),
+    person("Michael", "Beauchamp", email = "michael.beauchamp@pennmedicine.upenn.edu", role = c("aut")),
     person("University of Pennsylvania", role = c("cph"))
     )
 Description: Includes multiple cross-platform read/write interfaces for
@@ -24,7 +26,7 @@ Description: Includes multiple cross-platform read/write interfaces for
     'citation("raveio")' for details.
 BugReports: https://github.com/beauchamplab/raveio/issues
 URL: https://beauchamplab.github.io/raveio/
-License: GPL-3
+License: MIT + file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 SystemRequirements: little-endian platform

@@ -15,11 +15,11 @@ This package is part of `rave` family that provides readers from multiple file f
 * `HDF5`, common file format used by 'Matlab', 'Python', 'C++', and 'R'
 * `FST`, a file format that supports GB-level read/write speed
 
-Internally support 'RAVE' format; see [wiki page](https://openwetware.org/wiki/RAVE).
+Internally support 'RAVE' format; see [wiki page](https://rave.wiki).
 
 ## Installation
 
-`raveio` is part of `rave`. Please install `rave` directly from the [wiki page](https://openwetware.org/wiki/RAVE).
+`raveio` is part of `rave`. Please install `rave` directly from the [wiki page](https://rave.wiki).
 
 To install `raveio` alone, simply type R command:
 

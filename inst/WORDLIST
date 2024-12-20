@@ -8,6 +8,7 @@ DBS
 DICOM
 DOI
 ECoG
+ENEURO
 FSL
 FST
 FreeSurfer
@@ -24,10 +25,11 @@ Neurosynth
 Nifti
 RAS
 ROI
-RStudio
 SUMA
 WSL
+Xiang
 YAEL
+Zhang
 affine
 cloneable
 csv
