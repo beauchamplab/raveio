@@ -167,8 +167,8 @@ rave_export.rave_prepare_subject_raw_voltage_with_epoch <- function(x, path, zip
 
   if(zip) {
     wd <- getwd()
-    on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
     setwd(dirname(root_path))
+    on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
     fname <- basename(root_path)
     utils::zip(zipfile = sprintf("%s.zip", fname), files = fname)
     zip <- TRUE
@@ -221,8 +221,8 @@ rave_export.rave_prepare_subject_voltage_with_epoch <- function(x, path, zip = F
 
   if(zip) {
     wd <- getwd()
-    on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
     setwd(dirname(root_path))
+    on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
     fname <- basename(root_path)
     utils::zip(zipfile = sprintf("%s.zip", fname), files = fname)
     zip <- TRUE
@@ -273,8 +273,8 @@ rave_export.rave_prepare_power <- function(x, path, zip = FALSE, ...) {
   )
   if(zip) {
     wd <- getwd()
-    on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
     setwd(dirname(root_path))
+    on.exit({ setwd(wd) }, add = TRUE, after = TRUE)
     fname <- basename(root_path)
     utils::zip(zipfile = sprintf("%s.zip", fname), files = fname)
     zip <- TRUE

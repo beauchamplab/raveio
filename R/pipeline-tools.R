@@ -1393,9 +1393,9 @@ pipeline_py_module <- function(
   py_pkg_name <- info$module_name
 
   cwd <- getwd()
-  on.exit({ setwd(cwd) }, add = TRUE, after = TRUE)
   pydir <- file.path(pipe_dir, "py")
   setwd(pydir)
+  on.exit({ setwd(cwd) }, add = TRUE, after = TRUE)
 
   py_module <- rpymat::import(py_pkg_name, convert = convert, delay_load = FALSE)
   setwd(cwd)

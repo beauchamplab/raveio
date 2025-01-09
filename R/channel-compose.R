@@ -224,7 +224,7 @@ compose_channel <- function(
       }
 
       power <- Mod(s)^2
-      phase = Arg(s)
+      phase <- Arg(s)
 
       save_h5(x = power, file = fpower, name = sprintf("/raw/power/%s", block),
               replace = TRUE, ctype = "numeric")

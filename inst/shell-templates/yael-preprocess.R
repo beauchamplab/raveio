@@ -20,7 +20,7 @@ preopct_path <- "{{ preopct_path }}"
 flair_path <- "{{ flair_path }}"
 t1w_contrast_path <- "{{ t1w_contrast_path }}"
 register_reversed <-{{ register_reversed }}
-normalize_template= <-{{ normalize_template_str }}
+normalize_template <-{{ normalize_template_str }}
 run_recon_all <-{{ run_recon_all }}
 
 max_mem_size <- raveio::raveio_getopt("max_mem", default = 8)
