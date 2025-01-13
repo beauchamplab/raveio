@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{glue}
+\alias{LazyH5}
 \alias{\%...>\%}
 \alias{\%...T>\%}
 \alias{\%...!\%}
@@ -16,6 +17,8 @@ below to see their documentation.
 
 \describe{
   \item{glue}{\code{\link[glue]{glue}}}
+
+  \item{ieegio}{\code{\link[ieegio]{LazyH5}}}
 
   \item{promises}{\code{\link[promises:pipes]{\%...!\%}}, \code{\link[promises:pipes]{\%...>\%}}, \code{\link[promises:pipes]{\%...T!\%}}, \code{\link[promises:pipes]{\%...T>\%}}}
 }}

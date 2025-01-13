@@ -74,6 +74,9 @@ PIPELINE_FORK_PATTERN <- "(^data|^R|^py|^preferences|\\.R$|\\.py$|\\.yaml$|\\.tx
 glue::glue
 
 #' @export
+ieegio::LazyH5
+
+#' @export
 promises::`%...>%`
 
 #' @export
