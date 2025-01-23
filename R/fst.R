@@ -44,7 +44,7 @@ LazyFST <- R6::R6Class(
   ),
   public = list(
 
-    #' @description to be compatible with \code{\link{LazyH5}}
+    #' @description to be compatible with \code{\link[ieegio]{LazyH5}}
     #' @param ... ignored
     #' @returns none
     open = function(...){},
@@ -59,7 +59,7 @@ LazyFST <- R6::R6Class(
       }
     },
 
-    #' @description to be compatible with \code{\link{LazyH5}}
+    #' @description to be compatible with \code{\link[ieegio]{LazyH5}}
     #' @param ... ignored
     #' @returns none
     save = function(...){
@@ -288,7 +288,7 @@ load_fst <- function(path, ..., as.data.table = TRUE){
 #' @param fst_need_drop drop dimensions
 #' @param ram whether to load to memory directly or perform lazy loading
 #' @returns If 'fst' cache file exists, returns \code{\link{LazyFST}} object,
-#' otherwise returns \code{\link{LazyH5}} instance
+#' otherwise returns \code{\link[ieegio]{LazyH5}} instance
 #' @details RAVE stores data with redundancy. One electrode data
 #' is usually saved with two copies in different formats: 'HDF5' and
 #' 'fst', where 'HDF5' is cross-platform and supported by multiple

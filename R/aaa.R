@@ -11,6 +11,7 @@
 #' @importFrom promises %...!%
 #' @importFrom promises %...T!%
 #' @importFrom checkmate makeAssertCollection
+#' @importFrom ieegio LazyH5
 NULL
 
 #' @name raveio-constants
