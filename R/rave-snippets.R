@@ -4,6 +4,8 @@
 #' @param topic snippet topic
 #' @param local whether to use local snippets first before requesting online
 #' repository
+#' @param path for installing code snippets locally only; can be an R script,
+#' a zip file, or a directory
 #' @param force whether to force updating the snippets; default is true
 #' @returns `load_snippet` returns snippet as a function, others return nothing
 #' @examples
@@ -27,16 +29,63 @@ NULL
 update_local_snippet <- function(force = TRUE) {
   root_path <- R_user_dir(package = "raveio", which = "cache")
   snippet_path <- file.path(root_path, "rave-gists-main")
-  if(dir.exists(snippet_path)) {
-    if(!force) { return() }
-    unlink(snippet_path, recursive = TRUE, force = TRUE)
+  if(!force && dir.exists(snippet_path)) {
+    return(invisible())
   }
-  tmpfile <- tempfile(fileext = ".zip")
 
+  raveio::dir_create2(tempdir())
+  tmpfile <- tempfile(fileext = ".zip")
   utils::download.file(
     "https://github.com/rave-ieeg/rave-gists/archive/refs/heads/main.zip",
     destfile = tmpfile)
-  utils::unzip(tmpfile, exdir = root_path)
+  on.exit({
+    unlink(tmpfile)
+  }, add = TRUE)
+  install_snippet(tmpfile)
+}
+
+#' @rdname rave-snippet
+#' @export
+install_snippet <- function(path) {
+  root_path <- R_user_dir(package = "raveio", which = "cache")
+  snippet_path <- file.path(root_path, "rave-gists-main")
+  if( endsWith(tolower(path), ".zip") ) {
+    raveio::dir_create2(tempdir())
+    tmp_directory <- tempfile()
+    utils::unzip(path, exdir = tmp_directory)
+    on.exit({
+      unlink(tmp_directory, recursive = TRUE)
+    })
+    tmp_inner <- list.dirs(tmp_directory, full.names = FALSE, recursive = FALSE)
+    tmp_inner <- tmp_inner[!startsWith(tmp_inner, ".")]
+    if(length(tmp_inner) > 0) {
+      path <- file.path(tmp_directory, tmp_inner[[1]])
+    } else {
+      path <- tmp_directory
+    }
+  }
+  path <- normalizePath(path, mustWork = TRUE)
+  if( dir.exists(path) ) {
+    files <- list.files(
+      path,
+      all.files = FALSE,
+      full.names = FALSE,
+      recursive = TRUE,
+      include.dirs = FALSE,
+      no.. = TRUE
+    )
+    lapply(files, function(file) {
+      from <- file.path(path, file)
+      to <- file.path(snippet_path, file)
+      dir_create2(dirname(to))
+      file.copy(from = from, to = to)
+      return()
+    })
+  } else {
+    file.copy(from = path,
+              to = file.path(dir_create2(snippet_path), basename(path)))
+  }
+  return(invisible())
 }
 
 #' @rdname rave-snippet
@@ -44,6 +93,7 @@ update_local_snippet <- function(force = TRUE) {
 load_snippet <- function(topic, local = TRUE) {
 
   fname <- sprintf("%s.R", topic)
+  save_snippet <- FALSE
   if(!isFALSE(local)) {
     if(isTRUE(local)) {
       update_local_snippet(force = FALSE)
@@ -52,8 +102,9 @@ load_snippet <- function(topic, local = TRUE) {
       path <- file.path(local, fname)
     }
     if(!startsWith(path, "https://") && !file.exists(path)) {
-      warning("Cannot find local snippet [", topic, "]. Please make sure the repository is up-to-date and the topic name is correct. Trying snippets")
+      warning("Cannot find local snippet [", topic, "]. Please make sure RAVE is up-to-date. Trying to download snippets from RAVE repository.")
       local <- FALSE
+      save_snippet <- TRUE
     }
   }
 
@@ -101,6 +152,13 @@ load_snippet <- function(topic, local = TRUE) {
   attr(f, "topic") <- topic
 
   class(f) <- c("rave_snippet", class(f))
+
+  if( save_snippet ) {
+    snippet_path <- dir_create2(file.path(
+      R_user_dir(package = "raveio", which = "cache"),
+      "rave-gists-main"))
+    writeLines(s, con = file.path(snippet_path, basename(fname)))
+  }
 
   f
 }

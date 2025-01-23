@@ -3,15 +3,21 @@
 \name{rave-snippet}
 \alias{rave-snippet}
 \alias{update_local_snippet}
+\alias{install_snippet}
 \alias{load_snippet}
 \title{'RAVE' code snippets}
 \usage{
 update_local_snippet(force = TRUE)
 
+install_snippet(path)
+
 load_snippet(topic, local = TRUE)
 }
 \arguments{
 \item{force}{whether to force updating the snippets; default is true}
+
+\item{path}{for installing code snippets locally only; can be an R script,
+a zip file, or a directory}
 
 \item{topic}{snippet topic}
 
