@@ -63,7 +63,7 @@ Zhengjia Wang
 \if{html}{\out{<a id="method-LazyFST-open"></a>}}
 \if{latex}{\out{\hypertarget{method-LazyFST-open}{}}}
 \subsection{Method \code{open()}}{
-to be compatible with \code{\link{LazyH5}}
+to be compatible with \code{\link[ieegio]{LazyH5}}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LazyFST$open(...)}\if{html}{\out{</div>}}
 }
@@ -99,7 +99,7 @@ close the connection
 \if{html}{\out{<a id="method-LazyFST-save"></a>}}
 \if{latex}{\out{\hypertarget{method-LazyFST-save}{}}}
 \subsection{Method \code{save()}}{
-to be compatible with \code{\link{LazyH5}}
+to be compatible with \code{\link[ieegio]{LazyH5}}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LazyFST$save(...)}\if{html}{\out{</div>}}
 }

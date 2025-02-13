@@ -2,6 +2,8 @@ test_that("RAVE preprocess pipeline 2.0", {
   # Skip on cran because data is local
   skip_on_cran()
 
+  library(testthat)
+
   data_dir <- tempfile()
   dir_create2(data_dir)
 

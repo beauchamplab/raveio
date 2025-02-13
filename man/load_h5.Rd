@@ -2,7 +2,7 @@
 % Please edit documentation in R/hdf5r.R
 \name{load_h5}
 \alias{load_h5}
-\title{Lazy Load 'HDF5' File via \code{\link[hdf5r]{hdf5r-package}}}
+\title{Lazy Load 'HDF5' File via \code{\link[ieegio]{io_read_h5}}}
 \usage{
 load_h5(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE)
 }
@@ -12,7 +12,7 @@ load_h5(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE)
 \item{name}{\code{group/data_name} path to dataset (\code{H5D} data)}
 
 \item{read_only}{only used if \code{ram=FALSE}, whether the returned
-\code{\link{LazyH5}} instance should be read only}
+\code{\link[ieegio]{LazyH5}} instance should be read only}
 
 \item{ram}{load data to memory immediately, default is false}
 
@@ -20,11 +20,11 @@ load_h5(file, name, read_only = TRUE, ram = FALSE, quiet = FALSE)
 }
 \value{
 If \code{ram} is true, then return data as arrays, otherwise return
-a \code{\link{LazyH5}} instance.
+a \code{\link[ieegio]{LazyH5}} instance.
 }
 \description{
-Wrapper for class \code{\link{LazyH5}}, which load data with
-"lazy" mode - only read part of dataset when needed.
+Wrapper for class \code{\link[ieegio]{LazyH5}}, which load data
+with "lazy" mode - only read part of dataset when needed.
 }
 \examples{
 file <- tempfile()

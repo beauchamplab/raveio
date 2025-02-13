@@ -316,11 +316,23 @@ rave_import_lfp <- function(
 
 
   # Not imported, import
-  re <- UseMethod('rave_import_lfp')
+  method_fn <- get(sprintf("rave_import_lfp.%s", method), envir = asNamespace("raveio"))
+  method_args <- list(
+    project_name = project_name,
+    subject_code = subject_code,
+    blocks = blocks,
+    electrodes = electrodes,
+    sample_rate = sample_rate,
+    conversion = conversion,
+    add = add,
+    data_type = data_type,
+    ...
+  )
+  # re <- UseMethod('rave_import_lfp')
+  re <- do.call(method_fn, method_args)
   return(re)
 }
 
-#' @exportS3Method raveio::rave_import_lfp
 rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
                                           electrodes, sample_rate, add = FALSE,
                                           conversion = NA, data_type = 'LFP', ...){
@@ -437,7 +449,6 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
 
 }
 
-#' @exportS3Method raveio::rave_import_lfp
 rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
                                            electrodes, sample_rate, conversion = NA,
                                            add = FALSE, data_type = 'LFP', ...){
@@ -517,7 +528,6 @@ rave_import_lfp.native_matlab2 <- function(project_name, subject_code, blocks,
 
 }
 
-#' @exportS3Method raveio::rave_import_lfp
 rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
                                        electrodes, sample_rate, conversion = NA,
                                        add = FALSE, data_type = 'LFP', ...){
@@ -613,7 +623,6 @@ rave_import_lfp.native_edf <- function(project_name, subject_code, blocks,
   pretools$save()
 }
 
-#' @exportS3Method raveio::rave_import_lfp
 rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
                                             electrodes, sample_rate, conversion = NA,
                                             add = FALSE, data_type = 'LFP', ...){
@@ -702,7 +711,6 @@ rave_import_lfp.native_brainvis <- function(project_name, subject_code, blocks,
 }
 
 
-#' @exportS3Method raveio::rave_import_lfp
 rave_import_lfp.native_blackrock <- function(
     project_name, subject_code, blocks, electrodes, sample_rate, add = FALSE,
     conversion = NA, data_type = 'LFP', ...){
@@ -955,7 +963,6 @@ rave_import_lfp.native_blackrock <- function(
 }
 
 
-#' @exportS3Method raveio::rave_import_lfp
 rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks,
                                      electrodes, sample_rate, task_runs, conversion = NA,
                                      add = FALSE, data_type = 'LFP', ...){
@@ -1040,7 +1047,6 @@ rave_import_lfp.bids_edf <- function(project_name, subject_code, blocks,
 }
 
 
-#' @exportS3Method raveio::rave_import_lfp
 rave_import_lfp.bids_brainvis <- function(project_name, subject_code, blocks,
                                           electrodes, sample_rate, task_runs, conversion = NA,
                                           add = FALSE, data_type = 'LFP', ...){

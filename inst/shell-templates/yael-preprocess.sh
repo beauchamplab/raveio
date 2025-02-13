@@ -39,7 +39,7 @@ run_recon_all="{{ run_recon_all }}"
 
 if [ "$run_recon_all" -eq "0" ]; then
   # Coregistration + normalization
-  $r_script --no-save --no-restore -e "raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=${normalize_template}, add_surfaces=TRUE)" | tee -a "$log_file"
+  $r_script --no-save --no-restore -e "raveio:::activate_ants(); raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=${normalize_template}, add_surfaces=TRUE)" | tee -a "$log_file"
 
   if [[ -d "$wdir_actual/rave-imaging/ants/surf" ]]; then
     echo "Finalizing 1 of 2..." | tee -a "$log_file"
@@ -58,7 +58,7 @@ if [ "$run_recon_all" -eq "0" ]; then
   fi
 
 else
-  $r_script --no-save --no-restore -e "raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=${normalize_template}, add_surfaces=FALSE)" | tee -a "$log_file"
+  $r_script --no-save --no-restore -e "raveio:::activate_ants(); raveio::yael_preprocess(subject_code='${scode}', t1w_path='${t1w_path}', ct_path='${ct_path}', t2w_path='${t2w_path}', fgatir_path='${fgatir_path}', preopct_path='${preopct_path}', flair_path='${flair_path}', t1w_contrast_path='${t1w_contrast_path}', register_reversed=${register_reversed}, normalize_template=${normalize_template}, add_surfaces=FALSE)" | tee -a "$log_file"
 
   # Prepare for the FreeSurfer
   mri_path="$wdir_actual/rave-imaging/inputs/MRI/MRI_RAW.nii.gz"

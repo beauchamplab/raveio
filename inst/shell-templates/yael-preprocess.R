@@ -1,9 +1,7 @@
 #!/usr/bin/env Rscript --no-save --no-restore
 
-# check if rpyANTs is configured
-if( !isTRUE(rpyANTs::ants_available()) ) {
-  rpyANTs::install_ants()
-}
+raveio <- asNamespace('raveio')
+raveio$activate_ants()
 
 # Prepare working directory: FreeSurfer does not like it when
 # directories contain spaces

@@ -11,6 +11,7 @@
 #' @importFrom promises %...!%
 #' @importFrom promises %...T!%
 #' @importFrom checkmate makeAssertCollection
+#' @importFrom ieegio LazyH5
 NULL
 
 #' @name raveio-constants
@@ -72,6 +73,9 @@ PIPELINE_FORK_PATTERN <- "(^data|^R|^py|^preferences|\\.R$|\\.py$|\\.yaml$|\\.tx
 
 #' @export
 glue::glue
+
+#' @export
+ieegio::LazyH5
 
 #' @export
 promises::`%...>%`

@@ -28,7 +28,7 @@ load_fst_or_h5(
 }
 \value{
 If 'fst' cache file exists, returns \code{\link{LazyFST}} object,
-otherwise returns \code{\link{LazyH5}} instance
+otherwise returns \code{\link[ieegio]{LazyH5}} instance
 }
 \description{
 Function try to load 'fst' arrays, if not found, read 'HDF5' arrays

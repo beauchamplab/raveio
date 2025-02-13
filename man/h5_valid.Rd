@@ -30,20 +30,7 @@ f <- tempfile()
 h5_valid(f, 'r')
 
 save_h5(x, f, 'dset')
-h5_valid(f, 'w')
-
-# Open the file and hold a connection
-ptr <- hdf5r::H5File$new(filename = f, mode = 'w')
-
-# Can read, but cannot write
-h5_valid(f, 'r')  # TRUE
-h5_valid(f, 'w')  # FALSE
-
-# However, this can be reset via `close_all=TRUE`
-h5_valid(f, 'r', close_all = TRUE)
 h5_valid(f, 'w')  # TRUE
-
-# Now the connection is no longer valid
-ptr
+h5_valid(f, 'r')  # TRUE
 
 }
