@@ -4,7 +4,7 @@ Title: File-System Toolbox for RAVE Project
 Version: 0.9.0.86
 Language: en-US
 Authors@R: c(
-    person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre", "cph")),
+    person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre")),
     person("John", "Magnotti", email = "john.magnotti@pennmedicine.upenn.edu", role = c("aut")),
     person("Michael", "Beauchamp", email = "michael.beauchamp@pennmedicine.upenn.edu", role = c("aut")),
     person("University of Pennsylvania", role = c("cph"))
