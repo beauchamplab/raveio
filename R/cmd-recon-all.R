@@ -132,10 +132,7 @@ cmd_run_yael_preprocess <- function(
     flair_path = NULL,
     t1w_contrast_path = NULL,
     register_reversed = FALSE,
-    normalize_template = c(
-      "mni_icbm152_nlin_asym_09a",
-      "mni_icbm152_nlin_asym_09c"
-    ),
+    normalize_template = "mni_icbm152_nlin_asym_09b",
     run_recon_all = TRUE,
     dry_run = FALSE, verbose = TRUE) {
   # DIPSAUS DEBUG START

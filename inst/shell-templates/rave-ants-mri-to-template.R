@@ -1,5 +1,12 @@
 #!/usr/bin/env Rscript --no-save --no-restore
 
+# tryCatch({
+#   rpymat::ensure_rpymat(env_name = "rave-ants")
+# }, error = function(e) {
+#   # Do nothing
+# })
+
+
 # check if rpyANTs is configured
 if( !isTRUE(rpyANTs::ants_available()) ) {
   rpyANTs::install_ants()
