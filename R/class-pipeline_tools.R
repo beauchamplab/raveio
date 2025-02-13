@@ -807,8 +807,12 @@ PipelineTools <- R6::R6Class(
 #' library(raveio)
 #'
 #' # ------------ Set up a bare minimal example pipeline ---------------
+#' root_path <- tempdir()
+#' pipeline_root_folder <- file.path(root_path, "modules")
+#'
+#' # create pipeline folder
 #' pipeline_path <- pipeline_create_template(
-#'   root_path = tempdir(), pipeline_name = "raveio_demo",
+#'   root_path = pipeline_root_folder, pipeline_name = "raveio_demo",
 #'   overwrite = TRUE, activate = FALSE, template_type = "rmd-bare")
 #'
 #' save_yaml(list(
@@ -817,16 +821,26 @@ PipelineTools <- R6::R6Class(
 #'
 #' pipeline_build(pipeline_path)
 #'
+#' options("raveio.pipeline.project_root" = root_path)
+#'
+#' # Compile the pipeline document
 #' rmarkdown::render(input = file.path(pipeline_path, "main.Rmd"),
 #'                   output_dir = pipeline_path,
 #'                   knit_root_dir = pipeline_path,
 #'                   intermediates_dir = pipeline_path, quiet = TRUE)
 #'
+#' # Reset options
+#' options("raveio.pipeline.project_root" = NULL)
+#'
 #' utils::browseURL(file.path(pipeline_path, "main.html"))
 #'
 #' # --------------------- Example starts ------------------------
 #'
-#' pipeline <- pipeline("raveio_demo", paths = tempdir())
+#' pipeline <- pipeline(
+#'   pipeline_name = "raveio_demo",
+#'   paths = pipeline_root_folder,
+#'   temporary = TRUE
+#' )
 #'
 #' pipeline$run("plot_data")
 #'
@@ -861,7 +875,7 @@ pipeline <- function(pipeline_name,
 #' @rdname pipeline
 #' @export
 pipeline_from_path <- function(path, settings_file = "settings.yaml") {
-  if(!dir.exists(path)) { stop("pipeline_from_path: `path` is not a valid directory.") }
+  if(!dir.exists(path)) { stop("pipeline_from_path: `path` is not a valid directory:\n  path=", path) }
   path <- normalize_path(path)
   root_path <- dirname(path)
 

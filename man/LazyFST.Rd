@@ -26,7 +26,7 @@ x <- matrix(rnorm(1000000), ncol = 100)
 
 # Save to local disk
 f <- tempfile()
-fst::write_fst(as.data.frame(x), path = f)
+ieegio::io_write_fst(as.data.frame(x), con = f)
 
 # Load via LazyFST
 dat <- LazyFST$new(file_path = f, dims = c(10000, 100))

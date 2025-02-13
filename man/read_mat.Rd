@@ -28,7 +28,7 @@ A compatible reader that can read both 'Matlab'
 files prior and after version 6.0
 }
 \details{
-\code{\link[R.matlab]{readMat}} can only read 'Matlab' files
+\code{\link[ieegio]{io_read_mat}} can only read 'Matlab' files
 prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
 to store its data, and \code{read_mat} can handle both cases.
 
@@ -41,7 +41,7 @@ data contained in 'Matlab' file into memory.
 # Matlab .mat <= v7.3
 x <- matrix(1:16, 4)
 f <- tempfile()
-R.matlab::writeMat(con = f, x = x)
+ieegio::io_write_mat(list(x = x), con = f)
 
 read_mat(f)
 
@@ -66,5 +66,5 @@ dat$x[]
 
 }
 \seealso{
-\code{\link[R.matlab]{readMat}}, \code{\link{load_h5}}
+\code{\link[ieegio]{io_read_mat}}, \code{\link{load_h5}}
 }

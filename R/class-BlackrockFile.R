@@ -598,7 +598,8 @@ convert_blackrock <- function(
           if( format == "mat" ) {
             fname <- file.path(dir, sprintf("channel_%s.mat", e))
             s <- as.vector(partition_data$data[])
-            R.matlab::writeMat(fname, data = s, meta = info_str)
+            # R.matlab::writeMat(fname, data = s, meta = info_str)
+            ieegio::io_write_mat(x = list(data = s, meta = info_str), con = fname, method = "R.matlab")
           } else {
             fname <- file.path(dir, sprintf("channel_%s.h5", e))
             s <- as.vector(partition_data$data[])

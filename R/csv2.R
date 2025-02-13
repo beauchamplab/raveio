@@ -173,7 +173,8 @@ export_table <- function(x, file, format = c("auto", "csv", "csv.zip", "h5", "fs
       file_move(zf, file)
     },
     "fst" = {
-      fst::write_fst(x = x, path = file, compress = 99)
+      # fst::write_fst(x = x, path = file, compress = 99)
+      ieegio::io_write_fst(x = x, con = file, compress = 99)
     },
     "h5" = {
       h5file <- tempfile(fileext = '.h5')
@@ -287,7 +288,8 @@ import_table <- function(file, format = c("auto", "csv", "csv.zip", "h5", "fst",
       data.table::fread(file = file.path(td, f), ...)
     },
     "fst" = {
-      fst::read_fst(path = file, as.data.table = TRUE, ...)
+      # fst::read_fst(path = file, as.data.table = TRUE, ...)
+      ieegio::io_read_fst(con = file, method = "data_table", ...)
     },
     "h5" = {
       nms <- h5_names(file = file)

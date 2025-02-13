@@ -14,7 +14,8 @@ pipeline_setup_rmd(
   collapse = TRUE,
   comment = "#>",
   languages = c("R", "python"),
-  project_path = dipsaus::rs_active_project(child_ok = TRUE, shiny_ok = TRUE)
+  project_path = getOption("raveio.pipeline.project_root", default =
+    dipsaus::rs_active_project(child_ok = TRUE, shiny_ok = TRUE))
 )
 }
 \arguments{

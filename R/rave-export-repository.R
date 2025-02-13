@@ -120,9 +120,12 @@ export_summary <- function(x, root_path, data_type, rave_data_type) {
     }
   }
 
-  summary_data$con <- normalizePath(file.path(root_path, "summary.mat"),
-                                    mustWork = FALSE)
-  do.call(R.matlab::writeMat, summary_data)
+  # summary_data$con <- normalizePath(file.path(root_path, "summary.mat"),
+  #                                   mustWork = FALSE)
+  ieegio::io_write_mat(
+    x = summary_data, method = "R.matlab",
+    con = normalizePath(file.path(root_path, "summary.mat"), mustWork = FALSE))
+  # do.call(R.matlab::writeMat, summary_data)
 
   return(normalizePath(root_path))
 }

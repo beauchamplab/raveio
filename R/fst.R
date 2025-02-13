@@ -10,7 +10,7 @@
 #'
 #' # Save to local disk
 #' f <- tempfile()
-#' fst::write_fst(as.data.frame(x), path = f)
+#' ieegio::io_write_fst(as.data.frame(x), con = f)
 #'
 #' # Load via LazyFST
 #' dat <- LazyFST$new(file_path = f, dims = c(10000, 100))
@@ -75,7 +75,8 @@ LazyFST <- R6::R6Class(
       private$file_path <- file_path
       private$transpose <- transpose
       # check if dimension matches
-      private$meta <- fst::metadata_fst(file_path)
+      # private$meta <- fst::metadata_fst(file_path)
+      private$meta <- ieegio::io_read_fst(file_path, method = "header_only")
       if(length(dims) == 2){
         if(private$meta$nrOfRows * length(private$meta$columnNames) == prod(dims)){
           private$dims <- dims
@@ -266,15 +267,26 @@ save_fst <- function(x, path, ...){
   if(!dir.exists(dir)){
     dir.create(dir, recursive = TRUE, showWarnings = FALSE)
   }
-  fst::write_fst(x = x, path = path, ...)
+  ieegio::io_write_fst(x = x, con = path, ...)
+  # fst::write_fst(x = x, path = path, ...)
 }
 
 
 #' @rdname read-write-fst
 #' @export
 load_fst <- function(path, ..., as.data.table = TRUE){
+  if( !is.character(as.data.table) ) {
+    if( as.data.table ) {
+      method <- "data_table"
+    } else {
+      method <- "data_frame"
+    }
+  } else {
+    method <- as.data.table
+  }
   tryCatch({
-    fst::read_fst(path, ..., as.data.table = as.data.table)
+    ieegio::io_read_fst(con = path, method = method, ...)
+    # fst::read_fst(path, ..., as.data.table = as.data.table)
   }, error = function(e){
     stop("FST load failure: ", path)
   })
@@ -342,7 +354,8 @@ convert_fst_to_hdf5 <- function(fst_path, hdf5_path, exclude_names = NULL) {
   # fst_path <- "~/rave_data/data_dir/demo/_project_data/power_explorer/exports/KC_demo_export-20210525-071414.fst"
   # hdf5_path <- tempfile()
 
-  tbl <- fst::fst(fst_path)
+  # tbl <- fst::fst(fst_path)
+  tbl <- ieegio::io_read_fst(con = fst_path, method = "proxy")
 
   if(file.exists(hdf5_path)) {
     unlink(hdf5_path)
@@ -371,7 +384,8 @@ convert_fst_to_csv <- function(fst_path, csv_path, exclude_names = NULL) {
   # fst_path <- "~/rave_data/data_dir/demo/_project_data/power_explorer/exports/KC_demo_export-20210525-071414.fst"
   # csv_path <- tempfile()
 
-  tbl <- fst::fst(fst_path)
+  # tbl <- fst::fst(fst_path)
+  tbl <- ieegio::io_read_fst(con = fst_path, method = "proxy")
 
   if(file.exists(csv_path)) {
     unlink(csv_path)

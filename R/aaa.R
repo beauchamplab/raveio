@@ -140,10 +140,8 @@ byte_size_lut <- list(
 #'
 #' Do not use this function inside of the package functions to cheat or slip
 #' illegal code under the eyes of 'CRAN' folks. This will increase their work
-#' load and introduce instability to your code. If I find it out, I will report
-#' your package to 'CRAN'. Only use this function to make your package more
-#' robust. If you are developing 'RAVE' module, this function
-#' is explicitly banned. I'll implement a check for this, sooner or later.
+#' load and introduce instability to your code. Also this function is subject
+#' to deletion in the future.
 #'
 #' @returns A logical whether current environment should be considered as on
 #' 'CRAN'.

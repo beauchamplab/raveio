@@ -9,21 +9,21 @@
 #' \code{'py'} ('Python'); if \code{'py'} is chosen, make sure
 #' \code{\link[rpymat]{configure_conda}} is configured.
 #' @returns A list of All the data stored in the file
-#' @details \code{\link[R.matlab]{readMat}} can only read 'Matlab' files
+#' @details \code{\link[ieegio]{io_read_mat}} can only read 'Matlab' files
 #' prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
 #' to store its data, and \code{read_mat} can handle both cases.
 #'
 #' The performance of \code{read_mat} can be limited when
 #' the file is too big or has many datasets as it reads all the
 #' data contained in 'Matlab' file into memory.
-#' @seealso \code{\link[R.matlab]{readMat}}, \code{\link{load_h5}}
+#' @seealso \code{\link[ieegio]{io_read_mat}}, \code{\link{load_h5}}
 #'
 #' @examples
 #'
 #' # Matlab .mat <= v7.3
 #' x <- matrix(1:16, 4)
 #' f <- tempfile()
-#' R.matlab::writeMat(con = f, x = x)
+#' ieegio::io_write_mat(list(x = x), con = f)
 #'
 #' read_mat(f)
 #'
@@ -61,7 +61,8 @@ read_mat <- function(file, ram = TRUE, engine = c("r", "py")){
         y
       }, simplify = FALSE, USE.NAMES = TRUE)
     }else{
-      re <- R.matlab::readMat(file)
+      # re <- R.matlab::readMat(file)
+      re <- ieegio::io_read_mat(con = file, method = "R.matlab")
     }
   } else {
     # use python
@@ -123,7 +124,10 @@ read_mat2 <- function(file, ram = TRUE, engine = c("r", "py")){
         NULL
       })
     }else{
-      re <- dipsaus::list_to_fastmap2(R.matlab::readMat(file))
+      # re <- dipsaus::list_to_fastmap2(R.matlab::readMat(file))
+      re <- dipsaus::list_to_fastmap2(
+        ieegio::io_read_mat(con = file, method = "R.matlab")
+      )
     }
   } else {
     # use python

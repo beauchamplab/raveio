@@ -616,7 +616,14 @@ configure_knitr <- function(languages = c("R", "python")){
 pipeline_setup_rmd <- function(
     module_id, env = parent.frame(),
     collapse = TRUE, comment = "#>", languages = c("R", "python"),
-    project_path = dipsaus::rs_active_project(child_ok = TRUE, shiny_ok = TRUE)) {
+    project_path = getOption(
+      "raveio.pipeline.project_root",
+      default = dipsaus::rs_active_project(child_ok = TRUE, shiny_ok = TRUE)
+    )) {
+
+  if( length(project_path) != 1 || is.na(project_path) || !is.character(project_path) || trimws(project_path) %in% c("", "/", "NA")) {
+    project_path <- normalizePath(".")
+  }
 
   knitr::opts_chunk$set(collapse = collapse, comment = comment)
   env$build_pipeline <- configure_knitr(languages = languages)
