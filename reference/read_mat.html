@@ -9,7 +9,7 @@ files prior and after version 6.0"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.86</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.87</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ if set to true, then lazy-load data. This is useful when array is very large.</p
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code><a href="https://rdrr.io/pkg/R.matlab/man/readMat.html" class="external-link">readMat</a></code> can only read 'Matlab' files
+    <p><code><a href="http://dipterix.org/ieegio/reference/low-level-read-write.html" class="external-link">io_read_mat</a></code> can only read 'Matlab' files
 prior to version 6. After version 6, 'Matlab' uses 'HDF5' format
 to store its data, and <code>read_mat</code> can handle both cases.</p>
 <p>The performance of <code>read_mat</code> can be limited when
@@ -82,7 +82,7 @@ data contained in 'Matlab' file into memory.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/R.matlab/man/readMat.html" class="external-link">readMat</a></code>, <code><a href="load_h5.html">load_h5</a></code></p></div>
+    <div class="dont-index"><p><code><a href="http://dipterix.org/ieegio/reference/low-level-read-write.html" class="external-link">io_read_mat</a></code>, <code><a href="load_h5.html">load_h5</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -91,9 +91,10 @@ data contained in 'Matlab' file into memory.</p>
 <span class="r-in"><span><span class="co"># Matlab .mat &lt;= v7.3</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">R.matlab</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/R.matlab/man/writeMat.html" class="external-link">writeMat</a></span><span class="op">(</span>con <span class="op">=</span> <span class="va">f</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ieegio</span><span class="fu">::</span><span class="fu"><a href="http://dipterix.org/ieegio/reference/low-level-read-write.html" class="external-link">io_write_mat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span>, con <span class="op">=</span> <span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">read_mat</span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using native approach to load the matlab file (supporting MAT 5.0)...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    5    9   13</span>
@@ -103,7 +104,7 @@ data contained in 'Matlab' file into memory.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"header")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"header")$description</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.4.2, Created on: Thu Feb 13 17:01:47 2025                               "</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.4.2, Created on: Sat Feb 15 19:28:49 2025                               "</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"header")$version</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "5"</span>
@@ -128,9 +129,9 @@ data contained in 'Matlab' file into memory.</p>
 <span class="r-in"><span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/s3/vj2zzxnd01l53jcjc04ljvz80000gn/T//RtmpZaMHAj/file16e838847391 =&gt; x (Dataset Created)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/s3/vj2zzxnd01l53jcjc04ljvz80000gn/T//RtmpZaMHAj/file16e838847391 =&gt; x (Dataset Removed)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/s3/vj2zzxnd01l53jcjc04ljvz80000gn/T//RtmpZaMHAj/file16e838847391 =&gt; x (Dataset Created)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/2s/h6hvv9ps03xgz_krkkstvq_r0000gn/T//Rtmp64Vhbn/file1e4a340d981d =&gt; x (Dataset Created)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/2s/h6hvv9ps03xgz_krkkstvq_r0000gn/T//Rtmp64Vhbn/file1e4a340d981d =&gt; x (Dataset Removed)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> /var/folders/2s/h6hvv9ps03xgz_krkkstvq_r0000gn/T//Rtmp64Vhbn/file1e4a340d981d =&gt; x (Dataset Created)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    5    9   13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    2    6   10   14</span>

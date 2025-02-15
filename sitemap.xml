@@ -19,9 +19,6 @@
 <url><loc>/reference/RAVEPreprocessSettings.html</loc></url>
 <url><loc>/reference/RAVEProject.html</loc></url>
 <url><loc>/reference/RAVESubject.html</loc></url>
-<url><loc>/reference/RAVEVariable.html</loc></url>
-<url><loc>/reference/RAVEVariableCollection.html</loc></url>
-<url><loc>/reference/RAVEVariableConstraints.html</loc></url>
 <url><loc>/reference/Tensor.html</loc></url>
 <url><loc>/reference/YAELProcess.html</loc></url>
 <url><loc>/reference/ants_coreg.html</loc></url>
@@ -68,9 +65,7 @@
 <url><loc>/reference/mgh_to_nii.html</loc></url>
 <url><loc>/reference/module_add.html</loc></url>
 <url><loc>/reference/module_registry.html</loc></url>
-<url><loc>/reference/new_constraints.html</loc></url>
 <url><loc>/reference/new_electrode.html</loc></url>
-<url><loc>/reference/new_variable_collection.html</loc></url>
 <url><loc>/reference/niftyreg_coreg.html</loc></url>
 <url><loc>/reference/pipeline-knitr-markdown.html</loc></url>
 <url><loc>/reference/pipeline.html</loc></url>
