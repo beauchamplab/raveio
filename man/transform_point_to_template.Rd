@@ -24,7 +24,8 @@ transform_thinfilm_to_mni152(
   n_segments = c(16, 16),
   group_labels = NULL,
   project_surface = "pial",
-  volumetric_transform = c("auto", "affine", "nonlinear")
+  volumetric_transform = c("auto", "affine", "nonlinear"),
+  template_subject = c("cvs_avg35_inMNI152", "fsaverage", "bert", "MNI152")
 )
 }
 \arguments{
@@ -67,6 +68,10 @@ mapping; default segments the thin-film array into 16 by 16 segments}
 \item{group_labels}{\code{NULL} (default) or a character vector indicating
 the group labels of thin-film electrodes;
 default assumes that all contacts are from thin-film electrodes.}
+
+\item{template_subject}{template subject to be mapped to; deafult is
+\code{'cvs_avg35_inMNI152'}, which is a \code{'MNI152'} template generated
+by 'FreeSurfer'; other choices are \code{'fsaverage'} and \code{'bert'}}
 }
 \value{
 A table of electrode 'MNI' coordinates.
