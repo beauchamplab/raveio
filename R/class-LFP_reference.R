@@ -130,6 +130,7 @@ LFP_reference <- R6::R6Class(
         x <- round(x * srate)
         seq(x[1], x[2])
       }))
+      tidx_positive <- tidx > 0
       stopifnot2(length(tidx), msg = "Trial window has length of 0")
 
       if(!length(self$number) || self$number == "noref"){
@@ -145,6 +146,15 @@ LFP_reference <- R6::R6Class(
 
       noref_cache_path <- file.path(self$cache_root, "noref")
       arr_path <- file.path(noref_cache_path, "wavelet-coefficient")
+
+      stitch_events <- self$stitch_events
+      if(length(stitch_events) == 2) {
+        stitch_events_pre <- self$epoch$get_event_colname(stitch_events[[1]])
+        stitch_events_post <- self$epoch$get_event_colname(stitch_events[[2]])
+      } else {
+        stitch_events_pre <- "Time"
+        stitch_events_post <- "Time"
+      }
 
       if(file.exists(arr_path)){
         if(reload){
@@ -177,6 +187,7 @@ LFP_reference <- R6::R6Class(
         partition_size = 1
       )
       arr$set_header("rave_data_type", "wavelet-coefficient", save = FALSE)
+      arr$set_header("stitch_events", self$stitch_events, save = FALSE)
 
       dimnames(arr) <- list(
         Frequency = freq$Frequency,
@@ -207,15 +218,20 @@ LFP_reference <- R6::R6Class(
 
       for(b in blocks){
         sel <- epoch_tbl$Block == b
-        if(!any(sel)){
-          next
-        }
+        if(!any(sel)){ next }
 
         trials <- which(sel)
-        onsets <- epoch_tbl$Time[sel]
-        tp <- sapply(onsets, function(o){
+
+        # stitch_events
+        # onsets <- epoch_tbl$Time[sel]
+        onsets1 <- epoch_tbl[[stitch_events_pre]][sel]
+        onsets2 <- epoch_tbl[[stitch_events_post]][sel]
+        tp <- apply(cbind(onsets1, onsets2), 1L, function(o){
           idx <- round(o * srate)
-          idx + tidx
+          re <- tidx
+          re[!tidx_positive] <- re[!tidx_positive] + idx[[1]]
+          re[tidx_positive] <- re[tidx_positive] + idx[[2]]
+          re
         })
 
         if( !is.numeric(self$number) ){
@@ -279,6 +295,7 @@ LFP_reference <- R6::R6Class(
         x <- round(x * srate)
         seq(x[1], x[2])
       }))
+      tidx_positive <- tidx > 0
       epoch_tbl <- self$epoch$table
 
       blocks <- unique(epoch_tbl$Block)
@@ -290,6 +307,15 @@ LFP_reference <- R6::R6Class(
 
       ntrial <- nrow(epoch_tbl)
       ntime <- length(tidx)
+
+      stitch_events <- self$stitch_events
+      if(length(stitch_events) == 2) {
+        stitch_events_pre <- self$epoch$get_event_colname(stitch_events[[1]])
+        stitch_events_post <- self$epoch$get_event_colname(stitch_events[[2]])
+      } else {
+        stitch_events_pre <- "Time"
+        stitch_events_post <- "Time"
+      }
 
       # freq x time x trial
       arr <- filearray::filearray_create(
@@ -313,10 +339,20 @@ LFP_reference <- R6::R6Class(
         }
 
         trials <- which(sel)
-        onsets <- epoch_tbl$Time[sel]
-        tp <- sapply(onsets, function(o){
+        # onsets <- epoch_tbl$Time[sel]
+        # tp <- sapply(onsets, function(o){
+        #   idx <- round(o * srate)
+        #   idx + tidx
+        # })
+
+        onsets1 <- epoch_tbl[[stitch_events_pre]][sel]
+        onsets2 <- epoch_tbl[[stitch_events_post]][sel]
+        tp <- apply(cbind(onsets1, onsets2), 1L, function(o){
           idx <- round(o * srate)
-          idx + tidx
+          re <- tidx
+          re[!tidx_positive] <- re[!tidx_positive] + idx[[1]]
+          re[tidx_positive] <- re[tidx_positive] + idx[[2]]
+          re
         })
 
         if( file.exists(self$voltage_file) ) {

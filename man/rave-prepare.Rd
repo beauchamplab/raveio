@@ -39,6 +39,7 @@ prepare_subject_with_epoch(
   reference_name,
   epoch_name,
   time_windows,
+  stitch_events = NULL,
   env = parent.frame(),
   ...
 )
@@ -63,6 +64,7 @@ prepare_subject_phase(
   reference_name,
   epoch_name,
   time_windows,
+  stitch_events = NULL,
   signal_type = c("LFP"),
   env = parent.frame(),
   verbose = TRUE,
@@ -75,6 +77,7 @@ prepare_subject_power(
   reference_name,
   epoch_name,
   time_windows,
+  stitch_events = NULL,
   signal_type = c("LFP"),
   env = parent.frame(),
   verbose = TRUE,
@@ -87,6 +90,7 @@ prepare_subject_wavelet(
   reference_name,
   epoch_name,
   time_windows,
+  stitch_events = NULL,
   signal_type = c("LFP"),
   env = parent.frame(),
   verbose = TRUE,
@@ -134,6 +138,13 @@ parsed by \code{\link[dipsaus]{parse_svec}}}
 
 \item{time_windows}{a list of time windows that are relative to epoch onset
 time; need to pass the validation \code{\link{validate_time_window}}}
+
+\item{stitch_events}{events to stitch, default is \code{NULL}, meaning
+when loading data, the time is relative to the trial onset (column
+\code{"Time"} in the epoch file); set to a character of length 2,
+representing the events if time is not relative to trial onset. Please
+remove the prefix. For example, for a column named \code{"Event_name"},
+the event name is \code{"name"}.}
 
 \item{env}{environment to evaluate}
 

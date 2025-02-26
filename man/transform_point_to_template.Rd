@@ -69,7 +69,7 @@ mapping; default segments the thin-film array into 16 by 16 segments}
 the group labels of thin-film electrodes;
 default assumes that all contacts are from thin-film electrodes.}
 
-\item{template_subject}{template subject to be mapped to; deafult is
+\item{template_subject}{template subject to be mapped to; default is
 \code{'cvs_avg35_inMNI152'}, which is a \code{'MNI152'} template generated
 by 'FreeSurfer'; other choices are \code{'fsaverage'} and \code{'bert'}}
 }

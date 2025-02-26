@@ -531,7 +531,7 @@ transform_point_to_template <- function(
 #' @param group_labels \code{NULL} (default) or a character vector indicating
 #' the group labels of thin-film electrodes;
 #' default assumes that all contacts are from thin-film electrodes.
-#' @param template_subject template subject to be mapped to; deafult is
+#' @param template_subject template subject to be mapped to; default is
 #' \code{'cvs_avg35_inMNI152'}, which is a \code{'MNI152'} template generated
 #' by 'FreeSurfer'; other choices are \code{'fsaverage'} and \code{'bert'}
 #' @export
@@ -810,7 +810,7 @@ transform_thinfilm_to_mni152 <- function(
       keys <- template_annot$annotations$label_table$Key[sel]
       gyrus_roi <- template_surface$vertices[template_annot$annotations$data_table[[1]] %in% keys, 1:3, drop = FALSE]
       kdtree <- ravetools::vcg_kdtree_nearest(as.matrix(gyrus_roi), query = t(mni152_center), k = 5)
-      distance_est <- quantile(kdtree$distance, 0.75)
+      distance_est <- stats::quantile(kdtree$distance, 0.75)
       project_distances <- sapply(seq_len(ncol(ray_direction)), function(ii) {
         ray_dir <- ray_direction[, ii]
         orig_pos <- mni152_center[, ii]
@@ -828,7 +828,7 @@ transform_thinfilm_to_mni152 <- function(
         # ray_dir <- ray_direction[, ii]
       })
 
-      shift_cap <- -quantile(project_distances, 0.25)
+      shift_cap <- -stats::quantile(project_distances, 0.25)
     }
 
 

@@ -1,7 +1,9 @@
 
 #' @rdname rave-prepare
 #' @export
-prepare_subject_wavelet <- function(subject, electrodes, reference_name, epoch_name, time_windows, signal_type = c("LFP"), env = parent.frame(), verbose = TRUE, ...) {
+prepare_subject_wavelet <- function(subject, electrodes, reference_name, epoch_name, time_windows,
+                                    stitch_events = NULL,
+                                    signal_type = c("LFP"), env = parent.frame(), verbose = TRUE, ...) {
   call <- match.call()
   call[[1]] <- as.call(list(quote(`::`), quote(raveio), quote(prepare_subject_with_epoch)))
 
@@ -77,7 +79,8 @@ prepare_subject_wavelet <- function(subject, electrodes, reference_name, epoch_n
     electrode_list = re$electrode_list,
     frequency_table = frequency_table,
     electrode_signal_types = re$electrode_signal_types,
-    signal_data_type = "wavelet-coefficient"
+    signal_data_type = "wavelet-coefficient",
+    stitch_events = re$stitch_events
   )
   digest_string <- dipsaus::digest(digest_key)
 

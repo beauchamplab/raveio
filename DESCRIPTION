@@ -1,7 +1,7 @@
 Package: raveio
 Type: Package
 Title: File-System Toolbox for RAVE Project
-Version: 0.9.0.88
+Version: 0.9.0.89
 Language: en-US
 Authors@R: c(
     person("Zhengjia", "Wang", email = "dipterix.wang@gmail.com", role = c("aut", "cre")),
@@ -32,6 +32,7 @@ RoxygenNote: 7.3.2
 SystemRequirements: little-endian platform
 Imports:
     utils,
+    stats,
     data.table,
     edfReader (>= 1.2.1),
     dipsaus,

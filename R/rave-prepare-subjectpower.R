@@ -1,7 +1,12 @@
 #' @rdname rave-prepare
 #' @export
-prepare_subject_power <- function(subject, electrodes, reference_name, epoch_name, time_windows, signal_type = c("LFP"), env = parent.frame(), verbose = TRUE, ...) {
+prepare_subject_power <- function(subject, electrodes, reference_name, epoch_name, time_windows,
+                                  stitch_events = NULL,
+                                  signal_type = c("LFP"), env = parent.frame(), verbose = TRUE, ...) {
   call <- match.call()
+  # DIPSAUS DEBUG START
+  # call <- quote(prepare_subject_power(subject = "demo/DemoSubject", electrodes = 14, stitch_events = c("Trial Onset", "Test")))
+  # list2env(list(signal_type = c("LFP"), env = parent.frame(), verbose = TRUE), envir=.GlobalEnv)
   call[[1]] <- as.call(list(quote(`::`), quote(raveio), quote(prepare_subject_with_epoch)))
 
   if(length(signal_type) > 1) {
@@ -70,7 +75,8 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
     time_points = power_dimnames$Time,
     electrode_list = re$electrode_list,
     frequency_table = frequency_table,
-    electrode_signal_types = re$electrode_signal_types
+    electrode_signal_types = re$electrode_signal_types,
+    stitch_events = re$stitch_events
   )
   digest_string <- dipsaus::digest(digest_key)
 
@@ -90,5 +96,7 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
 
 }
 
-# re <- prepare_subject_power('demo/DemoSubject')
+# re <- prepare_subject_power('demo/DemoSubject', electrodes = 14, stitch_events = c("Test", "Test"), time_windows = c(-3, 2))
+# power_baseline(re, c(-3, 2))
+# image(collapse2(re$power$baselined, c(2, 1)))
 # re$electrode_instances$e_14$load_data('power')

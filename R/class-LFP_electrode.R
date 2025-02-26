@@ -92,10 +92,22 @@ LFP_electrode <- R6::R6Class(
         blocks <- blocks[!blocks %in% self$subject$blocks]
         stop("Some blocks cannot be found: ", paste(blocks, collapse = ", "))
       }
+
+      stitch_events <- self$stitch_events
+      if(length(stitch_events) == 2) {
+        stitch_events_pre <- self$epoch$get_event_colname(stitch_events[[1]])
+        stitch_events_post <- self$epoch$get_event_colname(stitch_events[[2]])
+      } else {
+        stitch_events_pre <- "Time"
+        stitch_events_post <- "Time"
+      }
+
       list(
         tidx = tidx,
+        tidx_positive = tidx > 0,
         srate = srate,
         epoch_tbl = epoch_tbl,
+        stitch_columns = c(stitch_events_pre, stitch_events_post),
         blocks = blocks,
         freq = freq
       )
@@ -200,6 +212,8 @@ LFP_electrode <- R6::R6Class(
       epoch_tbl <- check_res$epoch_tbl
       blocks <- check_res$blocks
       freq <- check_res$freq
+      tidx_positive <- check_res$tidx_positive
+      stitch_columns <- check_res$stitch_columns
 
       nfreq <- nrow(freq)
       ntrial <- nrow(epoch_tbl)
@@ -254,10 +268,19 @@ LFP_electrode <- R6::R6Class(
         }
 
         trials <- which(sel)
-        onsets <- epoch_tbl$Time[sel]
-        tp <- sapply(onsets, function(o){
+        # onsets <- epoch_tbl$Time[sel]
+        # tp <- sapply(onsets, function(o){
+        #   idx <- round(o * srate)
+        #   idx + tidx
+        # })
+        onsets1 <- epoch_tbl[[ stitch_columns[[1]] ]][sel]
+        onsets2 <- epoch_tbl[[ stitch_columns[[2]] ]][sel]
+        tp <- apply(cbind(onsets1, onsets2), 1L, function(o){
           idx <- round(o * srate)
-          idx + tidx
+          re <- tidx
+          re[!tidx_positive] <- re[!tidx_positive] + idx[[1]]
+          re[tidx_positive] <- re[tidx_positive] + idx[[2]]
+          re
         })
 
         if( !is.numeric(self$number) ){
@@ -317,6 +340,8 @@ LFP_electrode <- R6::R6Class(
       blocks <- check_res$blocks
       ntrial <- nrow(epoch_tbl)
       ntime <- length(tidx)
+      tidx_positive <- check_res$tidx_positive
+      stitch_columns <- check_res$stitch_columns
 
       # freq x time x trial
       arr <- filearray::filearray_create(
@@ -340,10 +365,19 @@ LFP_electrode <- R6::R6Class(
         }
 
         trials <- which(sel)
-        onsets <- epoch_tbl$Time[sel]
-        tp <- sapply(onsets, function(o){
+        # onsets <- epoch_tbl$Time[sel]
+        # tp <- sapply(onsets, function(o){
+        #   idx <- round(o * srate)
+        #   idx + tidx
+        # })
+        onsets1 <- epoch_tbl[[ stitch_columns[[1]] ]][sel]
+        onsets2 <- epoch_tbl[[ stitch_columns[[2]] ]][sel]
+        tp <- apply(cbind(onsets1, onsets2), 1L, function(o){
           idx <- round(o * srate)
-          idx + tidx
+          re <- tidx
+          re[!tidx_positive] <- re[!tidx_positive] + idx[[1]]
+          re[tidx_positive] <- re[tidx_positive] + idx[[2]]
+          re
         })
 
         if( file.exists(self$voltage_file) ) {
@@ -540,6 +574,8 @@ LFP_electrode <- R6::R6Class(
       blocks <- check_res$blocks
       ntrial <- nrow(epoch_tbl)
       ntime <- length(tidx)
+      tidx_positive <- check_res$tidx_positive
+      stitch_columns <- check_res$stitch_columns
 
       arr_path <- file.path(self$cache_root, "noref", "raw-voltage")
       if(reload && dir.exists(arr_path)) {
@@ -565,10 +601,19 @@ LFP_electrode <- R6::R6Class(
           sel <- epoch_tbl$Block == b
           if(!any(sel)){ next }
           trials <- which(sel)
-          onsets <- epoch_tbl$Time[sel]
-          tp <- sapply(onsets, function(o){
+          # onsets <- epoch_tbl$Time[sel]
+          # tp <- sapply(onsets, function(o){
+          #   idx <- round(o * srate)
+          #   idx + tidx
+          # })
+          onsets1 <- epoch_tbl[[ stitch_columns[[1]] ]][sel]
+          onsets2 <- epoch_tbl[[ stitch_columns[[2]] ]][sel]
+          tp <- apply(cbind(onsets1, onsets2), 1L, function(o){
             idx <- round(o * srate)
-            idx + tidx
+            re <- tidx
+            re[!tidx_positive] <- re[!tidx_positive] + idx[[1]]
+            re[tidx_positive] <- re[tidx_positive] + idx[[2]]
+            re
           })
 
           h5_name <- sprintf('/raw/%s', b)

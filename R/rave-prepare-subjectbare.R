@@ -302,7 +302,7 @@ prepare_subject_bare <- function(subject, electrodes, reference_name, ...,
 
 #' @rdname rave-prepare
 #' @export
-prepare_subject_with_epoch <- function(subject, electrodes, reference_name, epoch_name, time_windows, env = parent.frame(), ...){
+prepare_subject_with_epoch <- function(subject, electrodes, reference_name, epoch_name, time_windows, stitch_events = NULL, env = parent.frame(), ...){
 
   call <- as.list(match.call())
   call[["env"]] <- NULL
@@ -349,14 +349,40 @@ prepare_subject_with_epoch <- function(subject, electrodes, reference_name, epoc
   re$epoch_name <- epoch_name
   re$epoch <- epoch
 
+  if(length(stitch_events)) {
+    # check if the events are in epochs
+    available_events <- epoch$available_events
+    if(length(stitch_events) == 1) {
+      stitch_events <- c(stitch_events, stitch_events)
+    } else {
+      stitch_events <- stitch_events[c(1, 2)]
+    }
+    stitch_events[tolower(stitch_events) %in% c("trial onset")] <- ""
+    if(!all(stitch_events %in% available_events)) {
+
+      warning(
+        "Cannot find events to stitch: ",
+        paste(sQuote(stitch_events[!stitch_events %in% available_events]), collapse = ", "),
+        ". Available events: ",
+        paste(sQuote(available_events), collapse = ", ")
+      )
+    }
+    stitch_events_start <- stitch_events[[1]] %OF% available_events
+    stitch_events_end <- stitch_events[[2]] %OF% available_events
+    stitch_events <- c(stitch_events_start, stitch_events_end)
+  } else {
+    stitch_events <- NULL
+  }
+  re$stitch_events <- stitch_events
+
   # set epoch and time_windows
   lapply(re$reference_instances, function(e){
-    e$set_epoch(epoch)
+    e$set_epoch(epoch, stitch_events = stitch_events)
     e$trial_intervals <- time_windows
     NULL
   })
   lapply(re$electrode_instances, function(e){
-    e$set_epoch(epoch)
+    e$set_epoch(epoch, stitch_events = stitch_events)
     e$trial_intervals <- time_windows
     NULL
   })
@@ -369,7 +395,8 @@ prepare_subject_with_epoch <- function(subject, electrodes, reference_name, epoc
     reference_table = re$reference_table,
     electrode_list = re$electrode_list,
     electrode_signal_types = re$electrode_signal_types,
-    time_windows = re$time_windows
+    time_windows = re$time_windows,
+    stitch_events = re$stitch_events
   )
   digest_string <- dipsaus::digest(digest_key)
   re$signature <- structure(digest_string, contents = names(digest_key))

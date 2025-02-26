@@ -15,6 +15,12 @@
 #' @param blocks one or more session blocks to load
 #' @param time_frequency whether to load time-frequency data when preparing
 #' block data
+#' @param stitch_events events to stitch, default is \code{NULL}, meaning
+#' when loading data, the time is relative to the trial onset (column
+#' \code{"Time"} in the epoch file); set to a character of length 2,
+#' representing the events if time is not relative to trial onset. Please
+#' remove the prefix. For example, for a column named \code{"Event_name"},
+#' the event name is \code{"name"}.
 #' @param raw whether to load from original (before processing) data; if true,
 #' then time-frequency data will not be loaded.
 #' @param env environment to evaluate

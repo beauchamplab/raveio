@@ -65,6 +65,10 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @field epoch a \code{\link{RAVEEpoch}} instance
     epoch = NULL,
 
+    #' @field stitch_events events to stitch, when loading window is not default
+    #' to trial onset; must be \code{NULL} or a character vector of length 2
+    stitch_events = NULL,
+
     #' @description constructor
     #' @param subject character or \code{\link{RAVESubject}} instance
     #' @param number current electrode number or reference ID
@@ -112,14 +116,22 @@ RAVEAbstarctElectrode <- R6::R6Class(
     #' @description set epoch instance for the electrode
     #' @param epoch characters or \code{\link{RAVEEpoch}} instance. For
     #' characters, make sure \code{"epoch_<name>.csv"} is in meta folder.
-    set_epoch = function(epoch){
+    #' @param stitch_events events to stitch, default is \code{NULL}, meaning
+    #' when loading data, the time is relative to the trial onset (column
+    #' \code{"Time"} in the epoch file); set to a character of length 2,
+    #' representing the events if time is not relative to trial onset. Please
+    #' remove the prefix. For example, for a column named \code{"Event_name"},
+    #' the event name is \code{"name"}.
+    set_epoch = function(epoch, stitch_events = NULL){
       if(!inherits(epoch, 'RAVEEpoch')){
         epoch <- RAVEEpoch$new(subject = self$subject, name = epoch)
       }
       if(!is.null(self$reference)){
         self$reference$epoch <- epoch
+        self$reference$stitch_events <- stitch_events
       }
       self$epoch <- epoch
+      self$stitch_events <- stitch_events
     },
 
     #' @description method to clear cache on hard drive
@@ -248,11 +260,27 @@ RAVEAbstarctElectrode <- R6::R6Class(
              "  x$trial_intervals <- list(c(-1,2)) \n",
              "to load 1 second before onset and 2 seconds after onset.")
       }
+      stitch_events <- self$stitch_events
+      if(length(stitch_events) == 2) {
+        available_events <- tolower(self$epoch$available_events)
+        stitch_events_pre <- tolower(stitch_events[[1]]) %OF% available_events
+        stitch_events_post <- tolower(stitch_events[[2]]) %OF% available_events
+      } else {
+        stitch_events_pre <- ""
+        stitch_events_post <- ""
+      }
+
       intv <- paste(
         sapply(self$trial_intervals, function(x){
           re <- sprintf("%s%.3f", c("M", "", "P")[sign(x) + 2], abs(x))
           re <- stringr::str_remove_all(re, "[.]{0,1}[0]+$")
-          paste(re, collapse = "-")
+          if(stitch_events_pre != "") {
+            re[[1]] <- sprintf("%s-%s", stitch_events_pre, re[[1]])
+          }
+          if(stitch_events_post != "") {
+            re[[2]] <- sprintf("%s-%s", stitch_events_post, re[[2]])
+          }
+          paste(re, collapse = "_")
         }),
         collapse = "_"
       )

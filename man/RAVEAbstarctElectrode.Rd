@@ -61,6 +61,9 @@ e$set_reference(ref)
 or an electrode instance inherits \code{RAVEAbstarctElectrode}}
 
 \item{\code{epoch}}{a \code{\link{RAVEEpoch}} instance}
+
+\item{\code{stitch_events}}{events to stitch, when loading window is not default
+to trial onset; must be \code{NULL} or a character vector of length 2}
 }
 \if{html}{\out{</div>}}
 }
@@ -161,7 +164,7 @@ instance}
 \subsection{Method \code{set_epoch()}}{
 set epoch instance for the electrode
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$set_epoch(epoch)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{RAVEAbstarctElectrode$set_epoch(epoch, stitch_events = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -169,6 +172,13 @@ set epoch instance for the electrode
 \describe{
 \item{\code{epoch}}{characters or \code{\link{RAVEEpoch}} instance. For
 characters, make sure \code{"epoch_<name>.csv"} is in meta folder.}
+
+\item{\code{stitch_events}}{events to stitch, default is \code{NULL}, meaning
+when loading data, the time is relative to the trial onset (column
+\code{"Time"} in the epoch file); set to a character of length 2,
+representing the events if time is not relative to trial onset. Please
+remove the prefix. For example, for a column named \code{"Event_name"},
+the event name is \code{"name"}.}
 }
 \if{html}{\out{</div>}}
 }
