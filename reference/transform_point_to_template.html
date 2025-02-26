@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.87</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.89</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,8 @@
 <span>  n_segments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fl">16</span><span class="op">)</span>,</span>
 <span>  group_labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  project_surface <span class="op">=</span> <span class="st">"pial"</span>,</span>
-<span>  volumetric_transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"affine"</span>, <span class="st">"nonlinear"</span><span class="op">)</span></span>
+<span>  volumetric_transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"affine"</span>, <span class="st">"nonlinear"</span><span class="op">)</span>,</span>
+<span>  template_subject <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cvs_avg35_inMNI152"</span>, <span class="st">"fsaverage"</span>, <span class="st">"bert"</span>, <span class="st">"MNI152"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -128,6 +129,12 @@ mapping; default segments the thin-film array into 16 by 16 segments</p></dd>
 <dd><p><code>NULL</code> (default) or a character vector indicating
 the group labels of thin-film electrodes;
 default assumes that all contacts are from thin-film electrodes.</p></dd>
+
+
+<dt id="arg-template-subject">template_subject<a class="anchor" aria-label="anchor" href="#arg-template-subject"></a></dt>
+<dd><p>template subject to be mapped to; default is
+<code>'cvs_avg35_inMNI152'</code>, which is a <code>'MNI152'</code> template generated
+by 'FreeSurfer'; other choices are <code>'fsaverage'</code> and <code>'bert'</code></p></dd>
 
 </dl></div>
     <div class="section level2">

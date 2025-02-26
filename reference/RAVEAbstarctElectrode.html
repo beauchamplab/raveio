@@ -9,7 +9,7 @@ create new child classes and implement some key methods."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.87</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.89</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,11 @@ or an electrode instance inherits <code>RAVEAbstarctElectrode</code></p></dd>
 
 <dt><code>epoch</code></dt>
 <dd><p>a <code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance</p></dd>
+
+
+<dt><code>stitch_events</code></dt>
+<dd><p>events to stitch, when loading window is not default
+to trial onset; must be <code>NULL</code> or a character vector of length 2</p></dd>
 
 
 </dl><p></p></div>
@@ -192,7 +197,7 @@ instance</p></dd>
 <h3 id="method-set-epoch-">Method <code>set_epoch()</code><a class="anchor" aria-label="anchor" href="#method-set-epoch-"></a></h3>
 <p>set epoch instance for the electrode</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEAbstarctElectrode</span><span class="op">$</span><span class="fu">set_epoch</span><span class="op">(</span><span class="va">epoch</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">RAVEAbstarctElectrode</span><span class="op">$</span><span class="fu">set_epoch</span><span class="op">(</span><span class="va">epoch</span>, stitch_events <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -200,6 +205,15 @@ instance</p></dd>
 <p></p><div class="arguments"><dl><dt><code>epoch</code></dt>
 <dd><p>characters or <code><a href="RAVEEpoch.html">RAVEEpoch</a></code> instance. For
 characters, make sure <code>"epoch_&lt;name&gt;.csv"</code> is in meta folder.</p></dd>
+
+
+<dt><code>stitch_events</code></dt>
+<dd><p>events to stitch, default is <code>NULL</code>, meaning
+when loading data, the time is relative to the trial onset (column
+<code>"Time"</code> in the epoch file); set to a character of length 2,
+representing the events if time is not relative to trial onset. Please
+remove the prefix. For example, for a column named <code>"Event_name"</code>,
+the event name is <code>"name"</code>.</p></dd>
 
 
 </dl><p></p></div>
