@@ -861,8 +861,14 @@ pipeline_watch <- function(
 #' @export
 pipeline_create_template <- function(
   root_path, pipeline_name, overwrite = FALSE,
-  activate = TRUE, template_type = c("rmd", 'r', 'rmd-bare', 'rmd-scheduler')
+  activate = TRUE, template_type = c("rmd", 'r', 'rmd-bare', 'rmd-scheduler', 'rmd-python')
 ) {
+  # DIPSAUS DEBUG START
+  # root_path = tempfile()
+  # pipeline_name = "junk"
+  # overwrite = FALSE
+  # activate = TRUE
+  # template_type = 'rmd-python'
   template_type <- match.arg(template_type)
   pipeline_name <- tolower(pipeline_name)
   stopifnot2(!pipeline_name %in% c("main", "imports", "initialize", "template"),
@@ -889,8 +895,21 @@ pipeline_create_template <- function(
   for(f in fs_src) {
     f_src <- file.path(template_path, f)
     if(dir.exists(f_src)) {
-      file.copy(f_src, pipe_path, overwrite = overwrite,
-                recursive = TRUE, copy.date = TRUE)
+      # file.copy(f_src, pipe_path, overwrite = overwrite,
+      #           recursive = TRUE, copy.date = TRUE)
+
+      # this is a directory, carefully copy all the files (also change the names)
+      sub_fs <- list.files(f_src, all.files = FALSE, full.names = FALSE, recursive = TRUE, include.dirs = FALSE, no.. = TRUE)
+      for(sub_f in sub_fs) {
+        sub_f_src <- file.path(f_src, sub_f)
+        # substitude folder names
+        sub_f_dst <- stringr::str_replace_all(file.path(f, sub_f), "TEMPLATE", pipeline_name)
+        sub_f_dst <- file.path(pipe_path, sub_f_dst)
+        # make sure the parent directory exists
+        dir_create2(dirname(sub_f_dst))
+        file.copy(from = sub_f_src, to = sub_f_dst,
+                  overwrite = overwrite, copy.date = TRUE)
+      }
     } else {
       f_dst <- stringr::str_replace_all(f, "TEMPLATE", pipeline_name)
       file.copy(f_src, file.path(pipe_path, f_dst),
@@ -928,7 +947,7 @@ pipeline_create_template <- function(
 #' @export
 pipeline_create_subject_pipeline <- function(
   subject, pipeline_name, overwrite = FALSE,
-  activate = TRUE, template_type = c("rmd", 'r')
+  activate = TRUE, template_type = c("rmd", 'r', 'rmd-python')
 ){
   template_type <- match.arg(template_type)
   pipeline_name <- tolower(pipeline_name)

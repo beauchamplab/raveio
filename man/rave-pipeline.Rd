@@ -156,7 +156,7 @@ pipeline_create_template(
   pipeline_name,
   overwrite = FALSE,
   activate = TRUE,
-  template_type = c("rmd", "r", "rmd-bare", "rmd-scheduler")
+  template_type = c("rmd", "r", "rmd-bare", "rmd-scheduler", "rmd-python")
 )
 
 pipeline_create_subject_pipeline(
@@ -164,7 +164,7 @@ pipeline_create_subject_pipeline(
   pipeline_name,
   overwrite = FALSE,
   activate = TRUE,
-  template_type = c("rmd", "r")
+  template_type = c("rmd", "r", "rmd-python")
 )
 
 pipeline_description(file)

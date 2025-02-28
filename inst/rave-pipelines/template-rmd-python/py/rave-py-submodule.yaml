@@ -1,0 +1,7 @@
+# List all the 3rd-party python libraries needed to run this module
+# The packages will be installed automatically when RAVE installs this
+# module.
+name: TEMPLATE
+dependencies:
+- pip:
+  - numpy

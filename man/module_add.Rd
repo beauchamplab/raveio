@@ -8,7 +8,7 @@ module_add(
   module_id,
   module_label,
   path = ".",
-  type = c("default", "bare", "scheduler"),
+  type = c("default", "bare", "scheduler", "python"),
   ...,
   pipeline_name = module_id,
   overwrite = FALSE

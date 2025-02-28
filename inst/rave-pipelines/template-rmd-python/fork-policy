@@ -1,0 +1,8 @@
+[default]
+^shared
+^main\.html$
+
+[group_analysis]
+^shared/objects/(?!data_for_group)
+^shared/user
+^main\.html$

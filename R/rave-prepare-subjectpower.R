@@ -96,7 +96,7 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
 
 }
 
-# re <- prepare_subject_power('demo/DemoSubject', electrodes = 14, stitch_events = c("Test", "Test"), time_windows = c(-3, 2))
-# power_baseline(re, c(-3, 2))
+# re <- prepare_subject_power('demo/DemoSubject', electrodes = 14, stitch_events = c("", "Test"), time_windows = c(-1, 2))
+# power_baseline(re, c(-1, 0))
 # image(collapse2(re$power$baselined, c(2, 1)))
 # re$electrode_instances$e_14$load_data('power')

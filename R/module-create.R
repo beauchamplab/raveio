@@ -13,7 +13,7 @@
 #' @returns Nothing.
 #' @export
 module_add <- function(
-  module_id, module_label, path = ".", type = c("default", "bare", "scheduler"), ...,
+  module_id, module_label, path = ".", type = c("default", "bare", "scheduler", "python"), ...,
   pipeline_name = module_id, overwrite = FALSE
 ){
 
@@ -37,6 +37,7 @@ module_add <- function(
     type,
     'bare' = "rmd-bare",
     'scheduler' = "rmd-scheduler",
+    "python" = "rmd-python",
     "rmd"
   )
 
