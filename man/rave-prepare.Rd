@@ -102,6 +102,7 @@ prepare_subject_raw_voltage_with_epoch(
   electrodes,
   epoch_name,
   time_windows,
+  stitch_events = NULL,
   ...,
   quiet = TRUE,
   repository_id = NULL
@@ -113,6 +114,7 @@ prepare_subject_voltage_with_epoch(
   epoch_name,
   time_windows,
   reference_name,
+  stitch_events = NULL,
   ...,
   quiet = TRUE,
   repository_id = NULL

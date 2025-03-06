@@ -1,6 +1,8 @@
 #' @rdname rave-prepare
 #' @export
-prepare_subject_raw_voltage_with_epoch <- function(subject, electrodes, epoch_name, time_windows, ..., quiet = TRUE, repository_id = NULL) {
+prepare_subject_raw_voltage_with_epoch <- function(
+    subject, electrodes, epoch_name, time_windows, stitch_events = NULL,
+    ..., quiet = TRUE, repository_id = NULL) {
   re <- dipsaus::fastmap2()
   subject <- as_rave_subject(subject)
 
@@ -58,6 +60,33 @@ prepare_subject_raw_voltage_with_epoch <- function(subject, electrodes, epoch_na
   epoch_table <- epoch_table[order(epoch_table$Trial), ]
   re$epoch_table <- epoch_table
 
+  # ----- stitch_events -----
+  if(length(stitch_events)) {
+    # check if the events are in epochs
+    available_events <- epoch$available_events
+    if(length(stitch_events) == 1) {
+      stitch_events <- c(stitch_events, stitch_events)
+    } else {
+      stitch_events <- stitch_events[c(1, 2)]
+    }
+    stitch_events[tolower(stitch_events) %in% c("trial onset")] <- ""
+    if(!all(stitch_events %in% available_events)) {
+
+      warning(
+        "Cannot find events to stitch: ",
+        paste(sQuote(stitch_events[!stitch_events %in% available_events]), collapse = ", "),
+        ". Available events: ",
+        paste(sQuote(available_events), collapse = ", ")
+      )
+    }
+    stitch_events_start <- stitch_events[[1]] %OF% available_events
+    stitch_events_end <- stitch_events[[2]] %OF% available_events
+    stitch_events <- c(stitch_events_start, stitch_events_end)
+  } else {
+    stitch_events <- NULL
+  }
+  re$stitch_events <- stitch_events
+
   # ----- electrode_list -----
   re$electrode_list <- electrodes
 
@@ -83,7 +112,7 @@ prepare_subject_raw_voltage_with_epoch <- function(subject, electrodes, epoch_na
     signal_type <- electrode_signal_types[[ii]]
 
     el <- new_electrode(subject = subject, number = e, signal_type = signal_type, quiet = quiet)
-    el$set_epoch(epoch)
+    el$set_epoch(epoch, stitch_events = stitch_events)
     el$trial_intervals <- time_windows
     el
   }), names = sprintf("e_%d", electrodes))
@@ -113,7 +142,8 @@ prepare_subject_raw_voltage_with_epoch <- function(subject, electrodes, epoch_na
     rave_data_type = "raw-voltage",
     electrode_signal_types = electrode_signal_types,
     sample_rate = sample_rate,
-    time_windows = time_windows
+    time_windows = time_windows,
+    stitch_events = stitch_events
   )
   digest_string <- dipsaus::digest(digest_key)
   re$signature <- structure(digest_string, contents = names(digest_key))
@@ -137,7 +167,9 @@ prepare_subject_raw_voltage_with_epoch <- function(subject, electrodes, epoch_na
 
 #' @rdname rave-prepare
 #' @export
-prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, time_windows, reference_name, ..., quiet = TRUE, repository_id = NULL) {
+prepare_subject_voltage_with_epoch <- function(
+    subject, electrodes, epoch_name, time_windows, reference_name,
+    stitch_events = NULL, ..., quiet = TRUE, repository_id = NULL) {
 
   # ----- DIPSAUS: DEBUG START--------
   # devtools::load_all()
@@ -273,6 +305,33 @@ prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, 
   }
   re$sample_rate <- sample_rate
 
+  # ----- stitch_events -----
+  if(length(stitch_events)) {
+    # check if the events are in epochs
+    available_events <- epoch$available_events
+    if(length(stitch_events) == 1) {
+      stitch_events <- c(stitch_events, stitch_events)
+    } else {
+      stitch_events <- stitch_events[c(1, 2)]
+    }
+    stitch_events[tolower(stitch_events) %in% c("trial onset")] <- ""
+    if(!all(stitch_events %in% available_events)) {
+
+      warning(
+        "Cannot find events to stitch: ",
+        paste(sQuote(stitch_events[!stitch_events %in% available_events]), collapse = ", "),
+        ". Available events: ",
+        paste(sQuote(available_events), collapse = ", ")
+      )
+    }
+    stitch_events_start <- stitch_events[[1]] %OF% available_events
+    stitch_events_end <- stitch_events[[2]] %OF% available_events
+    stitch_events <- c(stitch_events_start, stitch_events_end)
+  } else {
+    stitch_events <- NULL
+  }
+  re$stitch_events <- stitch_events
+
   # ----- reference_instances -----
   ref_table <- reference_table[reference_table$Electrode %in% electrodes, ]
   references_list <- unique(ref_table$Reference)
@@ -304,7 +363,7 @@ prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, 
     ref <- reference_instances[[ref_name]]
     el$set_reference(ref)
 
-    el$set_epoch(epoch)
+    el$set_epoch(epoch, stitch_events = stitch_events)
     el$trial_intervals <- time_windows
 
     el
@@ -349,7 +408,8 @@ prepare_subject_voltage_with_epoch <- function(subject, electrodes, epoch_name, 
     rave_data_type = "voltage",
     electrode_signal_types = electrode_signal_types,
     sample_rate = sample_rate,
-    time_windows = time_windows
+    time_windows = time_windows,
+    stitch_events = stitch_events
   )
   digest_string <- dipsaus::digest(digest_key)
   re$signature <- structure(digest_string, contents = names(digest_key))
