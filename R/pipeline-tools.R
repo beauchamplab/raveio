@@ -172,6 +172,13 @@ pipeline_debug <- function(
   }
 }
 
+get_target_deps <- function(target) {
+  if("deps" %in% names(target$command)) {
+    return(target$command$deps)
+  }
+  return(target$deps)
+}
+
 #' @rdname rave-pipeline
 #' @export
 pipeline_dep_targets <- function(
@@ -192,9 +199,7 @@ pipeline_dep_targets <- function(
   }, "", USE.NAMES = FALSE)
 
   tparents <- structure(
-    lapply(all_targets, function(target) {
-      target$command$deps
-    }),
+    lapply(all_targets, get_target_deps),
     names = tnames
   )
 
@@ -333,7 +338,7 @@ pipeline_eval <- function(names, env = new.env(parent = parent.frame()),
       }
     }
 
-    deps <- tar_obj$command$deps
+    deps <- get_target_deps(tar_obj)
     deps <- deps[!deps %in% matured_targets]
     if( length(deps) ) {
       lapply(deps, eval_target)
