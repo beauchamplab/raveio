@@ -8,7 +8,7 @@ ingest_regressor(
   repository,
   source,
   source_type = c("channel", "file", "r_object"),
-  filter = c("none", "audio_envelope"),
+  filter = NULL,
   ...
 )
 }
@@ -33,10 +33,8 @@ The sample rate of underlying signals
 must coincide with the sample rate presented in the repository}
 }}
 
-\item{filter}{character or function; only used if \code{source_type} is
-\code{'channel'}. When \code{filter} is a character,
-then the choices are \code{'none'} (simply calculating average signals)
-\code{'audio_envelope'} (for calculating audio envelope). For function,
+\item{filter}{\code{NULL} or function; only used if \code{source_type} is
+\code{'channel'}. For function,
 \code{filter} must have two exact arguments, with the first argument taking
 the signal data matrix (time point by channel) and second argument taking
 sample rates of length 2. The first sample rate is the original sampling

@@ -126,7 +126,7 @@ Tensor <- R6::R6Class(
     temporary = TRUE,
 
     #' @description release resource and remove files for temporary instances
-    finalize = function(){
+    do_finalize = function(){
       # if(self$temporary){
       #   # recycle at the end of session
       #   f = RaveFinalizer$new(NULL)

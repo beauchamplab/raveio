@@ -1,6 +1,6 @@
 # DIPSAUS DEBUG START
 # repository <- raveio::prepare_subject_power("demo/DemoSubject")
-# channels <- 100
+# channels <- c(14, 100)
 # apply_preprocess = FALSE
 # quiet = FALSE
 # sample_rates = c(30000, 100)
@@ -25,10 +25,8 @@
 #' The sample rate of underlying signals
 #' must coincide with the sample rate presented in the repository}
 #' }
-#' @param filter character or function; only used if \code{source_type} is
-#' \code{'channel'}. When \code{filter} is a character,
-#' then the choices are \code{'none'} (simply calculating average signals)
-#' \code{'audio_envelope'} (for calculating audio envelope). For function,
+#' @param filter \code{NULL} or function; only used if \code{source_type} is
+#' \code{'channel'}. For function,
 #' \code{filter} must have two exact arguments, with the first argument taking
 #' the signal data matrix (time point by channel) and second argument taking
 #' sample rates of length 2. The first sample rate is the original sampling
@@ -61,6 +59,7 @@ ingest_regressor_internal <- function(repository, signals) {
     stitch_events_post <- "Time"
   }
 
+  n_timepoints <- length(time_points)
   time_selection <- time_points <= 0
   time_points_pre <- round((time_points[time_points <= 0]) * sample_rate)
   time_points_post <- round((time_points[time_points > 0]) * sample_rate)
@@ -70,20 +69,34 @@ ingest_regressor_internal <- function(repository, signals) {
     row_idx <- which(epoch_table$Trial == trial_number)[[1]]
     row <- epoch_table[row_idx, ]
 
-    signal <- signals[[row$Block]]
+    # time x ...
+    signal <- signals[[row$Block]][drop = FALSE]
+    if(is.array(signal) || is.matrix(signal)) {
+      dm <- dim(signal)
+      dim(signal) <- c(dm[[1]], length(signal) / dm[[1]])
+    } else {
+      dm <- NULL
+    }
 
     time_index_pre <- round(row[[stitch_events_pre]] * sample_rate)
     time_index_post <- round(row[[stitch_events_post]] * sample_rate)
     if( time_index_pre == 0 ) { time_index_pre <- 1 }
     if( time_index_post == 0 ) { time_index_post <- 1 }
 
-    re <- rep(0.0, length(time_selection))
-    re[time_selection] <- signal[time_index_pre + time_points_pre]
-    re[!time_selection] <- signal[time_index_post + time_points_post]
+    if(length(dm)) {
+      re <- array(0.0, c(n_timepoints, ncol(signal)))
+      re[time_selection, ] <- signal[time_index_pre + time_points_pre, ]
+      re[!time_selection, ] <- signal[time_index_post + time_points_post, ]
+      dim(re) <- c(n_timepoints, dm[-1])
+    } else {
+      re <- rep(0.0, n_timepoints)
+      re[time_selection] <- signal[time_index_pre + time_points_pre]
+      re[!time_selection] <- signal[time_index_post + time_points_post]
+    }
     re
   })
 
-  return(simplify2array(results))
+  return(simplify2array(results, higher = TRUE))
 }
 
 ingest_regressor_channels <- function(
@@ -118,18 +131,17 @@ ingest_regressor_channels <- function(
 
   if(!is.function(filter)) {
     filter <- function(data, sample_rates) {
-      if(is.matrix(data)) {
-        data <- rowMeans(data)
-      }
       original_sample_rate <- sample_rates[[1]]
       target_sample_rate <- sample_rates[[2]]
       # check if we can use decimate
       q <- original_sample_rate / target_sample_rate
       if(abs(q - round(q)) < 1e-6) {
         q <- round(q)
-        return(ravetools::decimate(x = data, q = q))
+        ret <- gsignal::decimate(x = data, q = q, ftype = "fir")
+      } else {
+        ret <- gsignal::resample(x = data, p = target_sample_rate, q = original_sample_rate)
       }
-      return(gsignal::resample(x = data, p = target_sample_rate, q = original_sample_rate))
+      return(ret)
     }
   }
 
@@ -142,9 +154,14 @@ ingest_regressor_channels <- function(
       voltage_data <- subset(voltage_data_container$data, Electrode ~ Electrode %in% new_repo$electrode_list, drop = FALSE)
       filtered_signal <- filter(voltage_data, c(original_sample_rate, repository_sample_rate))
       expected_length <- nrow(voltage_data) / original_sample_rate * repository_sample_rate
-      length_difference <- abs(expected_length - length(filtered_signal))
-      if( abs(length_difference) > 1 ) {
-        stop("ingest_regressor_channels: the raw signals, after aggregation and filter, should have the sample rate `", repository_sample_rate, " Hz`. Please check if the filter properly down-sample the signal.")
+      actual_length <- length(filtered_signal)
+      if(is.array(filtered_signal) || is.matrix(filtered_signal)) {
+        actual_length <- nrow(filtered_signal)
+      }
+      length_difference <- abs(expected_length - actual_length)
+
+      if( abs(length_difference) > 2 ) {
+        stop("ingest_regressor_channels: the raw signals, after aggregation and filter, should have the sample rate `", repository_sample_rate, " Hz`. Please check if the filter properly down-sample the signal. (Unexpected number of time-points: expected: ", ceiling(expected_length), "; actual: ", actual_length)
       }
       filtered_signal
     })
@@ -156,68 +173,11 @@ ingest_regressor_channels <- function(
 }
 
 
-ingest_filter_audio_envelope <- function(data, sample_rates) {
-
-  # data is ntimepoints x nchannel, calculate the average
-  data <- rowMeans(data)
-
-  # data is 1D trace
-  # sample_rates has length of 2 (sample rate of data, target sample rate)
-  orig_srate <- sample_rates[[1]]
-  dest_srate <- sample_rates[[2]]
-
-  ds_srate <- 6000
-  if( orig_srate > ds_srate ) {
-    # downsample to 6000 Hz
-    q <- orig_srate / ds_srate
-
-    if( q == round(q) ) {
-      # use FIR decimate
-      data_resamp <- ravetools::decimate(data, q)
-    } else {
-      data_resamp <- gsignal::resample(data, p = ds_srate, q = orig_srate)
-    }
-  } else {
-    ds_srate <- orig_srate
-    data_resamp <- data
-  }
-
-  # hilbert,
-  envelope_cplx <- gsignal::hilbert(data_resamp)
-  envelope <- Mod(envelope_cplx)
-
-  if( ds_srate > 100 ) {
-    # lowpass
-    envelope <- ravetools::design_filter(sample_rate = ds_srate, data = envelope, low_pass_freq = 50, filter_order = min(floor(length(envelope)) - 1, 1600))
-  }
-  q <- ds_srate / dest_srate
-  if( q == round(q) ) {
-    # use FIR decimate
-    envelope <- ravetools::decimate(envelope, q)
-  } else {
-    envelope <- gsignal::resample(envelope, p = dest_srate, q = ds_srate)
-  }
-
-  # n <- ceiling(length(data) * dest_srate / orig_srate)
-  # envelope_cplx2 <- gsignal::hilbert(x = data, n = n)
-  # envelope2 <- Mod(envelope_cplx2)
-
-  # space_info <- ravetools::plot_signals(abs(data), sample_rate = orig_srate, space = 1, col = "black", start_time = 1, duration = 3)
-  # ravetools::plot_signals(envelope, sample_rate = dest_srate, space = space_info$space, space_mode = "absolute", col = "red", start_time = 1, duration = 3, new_plot = FALSE)
-  # ravetools::plot_signals(envelope2, sample_rate = dest_srate, space = space_info$space, space_mode = "absolute", col = "orange", start_time = 1, duration = 3, new_plot = FALSE)
-
-  return(envelope)
-
-}
-
-
 #' @rdname ingest_regressor
 #' @export
-ingest_regressor <- function(repository, source, source_type = c("channel", "file", "r_object"), filter = c("none", "audio_envelope"), ...) {
+ingest_regressor <- function(repository, source, source_type = c("channel", "file", "r_object"), filter = NULL, ...) {
 
   source_type <- match.arg(source_type)
-
-
 
   if( source_type == "channel" ) {
     channels <- dipsaus::parse_svec(source)
@@ -225,12 +185,7 @@ ingest_regressor <- function(repository, source, source_type = c("channel", "fil
       stop(sprintf("Cannot ingest regressors from channel `%s`", deparse1(source)))
     }
     if(!is.function(filter)) {
-      filter <- match.arg(filter)
-      filter <- switch(
-        filter,
-        "none" = NULL,
-        "audio_envelope" = ingest_filter_audio_envelope
-      )
+      filter <- NULL
     }
 
     res <- ingest_regressor_channels(repository = repository, channels = channels, filter = filter, ...)

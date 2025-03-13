@@ -92,7 +92,7 @@ as multiple files}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-Tensor-finalize}{\code{Tensor$finalize()}}
+\item \href{#method-Tensor-do_finalize}{\code{Tensor$do_finalize()}}
 \item \href{#method-Tensor-print}{\code{Tensor$print()}}
 \item \href{#method-Tensor-.use_multi_files}{\code{Tensor$.use_multi_files()}}
 \item \href{#method-Tensor-new}{\code{Tensor$new()}}
@@ -107,12 +107,12 @@ as multiple files}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Tensor-finalize"></a>}}
-\if{latex}{\out{\hypertarget{method-Tensor-finalize}{}}}
-\subsection{Method \code{finalize()}}{
+\if{html}{\out{<a id="method-Tensor-do_finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-Tensor-do_finalize}{}}}
+\subsection{Method \code{do_finalize()}}{
 release resource and remove files for temporary instances
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tensor$finalize()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Tensor$do_finalize()}\if{html}{\out{</div>}}
 }
 
 }

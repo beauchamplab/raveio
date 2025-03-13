@@ -32,7 +32,7 @@ Zhengjia Wang
 <ul>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id=".use_multi_files"><a href='../../raveio/html/Tensor.html#method-Tensor-.use_multi_files'><code>raveio::Tensor$.use_multi_files()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="collapse"><a href='../../raveio/html/Tensor.html#method-Tensor-collapse'><code>raveio::Tensor$collapse()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="finalize"><a href='../../raveio/html/Tensor.html#method-Tensor-finalize'><code>raveio::Tensor$finalize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="do_finalize"><a href='../../raveio/html/Tensor.html#method-Tensor-do_finalize'><code>raveio::Tensor$do_finalize()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="get_data"><a href='../../raveio/html/Tensor.html#method-Tensor-get_data'><code>raveio::Tensor$get_data()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="operate"><a href='../../raveio/html/Tensor.html#method-Tensor-operate'><code>raveio::Tensor$operate()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="raveio" data-topic="Tensor" data-id="print"><a href='../../raveio/html/Tensor.html#method-Tensor-print'><code>raveio::Tensor$print()</code></a></span></li>
