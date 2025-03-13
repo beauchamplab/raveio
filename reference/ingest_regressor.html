@@ -43,7 +43,7 @@
 <span>  <span class="va">repository</span>,</span>
 <span>  <span class="va">source</span>,</span>
 <span>  source_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"channel"</span>, <span class="st">"file"</span>, <span class="st">"r_object"</span><span class="op">)</span>,</span>
-<span>  filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"audio_envelope"</span><span class="op">)</span>,</span>
+<span>  filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -84,10 +84,8 @@ must coincide with the sample rate presented in the repository</p></dd>
 
 
 <dt id="arg-filter">filter<a class="anchor" aria-label="anchor" href="#arg-filter"></a></dt>
-<dd><p>character or function; only used if <code>source_type</code> is
-<code>'channel'</code>. When <code>filter</code> is a character,
-then the choices are <code>'none'</code> (simply calculating average signals)
-<code>'audio_envelope'</code> (for calculating audio envelope). For function,
+<dd><p><code>NULL</code> or function; only used if <code>source_type</code> is
+<code>'channel'</code>. For function,
 <code>filter</code> must have two exact arguments, with the first argument taking
 the signal data matrix (time point by channel) and second argument taking
 sample rates of length 2. The first sample rate is the original sampling
