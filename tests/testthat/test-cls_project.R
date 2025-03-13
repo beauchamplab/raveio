@@ -6,7 +6,7 @@ test_that("Project class & derivatives", {
   skip_on_cran()
 
   on.exit({
-    load_setting()
+    ravepipeline:::load_setting()
   })
 
   raveio_setopt('file_structure', 'native', .save = FALSE)

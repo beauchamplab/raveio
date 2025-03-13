@@ -551,7 +551,7 @@ power_baseline.ECoGTensor <- function(
     baseline_windows = baseline_windows,
     dimension = dm,
     dimnames = dnames,
-    session_string = get(".session_string")
+    session_string = get(".session_string", envir = asNamespace("ravepipeline"))
   )
   signature <- dipsaus::digest(digest_key)
 

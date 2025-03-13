@@ -42,11 +42,11 @@ Imports:
     yaml (>= 2.2.1),
     targets (>= 0.8.0),
     callr (>= 3.7.0),
-    remotes (>= 2.1.2),
     promises (>= 1.2.0),
     threeBrain (>= 0.2.5),
     rpyANTs,
     ravetools,
+    ravepipeline,
     checkmate (>= 2.3.1),
     ieegio
 Suggests:
