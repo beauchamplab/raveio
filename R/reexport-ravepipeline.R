@@ -7,6 +7,11 @@ soft_deprecate <- local({
       isTRUE(getOption("raveio.soft_deprecate.warn", TRUE)) &&
       !isTRUE(warned_list[[name]])
     ) {
+
+      if( isTRUE(getOption("raveio.debug", FALSE)) ) {
+        stop("Function ", sQuote(name), " is soft deprecated")
+      }
+
       if(nzchar(alt_expr)) {
         warning("Function ", sQuote(name), " is soft deprecated. Please consider using `", alt_expr, "` instead. (This warning is only displayed once)")
       } else {
@@ -127,7 +132,7 @@ ravepipeline::pipeline_attach
 
 target_format <- use_ravepipeline("target_format")
 
-target_format_dynamic <- use_ravepipeline("target_format_dynamic")
+target_format_dynamic <- use_ravepipeline("target_format_dynamic", soft_deprecated = FALSE)
 
 target_format_register <- use_ravepipeline("target_format_register")
 
