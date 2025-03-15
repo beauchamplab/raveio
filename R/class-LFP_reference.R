@@ -587,12 +587,13 @@ LFP_reference <- R6::R6Class(
 
     #' @field power_sample_rate power/phase sample rate
     power_sample_rate = function(){
-      sel <- self$subject$electrode_types == self$type
-      if(any(sel)){
-        self$subject$power_sample_rate[sel][[1]]
-      } else {
-        NA
-      }
+      self$subject$power_sample_rate[[1]]
+      # sel <- self$subject$electrode_types == self$type
+      # if(any(sel)){
+      #   self$subject$power_sample_rate[sel][[1]]
+      # } else {
+      #   NA
+      # }
     },
 
     #' @field preprocess_info preprocess information

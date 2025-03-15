@@ -117,10 +117,10 @@ LFP_electrode <- R6::R6Class(
 
     #' @description print electrode summary
     print = function(){
-      cat("<Electrode>\n")
+      cat("<LFP Channel>\n")
       cat(sprintf("  Project: %s\n", self$subject$project_name))
       cat(sprintf("  Subject: %s\n", self$subject$subject_code))
-      cat(sprintf("  Electrode number: %s\n", self$number))
+      cat(sprintf("  Channel number: %s\n", self$number))
       cat(sprintf("  Referenced against: %s\n", self$reference_name))
       cat("  Location type:", self$location, "\n")
       cat("  Signal type:", self$type, "\n")
@@ -176,7 +176,7 @@ LFP_electrode <- R6::R6Class(
       has_volt <- file.exists(self$voltage_file)
       if(!all(has_power, has_phase, has_volt)){
         if(!quiet) {
-          catgl("Electrode {self$number} is missing {ifelse(has_power, '', 'power')}{ifelse(has_phase, '', ', phase')}{ifelse(has_volt, '', ', voltage')} data\n", level = "WARNING")
+          catgl("LFP channel {self$number} is missing {ifelse(has_power, '', 'power')}{ifelse(has_phase, '', ', phase')}{ifelse(has_volt, '', ', voltage')} data\n", level = "WARNING")
         }
       }
     },
@@ -800,12 +800,13 @@ LFP_electrode <- R6::R6Class(
 
     #' @field power_sample_rate power/phase sample rate
     power_sample_rate = function(){
-      sel <- self$subject$electrode_types == self$type
-      if(any(sel)){
-        self$subject$power_sample_rate[sel][[1]]
-      } else {
-        NA
-      }
+      self$subject$power_sample_rate[[1]]
+      # sel <- self$subject$electrode_types == self$type
+      # if(any(sel)){
+      #   self$subject$power_sample_rate[sel][[1]]
+      # } else {
+      #   NA
+      # }
     },
 
     #' @field preprocess_info preprocess information

@@ -9,7 +9,7 @@
 \alias{YAEL_IMAGE_TYPES}
 \title{The constant variables}
 \format{
-An object of class \code{character} of length 6.
+An object of class \code{character} of length 5.
 
 An object of class \code{character} of length 5.
 
@@ -31,7 +31,7 @@ The constant variables
 }
 \details{
 \code{SIGNAL_TYPES} has the following options: \code{'LFP'}, \code{'Spike'},
-\code{'EKG'}, \code{'Audio'}, \code{'Photodiode'}, or \code{'Unknown'}. As
+\code{'EKG'}, \code{'Auxiliary'}, or \code{'Unknown'}. As
 of 'raveio' \code{0.0.6}, only \code{'LFP'} (see \code{\link{LFP_electrode}})
 signal type is supported.
 

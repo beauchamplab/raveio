@@ -18,7 +18,7 @@ NULL
 #' @title The constant variables
 #' @details
 #' \code{SIGNAL_TYPES} has the following options: \code{'LFP'}, \code{'Spike'},
-#' \code{'EKG'}, \code{'Audio'}, \code{'Photodiode'}, or \code{'Unknown'}. As
+#' \code{'EKG'}, \code{'Auxiliary'}, or \code{'Unknown'}. As
 #' of 'raveio' \code{0.0.6}, only \code{'LFP'} (see \code{\link{LFP_electrode}})
 #' signal type is supported.
 #'
@@ -38,7 +38,7 @@ NULL
 #' programs are expecting \code{'MNI152'} coordinates.
 #'
 #' @export
-SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Audio', 'Photodiode', 'Unknown')
+SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Auxiliary', 'Unknown')
 
 #' @rdname raveio-constants
 #' @export

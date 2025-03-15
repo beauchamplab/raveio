@@ -66,8 +66,7 @@ compose_channel <- function(
     subject, number, from, weights = rep(1 / length(from), length(from)),
     normalize = FALSE, force = FALSE,
     label = sprintf("Composed-%s", number),
-    signal_type = c("auto", "LFP", "Spike", "EKG", "Audio",
-                    "Photodiode", "Unknown")) {
+    signal_type = c("auto", "LFP", "Spike", "EKG", "Auxiliary", "Unknown")) {
   # DIPSAUS DEBUG START
   # subject <- "demo/DemoSubject"
   # number = 100

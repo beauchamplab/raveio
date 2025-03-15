@@ -424,7 +424,7 @@ validate_subject_preprocess <- function(subject, verbose = TRUE, other_checks = 
       .verbose = verbose
     )
   } else if(!all(has_wavelet)) {
-    invalids <- electrodes[!has_wavelet]
+    invalids <- wavelet_electrodes[!has_wavelet]
     re$has_wavelet <- validate_result_new(
       name = "has_wavelet",
       valid = FALSE,
@@ -681,16 +681,38 @@ validate_subject_meta <- function(subject, verbose = TRUE, other_checks = NULL) 
           if(any(duplicated(tbl$Electrode))) {
             stop("duplicated electrode number detected in the reference file")
           }
+          # Check if none-LFP channels have references
+          non_lfp_channels <- subject$electrodes[!subject$electrode_types %in% "LFP"]
+          lfp_channels <- subject$electrodes[subject$electrode_types %in% "LFP"]
+
+          if(length(non_lfp_channels)) {
+            non_lfp_sel <- tbl$Electrode %in% non_lfp_channels
+            non_lfp_ref <- trimws(tbl$Reference[non_lfp_sel])
+            non_lfp_ref <- non_lfp_ref[!non_lfp_ref %in% c("", "noref")]
+            if(length(non_lfp_ref)) {
+              stop("Non-LFP channels should have no reference (RAVE does not reference microwire or auxiliary channels)")
+            }
+          }
 
           ref_names <- unique(tbl$Reference)
-          for(ref_name in ref_names) {
+          ref_checks <- lapply(ref_names, function(ref_name) {
             ref_name <- trimws(ref_name)
-            if(!ref_name %in% c("noref", "")) {
-              e <- new_reference(subject = subject, number = ref_name)
-              if(!isTRUE(e$exists)) {
-                stop("Cannot find reference data file for ", ref_name)
+            if(ref_name %in% c("noref", "")) { return() }
+            ref_chan <- gsub("ref_", "", ref_name)
+            if(grepl("^[0-9]+$", ref_chan)) {
+              ref_chan <- as.integer(ref_chan)
+              if(!ref_chan %in% lfp_channels) {
+                return(sprintf("Referencing channel `%s` required but it's not a LFP channel", ref_chan))
               }
             }
+            e <- new_reference(subject = subject, number = ref_name)
+            if(!isTRUE(e$exists)) {
+              return(sprintf("Cannot find reference data file for `%s`", ref_name))
+            }
+          })
+          ref_checks <- unlist(ref_checks)
+          if(length(ref_checks)) {
+            stop(paste(ref_checks, collapse = "; "))
           }
         }
       )
@@ -730,7 +752,6 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
   electrode_types <- subject$electrode_types
   blocks <- subject$blocks
   notch_filtered <- subject$notch_filtered
-
 
   # preprocessing voltage
   re$voltage_preprocessing <- validate_from_expression(
@@ -843,6 +864,7 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
 
   # actual voltage files
   volt_path <- file.path(subject$data_path, "voltage")
+  preproc_path <- file.path(subject$preprocess_path, "voltage")
 
   re$voltage_data <- validate_from_expression(
     name = 'voltage_data',
@@ -851,48 +873,123 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
       "Subject [%s] voltage data exists after preprocessing",
       subject$subject_id),
     expr = {
-      volt_files <- file.path(volt_path, sprintf('%d.h5', electrodes))
+      all_channels <- subject$electrodes
+      preproc_files <- file.path(preproc_path, sprintf('electrode_%d.h5', all_channels))
+      fe <- file.exists(preproc_files)
+      if(!all(fe)) {
+        stop(
+          "cannot find voltage data under [preprocess/voltage/] for the following electrode channels: ",
+          dipsaus::deparse_svec(electrodes[!fe])
+        )
+      }
+
+      lfp_channels <- subject$electrodes[subject$electrode_types %in% "LFP"]
+      volt_files <- file.path(volt_path, sprintf('%d.h5', lfp_channels))
       fe <- file.exists(volt_files)
       if(!all(fe)) {
-        stop("cannot find voltage data under [data/voltage/] for the following electrode channels: ", dipsaus::deparse_svec(electrodes[!fe]))
+        stop(
+          "cannot find voltage data under [data/voltage/] for the following electrode channels: ",
+          dipsaus::deparse_svec(electrodes[!fe])
+        )
       }
 
       # check signal lengths
       with_future_parallel({
-        length_valid <- lapply_async(seq_len(nrow(preproc_tbl)), function(ii) {
+        lfp_length_valid <- lapply_async(seq_len(nrow(preproc_tbl)), function(ii) {
           e <- preproc_tbl$Electrode[[ii]]
-          f <- file.path(volt_path, sprintf('%d.h5', e))
+          if (!e %in% lfp_channels) {
+            return(c(TRUE, TRUE, TRUE))
+          }
           signal_length <- data.matrix(preproc_tbl[ii, blocks, drop = FALSE])
+          voltage_file <- file.path(volt_path, sprintf('%d.h5', e))
 
-          if(!file.exists(f)){
+          # file missing?
+          if (!file.exists(voltage_file)) {
             return(c(FALSE, FALSE, FALSE))
           }
-          h5names <- tryCatch({
-            gsub("^/", "", h5_names(f))
-          }, error = function(e) {
-            NULL
+
+          # data missing?
+          data_names <- h5_names(voltage_file)
+          if (!is.character(data_names)) {
+            return(c(FALSE, FALSE, FALSE))
+          }
+          data_names <- gsub("^/", "", data_names)
+
+          # check length of raw (unreferenced)
+          raw_lens <- sapply(blocks, function(b) {
+            tryCatch({
+              name <- sprintf('raw/voltage/%s', b)
+              stopifnot(name %in% data_names)
+              raw <- load_h5(voltage_file, name, ram = FALSE)
+              length(raw)
+            }, error = function(e) {
+              0
+            })
           })
-          if(!length(h5names)) {
+
+          ref_lens <- sapply(blocks, function(b) {
+            tryCatch({
+              name <- sprintf('ref/voltage/%s', b)
+              stopifnot(name %in% data_names)
+              raw <- load_h5(voltage_file, name, ram = FALSE)
+              length(raw)
+            }, error = function(e) {
+              0
+            })
+          })
+
+          c(isTRUE(all(raw_lens > 0)), isTRUE(all(raw_lens == signal_length)), isTRUE(all(ref_lens == signal_length)))
+        }, callback = function(ii) {
+          sprintf('Checking LFP data|channel %d', electrodes[[ii]])
+        })
+
+        lfp_length_valid <- do.call('rbind', lfp_length_valid)
+
+        if(!all(lfp_length_valid[,1])) {
+          stop("voltage data under [data/voltage/] might be corrupted or preprocess unfinished: ", dipsaus::deparse_svec(electrodes[!lfp_length_valid[,1]]))
+        }
+        if(!all(lfp_length_valid[,2])) {
+          stop("the following electrodes have inconsistent signal lengths [data/voltage/] vs [raw]: ", dipsaus::deparse_svec(electrodes[!lfp_length_valid[,2]]))
+        }
+
+        if(version < 2 && !all(lfp_length_valid[,3])) {
+          stop("the following electrodes have inconsistent cache lengths [data/voltage/]: ", dipsaus::deparse_svec(electrodes[!lfp_length_valid[,3]]))
+        }
+
+        all_length_valid <- lapply_async(seq_len(nrow(preproc_tbl)), function(ii) {
+          e <- preproc_tbl$Electrode[[ii]]
+          signal_length <- data.matrix(preproc_tbl[ii, blocks, drop = FALSE])
+          pre_voltage_file <- file.path(preproc_path, sprintf('electrode_%d.h5', e))
+
+          # file missing?
+          if(!file.exists(pre_voltage_file)){
             return(c(FALSE, FALSE, FALSE))
           }
+
+          # data missing?
+          data_names <- h5_names(pre_voltage_file)
+          if(!is.character(data_names)) {
+            return(c(FALSE, FALSE, FALSE))
+          }
+          data_names <- gsub("^/", "", data_names)
 
           # check length of raw (unreferenced)
           raw_lens <- sapply(blocks, function(b){
             tryCatch({
-              name <- sprintf('raw/voltage/%s', b)
-              stopifnot(name %in% h5names)
-              raw <- load_h5(f, name, ram = FALSE)
+              name <- sprintf('raw/%s', b)
+              stopifnot(name %in% data_names)
+              raw <- load_h5(pre_voltage_file, name, ram = FALSE)
               length(raw)
             }, error = function(e){
               0
             })
           })
 
-          ref_lens <- sapply(blocks, function(b){
+          notch_lens <- sapply(blocks, function(b){
             tryCatch({
-              name <- sprintf('ref/voltage/%s', b)
-              stopifnot(name %in% h5names)
-              raw <- load_h5(f, name, ram = FALSE)
+              name <- sprintf('notch/%s', b)
+              stopifnot(name %in% data_names)
+              raw <- load_h5(pre_voltage_file, name, ram = FALSE)
               length(raw)
             }, error = function(e){
               0
@@ -902,25 +999,26 @@ validate_subject_voltage <- function(subject, version = 2, verbose = TRUE, other
           c(
             isTRUE(all(raw_lens > 0)),
             isTRUE(all(raw_lens == signal_length)),
-            isTRUE(all(ref_lens == signal_length))
+            isTRUE(all(notch_lens == signal_length))
           )
-
         }, callback = function(ii) {
-          sprintf('Checking voltage data|electrode %d', electrodes[[ii]])
+          sprintf('Checking preprocess data|channel %d', electrodes[[ii]])
         })
-        length_valid <- do.call('rbind', length_valid)
+
+        all_length_valid <- do.call('rbind', all_length_valid)
+
+        if(!all(all_length_valid[,1])) {
+          stop("voltage data under [preprocess/voltage/] might be corrupted or preprocess unfinished: ", dipsaus::deparse_svec(electrodes[!all_length_valid[,1]]))
+        }
+        if(!all(all_length_valid[,2])) {
+          stop("the following electrodes have inconsistent signal lengths [preprocess/voltage/]: ", dipsaus::deparse_svec(electrodes[!all_length_valid[,2]]))
+        }
+
+        if(!all(all_length_valid[,3])) {
+          stop("the following electrodes have inconsistent cache lengths [preprocess/voltage/] [before vs after notch filter]: ", dipsaus::deparse_svec(electrodes[!all_length_valid[,3]]))
+        }
+
       })
-
-      if(!all(length_valid[,1])) {
-        stop("voltage data under [data/voltage/] might be corrupted or preprocess unfinished: ", dipsaus::deparse_svec(electrodes[!length_valid[,1]]))
-      }
-      if(!all(length_valid[,2])) {
-        stop("the following electrodes have inconsistent signal lengths [data/voltage/] vs [raw]: ", dipsaus::deparse_svec(electrodes[!length_valid[,2]]))
-      }
-
-      if(version < 2 && !all(length_valid[,3])) {
-        stop("the following electrodes have inconsistent cache lengths [data/voltage/]: ", dipsaus::deparse_svec(electrodes[!length_valid[,3]]))
-      }
 
     }
   )
@@ -1248,6 +1346,8 @@ validate_subject_reference <- function(subject, verbose = TRUE, other_checks = N
   n_freq <- length(subject$preprocess_settings$wavelet_params$frequencies)
   power_srate <- subject$power_sample_rate
 
+  lfp_channels <- subject$electrodes[subject$electrode_types %in% "LFP"]
+
   check_reference <- function(reference) {
     ref_tbl <- subject$meta_data(meta_type = 'references', meta_name = reference)
     ref_names <- unique(ref_tbl$Reference)
@@ -1257,6 +1357,16 @@ validate_subject_reference <- function(subject, verbose = TRUE, other_checks = N
       return()
     }
     lapply(ref_names, function(ref_name){
+
+      ref_name <- trimws(ref_name)
+      ref_chan <- gsub("ref_", "", ref_name)
+      if(grepl("^[0-9]+$", ref_chan)) {
+        ref_chan <- as.integer(ref_chan)
+        if(!ref_chan %in% lfp_channels) {
+          return(sprintf("Referencing channel `%s` required but it's not a LFP channel", ref_chan))
+        }
+      }
+
       e <- new_reference(subject, ref_name)
       if(!isTRUE(e$valid)) {
         stop("reference data [data/reference/", ref_name, ".h5] is missing")
@@ -1368,6 +1478,12 @@ validate_subject <- function(
     subject, method = c("normal", "basic", "all"), verbose = TRUE, version = 2) {
 
   method <- match.arg(method)
+
+  # DIPSAUS DEBUG START
+  # subject <- "test/DemoSubject"
+  # method <- "all"
+  # verbose = TRUE
+  # version = 2
 
   subject <- as_rave_subject(subject, strict = FALSE)
   results <- dipsaus::fastmap2()

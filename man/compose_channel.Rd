@@ -12,7 +12,7 @@ compose_channel(
   normalize = FALSE,
   force = FALSE,
   label = sprintf("Composed-\%s", number),
-  signal_type = c("auto", "LFP", "Spike", "EKG", "Audio", "Photodiode", "Unknown")
+  signal_type = c("auto", "LFP", "Spike", "EKG", "Auxiliary", "Unknown")
 )
 }
 \arguments{
