@@ -7,15 +7,10 @@
 #' @param surfaces one or more brain surface types from \code{"pial"},
 #' \code{"white"}, \code{"smoothwm"}, \code{"pial-outer-smoothed"}, etc.;
 #' check \code{\link[threeBrain]{freesurfer_brain2}}
-#' @param use_141 whether to use 'AFNI/SUMA' standard 141 brain
-#' @param recache whether to re-calculate cache; only should be used when
-#' the original 'FreeSurfer' or 'AFNI/SUMA' files are changed; such as new
-#' files are added
-#' @param clean_before_cache whether to clean the original cache before
-#' \code{recache}; only set it to be true if original cached files are
-#' corrupted
-#' @param compute_template whether to compute template mappings; useful when
-#' template mapping with multiple subjects are needed
+#' @param overlays volumes to overlay; default is \code{'aparc.a2009s+aseg'}
+#' @param annotations surface annotation or curvature data to load;
+#' default is \code{'label/aparc.a2009s'}, referring to the
+#' \code{'*h.aparc.a2009s.annot'} under the label folder.
 #' @param usetemplateifmissing whether to use template brain when the subject
 #' brain files are missing. If set to true, then a template (usually 'N27')
 #' brain will be displayed as an alternative solution, and electrodes will be
@@ -23,6 +18,7 @@
 #' \code{'VertexNumber'} if given.
 #' @param include_electrodes whether to include electrode in the model; default
 #' is true
+#' @param ... ignored, reserved for legacy code
 #' @returns A \code{'threeBrain'} instance if brain is found or
 #' \code{usetemplateifmissing} is set to true; otherwise returns \code{NULL}
 #' @examples
@@ -40,10 +36,9 @@
 #'
 #'
 #' @export
-rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
-                       recache = FALSE, clean_before_cache = FALSE,
-                       compute_template = FALSE, usetemplateifmissing = FALSE,
-                       include_electrodes = TRUE){
+rave_brain <- function(
+    subject, surfaces = 'pial', overlays = "aparc.a2009s+aseg", annotations = "label/aparc.a2009s",
+    ..., usetemplateifmissing = FALSE, include_electrodes = TRUE){
 
   subject <- as_rave_subject(subject, strict = FALSE)
 
@@ -62,7 +57,11 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
     if( !usetemplateifmissing ){
       return(invisible())
     }
-    brain <- threeBrain::merge_brain()
+    brain <- threeBrain::merge_brain(
+      template_surface_types = surfaces,
+      template_atlas_types = overlays,
+      template_annotation_types = annotations
+    )
 
     if(is.data.frame(electrode_table)) {
       # try to use MNI305 position
@@ -87,8 +86,11 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
     # }
 
     brain <- threeBrain::threeBrain(
-      path = fs_path, subject_code = subject$subject_code,
-      surface_types = surfaces
+      path = fs_path,
+      subject_code = subject$subject_code,
+      surface_types = surfaces,
+      atlas_types = overlays,
+      annotation_types = annotations
     )
 
 
@@ -96,28 +98,28 @@ rave_brain <- function(subject, surfaces = 'pial', use_141 = TRUE,
       brain$set_electrodes(electrodes = electrode_table)
     }
 
-    if( compute_template ){
-      tf <- tempfile()
-      new_table <- brain$calculate_template_coordinates(save_to = tf)
-      if( file.exists(tf) ){
-        brain$electrodes$raw_table_path <- NULL
-        unlink(tf)
-        # need to update meta
-        save_meta2(
-          data = new_table,
-          meta_type = 'electrodes',
-          project_name = subject$project_name,
-          subject_code = subject$subject_code
-        )
-      }
-    }
+    # if( compute_template ){
+    #   tf <- tempfile()
+    #   new_table <- brain$calculate_template_coordinates(save_to = tf)
+    #   if( file.exists(tf) ){
+    #     brain$electrodes$raw_table_path <- NULL
+    #     unlink(tf)
+    #     # need to update meta
+    #     save_meta2(
+    #       data = new_table,
+    #       meta_type = 'electrodes',
+    #       project_name = subject$project_name,
+    #       subject_code = subject$subject_code
+    #     )
+    #   }
+    # }
 
   }
 
   brain$meta$constructor_params <- list(
     project_name = subject$project_name,
     subject_code = subject$subject_code,
-    use_141 = use_141,
+    use_141 = FALSE,
     usetemplateifmissing = usetemplateifmissing
   )
 
