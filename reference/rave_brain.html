@@ -9,7 +9,7 @@ modern web browsers"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.92</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.94</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,10 +45,9 @@ modern web browsers</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rave_brain</span><span class="op">(</span></span>
 <span>  <span class="va">subject</span>,</span>
 <span>  surfaces <span class="op">=</span> <span class="st">"pial"</span>,</span>
-<span>  use_141 <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  recache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  clean_before_cache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  compute_template <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overlays <span class="op">=</span> <span class="st">"aparc.a2009s+aseg"</span>,</span>
+<span>  annotations <span class="op">=</span> <span class="st">"label/aparc.a2009s"</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  usetemplateifmissing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  include_electrodes <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -70,25 +69,18 @@ subject 'ID'</p></dd>
 check <code><a href="https://dipterix.org/threeBrain/reference/freesurfer_brain.html" class="external-link">freesurfer_brain2</a></code></p></dd>
 
 
-<dt id="arg-use-">use_141<a class="anchor" aria-label="anchor" href="#arg-use-"></a></dt>
-<dd><p>whether to use 'AFNI/SUMA' standard 141 brain</p></dd>
+<dt id="arg-overlays">overlays<a class="anchor" aria-label="anchor" href="#arg-overlays"></a></dt>
+<dd><p>volumes to overlay; default is <code>'aparc.a2009s+aseg'</code></p></dd>
 
 
-<dt id="arg-recache">recache<a class="anchor" aria-label="anchor" href="#arg-recache"></a></dt>
-<dd><p>whether to re-calculate cache; only should be used when
-the original 'FreeSurfer' or 'AFNI/SUMA' files are changed; such as new
-files are added</p></dd>
+<dt id="arg-annotations">annotations<a class="anchor" aria-label="anchor" href="#arg-annotations"></a></dt>
+<dd><p>surface annotation or curvature data to load;
+default is <code>'label/aparc.a2009s'</code>, referring to the
+<code>'*h.aparc.a2009s.annot'</code> under the label folder.</p></dd>
 
 
-<dt id="arg-clean-before-cache">clean_before_cache<a class="anchor" aria-label="anchor" href="#arg-clean-before-cache"></a></dt>
-<dd><p>whether to clean the original cache before
-<code>recache</code>; only set it to be true if original cached files are
-corrupted</p></dd>
-
-
-<dt id="arg-compute-template">compute_template<a class="anchor" aria-label="anchor" href="#arg-compute-template"></a></dt>
-<dd><p>whether to compute template mappings; useful when
-template mapping with multiple subjects are needed</p></dd>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>ignored, reserved for legacy code</p></dd>
 
 
 <dt id="arg-usetemplateifmissing">usetemplateifmissing<a class="anchor" aria-label="anchor" href="#arg-usetemplateifmissing"></a></dt>

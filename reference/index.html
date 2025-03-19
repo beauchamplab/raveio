@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.92</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.94</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,12 @@
 
       <dl><dt>
 
+          <code><a href="Auxiliary_electrode.html">Auxiliary_electrode</a></code>
+
+        </dt>
+        <dd>Class definition for auxiliary channels</dd>
+      </dl><dl><dt>
+
           <code><a href="BlackrockFile.html">BlackrockFile</a></code>
 
         </dt>
@@ -66,30 +72,6 @@
 
         </dt>
         <dd>Definitions of reference with 'LFP' signal type</dd>
-      </dl><dl><dt>
-
-          <code><a href="LazyFST.html">LazyFST</a></code>
-
-        </dt>
-        <dd>R6 Class to Load 'fst' Files</dd>
-      </dl><dl><dt>
-
-          <code><a href="PipelineCollections.html">PipelineCollections</a></code>
-
-        </dt>
-        <dd>Connect and schedule pipelines</dd>
-      </dl><dl><dt>
-
-          <code><a href="PipelineResult.html">PipelineResult</a></code>
-
-        </dt>
-        <dd>Pipeline result object</dd>
-      </dl><dl><dt>
-
-          <code><a href="PipelineTools.html">PipelineTools</a></code>
-
-        </dt>
-        <dd>Class definition for pipeline tools</dd>
       </dl><dl><dt>
 
           <code><a href="RAVEAbstarctElectrode.html">RAVEAbstarctElectrode</a></code>
@@ -126,6 +108,12 @@
 
         </dt>
         <dd>Defines 'RAVE' subject class</dd>
+      </dl><dl><dt>
+
+          <code><a href="Spike_electrode.html">Spike_electrode</a></code>
+
+        </dt>
+        <dd>Class definition for micro-wire spike channels</dd>
       </dl><dl><dt>
 
           <code><a href="Tensor.html">Tensor</a></code>
@@ -230,12 +218,6 @@
         <dd>Compose a "phantom" channel from existing electrodes</dd>
       </dl><dl><dt>
 
-          <code><a href="convert-fst.html">convert_fst_to_hdf5()</a></code> <code><a href="convert-fst.html">convert_fst_to_csv()</a></code>
-
-        </dt>
-        <dd>Convert 'fst' files to other formats</dd>
-      </dl><dl><dt>
-
           <code><a href="convert_blackrock.html">convert_blackrock()</a></code>
 
         </dt>
@@ -306,12 +288,6 @@
 
         </dt>
         <dd>Ingest signals according to 'RAVE' repository epoch</dd>
-      </dl><dl><dt>
-
-          <code><a href="install_modules.html">install_modules()</a></code>
-
-        </dt>
-        <dd>Install 'RAVE' modules</dd>
       </dl><dl><dt>
 
           <code><a href="install_subject.html">install_subject()</a></code>
@@ -392,18 +368,6 @@
         <dd>Convert 'FreeSurfer' <code>'mgh'</code> to 'Nifti'</dd>
       </dl><dl><dt>
 
-          <code><a href="module_add.html">module_add()</a></code>
-
-        </dt>
-        <dd>Add new 'RAVE' (2.0) module to current project</dd>
-      </dl><dl><dt>
-
-          <code><a href="module_registry.html">module_registry()</a></code> <code><a href="module_registry.html">module_registry2()</a></code> <code><a href="module_registry.html">get_modules_registries()</a></code> <code><a href="module_registry.html">get_module_description()</a></code> <code><a href="module_registry.html">add_module_registry()</a></code>
-
-        </dt>
-        <dd>'RAVE' module registry</dd>
-      </dl><dl><dt>
-
           <code><a href="new_electrode.html">new_electrode()</a></code> <code><a href="new_electrode.html">new_reference()</a></code>
 
         </dt>
@@ -414,36 +378,6 @@
 
         </dt>
         <dd>Register 'CT' to 'MR' images via <code>'NiftyReg'</code></dd>
-      </dl><dl><dt>
-
-          <code><a href="pipeline-knitr-markdown.html">configure_knitr()</a></code> <code><a href="pipeline-knitr-markdown.html">pipeline_setup_rmd()</a></code>
-
-        </dt>
-        <dd>Configure <code>'rmarkdown'</code> files to build 'RAVE' pipelines</dd>
-      </dl><dl><dt>
-
-          <code><a href="pipeline.html">pipeline()</a></code> <code><a href="pipeline.html">pipeline_from_path()</a></code>
-
-        </dt>
-        <dd>Creates 'RAVE' pipeline instance</dd>
-      </dl><dl><dt>
-
-          <code><a href="pipeline_collection.html">pipeline_collection()</a></code>
-
-        </dt>
-        <dd>Combine and execute pipelines</dd>
-      </dl><dl><dt>
-
-          <code><a href="pipeline_install.html">pipeline_install_local()</a></code> <code><a href="pipeline_install.html">pipeline_install_github()</a></code>
-
-        </dt>
-        <dd>Install 'RAVE' pipelines</dd>
-      </dl><dl><dt>
-
-          <code><a href="pipeline_settings_get_set.html">pipeline_settings_set()</a></code> <code><a href="pipeline_settings_get_set.html">pipeline_settings_get()</a></code>
-
-        </dt>
-        <dd>Get or change pipeline input parameter settings</dd>
       </dl><dl><dt>
 
           <code><a href="power_baseline.html">power_baseline()</a></code>
@@ -464,12 +398,6 @@
         <dd>Register 'CT' to 'MR' images via <code>'nipy'</code> script</dd>
       </dl><dl><dt>
 
-          <code><a href="rave-pipeline.html">pipeline_root()</a></code> <code><a href="rave-pipeline.html">pipeline_list()</a></code> <code><a href="rave-pipeline.html">pipeline_find()</a></code> <code><a href="rave-pipeline.html">pipeline_attach()</a></code> <code><a href="rave-pipeline.html">pipeline_run()</a></code> <code><a href="rave-pipeline.html">pipeline_clean()</a></code> <code><a href="rave-pipeline.html">pipeline_run_bare()</a></code> <code><a href="rave-pipeline.html">load_targets()</a></code> <code><a href="rave-pipeline.html">pipeline_target_names()</a></code> <code><a href="rave-pipeline.html">pipeline_debug()</a></code> <code><a href="rave-pipeline.html">pipeline_dep_targets()</a></code> <code><a href="rave-pipeline.html">pipeline_eval()</a></code> <code><a href="rave-pipeline.html">pipeline_visualize()</a></code> <code><a href="rave-pipeline.html">pipeline_progress()</a></code> <code><a href="rave-pipeline.html">pipeline_fork()</a></code> <code><a href="rave-pipeline.html">pipeline_build()</a></code> <code><a href="rave-pipeline.html">pipeline_read()</a></code> <code><a href="rave-pipeline.html">pipeline_vartable()</a></code> <code><a href="rave-pipeline.html">pipeline_hasname()</a></code> <code><a href="rave-pipeline.html">pipeline_watch()</a></code> <code><a href="rave-pipeline.html">pipeline_create_template()</a></code> <code><a href="rave-pipeline.html">pipeline_create_subject_pipeline()</a></code> <code><a href="rave-pipeline.html">pipeline_description()</a></code> <code><a href="rave-pipeline.html">pipeline_load_extdata()</a></code> <code><a href="rave-pipeline.html">pipeline_save_extdata()</a></code> <code><a href="rave-pipeline.html">pipeline_shared()</a></code> <code><a href="rave-pipeline.html">pipeline_set_preferences()</a></code> <code><a href="rave-pipeline.html">pipeline_get_preferences()</a></code> <code><a href="rave-pipeline.html">pipeline_has_preferences()</a></code>
-
-        </dt>
-        <dd>'RAVE' pipeline functions</dd>
-      </dl><dl><dt>
-
           <code><a href="rave-prepare.html">prepare_subject_bare0()</a></code> <code><a href="rave-prepare.html">prepare_subject_bare()</a></code> <code><a href="rave-prepare.html">prepare_subject_with_epoch()</a></code> <code><a href="rave-prepare.html">prepare_subject_with_blocks()</a></code> <code><a href="rave-prepare.html">prepare_subject_phase()</a></code> <code><a href="rave-prepare.html">prepare_subject_power()</a></code> <code><a href="rave-prepare.html">prepare_subject_wavelet()</a></code> <code><a href="rave-prepare.html">prepare_subject_raw_voltage_with_epoch()</a></code> <code><a href="rave-prepare.html">prepare_subject_voltage_with_epoch()</a></code>
 
         </dt>
@@ -486,12 +414,6 @@
 
         </dt>
         <dd>Install and configure 'RAVE' server as background service using shiny-server</dd>
-      </dl><dl><dt>
-
-          <code><a href="rave-snippet.html">update_local_snippet()</a></code> <code><a href="rave-snippet.html">install_snippet()</a></code> <code><a href="rave-snippet.html">load_snippet()</a></code>
-
-        </dt>
-        <dd>'RAVE' code snippets</dd>
       </dl><dl><dt>
 
           <code><a href="rave_brain.html">rave_brain()</a></code>
@@ -530,16 +452,10 @@
         <dd>Compatibility support for 'RAVE' 1.0 format</dd>
       </dl><dl><dt>
 
-          <code><a href="raveio-constants.html">SIGNAL_TYPES</a></code> <code><a href="raveio-constants.html">LOCATION_TYPES</a></code> <code><a href="raveio-constants.html">MNI305_to_MNI152</a></code> <code><a href="raveio-constants.html">YAEL_IMAGE_TYPES</a></code> <code><a href="raveio-constants.html">PIPELINE_FORK_PATTERN</a></code>
+          <code><a href="raveio-constants.html">SIGNAL_TYPES</a></code> <code><a href="raveio-constants.html">LOCATION_TYPES</a></code> <code><a href="raveio-constants.html">MNI305_to_MNI152</a></code> <code><a href="raveio-constants.html">YAEL_IMAGE_TYPES</a></code>
 
         </dt>
         <dd>The constant variables</dd>
-      </dl><dl><dt>
-
-          <code><a href="raveio-option.html">raveio_setopt()</a></code> <code><a href="raveio-option.html">raveio_resetopt()</a></code> <code><a href="raveio-option.html">raveio_getopt()</a></code> <code><a href="raveio-option.html">raveio_confpath()</a></code>
-
-        </dt>
-        <dd>Set/Get 'raveio' option</dd>
       </dl><dl><dt>
 
           <code><a href="read-brainvision-eeg.html">read_eeg_header()</a></code> <code><a href="read-brainvision-eeg.html">read_eeg_marker()</a></code> <code><a href="read-brainvision-eeg.html">read_eeg_data()</a></code>
