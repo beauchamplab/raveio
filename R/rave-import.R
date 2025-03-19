@@ -408,7 +408,7 @@ rave_import_lfp.native_matlab <- function(project_name, subject_code, blocks,
       }
       invisible()
     }, callback = function(e) {
-      sprintf("Importing %s/%s | electrode %s", project_name, subject_code, e)
+      sprintf("Importing %s/%s | channel %s", project_name, subject_code, e)
     }
   )
 
@@ -1291,40 +1291,30 @@ rave_import <- function(project_name, subject_code, blocks, electrodes, format,
     "Unsupported electrode signal type:", data_type
   ))
 
-  switch (
-    data_type,
+  generic_name <- IMPORT_FORMATS[[format]]
 
-    # Continuous iEEG/EEG signals, will be wavelet and perform spectral analysis
-    'LFP' = {
-      generic_name <- IMPORT_FORMATS[[format]]
+  if(!is_valid_ish(generic_name, max_len = 1L, mode = 'character', blank = TRUE)){
+    stop('rave_import: format ', sQuote(format), ' must be integer from 1-',
+         length(IMPORT_FORMATS), ' or the following characters:\n',
+         paste0(seq_along(IMPORT_FORMATS), ': ', sQuote(names(IMPORT_FORMATS)),
+                collapse = ',\n'))
+  }
 
-      if(!is_valid_ish(generic_name, max_len = 1L, mode = 'character', blank = TRUE)){
-        stop('rave_import: format ', sQuote(format), ' must be integer from 1-',
-             length(IMPORT_FORMATS), ' or the following characters:\n',
-             paste0(seq_along(IMPORT_FORMATS), ': ', sQuote(names(IMPORT_FORMATS)),
-                    collapse = ',\n'))
-      }
-
-      if(generic_name %in% unlist(IMPORT_FORMATS[c(5,6)])){
-        # BIDS format, blocks must be ses-xxx
-        blocks <- stringr::str_remove(blocks, '^ses-')
-        blocks <- sprintf('ses-%s', blocks)
-        if(!length(task_runs)){
-          stop('rave_import: BIDS format must specify task_runs as session+task+run')
-        }
-      }
-
-      rave_import_lfp(
-        project_name = structure(project_name, class = generic_name),
-        subject_code = subject_code, blocks = blocks, electrodes = electrodes,
-        sample_rate = sample_rate, conversion = conversion, task_runs = task_runs,
-        add = add, data_type = data_type,
-        ...
-      )
-    },
-    {
-      stop("Electrode with signal type: ", data_type, " has not been implemented yet")
+  if(generic_name %in% unlist(IMPORT_FORMATS[c(5,6)])){
+    # BIDS format, blocks must be ses-xxx
+    blocks <- stringr::str_remove(blocks, '^ses-')
+    blocks <- sprintf('ses-%s', blocks)
+    if(!length(task_runs)){
+      stop('rave_import: BIDS format must specify task_runs as session+task+run')
     }
+  }
+
+  rave_import_lfp(
+    project_name = structure(project_name, class = generic_name),
+    subject_code = subject_code, blocks = blocks, electrodes = electrodes,
+    sample_rate = sample_rate, conversion = conversion, task_runs = task_runs,
+    add = add, data_type = data_type,
+    ...
   )
 
 }

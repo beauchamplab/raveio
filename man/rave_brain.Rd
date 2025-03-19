@@ -7,10 +7,9 @@
 rave_brain(
   subject,
   surfaces = "pial",
-  use_141 = TRUE,
-  recache = FALSE,
-  clean_before_cache = FALSE,
-  compute_template = FALSE,
+  overlays = "aparc.a2009s+aseg",
+  annotations = "label/aparc.a2009s",
+  ...,
   usetemplateifmissing = FALSE,
   include_electrodes = TRUE
 )
@@ -24,18 +23,13 @@ subject 'ID'}
 \code{"white"}, \code{"smoothwm"}, \code{"pial-outer-smoothed"}, etc.;
 check \code{\link[threeBrain]{freesurfer_brain2}}}
 
-\item{use_141}{whether to use 'AFNI/SUMA' standard 141 brain}
+\item{overlays}{volumes to overlay; default is \code{'aparc.a2009s+aseg'}}
 
-\item{recache}{whether to re-calculate cache; only should be used when
-the original 'FreeSurfer' or 'AFNI/SUMA' files are changed; such as new
-files are added}
+\item{annotations}{surface annotation or curvature data to load;
+default is \code{'label/aparc.a2009s'}, referring to the
+\code{'*h.aparc.a2009s.annot'} under the label folder.}
 
-\item{clean_before_cache}{whether to clean the original cache before
-\code{recache}; only set it to be true if original cached files are
-corrupted}
-
-\item{compute_template}{whether to compute template mappings; useful when
-template mapping with multiple subjects are needed}
+\item{...}{ignored, reserved for legacy code}
 
 \item{usetemplateifmissing}{whether to use template brain when the subject
 brain files are missing. If set to true, then a template (usually 'N27')

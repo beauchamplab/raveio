@@ -9,11 +9,11 @@ test_that("RAVE preprocess pipeline 2.0", {
 
   data_dir_old <- raveio::raveio_getopt("data_dir")
   file_structure_old <- raveio::raveio_getopt("file_structure")
-  max_worker_old <- raveio::raveio_getopt("max_worker")
+  max_worker_old <- raveio::raveio_getopt("max_worker", default = 7L)
   on.exit({
     unlink(data_dir, recursive = TRUE)
 
-    load_setting(reset_temp = TRUE)
+    ravepipeline:::load_setting(reset_temp = TRUE)
     raveio::raveio_setopt('data_dir', data_dir_old)
     raveio::raveio_setopt('file_structure', file_structure_old)
     raveio::raveio_setopt('max_worker', max_worker_old)
@@ -119,6 +119,10 @@ test_that("RAVE preprocess pipeline 2.0", {
 
 
   })
+
+  raveio::raveio_setopt('data_dir', data_dir_old)
+  raveio::raveio_setopt('file_structure', file_structure_old)
+  raveio::raveio_setopt('max_worker', max_worker_old)
 
 })
 

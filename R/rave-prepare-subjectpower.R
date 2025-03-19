@@ -5,7 +5,7 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
                                   signal_type = c("LFP"), env = parent.frame(), verbose = TRUE, ...) {
   call <- match.call()
   # DIPSAUS DEBUG START
-  # call <- quote(prepare_subject_power(subject = "demo/DemoSubject", electrodes = 14, stitch_events = c("Trial Onset", "Test")))
+  # call <- quote(prepare_subject_power(subject = "test/DemoSubject", electrodes = '1-20', reference_name = "default"))
   # list2env(list(signal_type = c("LFP"), env = parent.frame(), verbose = TRUE), envir=.GlobalEnv)
   call[[1]] <- as.call(list(quote(`::`), quote(raveio), quote(prepare_subject_with_epoch)))
 
@@ -37,7 +37,7 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
     refs <- lapply_async(ref_instances, function(ref){
       ref$load_data(type = "power")
     }, callback = function(ref){
-      sprintf("Loading Reference (power) | %s", ref$number)
+      sprintf("Loading Reference (power)| %s", ref$number)
     })
   } else {
     refs <- lapply_async(ref_instances, function(ref){
@@ -51,7 +51,7 @@ prepare_subject_power <- function(subject, electrodes, reference_name, epoch_nam
     power_list <- lapply_async(re$electrode_instances, function(el){
       el$load_data(type = "power")
     }, callback = function(el){
-      sprintf("Loading Electrode (power) | %s", el$number)
+      sprintf("Loading Electrode (power)| %s", el$number)
     })
   } else {
     power_list <- lapply_async(re$electrode_instances, function(el){

@@ -485,9 +485,12 @@ RAVESubject <- R6::R6Class(
         if(!length(load_electrodes)) {
           stop("There is no valid electrodes to be loaded. The valid electrodes are: ", dipsaus::deparse_svec(valid_electrodes), ".")
         }
-        sel <- all_electrodes %in% load_electrodes
-        if(!all(preproc$has_wavelet[sel])){
-          imcomplete <- all_electrodes[all_electrodes %in% load_electrodes & !preproc$has_wavelet]
+        imcomplete <- all_electrodes[
+          all_electrodes %in% load_electrodes &
+            !preproc$has_wavelet &
+            self$electrode_types %in% "LFP"
+        ]
+        if(length(imcomplete)){
           stop("The following electrodes do not have power spectrum: \n  ", dipsaus::deparse_svec(imcomplete),
                "\nPlease run wavelet module first.")
         }

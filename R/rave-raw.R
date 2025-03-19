@@ -269,7 +269,7 @@ validate_raw_file_lfp.native_matlab <- function(
         if(length(mis_d)){
           validation_failure(
             'Electrode data lengths are not consistent or missing' =
-              sprintf('Files for electrode %s are broken in block %s', dipsaus::deparse_svec(mis_d), b),
+              sprintf('Files for electrode %s are broken in block %s', dipsaus::deparse_svec(mis_d, connect = ":"), b),
             .add = TRUE
           )
         }
@@ -280,7 +280,7 @@ validate_raw_file_lfp.native_matlab <- function(
           if(any(ssel)){
             validation_failure(
               'Electrode data point lengths are inconsistent' =
-                sprintf('electrode(s) %s in block %s', dipsaus::deparse_svec(elec_bak[ssel]), b),
+                sprintf('electrode(s) %s in block %s', dipsaus::deparse_svec(elec_bak[ssel], connect = ":"), b),
               .add = TRUE
             )
           }

@@ -4,7 +4,7 @@ temp_tensor_dir <- function(){
   if(!dir.exists(d)){
     d <- tempdir(check = TRUE)
   }
-  d <- file.path(d, get('.session_string'))
+  d <- file.path(d, get('.session_string', envir = asNamespace("ravepipeline")))
   dir_create2(d)
   normalizePath(d)
 }

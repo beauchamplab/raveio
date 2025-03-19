@@ -1,5 +1,4 @@
 #' @importFrom dipsaus %?<-%
-#' @importFrom dipsaus %OF%
 #' @importFrom glue glue
 #' @importFrom R6 R6Class
 #' @importFrom filearray filearray_load
@@ -11,14 +10,15 @@
 #' @importFrom promises %...!%
 #' @importFrom promises %...T!%
 #' @importFrom checkmate makeAssertCollection
-#' @importFrom ieegio LazyH5
+#'
+#'
 NULL
 
 #' @name raveio-constants
 #' @title The constant variables
 #' @details
 #' \code{SIGNAL_TYPES} has the following options: \code{'LFP'}, \code{'Spike'},
-#' \code{'EKG'}, \code{'Audio'}, \code{'Photodiode'}, or \code{'Unknown'}. As
+#' \code{'EKG'}, \code{'Auxiliary'}, or \code{'Unknown'}. As
 #' of 'raveio' \code{0.0.6}, only \code{'LFP'} (see \code{\link{LFP_electrode}})
 #' signal type is supported.
 #'
@@ -38,7 +38,7 @@ NULL
 #' programs are expecting \code{'MNI152'} coordinates.
 #'
 #' @export
-SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Audio', 'Photodiode', 'Unknown')
+SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Auxiliary', 'Unknown')
 
 #' @rdname raveio-constants
 #' @export
@@ -66,16 +66,8 @@ HDF5_EAGERLOAD <- TRUE
 
 RAVEIO_FILEARRAY_VERSION <- 1L
 
-# The following pipeline files will be copied
-#' @rdname raveio-constants
-#' @export
-PIPELINE_FORK_PATTERN <- "(^data|^R|^py|^preferences|\\.R$|\\.py$|\\.yaml$|\\.txt$|\\.csv$|\\.fst$|\\.conf$|\\.json$|\\.rds$|\\.Rmd$)"
-
 #' @export
 glue::glue
-
-#' @export
-ieegio::LazyH5
 
 #' @export
 promises::`%...>%`
@@ -115,6 +107,7 @@ byte_size_lut <- list(
   "uint64" = 8, "int64" = 8,
   "float" = 4, "double" = 8
 )
+
 
 #' @title Check if current session is on 'CRAN'
 #' @description
@@ -183,18 +176,6 @@ is_on_cran <- function(if_interactive = FALSE, verbose = FALSE) {
 
   message("No flag detected, default is on CRAN")
   return( TRUE )
-}
-
-
-get_namespace_function <- function(ns, func, on_missing) {
-  if(system.file(package = ns) == "") {
-    if(missing(on_missing)) {
-      stop("There is no package called ", sQuote(ns), ". No alternative is provided. Please install this package first")
-    }
-    return(on_missing)
-  }
-
-  return( asNamespace(ns)[[func]] )
 }
 
 #' @title Print colored messages
@@ -652,87 +633,6 @@ lapply_async <- function(
 }
 
 
-guess_libpath <- function() {
-
-  lib_path <- getOption("ravemanager.libpath", default = NULL)
-
-  try(silent = TRUE, expr = {
-    if(length(lib_path) == 1 && !is.na(lib_path) && is.character(lib_path) && dir.exists(lib_path)) {
-      return(normalizePath(lib_path))
-    }
-  })
-
-  lib_path <- Sys.getenv("RAVE_LIB_PATH", unset = Sys.getenv("R_LIBS_USER", unset = ""))
-
-  ostype <- get_os()
-
-  if(ostype == 'windows') {
-    lib_path <- strsplit(lib_path, ";")[[1]]
-  } else {
-    lib_path <- strsplit(lib_path, ":")[[1]]
-  }
-
-  if(length(lib_path)) {
-    return(lib_path[[1]])
-  }
-
-  return(.libPaths()[[1]])
-}
-
-install_deps <- function(root, upgrade = FALSE, force = FALSE, lib = guess_libpath(), ...) {
-  # succeed <- FALSE
-  # try(silent = TRUE, expr = {
-  #   if(dipsaus::package_installed("pak")) {
-  #     pak <- asNamespace("pak")
-  #     pak$local_install_deps(root = root, upgrade = upgrade, ask = FALSE, dependencies = NA, lib = lib)
-  #     succeed <- TRUE
-  #   }
-  # })
-  # if(!succeed) {
-  #   remotes::install_deps(pkgdir = root, upgrade = upgrade, force = force, lib = lib, ...)
-  # }
-  remotes::install_deps(pkgdir = root, upgrade = upgrade, force = force, lib = lib, ...)
-}
-
-install_cran <- function(pkgs, upgrade = FALSE, lib = guess_libpath(), ...) {
-  # succeed <- FALSE
-  # try(silent = TRUE, expr = {
-  #   if(dipsaus::package_installed("pak")) {
-  #     pak <- asNamespace("pak")
-  #     pak$pkg_install(pkg = pkgs, lib = lib, upgrade = upgrade, ask = FALSE, dependencies = NA)
-  #     succeed <- TRUE
-  #   }
-  # })
-  # if(!succeed) {
-  # }
-  remotes::install_cran(pkgs, upgrade = ifelse(isTRUE(upgrade), "always", "never"),
-                        lib = lib, ...)
-
-}
-
-is_from_namespace <- function(x, check_dipsaus = TRUE) {
-  if( check_dipsaus ) {
-    is_from_namespace_impl <- asNamespace("dipsaus")[["is_from_namespace"]]
-    if(is.function(is_from_namespace_impl)) {
-      return( is_from_namespace_impl(x) )
-    }
-  }
-
-  if(!is.environment(x)) {
-    x <- environment(x)
-  }
-  if(!is.environment(x)) { return(FALSE) }
-  if(isNamespace(x)) { return(TRUE) }
-  if(identical(x, baseenv())) { return(TRUE) }
-  if(identical(x, emptyenv())) { return(FALSE) }
-  if(identical(x, globalenv())) { return(FALSE) }
-  penv <- parent.env(x)
-  if(identical(penv, x)) { return(FALSE) }
-  return(is_from_namespace(penv, check_dipsaus = FALSE))
-}
-
-
-
 #' @export
 print.raveio_digest_expression <- function(x, ..., max_nvars = 5) {
   vnames <- names(attr(x, "global_vars"))
@@ -756,3 +656,11 @@ key_missing <- function () {
   structure(list(), class = "key_missing")
 }
 
+`%OF%` <- function(lhs, rhs){
+  if(length(rhs)){ de <- rhs[[1]] } else { de <- rhs }
+  lhs <- lhs[!is.na(lhs)]
+  if(!length(lhs)){ return(de) }
+  sel <- lhs %in% rhs
+  if(any(sel)){ return(lhs[sel][[1]]) }
+  return(de)
+}
