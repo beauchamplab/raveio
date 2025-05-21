@@ -175,7 +175,7 @@ cmd_freesurfer_home <- function(error_on_missing = TRUE, unset = NA) {
 cmd_fsl_home <- function(error_on_missing = TRUE, unset = NA) {
 
   path <- normalize_commandline_path(
-    raveio_getopt("fsl_path", default = Sys.which("FSLDIR")),
+    raveio_getopt("fsl_path", default = Sys.getenv('FSLDIR')),
     type = "others",
     unset = local({
       fs <- c(
