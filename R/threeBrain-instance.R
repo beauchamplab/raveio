@@ -328,7 +328,8 @@ transform_point_to_template_surface <- function(subject, scan_ras_mat, hemispher
       MNI305_y = template_mni305[[2]],
       MNI305_z = template_mni305[[3]],
 
-      DistanceShifted = distance_shifted
+      DistanceShifted = distance_shifted,
+      Hemisphere = ifelse(hemi == "l", "left", "right")
     )
   })
 
