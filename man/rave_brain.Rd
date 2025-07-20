@@ -21,7 +21,7 @@ subject 'ID'}
 
 \item{surfaces}{one or more brain surface types from \code{"pial"},
 \code{"white"}, \code{"smoothwm"}, \code{"pial-outer-smoothed"}, etc.;
-check \code{\link[threeBrain]{freesurfer_brain2}}}
+check \code{\link[threeBrain]{threeBrain}}}
 
 \item{overlays}{volumes to overlay; default is \code{'aparc.a2009s+aseg'}}
 
