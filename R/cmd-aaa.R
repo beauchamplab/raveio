@@ -78,6 +78,10 @@ cmd_execute <- function(script, script_path, command = "bash", dry_run = FALSE, 
     cmd <- sprintf("%s %s%s", shQuote(command), args, shQuote(script_path))
     return(cmd)
   } else {
+    message("\nOutputs might be hidden and redirected to the log file.\n  ")
+    additional_args <- list(...)
+    message("Standard log output -> ", additional_args$stdout)
+    message("Message or error output -> ", additional_args$stderr)
     system2(command = command, args = c(args, shQuote(script_path)), ...)
   }
 
