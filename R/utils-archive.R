@@ -132,7 +132,7 @@ archive_subject <- function(
   }, add = TRUE, after = FALSE)
   meta_info <- list(
     version = 2,
-    includes = includes,
+    includes = c("meta_data", includes),
     original_project_name = subject$project_name,
     original_subject_code = subject$subject_code,
     user_config = config,
@@ -147,6 +147,18 @@ archive_subject <- function(
     }
     return(FALSE)
   }
+
+  copy_file(
+    from = file.path(subject$rave_path, "meta"),
+    to = dir_create2(file.path(root_dir, "meta_data"))
+  )
+  meta_info$paths$meta_data <- list(
+    type = "data_dir",
+    level = "subject",
+    # subject/rave/...
+    src = 'meta_data',
+    dst = '/rave'
+  )
 
   if("orignal_signals" %in% includes) {
 
@@ -537,7 +549,7 @@ install_subject <- function(
     force <- TRUE
   }
   if(!is.na(force_subject)) {
-    message("Forcing project -> ", force_subject)
+    message("Forcing subject -> ", force_subject)
     subject_code <- force_subject
     force <- TRUE
   }
@@ -568,8 +580,12 @@ install_subject <- function(
       }
 
       if( backup ) {
-        new_path <- backup_file(subject$preprocess_settings$raw_path, remove = TRUE)
-        file_move(subject$path, file.path(dirname(subject$path), filenames(new_path)))
+        if(file.exists(subject$preprocess_settings$raw_path)) {
+          new_path <- backup_file(subject$preprocess_settings$raw_path, remove = FALSE)
+        }
+        if(file.exists(subject$path)) {
+          file_move(subject$path, file.path(dirname(subject$path), filenames(new_path)))
+        }
       }
     }
   }
