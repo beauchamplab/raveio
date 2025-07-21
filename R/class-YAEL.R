@@ -38,10 +38,13 @@ call_rpyants <- function(.name, ...) {
   return(re)
 }
 
+rpyants_builtin_templates <- function() {
+  call_rpyants('BUILTIN_TEMPLATES')
+}
+
+
 camel_template_name <- function(
-    template_name = c(
-      "mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"
-    )) {
+    template_name = rpyants_builtin_templates()) {
   template_name <- match.arg(template_name)
   template_info <- call_rpyants("template_urls")[[template_name]]
   template_name2 <- template_info$name
@@ -232,8 +235,9 @@ YAELProcess <- R6::R6Class(
     },
 
     #' @description Normalize native brain to \code{'MNI152'} template
-    #' @param template_name which template to use, choices are \code{'mni_icbm152_nlin_asym_09a'},
-    #' \code{'mni_icbm152_nlin_asym_09b'}, \code{'mni_icbm152_nlin_asym_09c'}.
+    #' @param template_name which template to use, choices are
+    #' \code{'mni_icbm152_nlin_asym_09a'}, \code{'mni_icbm152_nlin_asym_09b'},
+    #' \code{'mni_icbm152_nlin_asym_09c'}, and \code{'fsaverage'}.
     #' @param native_type which type of image should be used to map to template;
     #' default is \code{'T1w'}
     #' @param use_images a vector of image types to use for normalization;
@@ -245,9 +249,7 @@ YAELProcess <- R6::R6Class(
     #' code.
     #' @returns See method \code{get_template_mapping}
     map_to_template = function(
-        template_name = c(
-          "mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"
-        ),
+        template_name = rpyants_builtin_templates(),
         use_images = c("T1w", "T2w", "T1wContrast", "fGATIR", "preopCT"),
         native_type = "T1w",
         verbose = TRUE, ...){
@@ -293,11 +295,7 @@ YAELProcess <- R6::R6Class(
     #' @returns A list of input, output images, with forward and inverse
     #' transform files (usually two \code{'Affine'} with one displacement field)
     get_template_mapping = function(
-      template_name = c(
-        "mni_icbm152_nlin_asym_09a",
-        "mni_icbm152_nlin_asym_09b",
-        "mni_icbm152_nlin_asym_09c"
-      ),
+      template_name = rpyants_builtin_templates(),
       native_type = "T1w", relative = FALSE
     ) {
       template_name <- match.arg(template_name)
@@ -324,7 +322,7 @@ YAELProcess <- R6::R6Class(
     #' @returns transformed image in \code{'ANTs'} format
     transform_image_from_template = function(
       template_roi_path,
-      template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
+      template_name = rpyants_builtin_templates(),
       native_type = "T1w",
       interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline", "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc", "lanczosWindowedSinc", "genericLabel"), verbose = TRUE
     ) {
@@ -368,7 +366,7 @@ YAELProcess <- R6::R6Class(
     #' @returns transformed image in \code{'ANTs'} format
     transform_image_to_template = function(
       native_roi_path,
-      template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
+      template_name = rpyants_builtin_templates(),
       native_type = "T1w",
       interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline", "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc", "lanczosWindowedSinc", "genericLabel"), verbose = TRUE
     ) {
@@ -423,7 +421,7 @@ YAELProcess <- R6::R6Class(
     #' @param verbose whether the print out the progress
     #' @returns Nothing
     generate_atlas_from_template = function(
-      template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
+      template_name = rpyants_builtin_templates(),
       atlas_folder = NULL, surfaces = NA,
       verbose = TRUE
     ) {
@@ -478,7 +476,7 @@ YAELProcess <- R6::R6Class(
     #' @returns A matrix of 3 columns, each row is a transformed points (
     #' invalid rows will be filled with \code{NA})
     transform_points_to_template = function(
-      native_ras, template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
+      native_ras, template_name = rpyants_builtin_templates(),
       native_type = "T1w", verbose = TRUE
     ) {
       template_name <- match.arg(template_name)
@@ -520,7 +518,7 @@ YAELProcess <- R6::R6Class(
     #' @returns A matrix of 3 columns, each row is a transformed points (
     #' invalid rows will be filled with \code{NA})
     transform_points_from_template = function(
-      template_ras, template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
+      template_ras, template_name = rpyants_builtin_templates(),
       native_type = "T1w", verbose = TRUE
     ) {
       template_name <- match.arg(template_name)
@@ -567,7 +565,7 @@ YAELProcess <- R6::R6Class(
     #' you are studying the deep brain structures). Always use
     #' \code{'FreeSurfer'} if cortical information is used.
     construct_ants_folder_from_template = function(
-      template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c"),
+      template_name = rpyants_builtin_templates(),
       add_surfaces = TRUE
     ) {
       ants_dir <- file.path(self$work_path, "ants")

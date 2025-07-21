@@ -380,6 +380,10 @@ transform_point_to_template_volumetric <- function(subject, scan_ras_mat, method
         mapping <- yael$get_template_mapping(template_name = "mni_icbm152_nlin_asym_09c")
         template_name <- "mni_icbm152_nlin_asym_09c"
       }
+      if(!length(mapping)) {
+        mapping <- yael$get_template_mapping(template_name = "fsaverage")
+        template_name <- "fsaverage"
+      }
       mapping
     }, error = function(e) {
       NULL

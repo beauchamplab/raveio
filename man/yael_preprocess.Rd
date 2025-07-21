@@ -123,9 +123,7 @@ yael_preprocess(
 
   # normalize T1 to all 2009 MNI152-Asym brains (a,b,c)
   normalize_template = c(
-    "mni_icbm152_nlin_asym_09a",
-    "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"
+    "mni_icbm152_nlin_asym_09b"
   ),
 
   # only normalize if not exists

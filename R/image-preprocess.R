@@ -62,9 +62,7 @@ mni_template_path <- function(...) {
 #'
 #'   # normalize T1 to all 2009 MNI152-Asym brains (a,b,c)
 #'   normalize_template = c(
-#'     "mni_icbm152_nlin_asym_09a",
-#'     "mni_icbm152_nlin_asym_09b",
-#'     "mni_icbm152_nlin_asym_09c"
+#'     "mni_icbm152_nlin_asym_09b"
 #'   ),
 #'
 #'   # only normalize if not exists
@@ -137,7 +135,7 @@ yael_preprocess <- function(
   register_policy <- match.arg(register_policy)
   normalize_policy <- match.arg(normalize_policy)
 
-  normalize_template <- normalize_template[normalize_template %in% c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b", "mni_icbm152_nlin_asym_09c")]
+  normalize_template <- normalize_template[normalize_template %in% rpyants_builtin_templates()]
   # generate atlases
   atlases <- as.list(atlases)
   for(template_name in normalize_template) {

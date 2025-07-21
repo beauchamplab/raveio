@@ -209,8 +209,7 @@ Get the mapping configurations used by \code{register_to_T1w}
 Normalize native brain to \code{'MNI152'} template
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$map_to_template(
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   use_images = c("T1w", "T2w", "T1wContrast", "fGATIR", "preopCT"),
   native_type = "T1w",
   verbose = TRUE,
@@ -221,8 +220,9 @@ Normalize native brain to \code{'MNI152'} template
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{template_name}}{which template to use, choices are \code{'mni_icbm152_nlin_asym_09a'},
-\code{'mni_icbm152_nlin_asym_09b'}, \code{'mni_icbm152_nlin_asym_09c'}.}
+\item{\code{template_name}}{which template to use, choices are
+\code{'mni_icbm152_nlin_asym_09a'}, \code{'mni_icbm152_nlin_asym_09b'},
+\code{'mni_icbm152_nlin_asym_09c'}, and \code{'fsaverage'}.}
 
 \item{\code{use_images}}{a vector of image types to use for normalization;
 default types are \code{'T1w'}, \code{'T2w'}, \code{'T1wContrast'},
@@ -247,8 +247,7 @@ code.}
 Get configurations used for normalization
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$get_template_mapping(
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   native_type = "T1w",
   relative = FALSE
 )}\if{html}{\out{</div>}}
@@ -276,8 +275,7 @@ on template to native space
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$transform_image_from_template(
   template_roi_path,
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   native_type = "T1w",
   interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline",
     "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc",
@@ -315,8 +313,7 @@ from native space to template
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$transform_image_to_template(
   native_roi_path,
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   native_type = "T1w",
   interpolator = c("auto", "nearestNeighbor", "linear", "gaussian", "bSpline",
     "cosineWindowedSinc", "welchWindowedSinc", "hammingWindowedSinc",
@@ -352,8 +349,7 @@ otherwise.}
 Generate atlas maps from template and morph to native brain
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$generate_atlas_from_template(
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   atlas_folder = NULL,
   surfaces = NA,
   verbose = TRUE
@@ -387,8 +383,7 @@ Transform points from native images to template
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$transform_points_to_template(
   native_ras,
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   native_type = "T1w",
   verbose = TRUE
 )}\if{html}{\out{</div>}}
@@ -418,8 +413,7 @@ Transform points from template images to native
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$transform_points_from_template(
   template_ras,
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   native_type = "T1w",
   verbose = TRUE
 )}\if{html}{\out{</div>}}
@@ -451,8 +445,7 @@ Please make sure method \code{map_to_template} is called before using
 this method (or the program will fail)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{YAELProcess$construct_ants_folder_from_template(
-  template_name = c("mni_icbm152_nlin_asym_09a", "mni_icbm152_nlin_asym_09b",
-    "mni_icbm152_nlin_asym_09c"),
+  template_name = rpyants_builtin_templates(),
   add_surfaces = TRUE
 )}\if{html}{\out{</div>}}
 }
