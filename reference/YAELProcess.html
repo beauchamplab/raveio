@@ -11,7 +11,7 @@ to native brain. See examples at as_yael_process"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">raveio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.98</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.99</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -249,8 +249,7 @@ true, then the <code>'T1'</code> 'MRI' will become the moving image</p></dd>
 <p>Normalize native brain to <code>'MNI152'</code> template</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">map_to_template</span><span class="op">(</span></span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  use_images <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T1w"</span>, <span class="st">"T2w"</span>, <span class="st">"T1wContrast"</span>, <span class="st">"fGATIR"</span>, <span class="st">"preopCT"</span><span class="op">)</span>,</span>
 <span>  native_type <span class="op">=</span> <span class="st">"T1w"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -261,8 +260,9 @@ true, then the <code>'T1'</code> 'MRI' will become the moving image</p></dd>
 <div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>template_name</code></dt>
-<dd><p>which template to use, choices are <code>'mni_icbm152_nlin_asym_09a'</code>,
-<code>'mni_icbm152_nlin_asym_09b'</code>, <code>'mni_icbm152_nlin_asym_09c'</code>.</p></dd>
+<dd><p>which template to use, choices are
+<code>'mni_icbm152_nlin_asym_09a'</code>, <code>'mni_icbm152_nlin_asym_09b'</code>,
+<code>'mni_icbm152_nlin_asym_09c'</code>, and <code>'fsaverage'</code>.</p></dd>
 
 
 <dt><code>use_images</code></dt>
@@ -294,8 +294,7 @@ code.</p></dd>
 <p>Get configurations used for normalization</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">get_template_mapping</span><span class="op">(</span></span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  native_type <span class="op">=</span> <span class="st">"T1w"</span>,</span>
 <span>  relative <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -326,8 +325,7 @@ on template to native space</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">transform_image_from_template</span><span class="op">(</span></span>
 <span>  <span class="va">template_roi_path</span>,</span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  native_type <span class="op">=</span> <span class="st">"T1w"</span>,</span>
 <span>  interpolator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"nearestNeighbor"</span>, <span class="st">"linear"</span>, <span class="st">"gaussian"</span>, <span class="st">"bSpline"</span>,</span>
 <span>    <span class="st">"cosineWindowedSinc"</span>, <span class="st">"welchWindowedSinc"</span>, <span class="st">"hammingWindowedSinc"</span>,</span>
@@ -372,8 +370,7 @@ from native space to template</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">transform_image_to_template</span><span class="op">(</span></span>
 <span>  <span class="va">native_roi_path</span>,</span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  native_type <span class="op">=</span> <span class="st">"T1w"</span>,</span>
 <span>  interpolator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"nearestNeighbor"</span>, <span class="st">"linear"</span>, <span class="st">"gaussian"</span>, <span class="st">"bSpline"</span>,</span>
 <span>    <span class="st">"cosineWindowedSinc"</span>, <span class="st">"welchWindowedSinc"</span>, <span class="st">"hammingWindowedSinc"</span>,</span>
@@ -416,8 +413,7 @@ otherwise.</p></dd>
 <p>Generate atlas maps from template and morph to native brain</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">generate_atlas_from_template</span><span class="op">(</span></span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  atlas_folder <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  surfaces <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -456,8 +452,7 @@ to disable this function. The generated surfaces will stay in native
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">transform_points_to_template</span><span class="op">(</span></span>
 <span>  <span class="va">native_ras</span>,</span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  native_type <span class="op">=</span> <span class="st">"T1w"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -492,8 +487,7 @@ coordinate system.</p></dd>
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">transform_points_from_template</span><span class="op">(</span></span>
 <span>  <span class="va">template_ras</span>,</span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  native_type <span class="op">=</span> <span class="st">"T1w"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -530,8 +524,7 @@ Please make sure method <code>map_to_template</code> is called before using
 this method (or the program will fail)</p><div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">YAELProcess</span><span class="op">$</span><span class="fu">construct_ants_folder_from_template</span><span class="op">(</span></span>
-<span>  template_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mni_icbm152_nlin_asym_09a"</span>, <span class="st">"mni_icbm152_nlin_asym_09b"</span>,</span>
-<span>    <span class="st">"mni_icbm152_nlin_asym_09c"</span><span class="op">)</span>,</span>
+<span>  template_name <span class="op">=</span> <span class="fu">rpyants_builtin_templates</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  add_surfaces <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
