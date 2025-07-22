@@ -11,24 +11,23 @@ test_that("Subject class & derivatives", {
 
   skip_if_not("demo" %in% get_projects())
 
-  sub <- as_rave_subject('demo/YAB')
+  sub <- as_rave_subject('demo/DemoSubject')
 
-
-  expect_true(length(sub$blocks) && all(sub$blocks %in% c("008", "010", "011", "012")))
+  expect_true(length(sub$blocks) > 0 && all(sub$blocks %in% c("008", "010", "011", "012")))
 
   expect_equal(
     sub$cache_path,
-    normalizePath('~/rave_data/data_dir/demo/YAB/rave/data/cache')
+    normalizePath('~/rave_data/data_dir/demo/DemoSubject/rave/data/cache')
   )
 
   expect_equal(
     sub$data_path,
-    normalizePath('~/rave_data/data_dir/demo/YAB/rave/data/')
+    normalizePath('~/rave_data/data_dir/demo/DemoSubject/rave/data')
   )
 
   expect_equal(
     sub$subject_id,
-    'demo/YAB'
+    'demo/DemoSubject'
   )
 
   ravepipeline:::load_setting()

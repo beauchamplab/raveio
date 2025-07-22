@@ -1,16 +1,9 @@
 #' @importFrom dipsaus %?<-%
-#' @importFrom glue glue
+#' @importFrom ravepipeline glue
 #' @importFrom R6 R6Class
 #' @importFrom filearray filearray_load
 #' @importFrom filearray filearray_create
 #' @importFrom filearray fmap
-#' @importFrom promises as.promise
-#' @importFrom promises %...>%
-#' @importFrom promises %...T>%
-#' @importFrom promises %...!%
-#' @importFrom promises %...T!%
-#' @importFrom checkmate makeAssertCollection
-#'
 #'
 NULL
 
@@ -67,19 +60,8 @@ HDF5_EAGERLOAD <- TRUE
 RAVEIO_FILEARRAY_VERSION <- 1L
 
 #' @export
-glue::glue
+ravepipeline::glue
 
-#' @export
-promises::`%...>%`
-
-#' @export
-promises::`%...T>%`
-
-#' @export
-promises::`%...!%`
-
-#' @export
-promises::`%...T!%`
 
 r6_reserved_fields <- c('.__enclos_env__', 'clone', 'print', 'initialize', 'private')
 
@@ -240,7 +222,7 @@ catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture 
   opt_level <- raveio_getopt('verbose_level')
   args <- list(...)
   msg <- tryCatch({
-    structure(glue::glue(..., .envir = .envir), log_level = level)
+    structure(glue(..., .envir = .envir), log_level = level)
   }, error = function(...){
     s <- args
     if(length(names(s))){

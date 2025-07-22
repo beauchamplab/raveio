@@ -348,7 +348,7 @@ import_table <- function(file, format = c("auto", "csv", "csv.zip", "h5", "fst",
       data.table::as.data.table(dat)
     },
     "yaml" = {
-      re <- yaml::read_yaml(file = file, ...)
+      re <- ieegio::io_read_yaml(con = file, ...)
       dat <- re$data
       attrs <- re$attributes
       cols <- re$columns
