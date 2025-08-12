@@ -1,14 +1,4 @@
 
-h5FileValid <- function(filename){
-  if(!length(filename)){ return(FALSE) }
-  filename <- filename[[1]]
-  if(!file.exists(filename)){ return(FALSE) }
-  if(isTRUE(file.info(filename)[['isdir']])){ return(FALSE) }
-  filename <- normalizePath(filename)
-  return(ieegio::io_h5_valid(file = filename))
-}
-
-
 #' Lazy Load 'HDF5' File via \code{\link[ieegio]{io_read_h5}}
 #'
 #' @description Wrapper for class \code{\link[ieegio]{LazyH5}}, which load data

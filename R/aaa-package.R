@@ -1,9 +1,15 @@
 require_package <- function(package) {
-  # if(system.file(package = package) == "") {
-  #   stop(sprintf("Package [%s] is needed to run the script. Please install it first via\n  install.packages('%s')", package, package), call. = NULL)
-  #
-  # }
-  targets::tar_assert_package(package)
+  if(system.file(package = package) == "") {
+    stop(
+      sprintf(
+        "Package [%s] is needed to run the script. Please install it first via\n  install.packages('%s')",
+        package,
+        package
+      ),
+      call. = NULL
+    )
+
+  }
 }
 
 
@@ -15,6 +21,29 @@ package_installed <- function (pkgs, all = FALSE) {
     re <- all(re)
   }
   re
+}
+
+# restore_subject_instance <- function(...) {
+#   call_pkg_fun(package = "ravecore", f_name = "restore_subject_instance", ...)
+# }
+
+restore_subject_instance <- function(subject_id, strict = FALSE) {
+  if(inherits(subject_id, 'RAVESubject')){
+    return(subject_id)
+  } else {
+    if(inherits(subject_id, "Subject")) {
+      # RAVE 1.0 subject instance
+      stopifnot2(is.character(subject_id$id),
+                 msg = "`as_rave_subject`: Cannot find subject ID from the given input")
+      subject_id <- subject_id$id
+    }
+    if(startsWith(subject_id, "@meta_analysis")) {
+      subject_id <- gsub("^@meta_analysis/", "", subject_id)
+      return( RAVEMetaSubject$new(subject_id) )
+    } else {
+      return( RAVESubject$new(subject_id, strict = strict) )
+    }
+  }
 }
 
 call_pkg_fun <- function (
@@ -54,34 +83,4 @@ call_pkg_fun <- function (
 }
 
 
-get_namespace_function <- function(ns, func, on_missing) {
-  if(system.file(package = ns) == "") {
-    if(missing(on_missing)) {
-      stop("There is no package called ", sQuote(ns), ". No alternative is provided. Please install this package first")
-    }
-    return(on_missing)
-  }
 
-  return( asNamespace(ns)[[func]] )
-}
-
-is_from_namespace <- function(x, check_dipsaus = TRUE) {
-  if( check_dipsaus ) {
-    is_from_namespace_impl <- asNamespace("dipsaus")[["is_from_namespace"]]
-    if(is.function(is_from_namespace_impl)) {
-      return( is_from_namespace_impl(x) )
-    }
-  }
-
-  if(!is.environment(x)) {
-    x <- environment(x)
-  }
-  if(!is.environment(x)) { return(FALSE) }
-  if(isNamespace(x)) { return(TRUE) }
-  if(identical(x, baseenv())) { return(TRUE) }
-  if(identical(x, emptyenv())) { return(FALSE) }
-  if(identical(x, globalenv())) { return(FALSE) }
-  penv <- parent.env(x)
-  if(identical(penv, x)) { return(FALSE) }
-  return(is_from_namespace(penv, check_dipsaus = FALSE))
-}

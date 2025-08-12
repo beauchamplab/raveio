@@ -4,8 +4,6 @@
 \name{cmd_run_3dAllineate}
 \alias{cmd_run_3dAllineate}
 \alias{cmd-external}
-\alias{cmd_execute}
-\alias{cmd_run_r}
 \alias{cmd_run_dcm2niix}
 \alias{cmd_run_flirt}
 \alias{cmd_run_recon_all}
@@ -20,26 +18,6 @@ cmd_run_3dAllineate(
   command_path = NULL,
   dry_run = FALSE,
   verbose = dry_run
-)
-
-cmd_execute(
-  script,
-  script_path,
-  command = "bash",
-  dry_run = FALSE,
-  backup = TRUE,
-  args = NULL,
-  ...
-)
-
-cmd_run_r(
-  expr,
-  quoted = FALSE,
-  verbose = TRUE,
-  dry_run = FALSE,
-  log_file = tempfile(),
-  script_path = tempfile(),
-  ...
 )
 
 cmd_run_dcm2niix(
@@ -112,25 +90,6 @@ false}
 \item{verbose}{whether to print out the command script; default is true under
 dry-run mode, and false otherwise}
 
-\item{script}{the shell script}
-
-\item{script_path}{path to run the script}
-
-\item{command}{which command to invoke; default is \code{'bash'}}
-
-\item{backup}{whether to back up the script file immediately; default is true}
-
-\item{args}{further arguments in the shell command, especially the
-'FreeSurfer' reconstruction command}
-
-\item{...}{passed to \code{\link{system2}}, or additional arguments}
-
-\item{expr}{expression to run as command}
-
-\item{quoted}{whether \code{expr} is quoted; default is false}
-
-\item{log_file}{where should log file be stored}
-
 \item{src_path}{source of the 'DICOM' or 'Nifti' image (absolute path)}
 
 \item{type}{type of the 'DICOM' or 'Nifti' image; choices are \code{'MRI'}
@@ -142,7 +101,26 @@ the source is in 'Nifti' format}
 \item{dof, cost, search, searchcost}{parameters used by 'FSL' \code{'flirt'}
 command; see their documentation for details}
 
+\item{args}{further arguments in the shell command, especially the
+'FreeSurfer' reconstruction command}
+
 \item{work_path}{work path for 'FreeSurfer' command;}
+
+\item{...}{passed to \code{\link{system2}}, or additional arguments}
+
+\item{expr}{expression to run as command}
+
+\item{quoted}{whether \code{expr} is quoted; default is false}
+
+\item{script}{the shell script}
+
+\item{script_path}{path to run the script}
+
+\item{log_file}{where should log file be stored}
+
+\item{command}{which command to invoke; default is \code{'bash'}}
+
+\item{backup}{whether to back up the script file immediately; default is true}
 }
 \value{
 A list of data containing the script details:

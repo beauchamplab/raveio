@@ -12,8 +12,8 @@ data frame
 \seealso{
 \code{\link{load_meta2}}
 }
-\section{Super class}{
-\code{\link[raveio:RAVESubject]{raveio::RAVESubject}} -> \code{RAVEMetaSubject}
+\section{Super classes}{
+\code{\link[ravepipeline:RAVESerializable]{ravepipeline::RAVESerializable}} -> \code{\link[ravecore:RAVESubject]{ravecore::RAVESubject}} -> \code{RAVEMetaSubject}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -83,17 +83,20 @@ no path exists, values will be \code{NA}}
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_default"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_default'><code>raveio::RAVESubject$get_default()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_electrode_table"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_electrode_table'><code>raveio::RAVESubject$get_electrode_table()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_epoch"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_epoch'><code>raveio::RAVESubject$get_epoch()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_frequency"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_frequency'><code>raveio::RAVESubject$get_frequency()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_note_summary"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_note_summary'><code>raveio::RAVESubject$get_note_summary()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="get_reference"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-get_reference'><code>raveio::RAVESubject$get_reference()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="initialize_paths"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-initialize_paths'><code>raveio::RAVESubject$initialize_paths()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="list_pipelines"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-list_pipelines'><code>raveio::RAVESubject$list_pipelines()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="load_pipeline"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-load_pipeline'><code>raveio::RAVESubject$load_pipeline()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="set_default"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-set_default'><code>raveio::RAVESubject$set_default()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="raveio" data-topic="RAVESubject" data-id="valid_electrodes"><a href='../../raveio/html/RAVESubject.html#method-RAVESubject-valid_electrodes'><code>raveio::RAVESubject$valid_electrodes()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravepipeline" data-topic="RAVESerializable" data-id="@compare"><a href='../../ravepipeline/html/RAVESerializable.html#method-RAVESerializable-@compare'><code>ravepipeline::RAVESerializable$@compare()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="@marshal"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-@marshal'><code>ravecore::RAVESubject$@marshal()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="@unmarshal"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-@unmarshal'><code>ravecore::RAVESubject$@unmarshal()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="get_default"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-get_default'><code>ravecore::RAVESubject$get_default()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="get_electrode_table"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-get_electrode_table'><code>ravecore::RAVESubject$get_electrode_table()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="get_epoch"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-get_epoch'><code>ravecore::RAVESubject$get_epoch()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="get_frequency"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-get_frequency'><code>ravecore::RAVESubject$get_frequency()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="get_note_summary"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-get_note_summary'><code>ravecore::RAVESubject$get_note_summary()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="get_reference"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-get_reference'><code>ravecore::RAVESubject$get_reference()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="initialize_paths"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-initialize_paths'><code>ravecore::RAVESubject$initialize_paths()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="list_pipelines"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-list_pipelines'><code>ravecore::RAVESubject$list_pipelines()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="load_pipeline"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-load_pipeline'><code>ravecore::RAVESubject$load_pipeline()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="set_default"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-set_default'><code>ravecore::RAVESubject$set_default()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="ravecore" data-topic="RAVESubject" data-id="valid_electrodes"><a href='../../ravecore/html/RAVESubject.html#method-RAVESubject-valid_electrodes'><code>ravecore::RAVESubject$valid_electrodes()</code></a></span></li>
 </ul>
 </details>
 }}

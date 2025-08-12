@@ -57,7 +57,7 @@ test_hdspeed <- function(path = tempdir(), file_size = 1e6, quiet = FALSE,
     }
   }
 
-  progress <- dipsaus::progress2(title = 'Testing read/write speed', max = 2,
+  progress <- ravepipeline::rave_progress(title = 'Testing read/write speed', max = 2,
                                 quiet = quiet, shiny_auto_close = TRUE)
 
   progress$inc('Write to disk...')
@@ -149,7 +149,7 @@ find_path <- function(path, root_dir, all = FALSE){
     return(path)
   }
   # root_dir %?<-% rave_options('data_dir')
-  path <- unlist(stringr::str_split(path, '(/)|(\\\\)|(\\~)'))
+  path <- unlist(strsplit(path, '(/)|(\\\\)|(\\~)'))
   path <- path[path != '']
 
   re <- NULL
@@ -170,31 +170,19 @@ find_path <- function(path, root_dir, all = FALSE){
 
 
 
-
-#' @title Force creating directory with checks
-#' @param x path to create
-#' @param showWarnings,recursive,... passed to \code{\link{dir.create}}
-#' @param check whether to check the directory after creation
-#' @returns Normalized path
-#'
-#' @examples
-#'
-#' path <- file.path(tempfile(), 'a', 'b', 'c')
-#'
-#' # The following are equivalent
-#' dir.create(path, showWarnings = FALSE, recursive = TRUE)
-#'
-#' dir_create2(path)
-#'
-#'
+#' Get 'Neurosynth' website address using 'MNI152' coordinates
+#' @param x,y,z numerical values: the right-anterior-superior 'RAS'
+#' coordinates in \code{'MNI152'} space
+#' @returns 'Neurosynth' website address
 #' @export
-dir_create2 <- function(x, showWarnings = FALSE, recursive = TRUE, check = TRUE, ...) {
-  if (!dir.exists(x)) {
-    dir.create(x, showWarnings = showWarnings, recursive = recursive, ...)
-  }
-  if (check && !dir.exists(x)) {
-    stop('Cannot create directory at ', shQuote(x))
-  }
-  invisible(normalizePath(x))
+url_neurosynth <- function(x, y, z) {
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+  z <- as.numeric(z)
+
+  x[is.na(x)] <- 0
+  y[is.na(y)] <- 0
+  z[is.na(z)] <- 0
+  sprintf("https://neurosynth.org/locations/?x=%.0f&y=%.0f&z=%.0f", x, y, z)
 }
 

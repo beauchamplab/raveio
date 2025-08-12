@@ -20,31 +20,15 @@
 #' safe_write_csv(x, f)
 #'
 #' @export
-safe_write_csv <- function(x, file, ..., quiet = FALSE){
-  if(file.exists(file)){
-    regexp <- stringr::regex('(\\.csv|)$', ignore_case = TRUE)
-    oldfile <- stringr::str_replace(file, regexp, strftime(Sys.time(), '_[%Y%m%d_%H%M%S].csv'))
-    if(!quiet){
-      catgl('Renaming file {file}\n  >> {oldfile}')
-    }
-    file_move(file, oldfile)
-  }
-  args <- list(...)
-  rn <- args$row.names
-
-  tryCatch({
-    utils::write.csv(x, file, ...)
-  }, error = function(e){
-
-    call_args <- list(x = quote(x), file = file)
-    call_args$col.names <- if (is.logical(rn) && !rn) TRUE else NA
-    call_args$sep <- ","
-    call_args$dec <- "."
-    call_args$qmethod <- "double"
-
-    do.call(utils::write.table, call_args)
-  })
-  normalizePath(file)
+safe_write_csv <- function(x, file, ..., quiet = FALSE) {
+  call_pkg_fun(
+    package = "ravecore",
+    f_name = "safe_write_csv",
+    x = x,
+    file = file,
+    ...,
+    quiet = quiet
+  )
 }
 
 
@@ -112,49 +96,13 @@ safe_write_csv <- function(x, file, ..., quiet = FALSE){
 safe_read_csv <- function(file, header = TRUE, sep = ',',
                           colClasses = NA, skip = 0, quote = "\"",
                           ..., stringsAsFactors = FALSE){
-
-  s <- readLines(file, n = skip+1, ok = TRUE)
-
-  # Reach EOF
-  if(length(s) != skip+1){
-    return(data.frame())
-  }
-
-  # Parse headers
-  s <- s[skip+1]
-  s <- strsplit(s, sep)[[1]]
-  s <- stringr::str_remove_all(s, quote)
-
-  # If length(s) == 1
-  if(length(s) == 1){
-    colClasses <- colClasses[1]
-    return(utils::read.csv(file = file, header = header, sep = sep,
-                           colClasses = colClasses, skip = skip,
-                           quote = quote, ..., stringsAsFactors = stringsAsFactors))
-  }
-
-
-  if(!header || s[1] != ''){
-    col_class <- rep(NA, length(s))
-    col_class[seq_along(colClasses)] <- colClasses
-    return(utils::read.csv(file = file, header = header, sep = sep,
-                           colClasses = col_class, skip = skip,
-                           quote = quote, ..., stringsAsFactors = stringsAsFactors))
-  }else{
-    # first blank header will be rownames
-    col_class <- rep(NA, length(s))
-    col_class[seq_along(colClasses) + 1] <- colClasses
-    dat <- utils::read.csv(file = file, header = header, sep = sep,
-                          colClasses = col_class, skip = skip,
-                          quote = quote, ..., stringsAsFactors = stringsAsFactors)
-    row.names(dat) <- dat[,1]
-    dat <- dat[,-1]
-    return(dat)
-  }
-
-  utils::read.csv(file = file, header = header, sep = sep,
-                  colClasses = colClasses, skip = skip,
-                  quote = quote, ..., stringsAsFactors = stringsAsFactors)
+  call_pkg_fun(
+    package = "ravecore",
+    f_name = "safe_read_csv",
+    file = file, header = header, sep = sep,
+    colClasses = colClasses, skip = skip, quote = quote,
+    ..., stringsAsFactors = stringsAsFactors
+  )
 }
 
 

@@ -32,26 +32,18 @@ RoxygenNote: 7.3.2
 SystemRequirements: little-endian platform
 Imports:
     utils,
-    stats,
     data.table,
     dipsaus,
-    edfReader (>= 1.2.1),
     filearray (>= 0.1.3),
     ieegio,
     R6,
     ravepipeline,
     ravetools,
+    ravecore,
     rpyANTs,
-    targets (>= 0.8.0),
     threeBrain (>= 0.2.5)
 Suggests:
-    callr (>= 3.7.0),
-    stringr (>= 1.4.0),
-    globals,
-    jsonlite,
     testthat,
     shiny,
     rpymat,
-    freesurferformats,
-    readNSx,
-    gsignal
+    freesurferformats

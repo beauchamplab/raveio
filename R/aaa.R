@@ -5,277 +5,15 @@
 #' @importFrom filearray filearray_create
 #' @importFrom filearray fmap
 #'
+#' @importFrom ravetools collapse
+#' @importFrom ravetools baseline_array
+#'
 NULL
 
-#' @name raveio-constants
-#' @title The constant variables
-#' @details
-#' \code{SIGNAL_TYPES} has the following options: \code{'LFP'}, \code{'Spike'},
-#' \code{'EKG'}, \code{'Auxiliary'}, or \code{'Unknown'}. As
-#' of 'raveio' \code{0.0.6}, only \code{'LFP'} (see \code{\link{LFP_electrode}})
-#' signal type is supported.
-#'
-#'
-#' \code{LOCATION_TYPES} is a list of the electrode location types:
-#' \code{'iEEG'} (this includes the next two), \code{'sEEG'} (stereo),
-#' \code{'ECoG'} (surface), \code{'EEG'} (scalp),
-#' \code{'Others'}. See field \code{'location'} in
-#' \code{\link{RAVEAbstarctElectrode}}
-#'
-#' \code{MNI305_to_MNI152} is a 4-by-4 matrix converting \code{'MNI305'}
-#' coordinates to \code{'MNI152'} space. The difference of these two
-#' spaces is: \code{'MNI305'} is an average of 305 human subjects,
-#' while \code{'MNI152'} is the average of 152 people. These two coordinates
-#' differs slightly. While most of the 'MNI' coordinates reported by
-#' 'RAVE' and 'FreeSurfer' are in the \code{'MNI305'} space, many other
-#' programs are expecting \code{'MNI152'} coordinates.
-#'
-#' @export
-SIGNAL_TYPES <- c('LFP', 'Spike', 'EKG', 'Auxiliary', 'Unknown')
 
-#' @rdname raveio-constants
-#' @export
-LOCATION_TYPES <- c('iEEG', 'sEEG', 'ECoG', 'EEG', 'Others')
 
-#' @rdname raveio-constants
-#' @export
-MNI305_to_MNI152 <- matrix(
-  c(0.9975, 0.0146, -0.013, 0,
-    -0.0073, 1.0009, -0.0093, 0,
-    0.0176, -0.0024, 0.9971, 0,
-    -0.0429, 1.5496, 1.184, 1),
-  nrow = 4L, byrow = FALSE
-)
-
-#' @rdname raveio-constants
-#' @export
-YAEL_IMAGE_TYPES <- c(
-  # Pre-op
-  "T1w", "T2w", "FLAIR", "preopCT", "T1wContrast", "fGATIR",
-  "postopT1w", "postopT2w", "postopFLAIR", "CT"
-)
-
-HDF5_EAGERLOAD <- TRUE
 
 RAVEIO_FILEARRAY_VERSION <- 1L
-
-#' @export
-ravepipeline::glue
-
-
-r6_reserved_fields <- c('.__enclos_env__', 'clone', 'print', 'initialize', 'private')
-
-verbose_levels <-
-  factor(
-    c("DEBUG", "DEFAULT", "INFO", "WARNING", "ERROR", "FATAL"),
-    levels = c("DEBUG", "DEFAULT", "INFO", "WARNING", "ERROR", "FATAL"),
-    ordered = TRUE
-  )
-
-str2lang_alt <- function (s) {
-  s <- sprintf("quote(%s)", trimws(s))
-  eval(parse(text = s))
-}
-
-str2lang <- function (s) {
-  get0("str2lang", envir = baseenv(), ifnotfound = str2lang_alt)(s)
-}
-
-
-byte_size_lut <- list(
-  "uint8" = 1, "int8" = 1,
-  "uint16" = 2, "int16" = 2,
-  "uint32" = 4, "int32" = 4,
-  "uint64" = 8, "int64" = 8,
-  "float" = 4, "double" = 8
-)
-
-
-#' @title Check if current session is on 'CRAN'
-#' @description
-#' Use this function only for examples and test. The goal is to comply with the
-#' 'CRAN' policy. Do not use it in normal functions to cheat. Violating 'CRAN'
-#' policy will introduce instability to your code. Make sure reading Section
-#' 'Details' before using this function.
-#' @param if_interactive whether interactive session will be considered as
-#' on 'CRAN'; default is \code{FALSE}
-#' @param verbose whether to print out reason of return; default is no
-#' @details
-#' According to 'CRAN' policy, package examples and test functions may only
-#' use maximum 2 'CPU' cores. Examples running too long should be suppressed.
-#' Normally package developers will use \code{interactive()} to avoid running
-#' examples or parallel code on 'CRAN'. However, when checked locally, these
-#' examples will be skipped too. Coding bug in those examples will not be
-#' reported.
-#'
-#' The objective is to allow 'RAVE' package developers to write and test
-#' examples locally or on integrated development environment (such as
-#' 'Github'), while suppressing them on 'CRAN'. In such way, bugs in the
-#' examples will be revealed and fixed promptly.
-#'
-#' Do not use this function inside of the package functions to cheat or slip
-#' illegal code under the eyes of 'CRAN' folks. This will increase their work
-#' load and introduce instability to your code. Also this function is subject
-#' to deletion in the future.
-#'
-#' @returns A logical whether current environment should be considered as on
-#' 'CRAN'.
-#' @export
-is_on_cran <- function(if_interactive = FALSE, verbose = FALSE) {
-
-  # check if this is on CRAN
-  not_cran_flag <- identical(toupper(as.character(Sys.getenv("NOT_CRAN", ""))), "TRUE")
-  limit_core_flag <- identical(toupper(Sys.getenv("_R_CHECK_LIMIT_CORES_")), "TRUE")
-  shiny_flag <- dipsaus::shiny_is_running()
-  interactive_flag <- interactive()
-
-  if( limit_core_flag ) {
-    # CRAN checks will add _R_CHECK_LIMIT_CORES_ to environment
-    if( verbose ) {
-      message("_R_CHECK_LIMIT_CORES_ is TRUE/true (on CRAN)")
-    }
-    return(TRUE)
-  }
-
-  if ( not_cran_flag ) {
-    # testthat on local uses this flag to indicate not on CRAN
-    message("NOT_CRAN is TRUE/true (not on CRAN)")
-    return(FALSE)
-  }
-
-  if( shiny_flag ) {
-    # Shiny is enabled, cannot be on CRAN
-    message("Inside of shiny reactive context (not on CRAN)")
-    return(FALSE)
-  }
-
-  if ( interactive_flag ) {
-    if_interactive <- isTRUE(if_interactive)
-    message(sprintf("Session is interactive (%son CRAN)", ifelse(if_interactive, "", "not ")))
-    return(if_interactive)
-
-  }
-
-  message("No flag detected, default is on CRAN")
-  return( TRUE )
-}
-
-#' @title Print colored messages
-#' @param ...,.envir passed to \code{\link[glue]{glue}}
-#' @param level passed to \code{\link[dipsaus]{cat2}}
-#' @param .pal see \code{pal} in \code{\link[dipsaus]{cat2}}
-#' @param .capture logical, whether to capture message and return it without
-#' printing
-#' @returns The message as characters
-#' @details The level has order that sorted from low to high: \code{"DEBUG"},
-#' \code{"DEFAULT"}, \code{"INFO"}, \code{"WARNING"}, \code{"ERROR"},
-#' \code{"FATAL"}. Each different level will display different colors and
-#' icons before the message. You can suppress messages with certain levels
-#' by setting 'raveio' options via
-#' \code{raveio_setopt('verbose_level', <level>)}. Messages with levels lower
-#' than the threshold will be muffled. See examples.
-#'
-#' @examples
-#'
-#' # ------------------ Basic Styles ---------------------
-#'
-#' # Temporarily change verbose level for example
-#' raveio_setopt('verbose_level', 'DEBUG', FALSE)
-#'
-#' # debug
-#' catgl('Debug message', level = 'DEBUG')
-#'
-#' # default
-#' catgl('Default message', level = 'DEFAULT')
-#'
-#' # info
-#' catgl('Info message', level = 'INFO')
-#'
-#' # warning
-#' catgl('Warning message', level = 'WARNING')
-#'
-#' # error
-#' catgl('Error message', level = 'ERROR')
-#'
-#' try({
-#'   # fatal, will call stop and raise error
-#'   catgl('Error message', level = 'FATAL')
-#' }, silent = TRUE)
-#'
-#' # ------------------ Muffle messages ---------------------
-#'
-#' # Temporarily change verbose level to 'WARNING'
-#' raveio_setopt('verbose_level', 'WARNING', FALSE)
-#'
-#' # default, muffled
-#' catgl('Default message')
-#'
-#' # message printed for level >= Warning
-#' catgl('Default message', level = 'WARNING')
-#' catgl('Default message', level = 'ERROR')
-#'
-#'
-#'
-#' @export
-catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture = FALSE){
-  level <- toupper(level)
-  opt_level <- raveio_getopt('verbose_level')
-  args <- list(...)
-  msg <- tryCatch({
-    structure(glue(..., .envir = .envir), log_level = level)
-  }, error = function(...){
-    s <- args
-    if(length(names(s))){
-      s <- s[names(s) %in% c('', 'sep', 'collapse')]
-    }
-    s[[length(s) + 1]] <- ''
-
-    do.call('paste', s)
-  })
-  if(
-    .capture || (
-      sum(verbose_levels >= opt_level, na.rm = TRUE) <
-      sum(verbose_levels >= level, na.rm = TRUE)
-    )
-  ) {
-    # opt_level is too high, message is muffled. depending on level
-    # return or stop
-    if(level == 'FATAL'){
-      stop(msg)
-    }
-    return(invisible(msg))
-  }
-  call <- match.call()
-  call <- deparse1(call, collapse = '\n')
-
-  # .envir = parent.frame(), level = 'DEBUG', .pal, .capture = FALSE
-  if(dipsaus::package_installed('ravedash')){
-    ns <- do.call('asNamespace', list('ravedash'))
-    ns$logger(msg, level = switch (
-      level,
-      "DEFAULT" = "trace",
-      "DEBUG" = "debug",
-      "INFO" = "info",
-      "WARNING" = "warning",
-      'ERROR' = 'error',
-      'FATAL' = 'fatal',
-      { "trace" }
-    ))
-    if(level == 'FATAL') {
-      stop(msg)
-    }
-  } else {
-    if(missing(.pal)){
-      dipsaus::cat2(msg, level = level)
-    }else{
-      dipsaus::cat2(msg, level = level, pal = .pal)
-    }
-  }
-
-  return(invisible(msg))
-}
-
-
 
 stopifnot2 <- function(..., msg = 'Condition not satisfied'){
   if(!all(c(...))){
@@ -283,16 +21,6 @@ stopifnot2 <- function(..., msg = 'Condition not satisfied'){
   }
 }
 
-append_el <- function(el, value, method = 'c'){
-  el_expr <- substitute(el)
-  value <- do.call(method, list(quote(el), quote(value)))
-  do.call('<-', list(el_expr, value), envir = parent.frame())
-}
-
-# These functions are available in R 4.0. However, to be backward compatible
-deparse1 <- function(expr, collapse = ' '){
-  paste(deparse(expr), collapse = collapse)
-}
 
 R_user_dir <- function (package, which = c("data", "config", "cache")) {
   stopifnot(is.character(package), length(package) == 1L)
@@ -320,30 +48,6 @@ R_user_dir <- function (package, which = c("data", "config", "cache")) {
   file.path(path, "R", package)
 }
 
-# These functions uses ravetools/dipsaus
-collapse <- function(x, keep, average = FALSE, ...) {
-  if(isTRUE(getOption("raveio.use.ravetools", FALSE))) {
-    return(ravetools::collapse(x = x, keep = keep, average = average, ...))
-  } else {
-    return(dipsaus::collapse(x = x, keep = keep, average = average))
-  }
-}
-
-baseline_array <- function(
-    x, along_dim, baseline_indexpoints = NULL, unit_dims = seq_along(dim(x))[-along_dim],
-    method = c("percentage", "sqrt_percentage", "decibel", "zscore", "sqrt_zscore", "subtract_mean"),
-    ...) {
-  method <- match.arg(method)
-  if(isTRUE(getOption("raveio.use.ravetools", FALSE))) {
-    return(ravetools::baseline_array(
-      x = x, along_dim = along_dim, unit_dims = unit_dims,
-      method = method, baseline_indexpoints = baseline_indexpoints, ...))
-  } else {
-    return(dipsaus::baseline_array(
-      x = x, along_dim = along_dim, unit_dims = unit_dims,
-      method = method, baseline_indexpoints = baseline_indexpoints))
-  }
-}
 
 #' Enable parallel computing provided by 'future' package within the context
 #' @param expr the expression to be evaluated
@@ -388,6 +92,7 @@ baseline_array <- function(
 with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
                                  on_failure = 'multisession', max_workers = NA,
                                  ...){
+
   if(!quoted){
     expr <- substitute(expr)
   }
@@ -614,29 +319,6 @@ lapply_async <- function(
   re
 }
 
-
-#' @export
-print.raveio_digest_expression <- function(x, ..., max_nvars = 5) {
-  vnames <- names(attr(x, "global_vars"))
-
-  if(length(vnames) > max_nvars) {
-    vnames <- c(vnames[seq_len(max_nvars)], "...")
-  }
-  cat(sprintf("<Digest from code + variables>\n  variable names: %s\n  MD5: %s\n",
-              paste(vnames, collapse = ", "), x))
-  invisible(x)
-}
-
-#' @export
-format.raveio_digest_expression <- function(x, ...) {
-  attributes(x) <- NULL
-  x
-}
-
-
-key_missing <- function () {
-  structure(list(), class = "key_missing")
-}
 
 `%OF%` <- function(lhs, rhs){
   if(length(rhs)){ de <- rhs[[1]] } else { de <- rhs }

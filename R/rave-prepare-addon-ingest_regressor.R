@@ -137,9 +137,9 @@ ingest_regressor_channels <- function(
       q <- original_sample_rate / target_sample_rate
       if(abs(q - round(q)) < 1e-6) {
         q <- round(q)
-        ret <- gsignal::decimate(x = data, q = q, ftype = "fir")
+        ret <- ravetools::decimate(x = data, q = q, ftype = "fir")
       } else {
-        ret <- gsignal::resample(x = data, p = target_sample_rate, q = original_sample_rate)
+        ret <- ravetools::resample(x = data, p = target_sample_rate, q = original_sample_rate)
       }
       return(ret)
     }
@@ -182,7 +182,7 @@ ingest_regressor <- function(repository, source, source_type = c("channel", "fil
   if( source_type == "channel" ) {
     channels <- dipsaus::parse_svec(source)
     if(!length(channels)) {
-      stop(sprintf("Cannot ingest regressors from channel `%s`", deparse1(source)))
+      stop(sprintf("Cannot ingest regressors from channel `%s`", dipsaus::deparse_svec(source)))
     }
     if(!is.function(filter)) {
       filter <- NULL

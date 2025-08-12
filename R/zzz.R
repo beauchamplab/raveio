@@ -1,14 +1,3 @@
-# get options whether the data directory is on network
-# If enabled, then HDF5 files should be copied to local tempdir
-# and read if there are multiiple reads from the same file
-using_netdrive <- function(){
-  if(raveio_getopt("using_netdrive", FALSE)){
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
-}
-
 finalize_installation_demo_data <- function(update = FALSE, test = FALSE) {
   subject <- RAVESubject$new(project_name = "YAEL", subject_code = "yael_demo_001", strict = FALSE)
 

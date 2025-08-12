@@ -96,8 +96,8 @@ ants_coreg <- function(
   # save transforms
   # `fwdtransforms`: Transforms to move from moving to fixed image.
   # `invtransforms`: Transforms to move from fixed to moving image.
-  forward  <- filenames(rpyANTs::py_to_r(transform$fwdtransforms))
-  inverse <- filenames(rpyANTs::py_to_r(transform$invtransforms))
+  forward  <- basename(rpyANTs::py_to_r(transform$fwdtransforms))
+  inverse <- basename(rpyANTs::py_to_r(transform$invtransforms))
 
   results <- list(
     moving = "CT_RAW.nii.gz",

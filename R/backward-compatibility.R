@@ -18,7 +18,12 @@ rave_subject_format_conversion <- function(
     warning("RAVE 1.0 only support analyzing signals with time-frequency decomposition. Electrodes with non-LFP signals will be ignored.")
   }
 
-  progress <- dipsaus::progress2(title = "Adding backward compatibility support", quiet = !verbose, shiny_auto_close = TRUE, max = 4)
+  progress <- ravepipeline::rave_progress(
+    title = "Adding backward compatibility support",
+    quiet = !verbose,
+    shiny_auto_close = TRUE,
+    max = 4
+  )
 
   progress$inc("Validating subject")
 

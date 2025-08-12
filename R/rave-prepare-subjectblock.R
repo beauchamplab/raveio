@@ -1,5 +1,4 @@
 
-#' @rdname rave-prepare
 #' @export
 prepare_subject_with_blocks <- function(subject, electrodes, reference_name, blocks, raw = FALSE, signal_type = "LFP", time_frequency = (!raw && signal_type == "LFP"), quiet = raw, env = parent.frame(), repository_id = NULL, ...){
 

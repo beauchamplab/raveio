@@ -50,6 +50,23 @@ session_uuid <- use_ravepipeline("session_uuid")
 
 remove_empty_dir <- use_ravepipeline("remove_empty_dir", soft_deprecated = FALSE)
 
+# ---- Utils -------------------------------------------------------------------
+#' @importFrom ravepipeline dir_create2
+#' @export
+ravepipeline::dir_create2
+
+#' @importFrom ravepipeline load_yaml
+#' @export
+ravepipeline::load_yaml
+
+#' @importFrom ravepipeline save_yaml
+#' @export
+ravepipeline::save_yaml
+
+#' @importFrom ravepipeline glue
+#' @export
+ravepipeline::glue
+
 # ---- options.R ---------------------------------------------------------------
 #' @importFrom ravepipeline raveio_setopt
 #' @export
