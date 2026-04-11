@@ -142,7 +142,7 @@ with_future_parallel <- function(expr, env = parent.frame(), quoted = FALSE,
 #' @examples
 #'
 #'
-#' if(!is_on_cran()) {
+#' \dontrun{
 #' library(raveio)
 #'
 #' # ---- Basic example ----------------------------

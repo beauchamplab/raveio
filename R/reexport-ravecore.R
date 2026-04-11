@@ -74,29 +74,53 @@ ravecore::prepare_subject_bare0
 #' @export
 ravecore::prepare_subject_bare
 
-#' @importFrom ravecore prepare_subject_with_epoch
+#' @importFrom ravecore prepare_subject_with_epochs
 #' @export
-ravecore::prepare_subject_with_epoch
+ravecore::prepare_subject_with_epochs
 
-#' @importFrom ravecore prepare_subject_raw_voltage_with_epoch
+#' @importFrom ravecore prepare_subject_raw_voltage_with_epochs
 #' @export
-ravecore::prepare_subject_raw_voltage_with_epoch
+ravecore::prepare_subject_raw_voltage_with_epochs
 
-#' @importFrom ravecore prepare_subject_voltage_with_epoch
+#' @importFrom ravecore prepare_subject_voltage_with_epochs
 #' @export
-ravecore::prepare_subject_voltage_with_epoch
+ravecore::prepare_subject_voltage_with_epochs
 
-#' @importFrom ravecore prepare_subject_time_frequency_coefficients
+#' @importFrom ravecore prepare_subject_time_frequency_coefficients_with_epochs
 #' @export
-ravecore::prepare_subject_time_frequency_coefficients
+ravecore::prepare_subject_time_frequency_coefficients_with_epochs
 
 #' @importFrom ravecore prepare_subject_power
 #' @export
 ravecore::prepare_subject_power
 
-#' @importFrom ravecore prepare_subject_phase
+#' @importFrom ravecore prepare_subject_power_with_epochs
 #' @export
-ravecore::prepare_subject_phase
+ravecore::prepare_subject_power_with_epochs
+
+#' @importFrom ravecore prepare_subject_phase_with_epochs
+#' @export
+ravecore::prepare_subject_phase_with_epochs
+
+#' @importFrom ravecore prepare_subject_with_blocks
+#' @export
+ravecore::prepare_subject_with_blocks
+
+#' @importFrom ravecore prepare_subject_voltage_with_blocks
+#' @export
+ravecore::prepare_subject_voltage_with_blocks
+
+#' @importFrom ravecore prepare_subject_time_frequency_coefficients_with_blocks
+#' @export
+ravecore::prepare_subject_time_frequency_coefficients_with_blocks
+
+#' @importFrom ravecore prepare_subject_power_with_blocks
+#' @export
+ravecore::prepare_subject_power_with_blocks
+
+#' @importFrom ravecore prepare_subject_phase_with_blocks
+#' @export
+ravecore::prepare_subject_phase_with_blocks
 
 #' @importFrom ravecore archive_subject
 #' @export
@@ -186,10 +210,70 @@ ravecore::export_table
 #' @export
 ravecore::import_table
 
-rscript_path <- function(winslash = "\\") {
-  call_pkg_fun("ravecore", "rscript_path", winslash = winslash)
-}
+#' @importFrom ravecore normalize_commandline_path
+#' @export
+ravecore::normalize_commandline_path
 
+#' @importFrom ravecore cmd_dcm2niix
+#' @export
+ravecore::cmd_dcm2niix
+
+#' @importFrom ravecore cmd_freesurfer_home
+#' @export
+ravecore::cmd_freesurfer_home
+
+#' @importFrom ravecore cmd_fsl_home
+#' @export
+ravecore::cmd_fsl_home
+
+#' @importFrom ravecore cmd_afni_home
+#' @export
+ravecore::cmd_afni_home
+
+#' @importFrom ravecore cmd_homebrew
+#' @export
+ravecore::cmd_homebrew
+
+#' @importFrom ravecore rscript_path
+#' @export
+ravecore::rscript_path
+
+#' @importFrom ravecore yael_preprocess
+#' @export
+ravecore::yael_preprocess
+
+#' @importFrom ravecore cmd_run_yael_preprocess
+#' @export
+ravecore::cmd_run_yael_preprocess
+
+#' @importFrom ravecore cmd_run_freesurfer_recon_all
+#' @export
+ravecore::cmd_run_freesurfer_recon_all
+
+
+#' @importFrom ravecore cmd_run_freesurfer_recon_all_clinical
+#' @export
+ravecore::cmd_run_freesurfer_recon_all_clinical
+
+#' @importFrom ravecore ants_coreg
+#' @export
+ravecore::ants_coreg
+
+#' @importFrom ravecore cmd_run_ants_coreg
+#' @export
+ravecore::cmd_run_ants_coreg
+
+#' @importFrom ravecore cmd_run_dcm2niix
+#' @export
+ravecore::cmd_run_dcm2niix
+
+#' @importFrom ravecore niftyreg_coreg
+#' @export
+ravecore::niftyreg_coreg
+
+#' @importFrom ravecore cmd_run_niftyreg_coreg
+#' @export
+ravecore::cmd_run_niftyreg_coreg
 
 
 get_os <- function() {
@@ -201,14 +285,7 @@ normalize_path <- function(path, must_work = NA) {
 }
 
 initialize_imaging_paths <- function(subject) {
-  # subject <- 'demo/DemoSubject'
-  subject <- restore_subject_instance(subject, strict = FALSE)
-  root_path <- file.path(subject$preprocess_settings$raw_path, "rave-imaging")
-  dir_create2(file.path(root_path, "coregistration"))
-  dir_create2(file.path(root_path, "log"))
-  dir_create2(file.path(root_path, "scripts"))
-  dir_create2(file.path(root_path, "inputs"))
-  invisible()
+  call_pkg_fun("ravecore", "initialize_imaging_paths", subject)
 }
 
 run_wavelet <- function(

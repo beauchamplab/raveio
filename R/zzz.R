@@ -36,7 +36,7 @@ finalize_installation <- function(
 
   upgrade <- match.arg(upgrade)
 
-  ravepipeline::ravepipeline_finalize_installation(upgrade = upgrade, async = async, ...)
+  # ravepipeline::ravepipeline_finalize_installation(upgrade = upgrade, async = async, ...)
 
 
   missing_demo_data <- finalize_installation_demo_data(test = TRUE)

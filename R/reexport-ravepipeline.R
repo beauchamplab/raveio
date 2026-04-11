@@ -50,6 +50,8 @@ session_uuid <- use_ravepipeline("session_uuid")
 
 remove_empty_dir <- use_ravepipeline("remove_empty_dir", soft_deprecated = FALSE)
 
+catgl <- use_ravepipeline("catgl")
+
 # ---- Utils -------------------------------------------------------------------
 #' @importFrom ravepipeline dir_create2
 #' @export

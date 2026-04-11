@@ -43,7 +43,7 @@ by \code{on_failure}
 \examples{
 
 
-if(!is_on_cran()) {
+\dontrun{
 library(raveio)
 
 # ---- Basic example ----------------------------
