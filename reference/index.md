@@ -1,0 +1,312 @@
+# Package index
+
+## All functions
+
+- [`Auxiliary_electrode`](Auxiliary_electrode.md) : Class definition for
+  auxiliary channels
+
+- [`BlackrockFile`](BlackrockFile.md) : Class definition to load data
+  from 'BlackRock' 'Micro-systems' files
+
+- [`ECoGTensor`](ECoGTensor.md) :
+
+  'iEEG/ECoG' Tensor class inherit from `Tensor`
+
+- [`LFP_electrode`](LFP_electrode.md) : Definitions of electrode with
+  'LFP' signal type
+
+- [`LFP_reference`](LFP_reference.md) : Definitions of reference with
+  'LFP' signal type
+
+- [`RAVEAbstarctElectrode`](RAVEAbstarctElectrode.md) : Abstract
+  definition of electrode class in RAVE
+
+- [`RAVEEpoch`](RAVEEpoch.md) : Definition for epoch class
+
+- [`RAVEMetaSubject`](RAVEMetaSubject.md) : Defines 'RAVE' subject class
+  for meta analyses
+
+- [`RAVEPreprocessSettings`](RAVEPreprocessSettings.md) : Defines
+  preprocess configurations
+
+- [`RAVEProject`](RAVEProject.md) : Definition for 'RAVE' project class
+
+- [`RAVESubject`](RAVESubject.md) : Defines 'RAVE' subject class
+
+- [`Spike_electrode`](Spike_electrode.md) : Class definition for
+  micro-wire spike channels
+
+- [`Tensor`](Tensor.md) : R6 Class for large Tensor (Array) in Hybrid
+  Mode
+
+- [`YAELProcess`](YAELProcess.md) :
+
+  Class definition of `'YAEL'` image pipeline
+
+- [`ants_coreg()`](ants_coreg.md)
+  [`cmd_run_ants_coreg()`](ants_coreg.md)
+  [`ants_mri_to_template()`](ants_coreg.md)
+  [`cmd_run_ants_mri_to_template()`](ants_coreg.md)
+  [`ants_morph_electrode()`](ants_coreg.md) :
+
+  Register 'CT' or 'MR' images via `'ANTs'`
+
+- [`ants_preprocessing()`](ants_preprocessing.md) :
+
+  Process 'T1' weighted 'MRI' using `'ANTs'`
+
+- [`archive_subject()`](archive_subject.md) : Archive and share a
+  subject
+
+- [`as_rave_project()`](as_rave_project.md) :
+
+  Convert character to `RAVEProject` instance
+
+- [`as_rave_subject()`](as_rave_subject.md) :
+
+  Get `RAVESubject` instance from character
+
+- [`as_rave_unit()`](as_rave_unit.md) : Convert numeric number into
+  print-friendly format
+
+- [`as_yael_process()`](as_yael_process.md) : Create a 'YAEL' imaging
+  processing instance
+
+- [`backup_file()`](backup_file.md) : Back up and rename the file or
+  directory
+
+- [`cache_root()`](cache_path.md)
+  [`clear_cached_files()`](cache_path.md) : Manipulate cached data on
+  the file systems
+
+- [`cache_to_filearray()`](cache_to_filearray.md) : Generate and
+  automatically cache a file array
+
+- [`catgl()`](catgl.md) : Print colored messages
+
+- [`cmd_run_3dAllineate()`](cmd-external.md)
+  [`cmd_execute()`](cmd-external.md) [`cmd_run_r()`](cmd-external.md)
+  [`cmd_run_dcm2niix()`](cmd-external.md)
+  [`cmd_run_flirt()`](cmd-external.md)
+  [`cmd_run_recon_all()`](cmd-external.md)
+  [`cmd_run_recon_all_clinical()`](cmd-external.md) : External shell
+  commands for 'RAVE'
+
+- [`collapse2()`](collapse2.md) : Collapse high-dimensional tensor array
+
+- [`collapse_power()`](collapse_power.md) : Collapse power array with
+  given analysis cubes
+
+- [`compose_channel()`](compose_channel.md) : Compose a "phantom"
+  channel from existing electrodes
+
+- [`convert_blackrock()`](convert_blackrock.md) : Convert 'BlackRock'
+  'NEV/NSx' files
+
+- [`convert_electrode_table_to_bids()`](convert_electrode_table_to_bids.md)
+  : Convert electrode table
+
+- [`dir_create2()`](dir_create2.md) : Force creating directory with
+  checks
+
+- [`export_table()`](export_table.md)
+  [`import_table()`](export_table.md) : Export data frame to different
+  common formats
+
+- [`find_path()`](find_path.md) : Try to find path along the root
+  directory
+
+- [`generate_reference()`](generate_reference.md) : Generate common
+  average reference signal for 'RAVE' subjects
+
+- [`get_projects()`](get_projects.md) : Get all possible projects in
+  'RAVE' directory
+
+- [`get_val2()`](get_val2.md) : Get value or return default if invalid
+
+- [`h5_names()`](h5_names.md) : Returns all names contained in 'HDF5'
+  file
+
+- [`h5_valid()`](h5_valid.md) : Check whether a 'HDF5' file can be
+  opened for read/write
+
+- [`import_electrode_table()`](import_electrode_table.md) : Import
+  electrode table into subject meta folder
+
+- [`ingest_regressor()`](ingest_regressor.md) : Ingest signals according
+  to 'RAVE' repository epoch
+
+- [`install_subject()`](install_subject.md) : Install a subject from the
+  internet, a zip file or a directory
+
+- [`is.blank()`](is.blank.md) : Check If Input Has Blank String
+
+- [`is.zerolenth()`](is.zerolenth.md) : Check If Input Has Zero Length
+
+- [`is_on_cran()`](is_on_cran.md) : Check if current session is on
+  'CRAN'
+
+- [`is_valid_ish()`](is_valid_ish.md) : Check if data is close to
+  “valid"
+
+- [`join_tensors()`](join_tensors.md) : Join Multiple Tensors into One
+  Tensor
+
+- [`lapply_async()`](lapply_async.md) :
+
+  Run [`lapply`](https://rdrr.io/r/base/lapply.html) in parallel
+
+- [`load_bids_ieeg_header()`](load_bids_ieeg_header.md) : Read in
+  description files from 'BIDS-iEEG' format
+
+- [`load_fst_or_h5()`](load_fst_or_h5.md) : Function try to load 'fst'
+  arrays, if not found, read 'HDF5' arrays
+
+- [`load_h5()`](load_h5.md) :
+
+  Lazy Load 'HDF5' File via
+  [`io_read_h5`](http://dipterix.org/ieegio/reference/io_read_h5.md)
+
+- [`load_meta2()`](load_meta2.md) : Load 'RAVE' subject meta data
+
+- [`load_yaml()`](load_yaml.md) :
+
+  A port to
+  [`read_yaml`](https://yaml.r-lib.org/reference/read_yaml.html)
+
+- [`mgh_to_nii()`](mgh_to_nii.md) :
+
+  Convert 'FreeSurfer' `'mgh'` to 'Nifti'
+
+- [`new_electrode()`](new_electrode.md)
+  [`new_reference()`](new_electrode.md) : Create new electrode channel
+  instance or a reference signal instance
+
+- [`niftyreg_coreg()`](niftyreg_coreg.md)
+  [`cmd_run_niftyreg_coreg()`](niftyreg_coreg.md) :
+
+  Register 'CT' to 'MR' images via `'NiftyReg'`
+
+- [`power_baseline()`](power_baseline.md) : Calculate power baseline
+
+- [`progress_with_logger()`](progress_with_logger.md) : Enhanced
+  progress with logger message
+
+- [`py_nipy_coreg()`](py_nipy_coreg.md)
+  [`cmd_run_nipy_coreg()`](py_nipy_coreg.md) :
+
+  Register 'CT' to 'MR' images via `'nipy'` script
+
+- [`prepare_subject_bare0()`](rave-prepare.md)
+  [`prepare_subject_bare()`](rave-prepare.md)
+  [`prepare_subject_with_epoch()`](rave-prepare.md)
+  [`prepare_subject_with_blocks()`](rave-prepare.md)
+  [`prepare_subject_phase()`](rave-prepare.md)
+  [`prepare_subject_power()`](rave-prepare.md)
+  [`prepare_subject_wavelet()`](rave-prepare.md)
+  [`prepare_subject_raw_voltage_with_epoch()`](rave-prepare.md)
+  [`prepare_subject_voltage_with_epoch()`](rave-prepare.md) : Prepare
+  'RAVE' single-subject data
+
+- [`validate_raw_file()`](rave-raw-validation.md)
+  [`IMPORT_FORMATS`](rave-raw-validation.md) : Validate raw files in
+  'rave' directory
+
+- [`rave_server_install()`](rave-server.md)
+  [`rave_server_configure()`](rave-server.md) : Install and configure
+  'RAVE' server as background service using shiny-server
+
+- [`rave_brain()`](rave_brain.md) : Load 'FreeSurfer' or 'AFNI/SUMA'
+  brain from 'RAVE'
+
+- [`normalize_commandline_path()`](rave_command_line_path.md)
+  [`cmd_dcm2niix()`](rave_command_line_path.md)
+  [`cmd_freesurfer_home()`](rave_command_line_path.md)
+  [`cmd_fsl_home()`](rave_command_line_path.md)
+  [`cmd_afni_home()`](rave_command_line_path.md)
+  [`cmd_homebrew()`](rave_command_line_path.md)
+  [`is_dry_run()`](rave_command_line_path.md) : Find and execute
+  external command-line tools
+
+- [`rave_directories()`](rave_directories.md) : Returns a list of 'RAVE'
+  directories
+
+- [`rave_export()`](rave_export.md) : Export 'RAVE' data
+
+- [`rave_import()`](rave_import.md) : Import data into 'rave' projects
+
+- [`rave_subject_format_conversion()`](rave_subject_format_conversion.md)
+  : Compatibility support for 'RAVE' 1.0 format
+
+- [`SIGNAL_TYPES`](raveio-constants.md)
+  [`LOCATION_TYPES`](raveio-constants.md)
+  [`MNI305_to_MNI152`](raveio-constants.md)
+  [`YAEL_IMAGE_TYPES`](raveio-constants.md) : The constant variables
+
+- [`read_eeg_header()`](read-brainvision-eeg.md)
+  [`read_eeg_marker()`](read-brainvision-eeg.md)
+  [`read_eeg_data()`](read-brainvision-eeg.md) : Load from 'BrainVision'
+  file
+
+- [`save_fst()`](read-write-fst.md) [`load_fst()`](read-write-fst.md) :
+  Read a 'fst' file
+
+- [`read_csv_ieeg()`](read_csv_ieeg.md) : Read comma separated value
+  file and ignore headers
+
+- [`read_edf_header()`](read_edf_header.md) : Read 'EDF(+)' or 'BDF(+)'
+  file headers
+
+- [`read_edf_signal()`](read_edf_signal.md) : Read 'EDF(+)' or 'BDF(+)'
+  file signals
+
+- [`read_mat()`](read_mat.md) [`read_mat2()`](read_mat.md) : Read
+  'Matlab' files
+
+- [`read_nsx_nev()`](read_nsx_nev.md) : Read 'BlackRock' event and
+  signal files
+
+- [`safe_read_csv()`](safe_read_csv.md) : Read comma separated value
+  files with given column classes
+
+- [`safe_write_csv()`](safe_write_csv.md) : Save data to comma separated
+  value files with backups
+
+- [`save_h5()`](save_h5.md) : Save objects to 'HDF5' file without
+  trivial checks
+
+- [`save_json()`](save_json.md) [`load_json()`](save_json.md) : Save or
+  load R object in 'JSON' format
+
+- [`save_meta2()`](save_meta2.md) : Function to save meta data to 'RAVE'
+  subject
+
+- [`save_yaml()`](save_yaml.md) : Write named list to file
+
+- [`test_hdspeed()`](test_hdspeed.md) : Simple hard disk speed test
+
+- [`time_diff2()`](time_diff2.md) : Calculate time difference in seconds
+
+- [`transform_point_to_template()`](transform_point_to_template.md)
+  [`transform_thinfilm_to_mni152()`](transform_point_to_template.md) :
+  Calculate template 'MNI' coordinates for points on native brain
+
+- [`url_neurosynth()`](url_neurosynth.md) : Get 'Neurosynth' website
+  address using 'MNI152' coordinates
+
+- [`validate_subject`](validate_subject.md) : Validate subject data
+  integrity
+
+- [`validate_time_window()`](validate_time_window.md) : Validate time
+  windows to be used
+
+- [`voltage_baseline()`](voltage_baseline.md) : Calculate voltage
+  baseline
+
+- [`with_future_parallel()`](with_future_parallel.md) : Enable parallel
+  computing provided by 'future' package within the context
+
+- [`cmd_run_yael_preprocess()`](yael_preprocess.md)
+  [`yael_preprocess()`](yael_preprocess.md) :
+
+  Process brain images for `'YAEL'`
