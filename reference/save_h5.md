@@ -79,11 +79,11 @@ x <- array(1:120, dim = 2:5)
 
 # save x to file with name /group/dataset/1
 save_h5(x, file, '/group/dataset/1', chunk = dim(x))
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196524d16376 => /group (Group Created)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196524d16376 => /group/dataset (Group Created)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196524d16376 => 1 (Dataset Created)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196524d16376 => 1 (Dataset Removed)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196524d16376 => 1 (Dataset Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a657f8c00 => /group (Group Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a657f8c00 => /group/dataset (Group Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a657f8c00 => 1 (Dataset Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a657f8c00 => 1 (Dataset Removed)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a657f8c00 => 1 (Dataset Created)
 
 # read data
 y <- load_h5(file, '/group/dataset/1')

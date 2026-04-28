@@ -39,11 +39,11 @@ Sys.sleep(0.1)
 end <- Sys.time()
 dif <- time_diff2(start, end, label = 'Running ')
 print(dif, digits = 4)
-#> Running 0.2146 secs
+#> Running 0.1528 secs
 
 is.numeric(dif)
 #> [1] TRUE
 
 dif + 1
-#> Running 1.21 secs
+#> Running 1.15 secs
 ```

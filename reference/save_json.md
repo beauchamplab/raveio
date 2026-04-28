@@ -103,7 +103,7 @@ save_json(x ~ y + 1, f1)
 
 load_json(f1)
 #> x ~ y + 1
-#> <environment: 0x126f29820>
+#> <environment: 0x1077ba780>
 
 unlink(f1)
 

@@ -95,7 +95,7 @@ arr
 #> Partition count: 3 
 #> Partition size: 1 
 #> Storage type: double (internal size: 8)
-#> Location: /private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/file19656f40d548 
+#> Location: /private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpSRKuDX/file166a3a0bb8a3 
 
 # read into memory
 arr[]

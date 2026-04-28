@@ -52,7 +52,7 @@ Exported data path
 x <- "my data"
 path <- tempfile()
 rave_export(x, path)
-#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/file19654ff12048"
+#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpSRKuDX/file166a66da79ac"
 
 readRDS(path)
 #> [1] "my data"

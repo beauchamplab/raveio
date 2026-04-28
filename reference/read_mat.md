@@ -69,7 +69,7 @@ read_mat(f)
 #> 
 #> attr(,"header")
 #> attr(,"header")$description
-#> [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.6.0, Created on: Tue Apr 28 19:38:42 2026                               "
+#> [1] "MATLAB 5.0 MAT-file, Platform: unix, Software: R v4.6.0, Created on: Tue Apr 28 19:44:26 2026                               "
 #> 
 #> attr(,"header")$version
 #> [1] "5"
@@ -94,9 +94,9 @@ dat
 dat$x[]
 
 }
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file19651bac29e0 => x (Dataset Created)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file19651bac29e0 => x (Dataset Removed)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file19651bac29e0 => x (Dataset Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a449f50c1 => x (Dataset Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a449f50c1 => x (Dataset Removed)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpSRKuDX/file166a449f50c1 => x (Dataset Created)
 #>      [,1] [,2] [,3] [,4]
 #> [1,]    1    5    9   13
 #> [2,]    2    6   10   14
