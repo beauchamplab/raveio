@@ -30,7 +30,7 @@ x <- data.frame(a = 1:10)
 
 # File not exists, same as write file, returns normalized `f`
 safe_write_csv(x, f)
-#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/Rtmp9va47M/file49043cdea845"
+#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/file19652bd8cea4"
 
 # Check whether file exists
 file.exists(f)
@@ -38,5 +38,5 @@ file.exists(f)
 
 # write again, and the old file will be copied
 safe_write_csv(x, f)
-#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/Rtmp9va47M/file49043cdea845"
+#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/file19652bd8cea4"
 ```

@@ -5,13 +5,16 @@ to see their documentation.
 
 - ieegio:
 
-  [`convert_fst_to_csv`](http://dipterix.org/ieegio/reference/convert-fst.md),
-  [`convert_fst_to_hdf5`](http://dipterix.org/ieegio/reference/convert-fst.md),
   [`LazyFST`](http://dipterix.org/ieegio/reference/LazyFST.md),
-  [`LazyH5`](http://dipterix.org/ieegio/reference/LazyH5.md)
+  [`LazyH5`](http://dipterix.org/ieegio/reference/LazyH5.md),
+  [`convert_fst_to_csv`](http://dipterix.org/ieegio/reference/convert-fst.md),
+  [`convert_fst_to_hdf5`](http://dipterix.org/ieegio/reference/convert-fst.md)
 
 - ravepipeline:
 
+  [`PipelineCollections`](http://dipterix.org/ravepipeline/reference/PipelineCollections.md),
+  [`PipelineResult`](http://dipterix.org/ravepipeline/reference/PipelineResult.md),
+  [`PipelineTools`](http://dipterix.org/ravepipeline/reference/PipelineTools.md),
   [`add_module_registry`](http://dipterix.org/ravepipeline/reference/module_registry.md),
   [`configure_knitr`](http://dipterix.org/ravepipeline/reference/pipeline-knitr-markdown.md),
   [`get_module_description`](http://dipterix.org/ravepipeline/reference/module_registry.md),
@@ -62,9 +65,6 @@ to see their documentation.
   [`pipeline_vartable`](http://dipterix.org/ravepipeline/reference/rave-pipeline.md),
   [`pipeline_visualize`](http://dipterix.org/ravepipeline/reference/rave-pipeline.md),
   [`pipeline_watch`](http://dipterix.org/ravepipeline/reference/rave-pipeline.md),
-  [`PipelineCollections`](http://dipterix.org/ravepipeline/reference/PipelineCollections.md),
-  [`PipelineResult`](http://dipterix.org/ravepipeline/reference/PipelineResult.md),
-  [`PipelineTools`](http://dipterix.org/ravepipeline/reference/PipelineTools.md),
   [`raveio_confpath`](http://dipterix.org/ravepipeline/reference/raveio-option.md),
   [`raveio_getopt`](http://dipterix.org/ravepipeline/reference/raveio-option.md),
   [`raveio_resetopt`](http://dipterix.org/ravepipeline/reference/raveio-option.md),

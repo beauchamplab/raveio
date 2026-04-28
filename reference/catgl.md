@@ -50,29 +50,23 @@ raveio_setopt('verbose_level', 'DEBUG', FALSE)
 
 # debug
 catgl('Debug message', level = 'DEBUG')
-#> Debug message 
 
 # default
 catgl('Default message', level = 'DEFAULT')
-#> Default message 
 
 # info
 catgl('Info message', level = 'INFO')
-#> Info message 
 
 # warning
 catgl('Warning message', level = 'WARNING')
-#> Warning message 
 
 # error
 catgl('Error message', level = 'ERROR')
-#> Error message 
 
 try({
   # fatal, will call stop and raise error
   catgl('Error message', level = 'FATAL')
 }, silent = TRUE)
-#> Error message 
 
 # ------------------ Muffle messages ---------------------
 
@@ -84,9 +78,7 @@ catgl('Default message')
 
 # message printed for level >= Warning
 catgl('Default message', level = 'WARNING')
-#> Default message 
 catgl('Default message', level = 'ERROR')
-#> Default message 
 
 
 ```

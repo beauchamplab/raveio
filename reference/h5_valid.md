@@ -39,9 +39,9 @@ h5_valid(f, 'r')
 #> [1] FALSE
 
 save_h5(x, f, 'dset')
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//Rtmp9va47M/file49041dec3a1e => dset (Dataset Created)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//Rtmp9va47M/file49041dec3a1e => dset (Dataset Removed)
-#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//Rtmp9va47M/file49041dec3a1e => dset (Dataset Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196535d76ae3 => dset (Dataset Created)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196535d76ae3 => dset (Dataset Removed)
+#> /var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T//RtmpOZ6CXm/file196535d76ae3 => dset (Dataset Created)
 h5_valid(f, 'w')  # TRUE
 #> [1] TRUE
 h5_valid(f, 'r')  # TRUE

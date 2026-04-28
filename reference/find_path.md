@@ -52,7 +52,7 @@ dir_create2(file.path(root, 'a'))
 # root/cd/a     - missing
 # root/a        - exists!
 find_path('ins/cd/a', root)
-#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/Rtmp9va47M/a"
+#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/a"
 
 # ------ Case 2: priority -------
 # Create two paths in root
@@ -64,7 +64,7 @@ dir_create2(file.path(root, 'a'))
 # root/cd/a     - exists - returned
 # root/a        - exists, but ignored
 find_path('ins/cc/a', root)
-#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/Rtmp9va47M/cc/a"
+#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/cc/a"
 
 # ------ Case 3: find all -------
 # Create two paths in root
@@ -76,6 +76,6 @@ dir_create2(file.path(root, 'a'))
 # root/cd/a     - exists - returned
 # root/a        - exists - returned
 find_path('ins/cc/a', root, all = TRUE)
-#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/Rtmp9va47M/cc/a"
-#> [2] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/Rtmp9va47M/a"   
+#> [1] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/cc/a"
+#> [2] "/private/var/folders/tb/y368xp_x10s3ty1b_mtl5mxr0000gn/T/RtmpOZ6CXm/a"   
 ```

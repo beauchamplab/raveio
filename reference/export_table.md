@@ -83,14 +83,14 @@ str(x)
 #>  $ b: chr  "a" "b" "c" "d" ...
 #>  $ c: int  1 2 3 4 5 6 7 8 9 10
 #>  $ d: Factor w/ 10 levels "A","B","C","D",..: 1 2 3 4 5 6 7 8 9 10
-#>  - attr(*, ".internal.selfref")=<externalptr> 
+#>  - attr(*, ".internal.selfref")=<pointer: 0x1230114e0> 
 str(y)
 #> Classes ‘data.table’ and 'data.frame':   10 obs. of  4 variables:
 #>  $ a: num  0.201 -2.068 0.718 -1.061 -0.753 ...
 #>  $ b: chr  "a" "b" "c" "d" ...
 #>  $ c: int  1 2 3 4 5 6 7 8 9 10
 #>  $ d: chr  "A" "B" "C" "D" ...
-#>  - attr(*, ".internal.selfref")=<externalptr> 
+#>  - attr(*, ".internal.selfref")=<pointer: 0x1230114e0> 
 
 # clean up
 unlink(f)

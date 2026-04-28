@@ -88,29 +88,23 @@ than the threshold will be muffled. See examples.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># debug</span></span></span>
 <span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Debug message'</span>, level <span class="op">=</span> <span class="st">'DEBUG'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Debug message </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># default</span></span></span>
 <span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'DEFAULT'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Default message </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># info</span></span></span>
 <span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Info message'</span>, level <span class="op">=</span> <span class="st">'INFO'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Info message </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># warning</span></span></span>
 <span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Warning message'</span>, level <span class="op">=</span> <span class="st">'WARNING'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Warning message </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># error</span></span></span>
 <span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Error message'</span>, level <span class="op">=</span> <span class="st">'ERROR'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error message </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="co"># fatal, will call stop and raise error</span></span></span>
 <span class="r-in"><span>  <span class="fu">catgl</span><span class="op">(</span><span class="st">'Error message'</span>, level <span class="op">=</span> <span class="st">'FATAL'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error message </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ------------------ Muffle messages ---------------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -122,9 +116,7 @@ than the threshold will be muffled. See examples.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># message printed for level &gt;= Warning</span></span></span>
 <span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'WARNING'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Default message </span>
 <span class="r-in"><span><span class="fu">catgl</span><span class="op">(</span><span class="st">'Default message'</span>, level <span class="op">=</span> <span class="st">'ERROR'</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Default message </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

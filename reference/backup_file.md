@@ -34,8 +34,6 @@ file.create(path)
 #> [1] TRUE
 
 path2 <- backup_file(path, remove = TRUE)
-#> Moving file file49042f01067a
-#> => file49042f01067a_[backup_20260411_023058] 
 
 file.exists(c(path, path2))
 #> [1] FALSE  TRUE
