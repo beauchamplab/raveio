@@ -23,7 +23,7 @@ progress_with_logger <- function (
     if(dipsaus::package_installed('ravedash')){
       ravedash <- do.call('asNamespace', list('ravedash'))
       log <- function(...){
-        ravedash$logger(..., level = 'trace', use_glue = FALSE, reset_timer = !initialized, calc_delta = TRUE)
+        ravepipeline::logger(..., level = 'trace', use_glue = FALSE, reset_timer = !initialized, calc_delta = TRUE)
         if(!initialized){
           initialized <<- TRUE
         }

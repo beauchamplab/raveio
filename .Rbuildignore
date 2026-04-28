@@ -19,3 +19,5 @@ inst/rave-pipelines/builtins/*
 ^_pkgdown\.yml$
 ^pkgdown$
 ^LICENSE\.md$
+^\.positai$
+^\.claude$

@@ -28,7 +28,7 @@ BugReports: https://github.com/beauchamplab/raveio/issues
 URL: https://beauchamplab.github.io/raveio/
 License: MIT + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 SystemRequirements: little-endian platform
 Imports:
     utils,

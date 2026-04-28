@@ -249,9 +249,8 @@ catgl <- function(..., .envir = parent.frame(), level = 'DEBUG', .pal, .capture 
   call <- deparse1(call, collapse = '\n')
 
   # .envir = parent.frame(), level = 'DEBUG', .pal, .capture = FALSE
-  if(dipsaus::package_installed('ravedash')){
-    ns <- do.call('asNamespace', list('ravedash'))
-    ns$logger(msg, level = switch (
+  if(dipsaus::package_installed('ravepipeline')){
+    ravepipeline::logger(msg, level = switch (
       level,
       "DEFAULT" = "trace",
       "DEBUG" = "debug",
